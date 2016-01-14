@@ -1,0 +1,1430 @@
+<!--
+Copyright 2015 Google Inc. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/core-scroll-threshold/core-scroll-threshold.html">
+
+<script src="../../bower_components/es6-promise/dist/es6-promise.min.js"></script>
+<script src="webgl-globe-namespace.js"></script>
+<script src="matrix4x4.js"></script>
+<script src="shader-program.js"></script>
+<script src="geometry.js"></script>
+<script src="sprite-geometry.js"></script>
+<script src="sol.js"></script>
+<script src="kd-tree.js"></script>
+
+<!--
+Makes a globe or whatever.
+
+    <webgl-globe></webgl-globe>
+
+@element webgl-globe
+-->
+<!--
+Fired when the globe arrives at a new location.
+
+@event location-transitionend
+-->
+<!--
+Fired when when a location marker is clicked.
+
+@event marker-click
+-->
+<!--
+Fired when the globe's webgl context has been initialized or it failed to initialize.
+
+@event globe-webgl-init
+@param {Object} detail
+  @param {bool} detail.error True if webgl could not be initialized.
+-->
+<polymer-element name="webgl-globe" on-tap="{{handleTap}}" attributes="attractLoop cameraDistance fov location locationTarget markers highlightedMarker noDraw noInit offsetY scrollTarget scrollTriggered transitionDuration webglSupported">
+  <template>
+    <style>
+      :host {
+        display: block;
+        position: relative;
+        height: 100%;
+      }
+      #canvas {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        bottom: 0;
+      }
+      .markerHovered {
+        cursor: pointer;
+      }
+    </style>
+    <canvas id="canvas"></canvas>
+    <template if="{{scrollTarget}}">
+      <core-scroll-threshold id="globeThreshold"
+        lowerTriggered="{{scrollTriggered}}"
+        lowerThreshold="{{scrollThreshold_}}"
+        scrollTarget="{{scrollTarget}}">
+      </core-scroll-threshold>
+    </template>
+  </template>
+  <script>
+  (function() {
+    /* global IOWA, ES6Promise */
+    var ShaderProgram = IOWA.WebglGlobe.ShaderProgram;
+    var Matrix4x4 = IOWA.WebglGlobe.Matrix4x4;
+    var generateGeometry = IOWA.WebglGlobe.generateGeometry;
+    var generateIndexArray = IOWA.WebglGlobe.generateIndexArray;
+    var getSolarPosition = IOWA.WebglGlobe.getSolarPosition;
+    var generateSpriteGeometry = IOWA.WebglGlobe.generateSpriteGeometry;
+    var generateSpriteIndexArray = IOWA.WebglGlobe.generateSpriteIndexArray;
+    var KdTree = IOWA.WebglGlobe.KdTree;
+
+    var IS_IOS = (/(iPhone|iPad|iPod)/gi).test(navigator.platform);
+
+    var MARKER_COLOR = new Float32Array([0.933, 1, 0.255]);
+    var HIGHLIGHTED_MARKER_COLOR = new Float32Array([0, 0.898, 1]);
+
+    /**
+     * Polyfilled performance.now. Only good for relative timing, not absolute.
+     * @type {function(): number}
+     */
+    var nowish = (window.performance && window.performance.now) ?
+          window.performance.now.bind(window.performance) : Date.now;
+
+    /**
+     * Matrix used for ephemeral transformations.
+     * @type {!Matrix4x4}
+     */
+    var tmpTransform0 = new Matrix4x4();
+
+    /**
+     * Matrix used for ephemeral transformations.
+     * @type {!Matrix4x4}
+     */
+    var tmpTransform1 = new Matrix4x4();
+
+    /**
+     * Matrix used for ephemeral transformations.
+     * @type {!Matrix4x4}
+     */
+    var tmpTransform2 = new Matrix4x4();
+
+    /**
+     * Temporary vec3 Float32Array for passing values into WebGL.
+     * @type {!Float32Array}
+     */
+    var tmp3Vec0 = new Float32Array(3);
+
+    /**
+     * Temporary vec3 Float32Array for passing values into WebGL.
+     * @type {!Float32Array}
+     */
+    var tmp3Vec1 = new Float32Array(3);
+
+    /**
+     * Temporary vec3 Float32Array for passing values into WebGL.
+     * @type {!Float32Array}
+     */
+    var tmp3Vec2 = new Float32Array(3);
+
+    /**
+     * Temporary vec4 Float32Array used for mouse picking.
+     * @type {!Float32Array}
+     */
+    var tmpPicking4Vec = new Float32Array(4);
+
+    // Trigger es6-promise
+    ES6Promise.polyfill();
+
+    Polymer({
+      /**
+       * By default, the globe is immediately drawn and animated after
+       * initialization. If `noDraw` is set to true, however, rendering will not
+       * occur (or will cease, if it has already begun).
+       *
+       * @attribute noDraw
+       * @type bool
+       * @default false
+       */
+      noDraw: false,
+
+      /**
+       * By default, the element's canvas will be initialized to draw the globe
+       * and any assets needed for textures or geometry will be created. If
+       * `noInit` is set to true, however, initialization will not proceed until
+       * the attribute is set to false.
+       *
+       * @attribute noInit
+       * @type bool
+       * @default false
+       */
+      noInit: false,
+
+      /**
+       * If true, puts the globe in an attract loop (automatically changing its
+       * own location) until location input comes externally.
+       *
+       * @attribute attractLoop
+       * @type bool
+       * @default false
+       */
+      attractLoop: false,
+
+      /**
+       * The latitude and longitude of the location to focus on.
+       *
+       * @attribute location
+       * @type object
+       * @default {lat: 0, lng: 0}
+       */
+
+      /**
+       * The latitude and longitude of the point at which to put `location`.
+       * That is, the globe will be rotated such that `location` will be placed
+       * where `locationTarget` is found when no rotation has been applied.
+       *
+       * @attribute locationTarget
+       * @type object
+       * @default {lat: 0, lng: 0}
+       */
+
+      /**
+       * An array of locations, each with `lat` and `lng` properties, for
+       * plotting on the globe.
+       *
+       * @attribute markers
+       * @type Array<{lat: number, lng: number}>
+       * @default null
+       */
+      markers: null,
+
+      /**
+       * An index into the `markers` array of a marker to highlight, or -1 if no
+       * highlight is desired.
+       *
+       * @attribute highlightedMarker
+       * @type number
+       * @default -1
+       */
+      highlightedMarker: -1,
+
+      /**
+       * The distance from the camera to the center of the globe, in multiples
+       * of radiuses of the globe (e.g. a value of 2 would place the camera one
+       * radius above the surface of the globe).
+       *
+       * @attribute cameraDistance
+       * @type number
+       * @default 2
+       */
+      cameraDistance: 2,
+
+      /**
+       * The field of view angle for drawing the globe, in radians.
+       *
+       * @attribute fov
+       * @type number
+       * @default 1.0471975511965976
+       */
+      fov: Math.PI / 3,
+
+      /**
+       * An offset for the globe in the final Normalized Device Coordinates
+       * space, which is relative to the height of the canvas element. For
+       * example, an offset of 0.5 would move the entire scene up by 50% of the
+       * canvas's height.
+       *
+       * @attribute offsetY
+       * @type number
+       * @default 0
+       */
+      offsetY: 0,
+
+      /**
+       * When set, this element's scroll position will be observed for when this
+       * `webgl-globe` is visible (using `<core-scroll-threshold>`), at which
+       * point globe rendering will commence (subject to the value of `noDraw`).
+       *
+       * @attribute scrollTarget
+       * @type Element
+       * @default null
+       */
+      scrollTarget: null,
+
+      /**
+       * Read-only value returns true if a `scrollTarget` is specified and the
+       * globe has scrolled into view.
+       *
+       * @attribute scrollTriggered
+       * @type bool
+       * @default false
+       */
+      scrollTriggered: false,
+
+      /**
+       * The duration (ms) over which transitions between locations occur.
+       *
+       * @attribute transitionDuration
+       * @type number
+       * @default 4000
+       */
+      transitionDuration: 4000,
+
+      /**
+       * Whether WebGL is supported and the globe rendering can be initialized
+       * in this browser.
+       * @attribute webglSupported
+       * @type bool
+       * @default true
+       */
+      webglSupported: 'WebGLRenderingContext' in window,
+
+      /**
+       * The pixel threshold in the parent scrollTarget at which to start
+       * animating.
+       *
+       * @property scrollThreshold_
+       * @type number
+       * @default -1.7976931348623157e+308
+       */
+      scrollThreshold_: -Number.MAX_VALUE,
+
+      /**
+       * Whether WebGL initialization has been started.
+       *
+       * @property webglStarted_
+       * @type bool
+       * @default false
+       */
+      webglStarted_: false,
+
+      /**
+       * Whether WebGL initialization has finished.
+       *
+       * @property webglReady_
+       * @type bool
+       * @default false
+       */
+      webglReady_: false,
+
+      /**
+       * The previous location focused on. Used for animating locations.
+       *
+       * @property previousLocation_
+       * @type object
+       * @default {lat: 0, lng: 0}
+       */
+
+      /**
+       * The current location being focused on. Used for animating locations.
+       *
+       * @property currentLocation_
+       * @type object
+       * @default {lat: 0, lng: 0}
+       */
+
+      /**
+       * The timestamp of the start of the location transition.
+       *
+       * @property transitionStart_
+       * @type number
+       * @default -1.7976931348623157e+308
+       */
+      transitionStart_: -Number.MAX_VALUE,
+
+      /**
+       * Shader program to render globe.
+       *
+       * @property globeProgram
+       * @type ShaderProgram
+       * @default null
+       */
+      globeProgram: null,
+
+      /**
+       * ArrayBuffer for globe geometry.
+       *
+       * @property globeArrayBuffer
+       * @type WebGLBuffer
+       * @default null
+       */
+      globeArrayBuffer: null,
+
+      /**
+       * ArrayBuffer for globe indices.
+       *
+       * @property globeIndexBuffer
+       * @type WebGLBuffer
+       * @default null
+       */
+      globeIndexBuffer: null,
+
+      /**
+       * Shader program to render marker sprites.
+       *
+       * @property markerProgram_
+       * @type ShaderProgram
+       * @default null
+       */
+      markerProgram_: null,
+
+      /**
+       * Local radius of marker sprite, in multiples of the radius of the globe.
+       *
+       * @property markerSize_
+       * @type number
+       * @default 0.0075
+       */
+      markerSize_: 0.0075,
+
+      /**
+       * Scale for `markerSize_` on hover.
+       *
+       * @property markerHoverScale_
+       * @type number
+       * @default 1.5
+       */
+      markerHoverScale_: 1.5,
+
+      /**
+       * ArrayBuffer for marker sprite geometry.
+       *
+       * @property markerArrayBuffer_
+       * @type WebGLBuffer
+       * @default null
+       */
+      markerArrayBuffer_: null,
+
+      /**
+       * ArrayBuffer for marker sprite indices.
+       *
+       * @property markerIndexBuffer_
+       * @type WebGLBuffer
+       * @default null
+       */
+      markerIndexBuffer_: null,
+
+      /**
+       * Number of primitives to draw to render the marker sprites.
+       *
+       * @property markerDrawCount_
+       * @type number
+       * @default 0
+       */
+      markerDrawCount_: 0,
+
+      /**
+       * ArrayBuffer for marker sprite geometry on hover.
+       *
+       * @property markerHoverArrayBuffer_
+       * @type WebGLBuffer
+       * @default null
+       */
+      markerHoverArrayBuffer_: null,
+
+      /**
+       * ArrayBuffer for marker sprite indices on hover.
+       *
+       * @property markerIndexBuffer_
+       * @type WebGLBuffer
+       * @default null
+       */
+      markerHoverIndexBuffer_: null,
+
+      /**
+       * An acceleration structure for doing spatial queries on the markers.
+       *
+       * @property markerTree_
+       * @type KdTree
+       * @default null
+       */
+      markerTree_: null,
+
+      /**
+       * World to Normalized Device Coordinates transform.
+       *
+       * @property projectionTransform_
+       * @type Matrix4x4
+       * @default null
+       */
+      projectionTransform_: null,
+
+      /**
+       * WebGL context.
+       *
+       * @property gl
+       * @type WebGLRenderingContext
+       * @default null
+       */
+      gl: null,
+
+      /**
+       * Internal state to shut off rendering of the globe when circumstances
+       * warrant it.
+       *
+       * @property animate_
+       * @type boolean
+       * @default true
+       */
+      animate_: true,
+
+      /**
+       * The requestAnimationFrame ID for the next requested frame, or 0 if no
+       * request is pending.
+       *
+       * @property updateRequestId_
+       * @type number
+       * @default 0
+       */
+      updateRequestId_: 0,
+
+      /**
+       * Number of primitives to draw to render the globe.
+       *
+       * @property globeDrawCount
+       * @type number
+       * @default 0
+       */
+      globeDrawCount: 0,
+
+      /**
+       * The globe cube map texture object.
+       *
+       * @property globeCubeMap
+       * @type WebGLTexture
+       * @default null
+       */
+      globeCubeMap: null,
+
+      /**
+       * A cube map texture object with extra information for e.g. night lights.
+       *
+       * @property nightCubeMap
+       * @type WebGLTexture
+       * @default null
+       */
+      nightCubeMap: null,
+
+      /**
+       * Timeout for outliers on perf analytics.
+       *
+       * @property MAX_PERF_TIMEOUT_
+       * @type number
+       * @default 1000
+       */
+      MAX_PERF_TIMEOUT_: 1000,
+
+      /**
+       * Number of times to divide each edge of icosahedron geometry generator.
+       * @property divisions_
+       * @type number
+       * @default 16
+       */
+      divisions_: 16,
+
+      /**
+       * True if the canvas has had its size changed and the scene needs to be
+       * reconfigured.
+       * @property resizeNeeded_
+       * @type bool
+       * @default true
+       */
+      resizeNeeded_: true,
+
+      /**
+       * The canvas's width in CSS pixels.
+       * @property canvasWidth_
+       * @type number
+       * @default 300
+       */
+      canvasWidth_: 300,
+
+      /**
+       * The canvas's height in CSS pixels.
+       * @property canvasHeight_
+       * @type number
+       * @default 150
+       */
+      canvasHeight_: 150,
+
+      /**
+       * Whether the mouse was clicked on the globe since the last update.
+       * @property mouseClicked_
+       * @type bool
+       * @default false
+       */
+      mouseClicked_: false,
+
+      /**
+       * The x coordinate of the last mouse click, relative to the top left of
+       * the `webgl-globe` element.
+       * @property lastClickX_
+       * @type number
+       * @default -1
+       */
+      lastClickX_: -1,
+
+      /**
+       * The y coordinate of the last mouse click, relative to the top left of
+       * the `webgl-globe` element.
+       * @property lastClickY_
+       * @type number
+       * @default -1
+       */
+      lastClickY: -1,
+
+      /**
+       * Whether the mouse is currently over the globe canvas.
+       * @property mouseOver_
+       * @type bool
+       * @default false
+       */
+      mouseOver_: false,
+
+      /**
+       * The x coordinate of the last mouse over event, relative to the top left
+       * of the `webgl-globe` element.
+       * @property lastOverX_
+       * @type number
+       * @default -1
+       */
+      lastOverX_: -1,
+
+      /**
+       * The y coordinate of the last mouse over event, relative to the top left
+       * of the `webgl-globe` element.
+       * @property lastOverY_
+       * @type number
+       * @default -1
+       */
+      lastOverY_: -1,
+
+      /**
+       * The index of the marker hovered over by the mouse in the last frame, or
+       * -1 if none.
+       * @property lastHoveredIndex_
+       * @type number
+       * @default -1
+       */
+      lastHoveredIndex_: -1,
+
+      /**
+       * True if the last location change was caused by the attract loop.
+       * @property attractLocationChange_
+       * @type bool
+       * @default false
+       */
+      attractLocationChange_: false,
+
+      /**
+       * True if the attract loop is active but has been cancelled.
+       * @property attractLoopCancelled_
+       * @type bool
+       * @default false
+       */
+      attractLoopCancelled_: false,
+
+      /**
+       * True if `attractLoopCancelled_` should be reset when all current
+       * animations are finished.
+       * @property restartAttractLoop_
+       * @type bool
+       * @default false
+       */
+      restartAttractLoop_: false,
+
+      canvasResized: function() {
+        this.resizeNeeded_ = true;
+        this.scheduleUpdate_();
+      },
+
+      created: function() {
+        this.location = {lat: 0, lng: 0};
+
+        this.projectionTransform_ = new Matrix4x4();
+        this.locationTarget = {lat: 0, lng: 0};
+        this.previousLocation_ = {lat: 0, lng: 0};
+        this.currentLocation_ = {lat: 0, lng: 0};
+
+        this.resizeCallback_ = this.canvasResized.bind(this);
+        this.boundUpdate_ = this.update_.bind(this);
+      },
+
+      attached: function() {
+        // Start loading assets even if WebGL initialization will be delayed.
+        this.loadingTextures_ = this.loadCubeMapTextures_('albedo', 1024, '.jpg');
+        this.loadingNightTextures_ = this.loadCubeMapTextures_('night', 1024, '.png');
+        this.loadingShaders_ = this.loadShaders_();
+
+        if (!this.noInit) {
+          this.async(this.initWebgl_);
+        }
+      },
+
+      domReady: function() {
+        if (this.scrollTarget) {
+          // Start animating when canvas is halfway on screen.
+          this.animate_ = false;
+          var elementRect = this.getBoundingClientRect();
+          this.scrollThreshold_ = this.scrollTarget.scrollHeight -
+              Math.round((elementRect.bottom + elementRect.top) / 2);
+        }
+      },
+
+      detached: function() {
+        this.animate_ = false;
+        window.cancelAnimationFrame(this.updateRequestId_);
+        this.updateRequestId_ = 0;
+        window.removeEventListener('resize', this.resizeCallback_);
+      },
+
+      noInitChanged: function() {
+        if (!this.noInit) {
+          this.initWebgl_();
+        }
+      },
+
+      noDrawChanged: function() {
+        if (this.noDraw) {
+          window.cancelAnimationFrame(this.updateRequestId_);
+          this.updateRequestId_ = 0;
+        } else {
+          this.async(this.scheduleUpdate_);
+        }
+      },
+
+      scrollTriggeredChanged: function() {
+        if (this.scrollTriggered) {
+          this.animate_ = true;
+          this.async(this.scheduleUpdate_);
+        }
+      },
+
+      initWebgl_: function() {
+        if (this.webglStarted_) {
+          return;
+        }
+        this.webglStarted_ = true;
+
+        var contextOptions = {
+          depth: false
+        };
+        var canvas = this.$.canvas;
+        var gl = canvas.getContext('webgl', contextOptions);
+        if (!gl) {
+          // Attempt with experimental-webgl.
+          gl = canvas.getContext('experimental-webgl', contextOptions);
+
+          if (!gl) {
+            IOWA.Analytics.trackEvent('globe', 'webgl unsupported');
+            this.webglSupported = false;
+            this.fire('globe-webgl-init', {error: true});
+
+            return;
+          }
+        }
+        this.gl = gl;
+
+        window.addEventListener('resize', this.resizeCallback_);
+
+        gl.enable(gl.CULL_FACE);
+        gl.cullFace(gl.BACK);
+        gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+
+        // Enable GLSL derivatives extension.
+        gl.getExtension('OES_standard_derivatives');
+
+        var startTime = nowish();
+        var globeGeometry = generateGeometry(this.divisions_);
+        var globeIndices = generateIndexArray(this.divisions_);
+        var endTime = nowish();
+
+        IOWA.Analytics.trackPerf('globe', 'geometry creation',
+            Math.ceil(endTime - startTime), null, this.MAX_PERF_TIMEOUT_);
+
+        this.globeArrayBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.globeArrayBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, globeGeometry, gl.STATIC_DRAW);
+
+        this.globeIndexBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.globeIndexBuffer);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, globeIndices, gl.STATIC_DRAW);
+
+        this.globeDrawCount = globeIndices.length;
+
+        // A bug in OS X Intel GPU drivers limits some machines to 512x512
+        // cube map textures. See
+        // https://github.com/GoogleChrome/ioweb2015/issues/754. If that's the
+        // case, start with blank (null) textures and load a downgraded texture
+        // further down the pipeline.
+        var maxCubeSize = gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE);
+        var cubeMapDowngradeRequired = maxCubeSize < 1024;
+        var processCubeMap = cubeMapDowngradeRequired ?
+            function() { return null; } : this.initCubeMap_.bind(this);
+
+        // After loading, initialize textures and shaders and begin render loop.
+        Promise.all([
+          this.loadingShaders_,
+          this.loadingTextures_.then(processCubeMap),
+          this.loadingNightTextures_.then(processCubeMap)
+        ])
+          .then(function assetsLoaded(assets) {
+            this.globeProgram = new ShaderProgram(this.gl, assets[0][0],
+                assets[0][1]);
+            this.globeProgram.use();
+            gl.enableVertexAttribArray(this.globeProgram.attributes.coord);
+
+            this.globeCubeMap = assets[1];
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.globeCubeMap);
+
+            this.nightCubeMap = assets[2];
+            gl.activeTexture(gl.TEXTURE1);
+            gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.nightCubeMap);
+
+            this.markerProgram_ = new ShaderProgram(this.gl, assets[0][2],
+                assets[0][3]);
+            this.markerProgram_.use();
+
+            // Free references to image-loading/XHR promises.
+            this.loadingNightTextures_ = null;
+            this.loadingTextures_ = null;
+            this.loadingShaders_ = null;
+
+            this.webglReady_ = true;
+            if (this.markers) {
+              this.initMarkers_();
+            }
+            this.async(this.scheduleUpdate_);
+
+            this.fire('globe-webgl-init', {error: false});
+
+            if (cubeMapDowngradeRequired) {
+              return this.adjustCubemapResolution_(512);
+            }
+          }.bind(this))
+          .catch(function(reason) {
+            IOWA.Analytics.trackError('globe initialization', reason);
+            this.webglSupported = false;
+            this.fire('globe-webgl-init', {error: true});
+          });
+      },
+
+      loadShaders_: function() {
+        return Promise.all([
+          'shaders/globe.vert',
+          'shaders/globe.frag',
+          'shaders/marker.vert',
+          'shaders/marker.frag'
+        ].map(function(shaderUrl) {
+          var resolvedUrl = this.resolvePath(shaderUrl);
+          return new Promise(function(resolve, reject) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', resolvedUrl);
+            xhr.onload = function(e) {
+              if (this.status === 200) {
+                resolve(this.response);
+              } else {
+                reject(this.statusText);
+              }
+            };
+            xhr.onerror = function(e) {
+              reject(this.statusText);
+            };
+            xhr.send();
+          });
+        }, this));
+      },
+
+      loadCubeMapTextures_: function(prefix, size, extname) {
+        // Cubemap GLenum constants from WebGL spec.
+        var globeFaces = {
+          'negative-x': 0x8516,
+          'negative-y': 0x8518,
+          'negative-z': 0x851A,
+          'positive-x': 0x8515,
+          'positive-y': 0x8517,
+          'positive-z': 0x8519
+        };
+
+        // Load six face images and associate them with their face GLenum value.
+        return Promise.all(
+          Object.keys(globeFaces).map(function(faceName) {
+            return new Promise(function(resolve, reject) {
+              var textureImage = new Image();
+              textureImage.onload = function() {
+                resolve({
+                  target: globeFaces[faceName],
+                  texture: textureImage
+                });
+              };
+              textureImage.onerror = reject;
+              var filename = prefix + '-' + size + '-' + faceName + extname;
+              textureImage.src = this.resolvePath('textures/' + filename);
+            }.bind(this));
+          }, this)
+        );
+      },
+
+      initCubeMap_: function(faceData) {
+        var gl = this.gl;
+
+        // Ceate cube map texture from six loaded images.
+        var textureStartTime = nowish();
+        var textureId = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_CUBE_MAP, textureId);
+        for (var i = 0; i < faceData.length; i++) {
+          gl.texImage2D(faceData[i].target, 0, gl.RGB, gl.RGB,
+              gl.UNSIGNED_BYTE, faceData[i].texture);
+        }
+        gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER,
+            gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER,
+            gl.LINEAR_MIPMAP_LINEAR);
+        gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S,
+            gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T,
+            gl.CLAMP_TO_EDGE);
+        gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
+
+        // Better texture filtering through extensions.
+        var filterExtension =
+            gl.getExtension('EXT_texture_filter_anisotropic') ||
+            gl.getExtension('WEBKIT_EXT_texture_filter_anisotropic') ||
+            gl.getExtension('MOZ_EXT_texture_filter_anisotropic');
+        if (filterExtension) {
+          // Set to maximum anisotropic filtering if it exists.
+          // NOTE(bckenny): some platforms report support while setting
+          // MAX_ANISOTROPY to 0. Override to the minimum of 2 (see spec) and
+          // leave it to the platform to clamp if needed.
+          var maxAnisotropy = gl.getParameter(
+              filterExtension.MAX_TEXTURE_MAX_ANISOTROPY_EXT) || 2;
+          gl.texParameterf(gl.TEXTURE_CUBE_MAP,
+              filterExtension.TEXTURE_MAX_ANISOTROPY_EXT, maxAnisotropy);
+        }
+
+        var textureEndTime = nowish();
+        IOWA.Analytics.trackPerf('globe', 'cubemap creation',
+            Math.ceil(textureEndTime - textureStartTime), null,
+            this.MAX_PERF_TIMEOUT_);
+
+        return textureId;
+      },
+
+      adjustCubemapResolution_: function(requestedSize) {
+        // Load a cube map texture set of a different resolution.
+        return this.loadCubeMapTextures_('albedo', requestedSize, '.jpg')
+          .then(this.initCubeMap_.bind(this))
+          .then(function(newCubeMap) {
+            this.globeCubeMap = newCubeMap;
+            this.gl.activeTexture(this.gl.TEXTURE0);
+            this.gl.bindTexture(this.gl.TEXTURE_CUBE_MAP, this.globeCubeMap);
+            this.gl.activeTexture(this.gl.TEXTURE1);
+
+            return this.loadCubeMapTextures_('night', requestedSize, '.png');
+          }.bind(this))
+          .then(this.initCubeMap_.bind(this))
+          .then(function(newNightCubeMap) {
+            this.nightCubeMap = newNightCubeMap;
+            this.gl.activeTexture(this.gl.TEXTURE1);
+            this.gl.bindTexture(this.gl.TEXTURE_CUBE_MAP, this.nightCubeMap);
+          }.bind(this));
+      },
+
+      initMarkers_: function() {
+        var startTime = nowish();
+
+        var gl = this.gl;
+
+        // Create WebGL geometry for markers.
+        var spriteGeometry = generateSpriteGeometry(this.markers,
+            this.markerSize_);
+        var spriteIndices = generateSpriteIndexArray(this.markers.length);
+
+        this.markerArrayBuffer_ = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.markerArrayBuffer_);
+        gl.bufferData(gl.ARRAY_BUFFER, spriteGeometry, gl.STATIC_DRAW);
+
+        this.markerIndexBuffer_ = gl.createBuffer();
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.markerIndexBuffer_);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, spriteIndices, gl.STATIC_DRAW);
+
+        this.markerDrawCount_ = spriteIndices.length;
+
+        // Create geometry for single marker used for hover effects.
+        spriteGeometry = generateSpriteGeometry([{lat: 0, lng: 0}],
+            this.markerSize_ * this.markerHoverScale_);
+        spriteIndices = generateSpriteIndexArray(1);
+
+        this.markerHoverArrayBuffer_ = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.markerHoverArrayBuffer_);
+        gl.bufferData(gl.ARRAY_BUFFER, spriteGeometry, gl.STATIC_DRAW);
+
+        this.markerHoverIndexBuffer_ = gl.createBuffer();
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.markerHoverIndexBuffer_);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, spriteIndices, gl.STATIC_DRAW);
+
+        // Enable new buffers for drawing.
+        gl.enableVertexAttribArray(this.markerProgram_.attributes.coord);
+        gl.enableVertexAttribArray(this.markerProgram_.attributes.uvCoord);
+
+        // Hack to keep WebGL happy: bind buffers to all enabled attributes.
+        gl.vertexAttribPointer(this.markerProgram_.attributes.coord, 4,
+            gl.FLOAT, false, 28, 0);
+        gl.vertexAttribPointer(this.markerProgram_.attributes.uvCoord, 2,
+            gl.FLOAT, false, 28, 16);
+
+        // Create acceleration structure for nearest-neighbor queries.
+        this.markerTree_ = new KdTree(this.markers);
+
+        var endTime = nowish();
+        IOWA.Analytics.trackPerf('globe', 'marker creation',
+            Math.ceil(endTime - startTime), null, this.MAX_PERF_TIMEOUT_);
+
+        // Add listeners for marker hover.
+        this.$.canvas.addEventListener('mousemove', this.handleMouseMove_.bind(this));
+        this.$.canvas.addEventListener('mouseout', this.handleMouseOut_.bind(this));
+      },
+
+      markersChanged: function() {
+        // If webgl isn't initialized yet, initWebgl_ will handle marker init.
+        if (this.webglReady_) {
+          this.initMarkers_();
+        }
+      },
+
+      latLngDistance_: function(p0, p1) {
+        var lat0 = p0.lat * Math.PI / 180;
+        var lat1 = p1.lat * Math.PI / 180;
+        var deltaLng = (p1.lng - p0.lng) * Math.PI / 180;
+        return Math.acos(Math.sin(lat0) * Math.sin(lat1) +
+            Math.cos(lat0) * Math.cos(lat1) * Math.cos(deltaLng));
+      },
+
+      getTransitionTime_: function() {
+        // A modification of the duration (ms) over which transitions between
+        // locations should occur. Slows down the attract loop to 6x the normal
+        // trasition time.
+        var multiplier = (this.attractLoop && !this.attractLoopCancelled_) ? 6 : 1;
+        return this.transitionDuration * multiplier;
+      },
+
+      locationChanged: function() {
+        // If the location isn't being changed by the attract loop, cancel the
+        // attract loop.
+        if (!this.attractLocationChange_) {
+          this.attractLoopCancelled_ = true;
+        } else {
+          this.attractLocationChange_ = false;
+        }
+
+        // TODO(bckenny): for now, assume transition to current location has
+        // been completed (so path is C0 but not C1).
+        this.previousLocation_.lat = this.currentLocation_.lat;
+        this.previousLocation_.lng = this.currentLocation_.lng;
+
+        // Since we're lerping in latlng space, check if other way is faster.
+        if (Math.abs(this.previousLocation_.lng - this.location.lng) > 180) {
+          if (this.previousLocation_.lng < this.location.lng) {
+            this.previousLocation_.lng += 360;
+          } else {
+            this.previousLocation_.lng -= 360;
+          }
+        }
+
+        this.transitionStart_ = nowish();
+
+        // Tell everyone we've arrived at the new location.
+        this.async(function() {
+          this.fire('location-transitionend');
+        }, null, this.getTransitionTime_());
+
+        this.scheduleUpdate_();
+      },
+
+      ease_: function(t) {
+        return t * t * t * (t * (t * 6 - 15) + 10);
+      },
+
+      lerp_: function(a, b, t) {
+        return a + t * (b - a);
+      },
+
+      interpolateLocation_: function(timestamp) {
+        var elapsedTime = timestamp - this.transitionStart_;
+        var t = Math.max(0, Math.min(1, elapsedTime / this.getTransitionTime_()));
+        t = this.ease_(t);
+
+        // TODO(bckenny): for now, just lerp in latlng space.
+        this.currentLocation_.lat = this.lerp_(this.previousLocation_.lat,
+            this.location.lat, t);
+        this.currentLocation_.lng = this.lerp_(this.previousLocation_.lng,
+            this.location.lng, t);
+      },
+
+      resize_: function() {
+        var canvas = this.$.canvas;
+        // Force iOS to dPR 1: See github.com/GoogleChrome/ioweb2015/issues/751.
+        var resolutionScale = window.devicePixelRatio > 1 && !IS_IOS ? 2 : 1;
+        var width = canvas.offsetWidth;
+        var height = canvas.offsetHeight;
+        canvas.width = width * resolutionScale;
+        canvas.height = height * resolutionScale;
+        this.gl.viewport(0, 0, width * resolutionScale,
+            height * resolutionScale);
+
+        var center = this.cameraDistance;
+        this.projectionTransform_.identity()
+          .perspective(this.fov, width / height, center - 1, center + 1);
+
+        this.canvasWidth_ = width;
+        this.canvasHeight_ = height;
+        this.resizeNeeded_ = false;
+      },
+
+      scheduleUpdate_: function() {
+        if (this.animate_ && !this.noDraw && this.webglReady_ &&
+            this.updateRequestId_ === 0) {
+          this.updateRequestId_ =
+              window.requestAnimationFrame(this.boundUpdate_);
+        }
+      },
+
+      update_: function(timestamp) {
+        if (this.resizeNeeded_) {
+          this.resize_();
+        }
+        if (timestamp - this.transitionStart_ < this.getTransitionTime_()) {
+          // TODO(bckenny): set animate_ = false when this is finished?
+          this.interpolateLocation_(timestamp);
+        } else if (this.attractLoop) {
+          if (this.restartAttractLoop_) {
+            this.attractLoopCancelled_ = false;
+            this.restartAttractLoop_ = false;
+          }
+          if (!this.attractLoopCancelled_) {
+            this.iterateAttractLoop();
+          }
+        }
+
+        // Globe to camera space.
+        var rotX = this.currentLocation_.lat - this.locationTarget.lat;
+        var rotY = -this.currentLocation_.lng + this.locationTarget.lng;
+        var worldTransform = tmpTransform0.identity()
+          .translate(0, this.offsetY, -this.cameraDistance)
+          .rotateX(rotX * Math.PI / 180)
+          .rotateY(rotY * Math.PI / 180);
+
+        // Lighting is done in globe space, so figure out camera position there.
+        var inverseWorld = tmpTransform1.invertAffine(worldTransform);
+        var cameraPosition = tmp3Vec1;
+        cameraPosition[0] = inverseWorld.getElement(0, 3);
+        cameraPosition[1] = inverseWorld.getElement(1, 3);
+        cameraPosition[2] = inverseWorld.getElement(2, 3);
+
+        // Since lighting is in canonical globe space, use a single MVPMatrix.
+        var mvpTransform = tmpTransform2;
+        mvpTransform.product(this.projectionTransform_, worldTransform);
+
+        var sunDirection = getSolarPosition(new Date(), tmp3Vec0);
+
+        this.renderGlobe_(mvpTransform, cameraPosition, sunDirection);
+
+        // Render markers (if set) and handle mouse events on them.
+        var clickedMarkerIndex = -1;
+        if (this.markerDrawCount_ > 0) {
+          // Handle hover first.
+          // Find the hover position on the globe (if any).
+          var newHoverIndex = -1;
+          if (this.mouseOver_) {
+            var hoverPoint = this.pickPoint(tmp3Vec2, this.lastOverX_,
+                this.lastOverY_, inverseWorld, cameraPosition);
+            if (hoverPoint) {
+              newHoverIndex = this.markerTree_.nearestNeighbor(hoverPoint[0],
+                  hoverPoint[1], hoverPoint[2],
+                  this.markerSize_ * this.markerHoverScale_);
+            }
+          }
+
+          if (this.mouseClicked_) {
+            this.mouseClicked_ = false;
+            // Find the click position on the globe (if any).
+            var pickedPoint = this.pickPoint(tmp3Vec2, this.lastClickX_,
+                this.lastClickY_, inverseWorld, cameraPosition);
+            if (pickedPoint) {
+              // Find the marker clicked on (if any).
+              var nearest = this.markerTree_.nearestNeighbor(pickedPoint[0],
+                  pickedPoint[1], pickedPoint[2],
+                  this.markerSize_ * this.markerHoverScale_);
+              clickedMarkerIndex = nearest;
+            }
+          }
+
+          // Render all markers.
+          this.gl.enable(this.gl.BLEND);
+          this.renderMarkers_(mvpTransform, this.markerArrayBuffer_,
+              this.markerIndexBuffer_, this.markerDrawCount_);
+
+          // Render hovered marker, if any.
+          var markerTransform = tmpTransform0;
+          if (newHoverIndex > -1) {
+            var hoveredMarker = this.markers[newHoverIndex];
+            markerTransform.identity()
+              .rotateY(hoveredMarker.lng * Math.PI / 180)
+              .rotateX(-hoveredMarker.lat * Math.PI / 180);
+            markerTransform.product(mvpTransform, markerTransform);
+
+            this.renderMarkers_(markerTransform, this.markerHoverArrayBuffer_,
+                this.markerHoverIndexBuffer_, 6);
+          }
+
+          // Render highlighted marker, if any.
+          var highlightIndex = this.highlightedMarker;
+          if (highlightIndex > -1 && highlightIndex < this.markers.length) {
+            var highlightMarker = this.markers[highlightIndex];
+            markerTransform.identity()
+              .rotateY(highlightMarker.lng * Math.PI / 180)
+              .rotateX(-highlightMarker.lat * Math.PI / 180);
+            markerTransform.product(mvpTransform, markerTransform);
+
+            this.renderMarkers_(markerTransform, this.markerHoverArrayBuffer_,
+                this.markerHoverIndexBuffer_, 6, HIGHLIGHTED_MARKER_COLOR);
+          }
+
+          this.gl.disable(this.gl.BLEND);
+
+          // If entering or exiting hovering, toggle a pointer cursor.
+          if (this.lastHoveredIndex_ === -1 && newHoverIndex !== -1) {
+            this.$.canvas.classList.add('markerHovered');
+          } else if (this.lastHoveredIndex_ !== -1 && newHoverIndex === -1) {
+            this.$.canvas.classList.remove('markerHovered');
+          }
+          this.lastHoveredIndex_ = newHoverIndex;
+        }
+
+        this.updateRequestId_ = 0;
+        this.scheduleUpdate_();
+
+        if (clickedMarkerIndex > -1) {
+          this.fire('marker-click', {markerIndex: clickedMarkerIndex});
+        }
+      },
+
+      renderGlobe_: function(mvpTransform, cameraPosition, sunDirection) {
+        var gl = this.gl;
+
+        this.globeProgram.use();
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.globeArrayBuffer);
+        gl.vertexAttribPointer(this.globeProgram.attributes.coord, 4,
+            gl.FLOAT, false, 16, 0);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.globeIndexBuffer);
+
+        // Set uniforms on shader program.
+        this.globeProgram.uniforms.globeCubeMap(0);
+        this.globeProgram.uniforms.nightCubeMap(1);
+        this.globeProgram.uniforms.sunDirection(sunDirection);
+        this.globeProgram.uniforms.cameraPos(cameraPosition);
+        this.globeProgram.uniforms.mvpMatrix(mvpTransform.m_);
+
+        gl.drawElements(gl.TRIANGLES, this.globeDrawCount, gl.UNSIGNED_SHORT,
+            0);
+      },
+
+      renderMarkers_: function(mvpTransform, arrayBuffer, indexBuffer, count, opt_color) {
+        var gl = this.gl;
+
+        this.markerProgram_.use();
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, arrayBuffer);
+        gl.vertexAttribPointer(this.markerProgram_.attributes.coord, 4,
+            gl.FLOAT, false, 28, 0);
+        gl.vertexAttribPointer(this.markerProgram_.attributes.uvCoord, 2,
+            gl.FLOAT, false, 28, 16);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+
+        this.markerProgram_.uniforms.mvpMatrix(mvpTransform.m_);
+
+        this.markerProgram_.uniforms.markerColor(opt_color || MARKER_COLOR);
+
+        gl.drawElements(gl.TRIANGLES, count, gl.UNSIGNED_SHORT,
+            0);
+      },
+
+      iterateAttractLoop: function() {
+        if (this.attractLoop && !this.attractLoopCancelled_) {
+          // For the first stop, find a nice position relative to the sun.
+          var longitude, latitude;
+          var currentLoc = this.location;
+          if (currentLoc.lng === 0 && currentLoc.lat === 0) {
+            var sun = getSolarPosition(new Date(), tmp3Vec0);
+            longitude = Math.atan2(sun[0], sun[2]) * 180 / Math.PI;
+            longitude += 75;
+            if (longitude > 180) {
+              longitude -= 360;
+            }
+
+            latitude = Math.asin(sun[1]);
+          } else {
+            // After the first stop, randomly pick a nearby point (or marker, if
+            // any). In the case of markers, try increasingly far random
+            // longitudes in case the same marker keeps being selected.
+            for (var i = 1; i < 5; i++) {
+              latitude = Math.random() * 120 - 60;
+              longitude = currentLoc.lng - i * 55;
+
+              // Clamp to reasonable latitudes and longitudes.
+              latitude = Math.max(-60, Math.min(60, latitude));
+              if (longitude < -180) {
+                longitude += 360;
+              }
+
+              // If markers are defined, find the nearest to the random point.
+              if (this.markers) {
+                var nearestIndex = this.getNearestMarker(latitude, longitude);
+                if (nearestIndex >= 0) {
+                  var nearestMarker = this.markers[nearestIndex];
+                  latitude = nearestMarker.lat;
+                  longitude = nearestMarker.lng;
+                }
+              }
+
+              if (latitude !== currentLoc.lat && longitude !== currentLoc.lng) {
+                break;
+              }
+            }
+          }
+
+          this.attractLocationChange_ = true;
+          this.location = {
+            lat: latitude,
+            lng: longitude
+          };
+        }
+      },
+
+      handleMouseMove_: function(e) {
+        e.stopPropagation();
+
+        this.mouseOver_ = true;
+        if (e.offsetX) {
+          this.lastOverX_ = e.offsetX;
+          this.lastOverY_ = e.offsetY;
+        } else {
+          this.lastOverX_ = e.layerX;
+          this.lastOverY_ = e.layerY;
+        }
+      },
+
+      handleMouseOut_: function(e) {
+        e.stopPropagation();
+
+        this.mouseOver_ = false;
+      },
+
+      handleTap: function(e) {
+        this.mouseClicked_ = true;
+        var rect = this.$.canvas.getBoundingClientRect();
+        this.lastClickX_ = e.x - rect.left;
+        this.lastClickY_ = e.y - rect.top;
+
+        // If not animating anymore, need to trigger a draw to pick.
+        this.scheduleUpdate_();
+      },
+
+      pickPoint: function(destVec, canvasX, canvasY, inverseWorld, cameraPosition) {
+        var aspectRatio = this.canvasWidth_ / this.canvasHeight_;
+        var ndcX = 2 * canvasX / this.canvasWidth_ - 1;
+        var ndcY = 1 - 2 * canvasY / this.canvasHeight_;
+        // Correct for canvas aspect ratio.
+        if (aspectRatio > 1) {
+          ndcX *= aspectRatio;
+        } else {
+          ndcY /= aspectRatio;
+        }
+        var near = -1 / Math.tan(this.fov / 2);
+
+        // Find a point along click ray in camera space.
+        var cameraClick = tmpPicking4Vec;
+        cameraClick[0] = ndcX;
+        cameraClick[1] = ndcY;
+        cameraClick[2] = near;
+        cameraClick[3] = 1;
+
+        // Transform point back to globe space to find click direction there.
+        var globeClick = inverseWorld.transformVec4(cameraClick, cameraClick);
+        var globeRayX = globeClick[0] - cameraPosition[0];
+        var globeRayY = globeClick[1] - cameraPosition[1];
+        var globeRayZ = globeClick[2] - cameraPosition[2];
+        var length = Math.sqrt(globeRayX * globeRayX + globeRayY * globeRayY +
+            globeRayZ * globeRayZ);
+        globeRayX /= length;
+        globeRayY /= length;
+        globeRayZ /= length;
+
+        // Find intersection (if any) with globe.
+        // Project camera->globe ray onto click ray.
+        var s = -(cameraPosition[0] * globeRayX +
+            cameraPosition[1] * globeRayY +
+            cameraPosition[2] * globeRayZ);
+        if (s < 0) {
+          // Sphere is behind camera, so can't intersect.
+          // TODO(bckenny): Can never happen in our case
+          return null;
+        }
+        var cameraSqDistance = cameraPosition[0] * cameraPosition[0] +
+            cameraPosition[1] * cameraPosition[1] +
+            cameraPosition[2] * cameraPosition[2];
+        // Shortest distance from globe center to click ray.
+        var m2 = cameraSqDistance - s * s;
+        if (m2 > 1) {
+          // Ray passes outside the sphere's radius, so can't intersect.
+          return null;
+        }
+        var q = Math.sqrt(1 - m2);
+        // Camera is guaranteed to be outside of sphere, so closer intersection.
+        var t = s - q;
+
+        // Find intersect coordinates, t distance along globeRay from camera.
+        var clickRay = destVec;
+        clickRay[0] = cameraPosition[0] + t * globeRayX;
+        clickRay[1] = cameraPosition[1] + t * globeRayY;
+        clickRay[2] = cameraPosition[2] + t * globeRayZ;
+
+        return clickRay;
+      },
+
+      getNearestMarker: function(latitude, longitude) {
+        if (!this.markerTree_) {
+          return -1;
+        }
+
+        return this.markerTree_.nearestNeighborByLatLng(latitude, longitude);
+      },
+
+      getMarkersWithinDistance: function(latitude, longitude, distanceKm) {
+        if (!this.markerTree_) {
+          return [];
+        }
+
+        var angularDistance = distanceKm / 6378;
+        var chordDistance = 2 * Math.sin(angularDistance / 2);
+
+        return this.markerTree_.nearestNeighborsByLatLng(latitude, longitude,
+            chordDistance);
+      },
+
+      restartAttractLoop: function() {
+        this.restartAttractLoop_ = true;
+      }
+    });
+  })();
+  </script>
+</polymer-element>

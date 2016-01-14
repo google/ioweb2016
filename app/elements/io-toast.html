@@ -1,0 +1,200 @@
+<!--
+Copyright 2015 Google Inc. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+
+<!--
+`io-toast` is a `paper-toast` with listening capabilities.
+
+Example:
+
+    <paper-button id="myButton">Example button</paper-button>
+    <io-toast text="Your draft has been discarded."></io-toast>
+    <script>
+      document.querySelector('io-toast').listen(
+          document.querySelector('#myButton'), 'click', 'message'));
+    </script>
+
+@element io-toast
+-->
+<!--
+Fired when a new toast appears.
+
+@event toast-message
+@param {Object} detail
+@param {Object} detail.message The toasts message.
+-->
+<dom-module id="io-toast">
+  <template>
+    <style>
+      #toastwrapper {
+        @apply(--layout);
+        @apply(--layout-horizontal);
+      }
+      .clickable {
+        cursor: pointer;
+      }
+      .toast-action {
+        color: #eeff41;
+        text-transform: uppercase;
+        font-weight: 600;
+        padding-left: 24px;
+        cursor: pointer;
+      }
+      paper-toast {
+        @apply(--layout-horizontal);
+        @apply(--layout-justified);
+      }
+    </style>
+    <div id="toastwrapper" on-tap="_handleTap"
+         class$="{{_computeClass(_tapHandler)}}">
+      <paper-toast id="internaltoast" duration="[[duration]]" text="[[text]]">
+        <span class="toast-action"
+              on-click="_handleAction" hidden$="{{!action}}">[[!action]]</span>
+      </paper-toast>
+    </div>
+  </template>
+  <script>
+    Polymer({
+      is: 'io-toast',
+
+      properties: {
+        /**
+         * An action link for the toast
+         */
+        action: {
+          type: String,
+          value: null,
+          observer: '_actionChanged'
+        },
+        /**
+         * Duration the toast should show in ms.
+         */
+        duration: {
+          type: Number,
+          value: 3000
+        },
+        _actionHandler: {
+          value: null
+        },
+        _handledAction: {
+          type: Boolean,
+          value: false
+        },
+        _listeners: {
+          value: function() { return []; }
+        },
+        _tapHandler: {
+          value: null
+        }
+      },
+
+      listeners: {
+        'iron-overlay-closed': '_handleOverlayClosed'
+      },
+
+      // detached: function () {
+      //   this._listeners.forEach(function(listener) {
+      //     listener.target.removeEventListener(
+      //         listener.eventType, listener.handler);
+      //   });
+      // },
+
+      _actionChanged: function () {
+        Polymer.dom(this).textContent = this.action ? this.action : null;
+      },
+
+      // /**
+      //  * Makes toast listen to notifications from another element.
+      //  * @method listen
+      //  * @param {Element} el Target sending the notification.
+      //  * @param {string} eventType Notification (event) type.
+      //  * @param {string} messageFieldName Name of the field in event.details
+      //  *    containing the message.
+      //  */
+      // listen: function(el, eventType, messageFieldName) {
+      //   var handler = function(e) {
+      //     this.text = e.detail[messageFieldName];
+      //     this.show();
+      //   }.bind(this);
+
+      //   el.addEventListener(eventType, handler);
+
+      //   this._listeners.push({
+      //     target: el,
+      //     eventType: eventType,
+      //     handler: handler
+      //   });
+      // },
+
+      show: function() {
+        this.$.internaltoast.show();
+      },
+
+      close: function() {
+        this.$.internaltoast.close();
+      },
+
+      /**
+       * Shows a message in the toast.
+       * @method showMessage
+       * @param {string} message Message to show.Notification (event) type.
+       * @param {function} opt_tapHandler Optional handler to execute when the
+       *     toast is tapped.
+       * @param {string} opt_action Optional action link.
+       * @param {function} opt_actionHandler Optional handler to execute when
+       *     the action is tapped.
+       */
+      showMessage: function(message, opt_tapHandler, opt_action, opt_actionHandler) {
+        this.text = message;
+        this._tapHandler = opt_tapHandler;
+        this.action = opt_action;
+        this._actionHandler = opt_actionHandler;
+        this.$.internaltoast.show();
+        this.fire('toast-message', {message: message});
+      },
+
+      _handleTap: function() {
+        if (typeof this._tapHandler == 'function' && !this._handledAction) {
+          this._tapHandler();
+          this.$.internaltoast.close();
+        }
+        this._handledAction = false;
+      },
+
+      _handleAction: function(e, detail) {
+        if (typeof this._actionHandler == 'function') {
+          e.stopPropagation();
+          this._actionHandler();
+          this._handledAction = true;
+          // Need because handleTap will also be called from a tap.
+          // This handle is a click.
+          this.$.internaltoast.close();
+        }
+      },
+      // Since there's a single <io-toast> element that's reused throughout
+      // the site, make sure that if a tapHandler was associated with a
+      // specific occurrence of the toast's display, it gets removed once the
+      // toast closes.
+      _handleOverlayClosed: function() {
+        this._tapHandler = null;
+      },
+
+      _computeClass: function(tapHandler) {
+        return tapHandler ? 'clickable': '';
+      }
+    });
+  </script>
+</dom-module>
+

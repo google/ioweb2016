@@ -1,0 +1,192 @@
+/**
+ * Copyright 2015 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@import '_elements';
+
+@import '../styles/components/_card';
+@import '../styles/components/_app';
+
+:host {
+  overflow: hidden;
+  display: block;
+}
+
+#livebanner {
+  background: url(../images/io15-color.png) no-repeat $mobileKeyline 50%;
+  background-size: 50px;
+  background-color: $color-cyan-500;
+  height: 64px;
+  padding: 0 $mobileKeyline;
+
+  h4 {
+    color: #fff;
+    a {
+      color: currentcolor;
+    }
+  }
+}
+
+#gadget-content {
+  margin-top: 64px;
+  overflow: hidden;
+}
+
+.card {
+  box-shadow: none;
+  border-radius: 0;
+
+  a {
+    font-size: inherit;
+    text-transform: none;
+  }
+
+  .card__photo {
+    background: url(../images/io15-color.png) no-repeat 50% 50%;
+    background-size: contain;
+    background-color: $color-cyan-500;
+    border-radius: inherit;
+  }
+
+  .card--video-meta {
+    border-right: 1px solid $color-light-grey-border;
+
+    > :first-child {
+      padding-right: $tabletKeyline;
+    }
+  }
+}
+
+.card--livestream {
+  min-height: 287px;
+}
+
+.play__button--card {
+  bottom: initial;
+  top: calc(50% - 56px/2);
+}
+
+#post-container {
+  padding: 0 $tabletKeyline;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+  min-height: 200px;
+}
+
+social-post {
+  padding: $tabletKeyline 0;
+  border-bottom: 1px solid $color-light-grey-border;
+  margin-bottom: 0 !important;
+
+  &::shadow header {
+    margin-bottom: $mobileKeyline / 2;
+  }
+}
+
+paper-dropdown-menu {
+  padding: 0;
+  margin: 0;
+  border: none;
+
+  &::shadow #arrow {
+    color: $color-cyan-A700;
+  }
+
+  &::shadow #label {
+    @include typo-button();
+    color: $color-cyan-A700;
+  }
+
+  core-menu {
+    margin: 0;
+  }
+}
+
+.video-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#copyright-text {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: #fff;
+  padding: 0 $mobileKeyline / 2;
+  font-size: 12px;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.video-author {
+  color: $color-gray;
+  font-size: 14px;
+}
+
+.preroll {
+  background-color: $color-bluegrey-700;
+  color: #fff;
+  padding: $tabletKeyline;
+
+  h1, h2, h3, h4, a {
+    color: inherit;
+  }
+
+  a {
+    font-weight: inherit;
+  }
+
+  h3, .viewvideos {
+    margin-top: $mobileKeyline;
+    margin-bottom: $mobileKeyline;
+  }
+
+  h1, a {
+    color: $color-cyan-400;
+  }
+
+  img {
+    width: 90px;
+    height: 65px;
+  }
+
+  h1 {
+    font-size: 34px;
+    line-height: 1;
+  }
+}
+
+core-icon {
+  margin-right: $mobileKeyline / 2;
+}
+
+
+@media (max-width: $phone-breakpoint-max) {
+  #social-feed {
+    flex-shrink: 0;
+  }
+  .preroll {
+    min-height: 230px;
+  }
+}
+
+@media (min-width: $tablet-breakpoint-min) {
+  .card {
+    .card-content {
+      padding: $tabletKeyline;
+    }
+  }
+}

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="Google I/O 2015 Live Embed">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1">
+  <link rel="canonical" href="{% .Canonical %}">
+  <title>Google I/O 2015 Live Embed</title>
+
+  <!-- Page styles -->
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/main_sd.css" shim-shadowdom>
+
+  <script>
+    // Before embed-elements.html because is uses analytics.js inside.
+    window.ENV = {% .Env %};
+    window.PREFIX = {% .Prefix %};
+  </script>
+
+  <script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
+  <link rel="import" href="elements/embed-elements.html">
+</head>
+<body id="page-embed" fullbleed>
+
+<!-- Note: First video should be the keynote -->
+<io-gadget startDate="{% .StartDateStr %}" {% .LiveIDs | json | safeAttr "videoIds" %}></io-gadget>
+
+<script src="scripts/analytics.js"></script>
+<script>
+(function() {
+  "use strict";
+
+  document.addEventListener('polymer-ready', function() {
+    var gadget = document.querySelector('io-gadget');
+    gadget.noFeed = location.search.match('noFeed');
+    gadget.noVideo = location.search.match('noVideo');
+  });
+
+})();
+</script>
+</body>
+</html>

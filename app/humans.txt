@@ -1,0 +1,43 @@
+# The humans responsible & technology colophon - humanstxt.org/
+
+# TEAM (SITE)
+
+  Eric Bidelman (lead dev) - ebidel
+  Jeff Posnick (dev) - jeffposnick
+  Ewa Gasperowicz (dev) - devnook
+  Alex Vaghin (dev) - crhym3
+  Paul Lewis (dev) - aerotwist
+  Brendan Kenny (dev) - brendankenny
+  Dan Schechter (design)
+  Chip Truex (design)
+  Evan Gütt (motion design)
+
+# TEAM (Experiment)
+
+  Thomas Reynolds (dev) - tdreyno
+  Alex Mahan (dev) - alexmahan
+  Destin Young (dev) - ourvice
+  Dan Schechter (design)
+  Chip Truex (design)
+  Evan Gütt (sound & motion design)
+  Amie Pascal (production)
+  Bethany Larson (production)
+
+# THANKS
+
+  Mat Scales - wibblymat
+  Matthew Gaunt - gauntface
+  Jake Archibald - jakearchibald
+  Mat Groves - GoodBoyDigital
+
+# TECHNOLOGY
+
+  Polymer / web components - polymer-project.org
+  Service Worker
+  Web Animations API
+  Web Audio API
+  WebGL (Pixi.js)
+  HTML5 / CSS3
+  Go (backend)
+
+  Gulp / Bower / NPM

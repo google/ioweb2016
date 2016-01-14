@@ -1,0 +1,121 @@
+/**
+ * Copyright 2014 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+footer {
+  min-height: 200px;
+  background: #fff;
+  color: $color-link-grey;
+  font-size: 14px;
+
+  a {
+    color: inherit;
+  }
+
+  .footer-backtotop {
+    color: $color-cyan-A700;
+  }
+
+  .invisible {
+    color: white;
+  }
+
+  nav {
+    flex: 1 0 auto;
+  }
+
+  paper-dropdown-menu {
+    margin: 0;
+    padding: 0;
+    border: none;
+    font-weight: 500;
+  }
+
+  paper-dropdown {
+    min-width: 200px; // Needed for IE.
+  }
+}
+
+.footer-content {
+  @include keyline-16();
+  padding-top: $mobileKeyline;
+  padding-bottom: 0;
+
+  img {
+    vertical-align: bottom;
+  }
+}
+
+.footer-content--middle {
+  padding-bottom: $mobileKeyline;
+}
+
+.share-icon {
+  margin-right: 16px;
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+.footer-logos {
+  padding-bottom: $mobileKeyline;
+  border-top: 1px solid $color-light-grey-border;
+
+  img {
+    height: 32px;
+  }
+}
+
+@media (max-width: $phone-breakpoint-max) {
+  footer {
+    nav {
+      > * {
+        margin-top: $mobileKeyline;
+      }
+    }
+  }
+  .footer-share-links--bottom {
+    display: none;
+  }
+}
+
+@media (min-width: $tablet-breakpoint-min) {
+  .footer-content {
+    @include keyline-24();
+    padding-top: $tabletKeyline;
+  }
+  .footer-top {
+    min-height: 110px; // Needed due to https://connect.microsoft.com/IE/feedback/details/802625/min-height-and-flexbox-flex-direction-column-dont-work-together-in-ie-10-11-preview
+  }
+  .footer-share-links--top {
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .footer-content {
+    nav {
+      flex-direction: row !important;
+    }
+  }
+  .footer-content--middle,
+  .footer-logos {
+    padding-bottom: $tabletKeyline;
+  }
+}
+
+@media (min-width: $desktop-breakpoint-max) {
+  nav {
+    max-width: 50%;
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "env": "dev",
+  "dir": "app",
+  "addr": "127.0.0.1:8080",
+  "prefix": "/io2016",
+  "schedule": {
+    "start": "2016-05-18T09:30:00-07:00",
+    "timezone": "America/Los_Angeles",
+    "manifest": "https://storage.googleapis.com/io2015-data.appspot.com/manifest_v1.json"
+  },
+  "ioExtFeedUrl": "https://spreadsheets.google.com/feeds/list/SHEET/WORKSHEET/private/full",
+  "extPingUrl": "",
+  "secret": "a very long secret used in /api/v1/user/updates",
+  "synct": "any-secure-random-string-will-do",
+  "google": {
+    "tokenUrl": "https://accounts.google.com/o/oauth2/token",
+    "verifyUrl": "https://www.googleapis.com/oauth2/v2/tokeninfo",
+    "certUrl": "https://www.googleapis.com/oauth2/v1/certs",
+    "serviceAccount": {
+      "private_key_id": "ignored",
+      "private_key": "-----BEGIN PRIVATE KEY----- content -----END PRIVATE KEY-----\n",
+      "client_email": "example@developer.gserviceaccount.com",
+      "client_id": "example.apps.googleusercontent.com",
+      "type": "service_account"
+    },
+    "auth": {
+      "client": "web-app client ID",
+      "secret": "web-app client secret"
+    },
+    "gcm": {
+      "sender": "GCP project *number*",
+      "key": "key-for-server-applications",
+      "endpoint": "https://android.googleapis.com/gcm/send"
+    },
+    "drive": {
+      "filename": "user_data.json",
+      "files_url": "https://www.googleapis.com/drive/v2/files",
+      "upload_url": "https://www.googleapis.com/upload/drive/v2/files"
+    }
+  },
+  "twitter": {
+    "account": "googledevs",
+    "filter": "#io15",
+    "key": "an-app-key",
+    "secret": "very-secret",
+    "tokenUrl": "https://api.twitter.com/oauth2/token",
+    "timelineUrl": "https://api.twitter.com/1.1/statuses/user_timeline.json"
+  },
+  "admins": [],
+  "whitelist": [],
+  "survey": {
+    "id": "survey-id",
+    "reg": "registrant-id",
+    "key": "api-key",
+    "code": "event-code",
+    "endpoint": "https://api.eventpoint.com/2.3/eval/submitsurvey",
+    "disabled": ["__afterhours__"],
+    "smap": {},
+    "qmap": {
+      "q1": {
+        "name": "q10",
+        "answers": {
+          "1": "a-11",
+          "2": "a-12",
+          "3": "a-13",
+          "4": "a-14",
+          "5": "a-15"
+        }
+      },
+      "q2": {
+        "name": "q20",
+        "answers": {
+          "1": "a-21",
+          "2": "a-22",
+          "3": "a-23",
+          "4": "a-24",
+          "5": "a-25"
+        }
+      },
+      "q3": {
+        "name": "q30",
+        "answers": {
+          "1": "a-31",
+          "2": "a-32",
+          "3": "a-33",
+          "4": "a-34",
+          "5": "a-35"
+        }
+      },
+      "q4": {
+        "name": "q40",
+        "answers": {
+          "1": "a-41",
+          "2": "a-42",
+          "3": "a-43",
+          "4": "a-44",
+          "5": "a-45"
+        }
+      },
+      "q5": {
+        "name": "q50"
+      }
+    }
+  }
+}
+

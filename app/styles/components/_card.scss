@@ -1,0 +1,139 @@
+/**
+ * Copyright 2014 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@import '../base/color';
+@import '../base/layout';
+@import '../base/breakpoints';
+@import '../base/shadow';
+
+.card {
+  position: relative;
+  background: #fff;
+  display: block;
+  color: $color-text;
+
+  .card-content {
+    padding: 0 $mobileKeyline;
+  }
+
+  a {
+    @include typo-button();
+    white-space: nowrap;
+  }
+
+  h2, h3 {
+    color: $color-heading;
+  }
+
+  .card__title {
+    padding-bottom: $tabletKeyline;
+  }
+
+  .card__photo {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: 50% 50%;
+  }
+
+  .card__photo--recap {
+    background-image: url(../images/home/keynote2015.jpg);
+    background-position: 50% 0 !important;
+    cursor: pointer;
+    border-top-left-radius: inherit;
+    border-top-right-radius: inherit;
+    min-height: 200px;
+  }
+}
+
+.card--force-compositing {
+  transform: translateZ(0);
+}
+
+@media (max-width: $phone-breakpoint-max) {
+  .card {
+    border-bottom: 1px solid $color-light-grey-border;
+
+    &:last-child {
+      border-bottom: 0;
+    }
+
+    .card-content {
+      padding: $tabletKeyline $mobileKeyline;
+
+      &:not(:only-child):first-child {
+        padding-bottom: 0;
+      }
+    }
+
+    h3:not(.card__title) {
+      font-size: 16px;
+      line-height: 24px;
+    }
+  }
+}
+
+@media (min-width: $tablet-breakpoint-min) {
+  .card__container {
+    max-width: 704px;
+    margin: 0 auto;
+  }
+
+  .sidebyside {
+    > :not(:last-child) {
+      margin-right: $desktopKeyline;
+    }
+  }
+
+  .card {
+    border-radius: 3px;
+    @include shadow-z2();
+
+    .card-content {
+      padding: 32px;
+      &:not(:last-child) {
+        border-bottom: 1px solid #eee;
+      }
+    }
+
+  }
+}
+
+@media (min-width: $tablet-breakpoint-min) and (max-width: $tablet-breakpoint-mid) {
+  .card__container--top {
+    max-width: 582px;
+  }
+}
+
+@media (min-width: $desktop-breakpoint-min) {
+  .card {
+    .card-content {
+      padding: 32px 40px;
+    }
+  }
+}
+
+@media (min-width: $desktop-breakpoint-mid) {
+  .card__container {
+    max-width: 896px;
+  }
+}
+
+@media (min-width: $desktop-breakpoint-max) {
+  .card__container {
+    max-width: 1024px;
+  }
+}
+

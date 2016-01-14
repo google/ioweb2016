@@ -1,0 +1,181 @@
+<!--
+Copyright 2016 Google Inc. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<!--
+Displays information about a social post, and linkifies certain URLs in the text.
+
+    <social-post kind="tweet"
+                 author="googledevs"
+                 url="https://twitter.com/googledevs/status/560575018925436931"
+                 text="Today on #Polycasts with @rob_dodson... http://t.co/0z0gUsWB2G"
+                 when="2016-01-28T23:07:54Z"
+    </social-post>
+-->
+<dom-module id="social-post">
+  <link rel="import" type="css" href="social-post.css">
+  <template>
+    <header>
+      <a target="_blank" href$="{{profileUrl}}" hidden$="{{hideAuthor}}">{{author}}</a>
+      <div class="timestamp">
+        <a target="_blank" href$="{{url}}">{{timeAgo}}</a>
+      </div>
+    </header>
+    <div id="postContent"></div>
+    <template is="dom-if" if="{{media}}">
+      <a target="_blank" href$="{{media.0.expanded_url}}">
+        <img src$="{{media.0.media_url_https}}" class="social-photo"
+             style$="{{_computeStyle(media)}}">
+      </a>
+    </template>
+  </template>
+  <script>
+  (function() {
+    Polymer({
+      is: 'social-post',
+
+      properties: {
+        // All URLs shared via Twitter are shortened to the form http(s)://t.co/...
+        _TWITTER_URL_REGEX: {
+          value: /(https?:\/\/t\.co\/\w+)/,
+          readOnly: true
+        },
+
+        /**
+         * The username associated with the social post.
+         *
+         * @attribute author
+         * @type string
+         * @default ''
+         */
+        author: {
+          type: String,
+          value: '',
+          notify: true,
+          observer: '_authorChanged'
+        },
+
+        /**
+         * If true, the post does not display the author's twitter handle.
+         */
+        hideAuthor: {
+          type: Boolean,
+          value: false,
+          notify: true
+        },
+
+        /**
+         * Type of social post.
+         */
+        kind: {
+          type: String,
+          value: 'tweet'
+        },
+
+        /**
+         * Media-like object as returned by the twitter API.
+         * See dev.twitter.com/overview/api/entities-in-twitter-objects
+         */
+        media: {
+          value: null
+        },
+
+        /**
+         * The content of the social post. Links within the post that meet certain criteria
+         * will be automatically "linkified" by wrapping them in an appropriate `<a>` tag.
+         */
+        text: {
+          type: String,
+          value: '',
+          observer: '_textChanged'
+        },
+
+        /**
+         * The URL pointing back to the post hosted on the social network.
+         */
+        url: {
+          type: String,
+          value: ''
+        },
+
+        /**
+         * The date and time that the post was made, in a format that `new Date()` can parse.
+         */
+        when: {
+          type: String,
+          value: '',
+          observer: '_whenChanged'
+        }
+      },
+
+      _authorChanged: function() {
+        if (this.kind == 'tweet') {
+          this.profileUrl = 'https://twitter.com/' + this.author.slice(1);
+        }
+      },
+
+      _textChanged: function() {
+        if (this.kind == 'tweet') {
+          // Clear out the current children.
+          var el = Polymer.dom(this.$.postContent);
+          while (el.firstChild) {
+            el.removeChild(el.firstChild);
+          }
+          // In order to avoid injecting anything we don't intend to into the page, assume by default
+          // that all text gets added as the textContent of a new <span>.
+          // The one exception is text that matches our regex for Twitter's URL shortener.
+          // Those matches get wrapped in an appropriate <a> element.
+
+          var fragments = this.text.split(this._TWITTER_URL_REGEX);
+          fragments.forEach(function(fragment) {
+            var childElement;
+            if (this._TWITTER_URL_REGEX.test(fragment)) {
+              childElement = document.createElement('a');
+              childElement.target = '_blank';
+              childElement.href = fragment;
+              childElement.textContent = fragment;
+            } else {
+              childElement = document.createElement('span');
+              childElement.textContent = fragment;
+            }
+            el.appendChild(childElement);
+          }.bind(this));
+        }
+      },
+
+      // TODO: i18n of these strings.
+      _whenChanged: function() {
+        // delta is the time difference in minutes.
+        var delta = Math.floor((Date.now() - new Date(this.when)) / (60 * 1000));
+        if (delta < 1) {
+          this.timeAgo = 'less than a minute ago';
+        } else if (delta < 60) {
+          this.timeAgo = delta + (delta == 1 ? ' minute ago' : ' minutes ago');
+        } else if (delta < 24 * 60) {
+          delta = Math.floor(delta / 60);
+          this.timeAgo = delta + (delta == 1 ? ' hour ago' : ' hours ago');
+        } else {
+          delta = Math.floor(delta / (24 * 60));
+          this.timeAgo = delta + (delta == 1 ? ' day ago' : ' days ago');
+        }
+      },
+      _computeStyle: function(media) {
+        return 'width:' + media[0].sizes.smasll.w + 'px;height:' +
+                media[0].sizes.smasll.h + 'px';
+      }
+    });
+  })();
+  </script>
+</dom-module>
+

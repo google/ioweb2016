@@ -1,0 +1,153 @@
+/**
+ * Copyright 2015 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@import '_elements';
+
+@import '../styles/components/_app';
+@import '../styles/components/_card';
+@import '../styles/base/_forms_sd';
+
+.card {
+  margin-bottom: $desktopKeyline;
+}
+
+.card-content  {
+  h4 {
+    font-size: 20px;
+    line-height: 32px;
+    font-weight: 400;
+  }
+}
+
+.day-title {
+  background-color: #B2EBF2;
+}
+
+.schedule-rows .schedule-row,
+.filter-rows > paper-label {
+  margin-bottom: $tabletKeyline;
+}
+
+.filter-rows {
+  paper-checkbox {
+    margin: 0 0 0 $tabletKeyline;
+  }
+}
+
+.filter-rows > paper-label {
+  cursor: pointer;
+}
+
+.filter-section {
+  border-bottom: 1px solid $color-light-grey-border;
+  margin-bottom: $tabletKeyline;
+}
+
+.schedule-title {
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  position: relative;
+  padding-right: 24px; // icon width
+  order: -1;
+  // overrides for link styling.
+  text-transform: none !important;
+  line-height: inherit !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  color: inherit !important;
+}
+
+.schedule-time {
+  font-size: 14px;
+  color: $color-link-grey;
+  margin-right: 80px;
+  max-width: 80px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.schedule-livestream {
+  color: $color-session-detail-light-grey;
+  position: absolute;
+  right: 0;
+}
+
+paper-checkbox {
+  margin-right: $tabletKeyline;
+}
+
+paper-radio-group {
+  width: 100%;
+}
+
+paper-radio-button {
+  display: block;
+  padding: 12px 0 !important;
+}
+
+paper-progress {
+  display: block;
+}
+
+@media (max-width: $phone-breakpoint-max) {
+  .card__container {
+    margin-bottom: 0;
+  }
+
+  .card {
+    margin-bottom: $mobileKeyline;
+    @include shadow-z1();
+
+    &.day-title {
+      margin-bottom: 0;
+    }
+
+    .card-content:first-child {
+      padding: 16px !important;
+      border-bottom: 1px solid $color-light-grey-border;
+    }
+  }
+
+  .no-sessions {
+    margin-bottom: $mobileKeyline;
+  }
+}
+
+@media (min-width: $tablet-breakpoint-min) {
+  .page__section {
+    padding-bottom: $desktopKeyline;
+  }
+  .schedule-rows {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+@media (min-width: $desktop-breakpoint-min) {
+  .card {
+    .card-content {
+      padding: 32px;
+    }
+  }
+}
+
+@media (min-width: $desktop-breakpoint-mid) {
+  .schedule-title {
+    order: 0;
+  }
+}

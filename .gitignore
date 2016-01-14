@@ -1,0 +1,39 @@
+# Ignore NPM and Bower folders.
+bower_components
+node_modules
+npm-debug.log
+
+# Ignore prod/dist folders
+dist
+
+# Ignore generated CSS.
+.sass-cache
+app/styles/**/*.css
+app/elements/**/*.css
+
+# Built Experiment
+app/experiment
+
+# backend stuff, keys
+backend/bin
+backend/app.yaml
+backend/cron.yaml
+backend/.gae_datastore
+backend/*.config
+backend/*.config.*
+!backend/server.config.template
+*.pem
+*.p12
+util/drone-*.json
+
+# Other generated/common stuff.
+.tmp
+.DS_Store
+*.pyc
+screenshots
+sitemap.xml
+
+# This should be generated as part of the gulp build process.
+app/service-worker.js
+app/scripts/pages.js
+app/data-worker-scripts.js

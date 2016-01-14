@@ -1,0 +1,569 @@
+<!--
+Copyright 2016 Google Inc. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
+<!-- <link rel="import" href="../bower_components/iron-label/iron-label.html"> -->
+<link rel="import" href="../bower_components/paper-progress/paper-progress.html">
+<!-- <link rel="import" href="../bower_components/iron-a11y-keys/iron-a11y-keys.html"> -->
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+
+<link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../bower_components/paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+
+<!--
+The `<io-schedule>` element renders a schedule for a given day(s).
+-->
+<!--
+Fired when session is selected.
+
+@event session-select
+@param {Object} detail
+@param {Object} detail.session The selected session.
+-->
+<dom-module id="io-schedule">
+  <link rel="import" type="css" href="io-schedule.css">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      [layout] {
+        @apply(--layout);
+      }
+      [layout][vertical] {
+        @apply(--layout-vertical);
+      }
+      [layout][justified] {
+        @apply(--layout-justified);
+      }
+      [layout][horizontal] {
+        @apply(--layout-horizontal);
+      }
+      [layout][flex] {
+        @apply(--layout-flex);
+        min-width: 0; /* chromestatus.com/features/5651186401148928 */
+      }
+      [two] {
+        @apply(--layout-flex-2);
+      }
+      [layout][center] {
+        @apply(--layout-center);
+      }
+    </style>
+
+    <iron-media-query query="(min-width:320px) and (max-width:767px)"
+        query-matches="{{isPhoneSize}}"></iron-media-query>
+    <iron-media-query query="(min-width:768px) and (max-width:1135px)"
+        query-matches="{{isTabletSize}}"></iron-media-query>
+    <iron-media-query query="(min-width:1136px)"
+        query-matches="{{isDesktopSize}}"></iron-media-query>
+
+    <div class$="card__container {{_computeSideBySideClass(isPhoneSize)}}"
+        layout vertical$="[[isPhoneSize]]" horizontal$="[[!isPhoneSize]]">
+      <div layout vertical flex$="[[!isPhoneSize}}">
+
+          <template is="dom-if" if="{{_dayIs(day, 'myschedule')}}">
+
+            <div class="card">
+              <div class="card-content" layout justified
+                   horizontal$="{{!isPhoneSize}}" vertical$="{{isPhoneSize}}"
+                   center$="{{!isPhoneSize}}">
+                <span class="no-sessions">Add more events</span>
+                <a href="#day1" data-subpage-link>Browse events</a>
+              </div>
+              <paper-progress indeterminate hidden$="{{!fetchingUserData}}"></paper-progress>
+            </div>
+
+            <template is="dom-repeat" items="[[_timeBlocks]]" as="timeBlock">
+
+              <div class="card" hidden$="{{!timeBlock.sessions.length}}">
+                <div class="card-content">
+                  <h4>May <span>{{timeBlock.day}}</span>, <span>{{timeBlock.name}}</span></h4>
+                </div>
+
+                <paper-progress indeterminate hidden$="{{!fetchingUserData}}"></paper-progress>
+
+                <div class="card-content schedule-rows" layout vertical>
+
+                  <template is="dom-repeat" items="{{timeBlock.sessions}}" as="session">
+                    <div class="schedule-row"
+                         layout horizontal center$="{{isDesktopSize}}">
+                      <paper-checkbox toggles
+                          on-change="onToggleSaveSession"
+                          aria-labelledby$="session-{{session.id}}-time session-{{session.id}}-title"
+                          checked="{{session.saved}}"></paper-checkbox>
+                      <div on-click="onSessionSelect"
+                           on-keyup="onSessionKeyUp"
+                           tabindex="0" layout flex
+                           vertical$="{{!isDesktopSize}}"
+                           horizontal$="{{isDesktopSize}}">
+                        <span id="session-{{session.id}}-time"
+                              class="schedule-time" flex auto-vertical>
+                          <span>{{session.start}}</span>
+                          <span hidden$="{{_sessionIs(session, '__keynote__')}}"> -
+                          <span>{{session.end}}</span></span>
+                        </span>
+                        <a href$="schedule?sid={{session.id}}"
+                           id="session-{{session.id}}-time"
+                           class="schedule-title"
+                           auto-vertical two flex$="{{!isPhoneSize}}"
+                           on-click="onSessionSelect"
+                           title$="{{session.title}}">
+                          <span>{{session.title}}</span>
+                          <iron-icon icon="io:videocam" class="schedule-livestream"
+                                     hidden$="{{!session.isLivestream}}"></iron-icon>
+                        </a>
+                      </div>
+                    </div>
+                  </template>
+
+                </div>
+              </div>
+
+          </template>
+
+        </template>
+
+        <template is="dom-if" if="{{!_dayIs(day, 'myschedule')}}">
+
+          <template is="dom-repeat" items="[[_timeBlocks]]" as="timeBlock">
+
+            <!-- Show sessions for the current day. If a timezone is selected
+                 and this is the last day tab, also show sessions that spill over
+                 into the next day. -->
+            <template is="dom-if" if="{{_showSessionsForDay(day, timeBlock, timeBlock.sessions.*)}}">
+
+              <div class="card">
+                <div class="card-content">
+                  <h4>May <span>{{timeBlock.day}}</span>, <span>{{timeBlock.name}}</span></h4>
+                </div>
+
+                <paper-progress indeterminate hidden$="{{!fetchingUserData}}"></paper-progress>
+
+                <div class="card-content schedule-rows" layout vertical>
+
+                  <template is="dom-repeat" items="{{timeBlock.sessions}}" as="session"
+                            filter="matchesFilters">
+
+                    <div class="schedule-row"
+                         layout horizontal center$="{{isDesktopSize}}"
+                         hidden$="{{_computeHideSession(session)}}">
+                      <paper-checkbox toggles
+                          on-change="onToggleSaveSession"
+                          aria-labelledby$="session-{{session.id}}-time session-{{session.id}}-title"
+                          checked="{{session.saved}}"></paper-checkbox>
+                      <div tabindex="0" style="min-width: 0;"
+                           on-click="onSessionSelect"
+                           on-keyup="onSessionKeyUp"
+                           layout flex vertical$="{{!isDesktopSize}}"
+                           horizontal$="{{isDesktopSize}}">
+                        <span id="session-{{session.id}}-time" class="schedule-time" flex auto-vertical>
+                          <span>{{session.start}}</span> <span hidden$="{{_sessionIs(session, '__keynote__')}}"> - <span>{{session.end}}</span></span>
+                        </span>
+                        <a href$="schedule?sid={{session.id}}"
+                           id="session-{{session.id}}-time"
+                           class="schedule-title"
+                           auto-vertical two flex$="{{!isPhoneSize}}"
+                           on-click="onSessionSelect"
+                           title$="{{session.title}}">
+                          <span>{{session.title}}</span>
+                          <iron-icon icon="io:videocam" class="schedule-livestream"
+                                     hidden$="{{!session.isLivestream}}"></iron-icon>
+                        </a>
+                      </div>
+                    </div>
+
+                  </template>
+
+                </div>
+              </div>
+
+            </template>
+
+          </template>
+
+        </template>
+
+      </div>
+
+      <div class="card__container" layout vertical>
+        <div class="card js-experiment-visualizer" hidden$="{{isPhoneSize}}">
+          <div class="card-content">
+            <h4 id="filters-header">Filters</h4>
+          </div>
+          <div class="card-content">
+            <div id="filters">
+              <div class="filter-rows filter-section">
+                <paper-radio-group allow-empty-selection
+                                   on-paper-radio-group-changed="onApplyFilter"
+                                   on-iron-deselect="onApplyFilter">
+                  <template is="dom-repeat" items="[[sessionThemes]]" as="theme">
+                    <paper-radio-button name="[[theme]]">[[theme]]</paper-radio-button>
+                  </template>
+                </paper-radio-group>
+              </div>
+              <div class="filter-rows filter-section">
+                <paper-radio-group allow-empty-selection
+                                   on-paper-radio-group-changed="onApplyFilter"
+                                   on-iron-deselect="onApplyFilter">
+                  <template is="dom-repeat" items="[[sessionTypes]]" as="type">
+                    <paper-radio-button name="[[type]]">[[type]]</paper-radio-button>
+                  </template>
+                </paper-radio-group>
+              </div>
+              <div class="filter-rows filter-section">
+                <paper-radio-group allow-empty-selection
+                                   on-paper-radio-group-changed="onApplyFilter"
+                                   on-iron-deselect="onApplyFilter">
+                  <template is="dom-repeat" items="[[sessionTopics]]" as="topic">
+                    <paper-radio-button name="[[topic]]">[[topic]]</paper-radio-button>
+                  </template>
+                </paper-radio-group>
+              </div>
+              <div class="filter-rows filter-section">
+                <paper-radio-group allow-empty-selection
+                                   on-paper-radio-group-changed="onApplyFilter"
+                                   on-iron-deselect="onApplyFilter">
+                  <paper-radio-button name="Live streamed">Live streamed</paper-radio-button>
+                </paper-radio-group>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+  <script>
+    (function () {
+      var timeBlocks = [];
+      var timeBlocksIndex = {};
+
+      function populateTimeBlocks(gmtDayOne) {
+        // Generate hours array from "12 AM" -> "11 PM".
+        var hours = [];
+        for (var i = 0; i < 24; ++i) {
+          var hour = i % 12 || 12;
+          hours.push(hour + (i < 12 ? ' AM' : ' PM'));
+        }
+        var blocksStartDay = parseInt(moment(gmtDayOne).format('D'), 10);
+        for (var i = 0; i < 3; i++) {
+          for (var j = 0; j < hours.length; j++) {
+            var timeBlock = {
+              name: hours[j],
+              day: blocksStartDay + i,
+              sessions: []
+            };
+            if (j === 0) {
+              timeBlock.dayStart = timeBlock.day;
+            }
+            timeBlocks.push(timeBlock);
+            var timeBlockId = timeBlock.day + hours[j];
+            timeBlocksIndex[timeBlockId] = timeBlocks.length - 1;
+          }
+        }
+      }
+
+      Polymer({
+        is: 'io-schedule',
+
+        properties: {
+          /**
+           * Optional day to filter the sessions, e.g. 'day1'.
+           */
+          day: {
+            type: String
+            // notify: true,
+            // observer: 'dayChanged'
+          },
+
+          /**
+           * Whether fetching user data is in progress.
+           */
+          fetchingUserData: {
+            type: Boolean,
+            value: false
+          },
+
+          /**
+           * Array of applied filters.
+           */
+          filters: {
+            type: Array,
+            value: function() { return []; },
+            notify: true,
+            // observer: 'filtersChanged'
+          },
+
+          _firstDay: {
+            type: Number,
+            value: 28,
+            readOnly: true
+          },
+
+          /**
+           * Timestamp for the start of the event in GMT timezone.
+           */
+          gmtDayOne: {
+            type: String
+          },
+
+          // of May, In GMT.
+          _lastDay: {
+            type: Number,
+            value: 29,
+            readOnly: true
+          },
+
+          /**
+           * Array of session theme names.
+           */
+          sessionThemes: {
+            type: Array,
+            value: function() { return []; },
+            notify: true
+          },
+
+          /**
+           * Array of session topic names.
+           */
+          sessionTopics: {
+            type: Array,
+            value: function() { return []; },
+            notify: true
+          },
+
+          /**
+           * Array of session types.
+           */
+          sessionTypes: {
+            type: Array,
+            value: function() { return []; }
+          },
+
+          /**
+           * Array of scheduled sessions.
+           */
+          sessions: {
+            type: Array,
+            value: function() { return []; }
+          },
+
+          /**
+           * Timezone for the schedule times.
+           */
+          timezone: {
+            type: String,
+            value: 'GMT-07:00',
+          },
+
+          /**
+           * List of timezones.
+           */
+          timezoneNames: {
+            type: Array,
+            value: function() { return []; }
+          },
+
+          /**
+           * User's list of saved sessions.
+           */
+          userSessions: {
+            type: Array,
+            value: function() { return []; },
+            observer: 'userSessionsChanged'
+          }
+        },
+
+        observers: [
+          'timezoneChanged(gmtDayOne, sessions)',
+          '_updateTimeBlocks(day, timezone, sessions)',
+          'filtersChanged(filters.splices)'
+        ],
+
+        _updateTimeBlocks: function() {
+          this.updateTimeBlocks();
+        },
+
+        created: function() {
+          populateTimeBlocks(this.getAttribute('gmt-day-one'));
+        },
+
+        ready: function() {
+          this._timeBlocks = timeBlocks;
+          this._timeBlocksIndex = timeBlocksIndex;
+        },
+
+        userSessionsChanged: function() {
+          // Update blocks if we have user sessions or the user session list
+          // is now empty (e.g. user logged out).
+          if (this.userSessions.length) {
+            this.updateTimeBlocks();
+          }
+        },
+
+        timezoneChanged: function() {
+          var localFirstDay = this.getLocalizedTime(this.gmtDayOne);
+          var localLastDay = moment(localFirstDay).add(1, 'days');
+          this._set_firstDay(parseInt(localFirstDay.format('D')));
+          this._set_lastDay(parseInt(localLastDay.format('D')));
+          for (var i = 0, session; session = this.sessions[i]; ++i) {
+            var startTime = this.getLocalizedTime(session.startTimestamp);
+            var endTime = this.getLocalizedTime(session.endTimestamp);
+            session.start = startTime.format('h:mm A');
+            session.end = endTime.format('h:mm A');
+            session.block = startTime.format('h A');
+            session.day = startTime.format('D');
+          }
+        },
+
+        isFilterSelected: function(filterName) {
+          return this.filters.indexOf(filterName) > -1;
+        },
+
+        onApplyFilter: function(e, detail) {
+          var radioGroup = Polymer.dom(e.target).node;
+
+          // Remove previous selected filter.
+          if (detail.item) {
+            var deselected = detail.item.name;
+            var idx = this.filters.indexOf(deselected);
+            if (idx !== -1) {
+              this.splice('filters', idx, 1);
+            }
+          } else if (radioGroup.selected) {
+            this.push('filters', radioGroup.selected);
+          }
+        },
+
+        filtersChanged: function(changeRecord) {
+          if (!changeRecord) {
+            return
+          }
+
+          var filters = this.filters.join(',');
+          var search = window.location.search;
+          if (filters.length) {
+            search = IOWA.Util.setSearchParam(search, 'filters', filters);
+          } else {
+            search = IOWA.Util.removeSearchParam(search, 'filters');
+          }
+
+          history.replaceState({}, '', [
+            window.location.origin,
+            window.location.pathname,
+            search,
+            window.location.hash
+          ].join(''));
+
+          this.updateTimeBlocks();
+        },
+
+        _computeHideSession: function(session) {
+          return !this.matchesFilters(session);
+        },
+
+        matchesFilters: function(session) {
+          if (!this.filters.length) {
+            return true;
+          }
+          for (var i = 0, filter; filter = this.filters[i]; ++i) {
+            if (!session.filters[filter]) {
+              return false;
+            }
+          }
+          return true;
+        },
+
+        updateTimeBlocks: function() {
+          // Clear about existing
+          // TODO: optimize. Don't establish timeblock sessions every filter.
+          for (var i = 0; i < this._timeBlocks.length; ++i) {
+            this.set('_timeBlocks.' + i + '.sessions', []);
+          }
+
+          for (var i = 0, session; session = this.sessions[i]; ++i) {
+            var block = session.day + session.block;
+            var timeBlockIdx = this._timeBlocksIndex[block];
+            var timeBlock = this._timeBlocks[timeBlockIdx];
+            if (timeBlock) {
+              var isValidSession = this.matchesFilters(session) &&
+                  (this.day.value !== 'myschedule' ||
+                   this.day.value == 'myschedule' && session.saved);
+              if (isValidSession) {
+                this.push('_timeBlocks.' + timeBlockIdx + '.sessions', session);
+              }
+            }
+          }
+        },
+
+        onSessionSelect: function(e, detail) {
+          e.preventDefault();
+          e.stopPropagation();
+          this.selectSession(e.model.session);
+        },
+
+        onSessionKeyUp: function(e, detail) {
+          // enter or ctrl+alt+space (voice over click)
+          if (e.keyCode === 13 || e.altKey && e.ctrlKey && e.keyCode === 32) {
+            this.selectSession(e.model.session);
+          }
+        },
+
+        selectSession: function(session) {
+          this.fire('session-select', {session: session});
+        },
+
+        /**
+         * Converts a timestamp to a currently selected timezone.
+         *
+         * @method getLocalizedTime
+         * @param {string} dateStr Timestamp string, e.g. '2016-05-18T16:00:00Z'.
+         * @return {Object} A Moment object.
+         */
+        getLocalizedTime: function(dateStr) {
+          var tzId = this.timezoneNames[this.timezone].name;
+          return moment(dateStr).tz(tzId);
+        },
+
+        onToggleSaveSession: function(e, detail) {
+          e.stopPropagation();
+          this.fire('session-bookmark', {
+            session: e.model.session,
+            save: e.target.checked
+          });
+        },
+
+        _computeSideBySideClass: function(isPhoneSize) {
+          return !isPhoneSize ? 'sidebyside' : '';
+        },
+
+        _dayIs: function(day, targetDay) {
+          return day && day.value === targetDay;
+        },
+
+        _sessionIs: function(session, targetSession) {
+          return session.id === targetSession;
+        },
+
+        _showSessionsForDay: function(day, timeBlock, sessions) {
+          return (timeBlock.day == day.value ||
+                  timeBlock.day > this._lastDay && day.value == this._lastDay) &&
+                  timeBlock.sessions.length;
+        }
+
+      });
+    }());
+  </script>
+</dom-module>

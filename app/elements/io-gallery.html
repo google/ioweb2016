@@ -1,0 +1,177 @@
+<!--
+Copyright 2015 Google Inc. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+
+<!--
+The `<io-gallery>` element renders a fullscreen photo gallery.
+-->
+
+<dom-module id="io-gallery">
+<template>
+  <style>
+    [fit] {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
+    .center-center {
+      @apply(--layout);
+      @apply(--layout-horizontal);
+      @apply(--layout-center-center);
+    }
+    :host {
+      display: block;
+      opacity: 0;
+      will-change: opacity;
+      background: rgba(0,0,0,0.8);
+    }
+    iron-list {
+      height: 100%;
+      width: 80vw;
+    }
+    iron-image {
+      width: 100%;
+      max-width: 820px;
+      height: 50vh;
+    }
+    .item {
+      box-sizing: border-box;
+      padding: 32px 0;
+    }
+    iron-image {
+      --iron-image-placeholder: {
+        background-size: contain !important;
+      };
+    }
+  </style>
+  <div class="center-center" fit>
+    <iron-list id="list" items="[[renderList]]" as="item">
+      <template>
+         <div class="item center-center">
+           <iron-image src="[[item.src]]" sizing="[[sizing]]" preload
+               placeholder="images/io15-color.png" fade
+               style$="background-color:[[backgroundColor]]"></iron-image>
+         </div>
+      </template>
+    </iron-list>
+  </div>
+</template>
+<script>
+  (function () {
+    'use strict';
+
+    // Converts an object path the value in the object that references the path
+    // e.g. 'obj.a.b.c' -> obj.a.b.c
+    function _ref(obj, str) {
+      if (!str) {
+        return obj;
+      }
+      return str.split('.').reduce(function(o, x) {
+        return o[x];
+      }, obj);
+    }
+
+    Polymer({
+      is: 'io-gallery',
+
+      properties: {
+        /**
+         * True when the gallery is being shown.
+         */
+        active: {
+          type: Boolean,
+          value: false,
+          notify: true,
+          observer: '_activeChanged'
+        },
+
+        /**
+         * The background color of the placeholder.
+         */
+        backgroundColor: {
+          type: String,
+          value: '#00BCD4'
+        },
+        /**
+         * Average height of an item in the lists
+         *
+         * @property height
+         * @type number
+         * @default 200
+         */
+        // height: {
+        //   type: Number,
+        //   value: 200,
+        //   notify: true
+        // },
+
+        /**
+         * Path into each item in the items array where the image URL lives.
+         */
+        imagePath: {
+          type: String,
+          value: null
+        },
+
+        /**
+         * The list of items for the gallery.
+         */
+        items: {
+          type: Array,
+          value: function() { return []; },
+          observer: '_itemsChanged'
+        },
+
+        /**
+         * True if on mobile.
+         */
+        mobile: {
+          type: Boolean,
+          value: false,
+          notify: true,
+          reflectToAttribute: true
+        },
+
+        /**
+         * The sizing "contains" or "cover" for the images.
+         */
+        sizing: {
+          type: String,
+          value: 'cover'
+        }
+      },
+
+      _itemsChanged: function() {
+        var list = [];
+        for (var i = 0, item; item = this.items[i]; ++i) {
+          list.push({src: _ref(item, this.imagePath)});
+        }
+        this.renderList = list;
+      },
+
+      _activeChanged: function() {
+        if (this.active) {
+          this.$.list.fire('iron-resize');
+        }
+      }
+
+    });
+  }());
+</script>
+</dom-module>

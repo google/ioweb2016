@@ -1,0 +1,413 @@
+{
+  "refresh-site": {
+    "description": "Keep short. Dialog text that comes up when there's an update to the site and the user should refresh the page.",
+    "message": "Please tap or refresh the page for the latest content."
+  },
+  "home": {
+    "description": "Top navbar single-word link text. Please keep this short. Links back to the site's main page.",
+    "message": "Home"
+  },
+  "about": {
+    "description": "Top navbar single-word link text. Please keep this short. Links to the site's About page. Page supplies more info about the event.",
+    "message": "About"
+  },
+  "about-sundar": {
+    "description": "Description of what I/O is.",
+    "message": "Join us to learn about product and platform innovations at Google, starting with a live kickoff from our Senior Vice-President of Products, Sundar Pichai."
+  },
+  "about-io": {
+    "description": "Description of what I/O is.",
+    "message": "Google I/O is two days of inspirational talks, hands-on learning, and a chance to hear more about Google's latest developer products."
+  },
+  "about-see-sessions": {
+    "description": "Link text see the list of 2014 keynote and video sessions.",
+    "message": "Watch the 2014 sessions"
+  },
+  "schedule": {
+    "description": "Top navbar single-word link text. Please keep this short. Links to the event schedule page.",
+    "message": "Schedule"
+  },
+  "attend-onsite": {
+    "description": "Top navbar sink text. Please keep this short. Links to the site's page for attendees.",
+    "message": "Attend Onsite"
+  },
+  "attend-offsite": {
+    "description": "Top navbar sink text. Please keep this short. Links to the site's page for offsite participants.",
+    "message": "Attend Offsite"
+  },
+  "attend-from": {
+    "description": "Beginning of 'Attend I/O from x or wherever you are heading",
+    "message": "Attend I/O from"
+  },
+  "attend-wherever": {
+    "description": "Ending to 'Attend I/O from x or wherever you are heading",
+    "message": "or wherever you may be"
+  },
+  "airport-shuttle": {
+    "description": "Onsite page. Header information on where developers can find a shuttle from the airport.",
+    "message": "Airport Shuttle"
+  },
+  "registration": {
+    "description": "Top navbar link text. Please keep this short. Links to the site's registration page.",
+    "message": "Registration"
+  },
+  "sanfrancisco": {
+    "description": "The city of San Francisco, California",
+    "message": "San Francisco"
+  },
+  "iodate": {
+    "description": "The date of Google I/O",
+    "message": "May 28 - 29"
+  },
+  "iomonth": {
+    "description": "The month of the Google I/O event",
+    "message": "May"
+  },
+  "reg-begins": {
+    "description": "When registration begins",
+    "message": "Registration will begin <b>March 17 at 9:00AM PDT</b> and will remain open until <b>March 19 at 5:00PM PDT</b>."
+  },
+  "reg-dontworry": {
+    "message": "Don't worry, there's no rush. You'll have plenty of time to submit your registration application. Applicants will be selected at random to receive the opportunity to purchase one ticket. The order in which applications are received has no bearing on the outcome and remember, only one registration application per person is allowed."
+  },
+  "reg-googleaccount": {
+    "message": "Make sure you have a Google account. You'll need to sign into your Google account to begin the registration application process."
+  },
+  "io-description-card": {
+    "description": "Description of the event.",
+    "message": "I/O is two days of hands-on interaction with the latest technologies, inspirational talks and a few surprises in between."
+  },
+  "learnmore": {
+    "description": "Link text. Links to a page with the event's details.",
+    "message": "Learn more about I/O"
+  },
+  "setreminder": {
+    "description": "Link text. Allows users to receive a notification as a reminder.",
+    "message": "Set a Reminder"
+  },
+  "registration-opens": {
+    "description": "Subheader of the registration section",
+    "message": "Registration begins"
+  },
+  "registration-agenda": {
+    "description": "Link text. Please keep this short. Links to the event schedule page.",
+    "message": "Check the agenda"
+  },
+  "watch-recap-video": {
+    "description": "Link text. Please keep this short. Watches the video from the 2014 event.",
+    "message": "Watch the 2014 I/O Recap Video"
+  },
+  "ioextendedwatch": {
+    "description": "On the offsite page. Link to watch the video from I/O extended last year.",
+    "message": "Watch the 2014 I/O Extended recap video"
+  },
+  "join-from-offsite": {
+    "description": "Link text. Please keep this short. Links to the page for offsite participants.",
+    "message": "Join from your location"
+  },
+  "join-convo": {
+    "description": "Section heading for the social section on the homepage.",
+    "message": "Join the conversation now at #io15"
+  },
+  "back-to-top": {
+    "description": "Link text. Please keep short. Link takes users back to the top of the page.",
+    "message": "Back to the top"
+  },
+  "io-community": {
+    "description": "Link text. Please keep short. Links to the community page.",
+    "message": "I/O Community"
+  },
+  "faq": {
+    "description": "Link text. Please keep short. Links to the site's FAQ page.",
+    "message": "FAQ"
+  },
+  "google-developers": {
+    "message": "Google Developers"
+  },
+  "privacy": {
+    "message": "Privacy"
+  },
+  "terms": {
+    "message": "Terms"
+  },
+  "headphones-on": {
+    "description": "Hint to the user to put their headphones on.",
+    "message": "The Experiment features Web Audio API. You might want to grab headphones."
+  },
+  "experiment-ahead": {
+    "description": "The experiment's loading message.",
+    "message": "Chrome Experiment ahead"
+  },
+  "loading": {
+    "description": "Indicates that the experiment is loading.",
+    "message": "Loading..."
+  },
+  "make-some-noise": {
+    "description": "Entry point to the experiment once experiment has loaded completely.",
+    "message": "Make Some Noise"
+  },
+  "cancel": {
+    "description": "Generic cancel button message",
+    "message": "Cancel"
+  },
+  "experiment-unsupported": {
+    "description": "Message to be displayed if experiment tech supported.",
+    "message": "The I/O experiment is not supported by your browser. Find supported browsers below."
+  },
+  "sorry": {
+    "description": "Header to be displayed if experiment tech supported.",
+    "message": "Sorry..."
+  },
+  "supports-webgl": {
+    "description": "Link to browsers that support WebGL.",
+    "message": "WebGL"
+  },
+  "supports-webaudio": {
+    "description": "Link to browsers that support Web Audio.",
+    "message": "Web Audio"
+  },
+  "experiment-failed": {
+    "description": "If experiment fails to load, display this message.",
+    "message": "The experiment failed to load."
+  },
+  "close-dialog": {
+    "description": "Close message for the dialog box.",
+    "message": "Close"
+  },
+  "exit-experiment": {
+    "description": "Headline for experiment exit dialog.",
+    "message": "Exit the Experiment?"
+  },
+  "exit-confirmation": {
+    "description": "Confirmation copy for experiment exit dialog",
+    "message": "Are you sure you want to exit the experiment and go back to the I/O website?"
+  },
+  "reset-song": {
+    "description": "Headline for experiment reset dialog.",
+    "message": "Reset the song?"
+  },
+  "reset-confirm": {
+    "description": "Confirmation copy for experiment reset dialog.",
+    "message": "Are you sure you want to reset the song back to the default?"
+  },
+  "share-your-song": {
+    "description": "Headline for share dialog",
+    "message": "Share Your Song"
+  },
+  "share-text": {
+    "description": "Social sharing pre-populated text.",
+    "message": "#io15 brings together devs to explore the next generation of tech and mobile. Join us online or in person May 28-29: https://google.com/io"
+  },
+  "gplus-share": {
+    "description": "Google plus share text",
+    "message": "Google+"
+  },
+  "twitter-share": {
+    "description": "Twitter share text",
+    "message": "Twitter"
+  },
+  "facebook-share": {
+    "description": "Facebook share text",
+    "message": "Facebook"
+  },
+  "copy-link": {
+    "description": "Copy link text",
+    "message": "Copy Link"
+  },
+  "yes": {
+    "description": "Generic yes",
+    "message": "Yes"
+  },
+  "no": {
+    "description": "Generic no",
+    "message": "No"
+  },
+  "day": {
+    "description": "Link text. Please keep short. Used on the schedule page.",
+    "message": "Day"
+  },
+  "days": {
+    "description": "Short label",
+    "message": "Days"
+  },
+  "daysuntilreg": {
+    "description": "Short label used on the home/registration page to signify days left until registration opens",
+    "message": "Days until registration begins"
+  },
+  "hoursuntilreg": {
+    "description": "Short label used on the home/registration page to signify hours left until registration begins",
+    "message": "Hours until registration begins"
+  },
+  "minutesuntilreg": {
+    "description": "Short label used on the home/registration page to signify minutes left until registration begins",
+    "message": "Minutes until registration begins"
+  },
+  "secondsuntilreg": {
+    "description": "Short label used on the home/registration page to signify seconds left until registration begins",
+    "message": "Seconds until registration begins"
+  },
+  "agenda": {
+    "description": "Link text. Please keep short. Used on the schedule page.",
+    "message": "Agenda"
+  },
+  "tips-ready": {
+    "description": "Heading text for the top card on the registration page.",
+    "message": "Tips to get ready"
+  },
+  "livestream": {
+    "description": "Heading text for the top card on the attend offsite page",
+    "message": "Live stream"
+  },
+  "notifyme": {
+    "description": "Offsite page. Button text have users receive a notification when new events around near them.",
+    "message": "Notify me about events near me"
+  },
+  "viewlastyear": {
+    "description": "Offsite page. Button text to view last year's event locations",
+    "message": "View last year's events"
+  },
+  "ioextendevents": {
+    "description": "Offsite page. Card title description",
+    "message": "I/O Extended events"
+  },
+  "ioextendevents-details": {
+    "description": "Offsite page. Card content",
+    "message": "I/O Extended events may include live streamed sessions, local developer demos, hackathons and more. These events are brought to you by our Google Developer Groups, Student Ambassadors, and local developers."
+  },
+  "hostioextend": {
+    "description": "Offsite page. Card title description for developers to submit their own event details",
+    "message": "Host an I/O Extended event"
+  },
+  "organizerguide": {
+    "description": "Offsite page. Link to download the organizer's guide",
+    "message": "Organizer Guide"
+  },
+  "submitevent": {
+    "description": "Offsite page. Link for developers to submit their own event",
+    "message": "Submit your event"
+  },
+  "io-in-photos": {
+    "description": "Extended page. Nav bar title when the photo carousel is open.",
+    "message": "I/O in Photos"
+  },
+  "see-photos-2014": {
+    "description": "About page. Link for people to see photos from 2014",
+    "message": "See photos from I/O 2014"
+  },
+  "see-more-photos": {
+    "description": "About page. Link to open photo gallery to see more photos from last year.",
+    "message": "See more photos from past I/Os"
+  },
+  "io-description": {
+    "description": "Home page. Describes Google I/O.",
+    "message": "Google I/O is for developers—the creative coders who are building what's next. Together we'll explore the latest in tech, mobile &amp; beyond."
+  },
+  "io-extended-invitation": {
+    "description": "Home page. Invites developers unable to attend I/O itself to go to an Extended event.",
+    "message": "If you aren't able to join us for I/O in person this year, you can still make an event out of it. Host or find an I/O Extended event near you and watch the live stream in the company of other developers."
+  },
+  "back-to-top": {
+    "description": "Links back to the top of the page.",
+    "message": "Back to top"
+  },
+  "watch-keynote-and-sessions": {
+    "description": "Offsite page. Invites users to watch the keynote and session videos.",
+    "message": "I/O 2015 will be streamed live. Watch the keynote and select sessions in real time, from your laptop or mobile device. Join an I/O Extended event to watch with other developers and make a party of it."
+  },
+  "badge-pickup": {
+    "description": "Schedule page. Users can pick up their badges.",
+    "message": "Badge pick-up"
+  },
+  "sessions-sandbox": {
+    "description": "Schedule page. Sessions and sandbox session label.",
+    "message": "Sessions &amp; Sandbox"
+  },
+  "lunch": {
+    "description": "Schedule page. Lunch label.",
+    "message": "Lunch"
+  },
+  "afterhours": {
+    "description": "Schedule page. After hours label.",
+    "message": "After Hours"
+  },
+  "upgrade-browser": {
+    "description": "Message for users to upgrade their browser.",
+    "message": "Your browser doesn't support the technology used on this site. To experience the Google I/O 2015 site as intended, please upgrade your browser."
+  },
+  "upgrade-warning": {
+    "description": "Link text for users to go back to the website if the choose to proceed, despite that their browser version may not work.",
+    "message": "Upgrade your browser"
+  },
+  "upgrade-gotosite": {
+    "description": "Link text for users to upgrade their browser if it is old.",
+    "message": "Continue to the I/O 2015 website"
+  },
+  "general": {
+    "description": "Header label for general information links on faq page.",
+    "message": "General"
+  },
+  "attendance-details": {
+    "description": "Header label for attendance details links on faq page.",
+    "message": "Attendance Details"
+  },
+  "faq-dates-loc": {
+    "description": "FAQ page header",
+    "message": "2015 dates &amp; location"
+  },
+  "stay-informed": {
+    "description": "FAQ page link header",
+    "message": "Stay informed"
+  },
+  "livestream": {
+    "description": "FAQ page link header",
+    "message": "Live stream &amp; recordings"
+  },
+  "toc": {
+    "description": "FAQ page link header",
+    "message": "Terms &amp; Conditions"
+  },
+  "academic-tickets": {
+    "description": "FAQ page link header",
+    "message": "Academic tickets"
+  },
+  "press-tickets": {
+    "description": "FAQ page link header",
+    "message": "Press tickets"
+  },
+  "badges": {
+    "description": "FAQ page link header",
+    "message": "Badges"
+  },
+  "a11y": {
+    "description": "FAQ page link header",
+    "message": "Accessibility"
+  },
+  "a11y-accomodations": {
+    "description": "FAQ page link header",
+    "message": "Accessibility accommodations for attendees"
+  },
+  "conduct": {
+    "description": "FAQ page link header",
+    "message": "Conduct policy"
+  },
+  "child-care": {
+    "description": "FAQ page link header",
+    "message": "Child Care"
+  },
+  "sorry-404": {
+    "message": "Sorry. We couldn't find that page :(",
+    "description": "404 not found page message"
+  },
+  "sorry-500": {
+    "message": "Oops! Something went wrong on our end :(",
+    "description": "500 error page message"
+  },
+  "live-blogging": {
+    "message": "Live blogging gadget page title",
+    "description": "Live Blogging Gadget"
+  },
+  "live-faq": {
+    "message": "Live blogging faq link",
+    "description": "Live blogging FAQ"
+  }
+}

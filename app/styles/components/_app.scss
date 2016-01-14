@@ -1,0 +1,505 @@
+/**
+ * Copyright 2014 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@import '../base/vars';
+@import '../base/typography';
+
+html, body {
+  font-family: 'Helvetica', 'Arial', 'sans-serif';
+  @include typo-body();
+}
+
+.noscroll {
+  paper-drawer-panel [main] {
+    overflow: hidden;
+  }
+}
+
+.anchor-like {
+  @include typo-button();
+  white-space: nowrap;
+  color: $color-cyan-A700;
+  cursor: pointer;
+}
+
+.strong {
+  font-weight: bold;
+}
+
+.fit, [fit] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.relative, [relative] {
+  position: relative;
+}
+
+li {
+  line-height: 1.7;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+  margin: 0;
+  padding: 0;
+}
+
+p {
+  margin: 0 0 8px 0;
+}
+
+a {
+  color: $color-cyan-A700;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+h1 {
+  color: $color-heading;
+  @include typo-heading-1();
+}
+h2 {
+  color: $color-heading;
+  @include typo-heading-2();
+}
+h3 {
+  color: $color-text;
+  @include typo-heading-3();
+}
+h4 {
+  color: $color-text;
+  @include typo-heading-4();
+}
+h5 {
+  color: $color-text;
+  @include typo-heading-5();
+}
+h6 {
+  color: $color-text;
+}
+
+paper-progress {
+  width: 100%;
+  height: 2px;
+}
+
+.typo-white {
+  color: #fff;
+}
+
+.hide-on-mobile {
+  display: none;
+}
+
+.profilepic {
+  height: 32px;
+  width: 32px;
+  border-radius: 50%;
+  margin-right: 0;
+}
+
+.link-spacing {
+  > a {
+    margin-right: $desktopKeyline;
+
+    &:last-of-type {
+      margin-right: 0;
+    }
+  }
+}
+
+.bg-light-grey, .bg-medium-grey, .bg-dark-grey, .bg-cyan, .bg-photo {
+  a {
+    font-size: 14px;
+    line-height: 1;
+    letter-spacing: 0.01em;
+  }
+}
+
+.bg-photo {
+  background-color: $color-bluegrey-700;
+  color: $color-section-dark-grey-text;
+
+  h1, h2, h3, h4 {
+    color: inherit;
+  }
+}
+
+.bg-cyan {
+  background-color: $color-cyan-500 !important;
+  color: #07434D;
+
+  h1, h2, h3, h4 {
+    color: inherit;
+  }
+
+  // a {
+  //   @extend .typo-white;
+  // }
+}
+
+.bg-light-grey {
+  background-color: $color-body;
+  // color: $color-text;
+  color: $color-heading;
+
+  h1, h2, h3, h4 {
+    // color: $color-heading;
+    color: inherit;
+  }
+
+  a {
+    color: $color-cyan-A700;
+  }
+}
+
+.bg-medium-grey {
+  background-color: $color-bluegrey-100;
+  color: $color-bluegrey-700;
+
+  h1, h2, h3, h4 {
+    // color: #4A4D4F;
+    color: inherit;
+  }
+
+  a {
+    color: $color-cyan-A700;
+  }
+}
+
+.bg-dark-grey {
+  background-color: $color-bluegrey-700;
+  color: $color-section-dark-grey-text;
+
+  h1, h2, h3, h4 {
+    color: inherit;
+  }
+
+  h1 {
+    color: #fff;
+  }
+
+  a {
+    color: $color-cyan-A400;
+  }
+}
+
+.navbar__overlay {
+  position: fixed !important;  // iOS
+  font-size: 20px;
+  font-weight: 500;
+  background: rgba(0,0,0,0.5) !important;
+  color: #fff;
+  text-transform: uppercase;
+  transition: transform 400ms cubic-bezier(0,0,0.2,1);
+  will-change: transform;
+  transform: translateY(-100%);
+
+  &.active {
+    transform: translateY(0);
+  }
+}
+
+.bg-globe {
+  background-image: url(../images/home/globe-1440.jpg);
+  background-repeat: no-repeat;
+  background-position: 50% 60px;
+  background-size: 150%;
+}
+
+.attend__globe {
+  min-height: 150px;
+  opacity: 0;
+  transition: opacity 1000ms linear;
+  will-change: opacity;
+
+  &.show {
+    opacity: 1;
+  }
+}
+
+.page__section {
+  @include keyline-16();
+  padding-top: $desktopKeyline;
+  padding-bottom: $desktopKeyline;
+}
+
+.page__section--copy {
+  padding: 0 0 $mobileKeyline 0 !important;
+
+  a {
+    font-size: inherit !important;
+    font-weight: 400 !important;
+    text-transform: none !important;
+  }
+}
+
+.io__hash {
+  margin: 40px auto;
+  height: 120px;
+  background: url(../images/io15-hash-on-white-solid.png) no-repeat 50% 50%;
+  background-size: contain;
+}
+
+.bg-cyan {
+  .io__hash {
+    background-image: url(../images/io15-hash-on-blue-solid.png);
+  }
+}
+
+.io-countdown {
+  height: 194px;
+
+  countdown-timer {
+    height: 180px;
+    max-width: 100%;
+  }
+
+  h4 {
+    @include typo-button();
+
+    a {
+      color: inherit;
+    }
+  }
+}
+
+#iolive {
+  opacity: 0;
+  &.show {
+    transition: opacity 400ms cubic-bezier(0,0,0.2,1) 800ms;
+    opacity: 1;
+  }
+}
+
+.io-main {
+  .slide-up-delay {
+    transform: translateY(100px);
+    opacity: 0;
+    will-change: transform, opacity;
+  }
+
+  .slide-up {
+    transform: translateY(100px);
+    opacity: 0;
+    position: relative;
+    will-change: transform, opacity;
+  }
+}
+
+.io-logo-container {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  io-logo {
+    will-change: transform; // https://github.com/GoogleChrome/ioweb2015/issues/254
+  }
+
+  [iologobackground] {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    will-change: transform; // https://github.com/GoogleChrome/ioweb2015/issues/254
+  }
+}
+
+.play__button--card {
+  height: 56px;
+  width: 56px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 88px;
+  margin: auto;
+  cursor: pointer;
+}
+
+.play__button__container {
+  background: url(../images/play-video-button.png) no-repeat 50% 0;
+  background-size: 72px;
+  display: flex;
+  align-items: flex-end;
+  height: 100px;
+
+  h4 {
+    color: white;
+    // TODO: get design update on color of text. Can't be read clearly.
+    // background: rgba(0,0,0,.25);
+    // padding: 5px 10px;
+    // border-radius: 100px;
+  }
+}
+
+.fullvideo__container {
+  transform-origin: 0 0;
+  will-change: transform; // https://github.com/GoogleChrome/ioweb2015/issues/254
+  margin: 0;
+
+  .fullvideo_thumbnail {
+    width: 100%;
+    height: 100%;
+    transition: opacity 350ms cubic-bezier(0,0,0.2,1);
+    will-change: opacity; // https://github.com/GoogleChrome/ioweb2015/issues/254
+
+    &.fadeout {
+      opacity: 0;
+      pointer-events: none;
+    }
+  }
+}
+
+.video_overlay-dialog {
+  height: 100%;
+  width: 100%;
+  max-height: 100%; // paper-dialog override.
+  max-width: 100%;  // paper-dialog override.
+
+  paper-icon-button {
+    position: absolute;
+    z-index: 10;
+    padding: 0;  // paper-dialog override.
+    margin: 0;  // paper-dialog override.
+    color: white;
+    top: $mobileKeyline;
+    left: $mobileKeyline;
+
+    // Ensure sizing for some reason.
+    iron-icon {
+      height: 24px;
+      width: 24px;
+    }
+  }
+}
+
+@media (max-width: $phone-breakpoint-max) {
+  .navbar__overlay {
+    font-size: 16px;
+  }
+  .attend__globe {
+    height: 150px;
+  }
+}
+
+@media (min-width: $tablet-breakpoint-min) {
+  .page__section {
+    @include keyline-32();
+    padding-top: $desktopKeyline;
+    padding-bottom: $desktopKeyline;
+  }
+  .page__section--copy {
+    padding-bottom: $desktopKeyline !important;
+  }
+  .page__section--attend {
+    padding-top: 100px;
+    margin-top: -50px;
+  }
+  .hide-on-mobile {
+    display: block;
+  }
+  .io__hash {
+    margin: 80px auto;
+    margin-left: -$hashWidth !important;
+    height: 160px;
+  }
+  .bg-globe {
+    background-position: 50% 0;
+  }
+  .attend__globe {
+    margin-top:  $desktopKeyline;
+    height: 500px;
+  }
+  h1 {
+    @include typo-heading-1();
+    font-size: 48px;
+    font-weight: 300;
+    line-height: 56px;
+  }
+  // Rest of heading are same as mobile.
+}
+
+@media (min-width: $desktop-breakpoint-mid) {
+  .page__section {
+    @include keyline-72();
+    padding-top: $largeKeyline;
+    padding-bottom: $largeKeyline;
+  }
+  .io__hash {
+    margin: 140px auto;
+  }
+}
+
+@media (min-width: $desktop-breakpoint-mid + 1) {
+  // h1 same as tablet.
+  h2 {
+    @include typo-heading-2();
+    font-size: 32px;
+    line-height: 48px;
+    font-weight: 300;
+  }
+
+  h3 {
+    @include typo-heading-3();
+    font-size: 24px;
+    line-height: 36px;
+    font-weight: 400;
+  }
+
+  h4 {
+    @include typo-heading-4();
+    font-size: 20px;
+    line-height: 32px;
+    font-weight: 400;
+  }
+
+  h5 {
+    @include typo-heading-5();
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+  }
+}
+
+@media (min-resolution: 2.0dppx), (-webkit-min-device-pixel-ratio: 2), (min-width: $tablet-breakpoint-min) {
+  .bg-globe {
+    background-image: url(../images/home/globe-1440@2x.jpg);
+  }
+}
+
+@media (max-width: $phone-breakpoint-max) and (orientation: landscape) {
+  main {
+    paper-dialog {
+      top: 0 !important;
+      left: 0 !important;
+      bottom: 0 !important;
+      right: 0 !important;
+      margin: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+    }
+  }
+}

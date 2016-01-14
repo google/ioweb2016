@@ -1,0 +1,441 @@
+/**
+ * Copyright 2014 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+$name: 'page-schedule';
+
+@import '../base/vars';
+@import '../base/layout';
+@import '../base/color';
+@import '../base/breakpoints';
+@import '../base/shadow';
+@import '../base/typography';
+
+
+##{$name} {
+
+.masthead-meta {
+  margin-bottom: -$subnavTabsPadding;
+  h1 {
+    margin-bottom: 9px;
+  }
+
+  paper-tabs {
+    max-width: 450px;
+  }
+
+  paper-tab {
+    flex: none;
+  }
+
+  paper-dropdown-menu {
+    flex-shrink: 0;
+  }
+}
+
+.page__filters {
+  paper-dropdown-menu {
+    @include typo-button();
+    margin: $tabletKeyline;;
+    padding: 0;
+    border: none;
+    iron-menu {
+      margin: 0;
+    }
+    paper-item {
+      font-size: inherit;
+    }
+  }
+
+  .paper-item-separator {
+    border-top: 1px solid $color-light-grey-border;
+  }
+}
+
+.page__section {
+  padding: 0;
+}
+
+.page__section.page__section--top {
+  padding-bottom: 0;
+}
+
+.card-content  {
+  h4 {
+    font-size: 20px;
+    line-height: 32px;
+    font-weight: 400;
+  }
+}
+
+#signin-prompt {
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  max-height: 400px;
+
+  &.prompt-hidden  {
+    max-height: 0;
+    padding-bottom: 0;
+
+    .card {
+      transform: translateY(-150px);
+      opacity: 0;
+      margin-bottom: 0;
+    }
+  }
+
+  .card {
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+.schedule-rows .schedule-row {
+  margin-bottom: $tabletKeyline;
+}
+
+iron-icon[icon="schedule"] {
+  margin-right: 40px;
+}
+
+.card__container--top {
+  p {
+    margin: $mobileKeyline auto;
+  }
+
+  .note {
+    color: $color-heading;
+    font-size: 14px;
+    margin-bottom: 0;
+  }
+}
+
+.card {
+  margin-bottom: $tabletKeyline;
+}
+
+.schedule-time {
+  font-size: 14px;
+  color: $color-link-grey;
+  margin-right: 80px;
+  width: 80px;
+  white-space: nowrap;
+}
+
+.session__rate {
+  $lineHeight: 32px;
+
+  .session__info__section {
+    padding: $desktopKeyline;
+    border-top: 1px solid $color-light-grey-border;
+  }
+
+  .session__info__links {
+    border-top: 1px solid $color-light-grey-border;
+    text-transform: uppercase;
+  }
+
+  .rate__header {
+    color: $color-heading;
+    padding: 8px;
+  }
+
+  .session__title {
+    color: #000;
+  }
+
+  .session__authors {
+    color: $color-link-grey;
+    line-height: $lineHeight;
+    font-weight: 400;
+  }
+
+  iron-menu {
+    margin: 0;
+  }
+
+  p {
+    margin-bottom: $tabletKeyline;
+  }
+
+  .rate__hint {
+    margin-top: $tabletKeyline;
+    color: $color-link-grey;
+  }
+
+  .rate__icon-1::after {
+    content: "1";
+  }
+
+  .rate__icon-2::after {
+    content: "2";
+  }
+
+  .rate__icon-3::after {
+    content: "3";
+  }
+
+  .rate__icon-4::after {
+    content: "4";
+  }
+
+  .rate__icon-5::after {
+    content: "5";
+  }
+
+  .rate__icon {
+    color: $color-link-grey;
+    background-color: $color-light-grey-border;
+    transition: background-color .3s linear .1s, color .3s linear .1s;
+    border-radius: 50%;
+
+    &.iron-selected {
+      background-color: $color-bluegrey-700;
+      color: #fff;
+    }
+  }
+
+  .anchor-like-disabled,
+  .anchor-like[disabled] {
+    color: $color-session-detail-light-grey;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .rate__icon-empty {
+    color: $color-text;
+  }
+
+// TODO: update for polymer 1.0
+  .rate__icon-empty::shadow iron-icon {
+    visibility: hidden;
+  }
+
+  .rate__icon::after {
+    position: absolute;
+    color: inherit;
+    margin: -31px auto 0 auto;
+    padding: 8px;
+  }
+}
+
+.session__detail {
+  .scrollable {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    position: relative; // So back arrow scrolls away.
+  }
+}
+
+.session__detail {
+  $lineHeight: 32px;
+
+  color: $color-link-grey;
+  font-size: 14px;
+  max-width: $tablet-breakpoint-min;
+  position: fixed;
+
+  paper-fab {
+    background: #fff;
+    color: inherit;
+    position: absolute;
+    right: 16px;
+    bottom: calc(-40px/2);
+
+    &.active {
+      color: white !important;
+      background-color: $color-cyan-400 !important;
+    }
+
+    &[disabled] {
+      background-color: $color-light-grey-border !important;
+      color: $color-gray !important;
+    }
+  }
+  paper-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+  }
+  paper-icon-button {
+    z-index: 10;
+    color: #000;
+    position: absolute;
+    top: $mobileKeyline;
+    left: $mobileKeyline;
+  }
+  .card__photo {
+    height: 203px;
+  }
+  .session__info__section {
+    padding: $tabletKeyline;
+  }
+  .session__info__links {
+    border-top: 1px solid $color-light-grey-border;
+    text-transform: uppercase;
+
+      .anchor-like {
+        margin-right: $tabletKeyline;
+      }
+
+      .anchor-like-disabled {
+        color: $color-session-detail-light-grey;
+        font-weight: 500;
+      }
+  }
+  .session__desc {
+    margin: $tabletKeyline 0;
+  }
+  .session__title {
+    color: #000;
+  }
+  .session__categories {
+    color: $color-session-detail-light-grey;
+    font-weight: 400;
+    line-height: $lineHeight;
+  }
+  .session__time {
+    color: $color-link-grey;
+    font-weight: 400;
+    line-height: $lineHeight;
+  }
+  .session__livestream {
+    color: $color-session-detail-light-grey;
+    text-align: right;
+  }
+  .session__social {
+    line-height: $lineHeight;
+
+    a {
+      color: inherit;
+    }
+    .share-icon {
+      margin-right: 12px;
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+  .play__button__container {
+    height: 100%;
+    z-index: 1;
+    position: absolute;
+    background-position: 50% 45%;
+    cursor: pointer;
+    h4 {
+      position: relative;
+      top: 50px;
+    }
+  }
+  iron-image,
+  .play__button__container {
+    transition: opacity 350ms cubic-bezier(0,0,0.2,1);
+  }
+  .fadeout {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+.session__speakers {
+  border-top: 1px solid $color-light-grey-border;
+
+  .profilepic {
+    height: 56px;
+    width: 56px;
+    margin-right: $tabletKeyline;
+  }
+
+  .speaker__card {
+    margin-top: $desktopKeyline;
+  }
+}
+
+.speaker__info {
+  .speaker__name {
+    color: #000;
+    font-size: 16px;
+  }
+  .speaker__desc {
+    padding: $mobileKeyline 0;
+  }
+}
+
+@media (max-width: $phone-breakpoint-max) {
+  .schedule-title {
+    order: -1;
+  }
+  .session__detail {
+    margin: 0;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100%;
+    height: 100%;
+  }
+  .session__rate {
+    margin: 0;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100%;
+    height: 100%;
+  }
+  .masthead-container {
+    padding-bottom: $subnavTabsPadding;
+  }
+  .masthead-meta {
+    paper-dropdown-menu {
+      right: $mobileKeyline + 40px; // fab width + mobileKeyline
+    }
+  }
+  .card__container {
+    @include shadow-z1();
+  }
+
+  #signin-prompt {
+    .card {
+      margin-bottom: 0;
+    }
+  }
+
+  .card {
+    margin-bottom: $mobileKeyline;
+    @include shadow-z1();
+  }
+  .card-content:first-child {
+    padding: 16px;
+    border-bottom: 1px solid $color-light-grey-border;
+  }
+}
+
+@media (min-width: $tablet-breakpoint-min) {
+  .session__detail {
+    .card__photo {
+      height: 430px;
+    }
+    paper-fab {
+      bottom: calc(-56px/2); // FAB height / 2
+    }
+  }
+  .session__speakers {
+    .profilepic {
+      height: 72px;
+      width: 72px;
+    }
+    .speaker__card {
+      width: 50%;
+    }
+  }
+}
+
+}

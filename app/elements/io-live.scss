@@ -1,0 +1,468 @@
+/**
+ * Copyright 2015 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@import '_elements';
+@import '../styles/components/_card';
+
+$ytVideoControlsHeight: $desktopKeyline;
+$widgetWidth: 360px;
+
+:host {
+  // display: block;
+  // background-color: $color-cyan-500;
+  @include typo-body();
+  // font-size: 16px;
+}
+
+:host(.bg-dark-grey) {
+  // color: $color-bluegrey-100;
+  background-color: $color-bluegrey-700;
+  // color: $color-section-dark-grey-text;
+}
+
+countdown-timer {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card {
+  box-shadow: none;
+  border-top: 1px solid $color-light-grey-border;
+  border-radius: 0;
+
+  .card-content {
+    padding: $mobileKeyline;
+  }
+
+  a {
+    color: $color-cyan-A700;
+    font-weight: 500;
+    text-decoration: none;
+  }
+}
+
+.bottom__bar {
+  position: absolute;
+  left: 0;
+  bottom: $ytVideoControlsHeight;
+  box-sizing: border-box;
+  z-index: 2; // same as #navbar
+  width: 100%;
+
+  padding: $mobileKeyline $mobileKeyline 0 $mobileKeyline;
+
+  ::content h2 {
+    color: inherit;
+    font-weight: 300;
+    line-height: 1;
+  }
+
+  h2 {
+    color: $color-heading;
+    @include typo-heading-2();
+    margin: 0;
+
+    color: inherit;
+    font-weight: 300;
+  }
+
+  paper-fab {
+    position: relative;
+    background-color: #fff;
+    color: $color-fab-icon;
+    z-index: 2;
+  }
+}
+
+#livewidget {
+  position: absolute;
+  right: $mobileKeyline;
+  bottom: 0;
+  border-radius: 2px;
+  -webkit-clip-path: circle(28px at bottom 28px right 28px);
+  clip-path: circle(32px at center);
+  transition: -webkit-clip-path 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: white;
+  // min-height: 500px;
+  height: 60vh;
+  width: calc(100% - 32px);
+  max-width: $widgetWidth;
+  // @include shadow-z2();
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+
+  &.transitioning {
+    opacity: 1;
+  }
+
+  &.open {
+    opacity: 1;
+    pointer-events: all;
+    -webkit-clip-path: circle(400px at center);
+    clip-path: circle(400px at center);
+  }
+}
+
+#sessiondetails {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+
+  paper-progress {
+    position: absolute;
+    bottom: 0;
+  }
+
+  paper-fab {
+    background: #fff;
+    color: inherit;
+    position: absolute;
+    right: 16px;
+    bottom: calc(-40px/2); // fab size / 2
+
+    &.active {
+      color: white;
+      background-color: $color-cyan-400;
+    }
+
+    &[disabled] {
+      background-color: $color-light-grey-border;
+      color: $color-gray;
+    }
+  }
+
+  paper-icon-button {
+    position: absolute;
+    z-index: 10;
+    top: $mobileKeyline / 2;
+    left: $mobileKeyline / 2;
+  }
+
+  .card__photo {
+    height: 200px;
+  }
+
+  .session__info__section {
+    padding: $tabletKeyline;
+  }
+  .session__desc {
+    font-size: 14px;
+    margin-top: $tabletKeyline;
+  }
+  .session__title {
+    @include typo-heading-2();
+    line-height: 32px;
+    font-weight: 300;
+    margin: 0;
+  }
+  .speaker__info {
+    .speaker__name {
+      color: #000;
+      font-size: 16px;
+    }
+    .speaker__title {
+      color: $color-link-grey;
+      font-size: 14px;
+    }
+    .speaker__desc {
+      font-size: 14px;
+      padding: $mobileKeyline 0;
+    }
+  }
+  .session__social {
+    line-height: 32px;
+
+    a {
+      color: inherit;
+    }
+    .share-icon {
+      margin-right: 12px;
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+  .session__speakers {
+    border-top: 1px solid $color-light-grey-border;
+
+    h3 {
+      margin: 0;
+      font-weight: 400;
+    }
+
+    .speaker__card {
+      margin-top: $tabletKeyline;
+    }
+  }
+}
+
+.profile__pic {
+  height: 56px;
+  width: 56px;
+  margin-right: $tabletKeyline;
+  border-radius: 50%;
+}
+
+.widget-nav {
+  height: $paperTabsHeight; // same as paper-tabs nav
+  color: white;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+
+  core-icon {
+    margin-right: $mobileKeyline;
+    margin-top: $mobileKeyline;
+  }
+}
+
+paper-tabs {
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+
+  paper-tab {
+    cursor: pointer;
+  }
+
+  paper-tab[disabled] {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+.card__photo {
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 50% 50%;
+}
+
+.card__photo--live {
+  background-image: url(../images/videos/keynote.jpg);
+  height: 100%;
+
+  img {
+    height: 48px;
+    width: 48px;
+  }
+
+  h4 {
+    color: white;
+    text-shadow: .5px .5px 1px rgba(0,0,0,0.25);
+    position: relative;
+    top: 16px;
+    margin: 0;
+    font-weight: normal;
+  }
+}
+
+.card__photo--live-desc {
+  position: absolute;
+  z-index: 1;
+  bottom: 0;
+}
+
+core-animated-pages {
+  margin-top: $paperTabsHeight * 2;
+  overflow: hidden;
+  z-index: 1; // force layer so no rendering artifacts.
+}
+
+.schedule__content {
+  .schedule-rows {
+    overflow: auto;
+
+    .card-content {
+      flex-shrink: 0;
+      padding: $mobileKeyline;
+      border-top: 1px solid $color-light-grey-border;
+    }
+
+    h4 {
+      font-size: 20px;
+      line-height: 24px;
+      font-weight: 400;
+      margin: 0;
+    }
+
+    .schedule-row {
+      cursor: pointer;
+      padding: $tabletKeyline/2 $mobileKeyline;
+      flex-shrink: 0;
+    }
+  }
+
+  .schedule-speakers {
+    color: $color-link-grey;
+    font-size: 14px;
+  }
+
+  io-radio-button {
+    margin-right: $mobileKeyline;
+    margin-top: 5px;
+  }
+}
+
+paper-progress {
+  width: 100%;
+  height: 2px;
+}
+
+#hashtab {
+  overflow: auto;
+
+  social-post {
+    margin-bottom: $tabletKeyline;
+  }
+}
+
+.card__bottom-links {
+  flex-shrink: 0;
+}
+
+.middle-content-section {
+  height: 100%;
+  position: relative;
+}
+
+.fullvideo__container {
+  z-index: 1;
+
+  // .fullvideo_thumbnail {
+  //   width: 100%;
+  //   height: 100%;
+
+  //   &.fadeout {
+  //     opacity: 0;
+  //     pointer-events: none;
+  //   }
+  // }
+
+  .video__title {
+    position: absolute;
+    left: $desktopKeyline;
+    bottom: $ytVideoControlsHeight + $desktopKeyline;
+    z-index: 1;
+    color: white;
+    @include typo-heading-2();
+    margin: 0;
+    font-weight: 300;
+  }
+}
+
+#live-channel-menu {
+  $profilepicSize: 40px;
+
+  margin: 0;
+  overflow: auto;
+
+  .profile__pic {
+    width: $profilepicSize;
+    height: $profilepicSize;
+  }
+
+  .session__detail {
+    margin-right: $tabletKeyline;
+    .session__title,
+    .schedule-speakers {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+
+  .schedule-row {
+    cursor: default;
+
+    &[active] {
+      core-icon {
+        opacity: 1;
+      }
+    }
+    core-icon {
+      opacity: 0.32;
+    }
+  }
+}
+
+.keynote__banner {
+  opacity: 0;
+  border-radius: 3px;
+  border: 0;
+  background: url(../images/home/keynotebanner.jpg) no-repeat 50% 50%;
+  background-size: cover;
+  color: white;
+  height: 80px;
+  width: calc(100% - 32px);
+  max-width: $widgetWidth;
+  position: absolute;
+  // top: 100%;
+  top: calc(-60vh - 24px);
+  right: $mobileKeyline;
+  // margin-bottom: $mobileKeyline;
+  cursor: pointer;
+  transition: opacity 300ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  &.on {
+    opacity: 1;
+  }
+}
+
+@media (min-width: $tablet-breakpoint-min) {
+  .bottom__bar {
+    padding: $desktopKeyline $desktopKeyline 0 $desktopKeyline;
+    bottom: $ytVideoControlsHeight + $desktopKeyline !important;
+  }
+  #livewidget, .keynote__banner {
+    right: $desktopKeyline;
+  }
+  .keynote__banner {
+    top: calc(-60vh - 12px);
+  }
+}
+
+@media (min-width: $desktop-breakpoint-mid) {
+  .keynote__banner {
+    top: calc(-60vh + 32px);
+  }
+}
+
+@media (min-width: $desktop-breakpoint-mid) {
+  .bottom__bar {
+    padding: $largeKeyline $largeKeyline 0 $largeKeyline;
+    bottom: $ytVideoControlsHeight + $largeKeyline !important;
+  }
+  #livewidget, .keynote__banner {
+    right: $largeKeyline;
+  }
+}
+
+/**
+ * iPhone 5 - target device aspect ratio.
+ */
+@media screen and (device-aspect-ratio: 40/71) {
+  #livewidget {
+    max-height: 360px;
+  }
+}
+
+
