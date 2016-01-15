@@ -58,5 +58,5 @@ module.exports = function(rootDir, handleFetch, importScripts, callback) {
     stripPrefix: rootDir + '/'
   };
 
-  swPrecache(config, callback);
+  swPrecache.generate(config, callback);
 };
