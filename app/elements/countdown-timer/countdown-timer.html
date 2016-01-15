@@ -132,6 +132,7 @@ Creates a countdown timer to a specific date.
             type: Boolean,
             value: false,
             notify: true,
+            readOnly: true,
             reflectToAttribute: true
           },
 
@@ -270,7 +271,7 @@ Creates a countdown timer to a specific date.
          * threshold, e.g. changed from hours to minutes, or the timer has
          * finished.
          *
-         * @param {Object} passes the label and the milliseconds remaining.
+         * @param {{label: string, millisecondsToTarget: number, ended: boolean}} passes the label and the milliseconds remaining.
          */
         onTimerThresholdReached_: function(thresholdInformation) {
           this.thresholdInformation = {
@@ -294,8 +295,8 @@ Creates a countdown timer to a specific date.
             break;
           }
           if (thresholdInformation.millisecondsToTarget === 0) {
-            this.ended = true;
-            thresholdInformation.ended = true;
+            this._setEnded(true);
+            this.set('thresholdInformation.ended', true);
           }
           this.fire('timerthreshold', thresholdInformation);
         },
@@ -317,8 +318,9 @@ Creates a countdown timer to a specific date.
          * @private
          */
         configureTimer_: function() {
-          if (!this.timer)
+          if (!this.timer) {
             return;
+          }
           var targetDate = Date.parse(this.date);
           if (isNaN(targetDate)) {
             targetDate = Date.now();
