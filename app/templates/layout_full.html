@@ -286,17 +286,17 @@ limitations under the License.
     }
   </style>
 </head>
-<body id="page-{% .Slug %}">
+<body id="page-{% .Slug %}" class="bg-medium-grey">
 
 <!-- Intro animation background is outside of Polymer to reduce perceived latency in polyfilled browsers. -->
 <div class="io-logo-container">
-  <io-logo width="312" height="165" page="{% .Slug %}" class="{% template "mastheadBgClass" .%}"></io-logo>
-  <div class="{% template "mastheadBgClass" .%}" iologobackground></div>
+  <io-logo width="312" height="165" page="{% .Slug %}" class="bg-medium-grey"></io-logo>
+  <div class="bg-medium-grey" iologobackground></div>
 </div>
 
 <paper-drawer-panel force-narrow>
   <div drawer layout vertical>
-    <paper-toolbar class="tall bg-cyan">
+    <paper-toolbar class="tall">
       <div class="top io-logo" flex></div>
       <div class="top">
         <img class="profilepic" hidden>
@@ -312,25 +312,21 @@ limitations under the License.
           <a href="./" data-ajax-link data-anim-drawer
              data-track-link="nav-drawer-home">Home</a>
         </paper-item>
-        <paper-item label="about">
+        <!-- <paper-item label="about">
           <a href="about" data-ajax-link data-anim-drawer
              data-track-link="nav-drawer-about">About</a>
-        </paper-item>
+        </paper-item> -->
         <paper-item label="schedule">
           <a href="schedule#day1" data-ajax-link data-anim-drawer
              data-track-link="nav-drawer-schedule">Schedule</a>
         </paper-item>
-        <paper-item label="offsite">
-          <a href="videos" data-ajax-link data-anim-drawer
-             data-track-link="nav-drawer-videos">Videos</a>
-        </paper-item>
         <paper-item label="onsite">
           <a href="onsite" data-ajax-link data-anim-drawer
-             data-track-link="nav-drawer-onsite">Onsite</a>
+             data-track-link="nav-drawer-onsite">Attending</a>
         </paper-item>
         <paper-item label="offsite">
           <a href="offsite" data-ajax-link data-anim-drawer
-             data-track-link="nav-drawer-offsite">Offsite</a>
+             data-track-link="nav-drawer-offsite">I/O Extended</a>
         </paper-item>
       </paper-menu>
     </div>
@@ -353,7 +349,7 @@ limitations under the License.
       <iron-media-query id="mq-desktop" query="(min-width:945px)"
                         query-matches="{{isDesktopSize}}"></iron-media-query>
 
-      <header class="masthead {% template "mastheadBgClass" .%} js-experiment-instrument js-experiment-instrument--no-top-margin" layout vertical>
+      <header class="masthead bg-medium-grey" layout vertical>
         <div class="masthead__ripple">
           <div class="masthead__ripple__content" id="masthead-ripple"></div>
         </div>
@@ -371,26 +367,26 @@ limitations under the License.
               <h4 class="masthead-subtitle">Shoreline Amphitheatre,<br>Mountain View, CA</h4>
             </div>
           </div>
-          <paper-tabs class$="white {{_computeMastheadClass(pages, selectedPage)}}"
-              attr-for-selected="label" selected="{{selectedPage}}" noink>
-            <paper-tab label="about" role="">
+          <paper-tabs class="white" attr-for-selected="label"
+                      selected="{{selectedPage}}" noink>
+            <!-- <paper-tab label="about" role="">
               <a href="about" data-ajax-link data-track-link="nav-about" data-transition="masthead-ripple-transition" layout horizontal center>About</a>
-            </paper-tab>
+            </paper-tab> -->
             <paper-tab label="schedule" role="">
               <a href="schedule#day1" data-ajax-link data-track-link="nav-schedule" data-transition="masthead-ripple-transition" layout horizontal center>Schedule</a>
             </paper-tab>
-            <paper-tab label="videos" role="">
+            <!-- <paper-tab label="videos" role="">
               <a href="videos" data-ajax-link data-track-link="nav-videos" data-transition="masthead-ripple-transition" layout horizontal center>Videos</a>
-            </paper-tab>
+            </paper-tab> -->
             <paper-tab label="onsite" role="">
-              <a href="onsite" data-ajax-link data-track-link="nav-onsite" data-transition="masthead-ripple-transition" layout horizontal center>Onsite</a>
+              <a href="onsite" data-ajax-link data-track-link="nav-onsite"
+                 data-transition="masthead-ripple-transition" layout horizontal center>Attending</a>
             </paper-tab>
             <paper-tab label="offsite" role="">
-              <a href="offsite" data-ajax-link data-track-link="nav-offsite" data-transition="masthead-ripple-transition" layout horizontal center>Offsite</a>
+              <a href="offsite" data-ajax-link data-track-link="nav-offsite" data-transition="masthead-ripple-transition" layout horizontal center>I/O Extended</a>
             </paper-tab>
           </paper-tabs>
-          <span id="signin-nav-elements" layout horizontal center
-                class$="{{_computeSignNavElementsClass(isPhoneSize, pages, selectedPage)}}">
+          <span id="signin-nav-elements" layout horizontal center>
             <!-- Note: Use on-click instead of on-tap so oauth popup is not blocked. Needs user gesture. -->
             <!-- /fakesignin is not a real endpoint, but we need it to trick router not
                  to return early from the document-level touchstart listener on mobile. -->

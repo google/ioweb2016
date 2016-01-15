@@ -156,7 +156,6 @@ paper-progress {
 
 .bg-light-grey {
   background-color: $color-body;
-  // color: $color-text;
   color: $color-heading;
 
   h1, h2, h3, h4 {
@@ -216,24 +215,6 @@ paper-progress {
   }
 }
 
-.bg-globe {
-  background-image: url(../images/home/globe-1440.jpg);
-  background-repeat: no-repeat;
-  background-position: 50% 60px;
-  background-size: 150%;
-}
-
-.attend__globe {
-  min-height: 150px;
-  opacity: 0;
-  transition: opacity 1000ms linear;
-  will-change: opacity;
-
-  &.show {
-    opacity: 1;
-  }
-}
-
 .page__section {
   @include keyline-16();
   padding-top: $desktopKeyline;
@@ -255,37 +236,6 @@ paper-progress {
   height: 120px;
   background: url(../images/io15-hash-on-white-solid.png) no-repeat 50% 50%;
   background-size: contain;
-}
-
-.bg-cyan {
-  .io__hash {
-    background-image: url(../images/io15-hash-on-blue-solid.png);
-  }
-}
-
-.io-countdown {
-  height: 194px;
-
-  countdown-timer {
-    height: 180px;
-    max-width: 100%;
-  }
-
-  h4 {
-    @include typo-button();
-
-    a {
-      color: inherit;
-    }
-  }
-}
-
-#iolive {
-  opacity: 0;
-  &.show {
-    transition: opacity 400ms cubic-bezier(0,0,0.2,1) 800ms;
-    opacity: 1;
-  }
 }
 
 .io-main {
@@ -400,9 +350,6 @@ paper-progress {
   .navbar__overlay {
     font-size: 16px;
   }
-  .attend__globe {
-    height: 150px;
-  }
 }
 
 @media (min-width: $tablet-breakpoint-min) {
@@ -425,13 +372,6 @@ paper-progress {
     margin: 80px auto;
     margin-left: -$hashWidth !important;
     height: 160px;
-  }
-  .bg-globe {
-    background-position: 50% 0;
-  }
-  .attend__globe {
-    margin-top:  $desktopKeyline;
-    height: 500px;
   }
   h1 {
     @include typo-heading-1();
@@ -481,12 +421,6 @@ paper-progress {
     font-size: 16px;
     line-height: 24px;
     font-weight: 500;
-  }
-}
-
-@media (min-resolution: 2.0dppx), (-webkit-min-device-pixel-ratio: 2), (min-width: $tablet-breakpoint-min) {
-  .bg-globe {
-    background-image: url(../images/home/globe-1440@2x.jpg);
   }
 }
 

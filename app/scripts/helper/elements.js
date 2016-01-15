@@ -160,18 +160,7 @@ IOWA.Elements = (function() {
     template.videoList = [];
     template.filteredVideoList = [];
 
-    template.rippleColors = {
-      'bg-cyan': '#00BCD4',
-      'bg-medium-grey': '#CFD8DC',
-      'bg-dark-grey': '#455A64',
-      'bg-photo': '#455A64'
-    };
-
-    template.mastheadBgClass = template.pages[template.selectedPage].mastheadBgClass;
-    template.navBgClass = template.mastheadBgClass;
-
-    IOWA.Util.setMetaThemeColor(
-        template.rippleColors[template.mastheadBgClass]);
+    IOWA.Util.setMetaThemeColor('#CFD8DC'); // bg-medium-grey in colors.scss.
 
     template.timezoneNames = {
       'GMT-11:00': {
@@ -814,14 +803,6 @@ IOWA.Elements = (function() {
         return false;
       }
       return this.pages[pageName].selectedSubpage == subpageName;
-    };
-
-    template._computeMastheadClass = function(pages, selectedPage) {
-      return pages[selectedPage].mastheadBgClass;
-    };
-
-    template._computeSignNavElementsClass = function(isPhoneSize, pages, selectedPage) {
-      return isPhoneSize ? '' : pages[selectedPage].mastheadBgClass;
     };
 
     template._disableNotify = function(notify) {
