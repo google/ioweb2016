@@ -1,5 +1,5 @@
 <!--
-Copyright 2015 Google Inc. All rights reserved.
+Copyright 2016 Google Inc. All rights reserved.
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -12,7 +12,6 @@ limitations under the License.
 -->
 
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/core-scroll-threshold/core-scroll-threshold.html">
 
 <script src="countdown-timer-namespace.js"></script>
 <script src="countdown-timer-enumerations.js"></script>
@@ -24,36 +23,28 @@ Creates a countdown timer to a specific date.
 
 ##### Example
 
-    <countdown-timer date="Mar 10 2015 09:00:00 GMT-0700 (PDT)"></countdown-timer>
+    <countdown-timer date="May 10 2016 09:00:00 GMT-0700 (PDT)"></countdown-timer>
 
 ##### Example - all attributes
 
     <countdown-timer
         class="io-countdown-timer"
-        autostart
-        date="Mar 10 2015 09:00:00 GMT-0700 (PDT)"
-        dateadjustment="3"
-        easeintime="500"
-        waittime="300"
-        easeouttime="400"
-        bgcolor="red"></countdown-timer>
-
-@element countdown-timer
-@blurb Creates a countdown timer to a specific date.
-@status alpha
+        auto-start
+        date="May 10 2016 09:00:00 GMT-0700 (PDT)"
+        date-adjustment="3"
+        ease-in-time="500"
+        wait-time="300"
+        ease-out-time="400"
+        bg-color="red"></countdown-timer>
 -->
-<polymer-element name="countdown-timer"
-                 attributes="bgColor date dateAdjustment easeInTime waitTime easeOutTime autoStart thresholdInformation ended value">
+<dom-module id="countdown-timer">
   <template>
     <style>
       :host {
         display: block;
         width: 100%;
         height: 100%;
-        /*transition: opacity 400ms cubic-bezier(0,0,0.2,1);*/
-        /*opacity: 0;*/
       }
-
       .countdown-timer,
       #surface {
         width: 100%;
@@ -63,332 +54,289 @@ Creates a countdown timer to a specific date.
     <div class="countdown-timer">
       <canvas id="surface"></canvas>
     </div>
-    <core-scroll-threshold id="threshold"
-      on-lower-trigger="{{ start }}"
-      lowerTriggered="{{ lowerTriggered }}"
-      lowerThreshold="{{ lowerThreshold }}">
-    </core-scroll-threshold>
-
   </template>
   <script>
-  (function() {
-    Polymer({
+    (function() {
+      Polymer({
+        is: 'countdown-timer',
 
-      timer: null,
+        properties: {
+          /**
+           * Whether or not the countdown should begin immediately.
+           */
+          autoStart: {
+            type: Boolean,
+            value: false
+          },
 
-      /**
-       * The target date for the countdown. Should be specified in ISO 8601
-       * format, e.g. `Mar 10 2015 09:00:00 GMT-0700 (PDT)`.
-       *
-       * @attribute date
-       * @type string
-       * @default 'Mar 10 2015 09:00:00 GMT-0700 (PDT)'
-       */
-      date: 'Mar 10 2015 09:00:00 GMT-0700 (PDT)',
+          /**
+           * Background color for the countdown.
+           */
+          bgColor: {
+            type: String,
+            observer: '_bgColorChanged'
+          },
 
-      /**
-       * `dateAdjustment` adds the specified number of days to count down before
-       * displaying the final count. So, for example, if it is 75 days to the
-       * target date, a `dateAdjustment` of 3 will start the countdown at 78.
-       *
-       * @attribute dateAdjustment
-       * @type number
-       * @default 3
-       */
-      dateAdjustment: 3,
+          /**
+           * The target date for the countdown. Should be specified in ISO 8601
+           * format, e.g. `May 10 2016 09:00:00 GMT-0700 (PDT)`.
+           */
+          date: {
+            type: String,
+            value: 'May 10 2016 09:00:00 GMT-0700 (PDT)',
+            observer: '_configChanged'
+          },
 
-      /**
-       * The time, in milliseconds, that it takes for a number to transition in.
-       *
-       * @attribute dateAdjustment
-       * @type number
-       * @default 500
-       */
-      easeInTime: 500,
+          /**
+           * `dateAdjustment` adds the specified number of days to count down before
+           * displaying the final count. So, for example, if it is 75 days to the
+           * target date, a `dateAdjustment` of 3 will start the countdown at 78.
+           */
+          dateAdjustment: {
+            type: Number,
+            value: 3,
+            observer: '_configChanged'
+          },
 
-      /**
-       * The time, in milliseconds, that a number stays on screen.
-       *
-       * @attribute dateAdjustment
-       * @type number
-       * @default 300
-       */
-      waitTime: 300,
+          /**
+           * The time, in milliseconds, that it takes for a number to transition in.
+           */
+          easeInTime: {
+            type: Number,
+            value: 500,
+            observer: '_configChanged'
+          },
 
-      /**
-       * The time, in milliseconds, that a number takes to transition out.
-       *
-       * @attribute dateAdjustment
-       * @type number
-       * @default 400
-       */
-      easeOutTime: 400,
+          /**
+           * The time, in milliseconds, that a number takes to transition out.
+           */
+          easeOutTime: {
+            type: Number,
+            value: 400,
+            observer: '_configChanged'
+          },
 
-      /**
-       * Whether or not the countdown should begin immediately.
-       *
-       * @attribute autoStart
-       * @type boolean
-       * @default false
-       */
-      autoStart: false,
+          /**
+           * Used in the element's aria-label to describe what the countdown
+           * is countdown to.
+           */
+          label: {
+            type: String,
+            value: ''
+          },
 
-      /**
-       * The current value of the countdown.
-       *
-       * @attribute value
-       * @type number
-       * @default null
-       */
-      value: null,
+          /**
+           * If true, the countdown has reached the end.
+           */
+          ended: {
+            type: Boolean,
+            value: false,
+            notify: true,
+            readOnly: true,
+            reflectToAttribute: true
+          },
 
-      publish: {
+          thresholdInformation: {
+            value: function() {
+              return {
+                thresholdDays: false,
+                thresholdHours: false,
+                thresholdMinutes: false,
+                thresholdSeconds: false
+              };
+            },
+            notify: true
+          },
+
+
+          /**
+           * The underlying timer object.
+           */
+          timer: {
+            readOnly: true,
+            value: null
+          },
+
+          /**
+           * The current value of the countdown.
+           */
+          value: {
+            value: null,
+            notify: true
+          },
+
+          /**
+           * The time, in milliseconds, that a number stays on screen.
+           */
+          waitTime: {
+            type: Number,
+            value: 300,
+            observer: '_configChanged'
+          }
+        },
+
         /**
-         * If true, the countdown has reached the end.
+         * Fired when a new day/hour/seconds threshold is reached.
          *
-         * @attribute ended
-         * @type boolean
-         * @default false
+         * @event timerthreshold
+         * @param {Object} thresholdInformation
          */
-        ended: {value: false, reflect: true}
-      },
 
-      /**
-       * Fired when a new day/hour/seconds threshold is reached.
-       *
-       * @event timerthreshold
-       * @param {Object} thresholdInformation
-       */
+        /**
+         * Fired the current timer value has decremented.
+         *
+         * @event timertick
+         * @param {Object} currentValue
+         */
 
-      /**
-       * Fired the current timer value has decremented.
-       *
-       * @event timertick
-       * @param {Object} currentValue
-       */
+        ready: function() {
+          IOWA.CountdownTimer.Colors.Background = this.bgColor;
+        },
 
-      /**
-       * Stops the timer.
-       *
-       * @method stop
-       */
-      stop: function() {
-        this.timer.stop();
-      },
+        /**
+         * Lifecycle event that creates the timer, configures it, and either
+         * starts it (if `autoStart` === true) or draws the start value if not.
+         */
+        attached: function() {
+          // Create the timer and set it with whatever the current
+          // values are. If the user updates any values then the
+          // timer will get reconfigured.
+          this._setTimer(new IOWA.CountdownTimer.Element(this.$.surface));
+          this._configureTimer();
+          this.timer.setOnTimerThresholdReachedCallback(this._onTimerThresholdReached.bind(this));
+          this.timer.setOnTimerTickCallback(this._onTimerTick.bind(this));
 
-      /**
-       * Starts the timer.
-       *
-       * @method start
-       */
-      start: function() {
-        this.timer.start();
-      },
+          this.async(function() {
+            if (!this.autoStart) {
+              this.timer.drawIfAnimationIsNotRunning();
+              return;
+            }
+            this.start();
+            this.show();
+          });
+        },
 
-      dateChanged: function() {
-        if (!this.timer) return;
-        this.configureTimer_();
-        this.timer.drawIfAnimationIsNotRunning();
-      },
+        detached: function() {
+          this.timer.destroy();
+        },
 
-      dateAdjustmentChanged: function() {
-        if (!this.timer) return;
-        this.configureTimer_();
-        this.timer.drawIfAnimationIsNotRunning();
-      },
+        /**
+         * Stops the timer.
+         */
+        stop: function() {
+          this.timer.stop();
+        },
 
-      easeInTimeChanged: function() {
-        if (!this.timer) return;
-        this.configureTimer_();
-        this.timer.drawIfAnimationIsNotRunning();
-      },
+        /**
+         * Starts the timer.
+         */
+        start: function() {
+          this.timer.start();
+        },
 
-      easeOutTimeChanged: function() {
-        if (!this.timer) return;
-        this.configureTimer_();
-        this.timer.drawIfAnimationIsNotRunning();
-      },
-
-      waitTimeChanged: function() {
-        if (!this.timer) return;
-        this.configureTimer_();
-        this.timer.drawIfAnimationIsNotRunning();
-      },
-
-      created: function() {
-        this.thresholdInformation = {
-          thresholdDays: false,
-          thresholdHours: false,
-          thresholdMinutes: false,
-          thresholdSeconds: false
-        };
-      },
-
-      ready: function() {
-        IOWA.CountdownTimer.Colors.Background = this.bgColor;
-      },
-
-      /**
-       * Resets the timer.
-       *
-       * @method reset
-       */
-      reset: function() {
-        this.configureTimer_();
-        this.timer.drawIfAnimationIsNotRunning();
-      },
-
-      /**
-       * Forces the canvas to reassess and adopt
-       * its parent's dimensions.
-       */
-      show: function() {
-
-        if (!this.timer)
-          return;
-
-        this.style.opacity = 0;
-
-        // Fade in the countdown timer
-        this.async(function() {
-          this.timer.resizeRenderer();
-          this.style.opacity = 1;
-        }, null, 600);
-      },
-
-      bgColorChanged: function() {
-        IOWA.CountdownTimer.Colors.Background = this.bgColor;
-      },
-
-      /**
-       * Lifecycle event that creates the timer, configures it, and either
-       * starts it (if `autoStart` === true) or draws the start value if not.
-       *
-       * @private
-       */
-      attached: function() {
-        // Create the timer and set it with whatever the current
-        // values are. If the user updates any values then the
-        // timer will get reconfigured.
-        this.timer = new IOWA.CountdownTimer.Element(this.$.surface);
-        this.configureTimer_();
-        this.timer.setOnTimerThresholdReachedCallback(
-          this.onTimerThresholdReached_.bind(this));
-        this.timer.setOnTimerTickCallback(this.onTimerTick.bind(this));
-      },
-
-      detached: function() {
-        this.timer.destroy();
-      },
-
-      /**
-       * Lifecycle event that either draws the timer once or starts it (depends
-       * on `autoStart`'s value'). Moved to domReady to ensure that the canvas
-       * dimensions will be correct.
-       *
-       * @private
-       */
-      domReady: function() {
-
-        if (!this.autoStart) {
+        /**
+         * Resets the timer.
+         */
+        reset: function() {
+          this._configureTimer();
           this.timer.drawIfAnimationIsNotRunning();
+        },
 
-          // We need to add 100 onto the threshold because the main page is
-          // transformed 100px nearer the bottom when this calculation is made.
-          var THRESHOLD_ADJUSTMENT = 100;
+        /**
+         * Forces the canvas to reassess and adopt
+         * its parent's dimensions.
+         */
+        show: function() {
+          if (!this.timer) {
+            return;
+          }
+          Polymer.dom(this).node.style.opacity = 0;
+          // Fade in the countdown timer
+          this.async(function() {
+            this.timer.resizeRenderer();
+            Polymer.dom(this).node.style.opacity = 1;
+          }, 600);
+        },
 
-          // Make sure we only start the timer when we hit the top of the element.
-          var elementRect = this.getBoundingClientRect();
-          var thresholdValue = IOWA.Elements.ScrollContainer.scrollHeight -
-              Math.round(elementRect.bottom) + THRESHOLD_ADJUSTMENT;
+        _configChanged: function() {
+          if (!this.timer) {
+            return;
+          }
+          this._configureTimer();
+          this.timer.drawIfAnimationIsNotRunning();
+        },
 
-          this.lowerThreshold = thresholdValue;
-          this.$.threshold.scrollTarget = IOWA.Elements.ScrollContainer;
+        _bgColorChanged: function() {
+          IOWA.CountdownTimer.Colors.Background = this.bgColor;
+        },
 
-          return;
+        /**
+         * Fires an event from the countdown timer when it has reached a
+         * threshold, e.g. changed from hours to minutes, or the timer has
+         * finished.
+         *
+         * @param {{label: string, millisecondsToTarget: number, ended: boolean}} passes the label and the milliseconds remaining.
+         */
+        _onTimerThresholdReached: function(thresholdInformation) {
+          this.thresholdInformation = {
+            thresholdDays: false,
+            thresholdHours: false,
+            thresholdMinutes: false,
+            thresholdSeconds: false
+          };
+          switch (thresholdInformation.label) {
+            case 'Days':
+              this.set('thresholdInformation.thresholdDays', true);
+              break;
+            case 'Hours':
+              this.set('thresholdInformation.thresholdHours', true);
+              break;
+            case 'Minutes':
+              this.set('thresholdInformation.thresholdMinutes', true);
+              break;
+            case 'Seconds':
+              this.set('thresholdInformation.thresholdSeconds', true);
+              break;
+          }
+          if (thresholdInformation.millisecondsToTarget === 0) {
+            this._setEnded(true);
+            this.set('thresholdInformation.ended', true);
+          }
+          this.fire('timerthreshold', thresholdInformation);
+        },
+
+        _onTimerTick: function(currentValue) {
+          this.value = currentValue;
+          var label = this.label ? ', until ' + this.label : '';
+          Polymer.dom(this).setAttribute('aria-label',
+              currentValue.days + ' days, ' +
+              currentValue.hours + ' hours, ' +
+              currentValue.minutes + ' minutes, ' +
+              currentValue.seconds + ' seconds' + label);
+        },
+
+        /**
+         * Used to take the current values from the element's prototype to set
+         * the corresponding values on the timer.
+         */
+        _configureTimer: function() {
+          if (!this.timer) {
+            return;
+          }
+          var targetDate = Date.parse(this.date);
+          if (isNaN(targetDate)) {
+            targetDate = Date.now();
+          }
+          targetDate = new Date(targetDate);
+          this.timer.configure({
+            targetDate: targetDate,
+            adjustmentInDays: this.dateAdjustment,
+            easeInTime: this.easeInTime,
+            waitTime: this.waitTime,
+            easeOutTime: this.easeOutTime
+          });
         }
-
-        this.start();
-        this.show();
-      },
-
-      thresholdInformation: null,
-
-      /**
-       * Fires an event from the countdown timer when it has reached a
-       * threshold, e.g. changed from hours to minutes, or the timer has
-       * finished.
-       *
-       * @param {Object} passes the label and the milliseconds remaining.
-       * @private
-       */
-      onTimerThresholdReached_: function(thresholdInformation) {
-
-        this.thresholdInformation = {
-          thresholdDays: false,
-          thresholdHours: false,
-          thresholdMinutes: false,
-          thresholdSeconds: false
-        };
-
-        switch (thresholdInformation.label) {
-          case "Days":
-            this.thresholdInformation.thresholdDays = true;
-            break;
-
-          case "Hours":
-            this.thresholdInformation.thresholdHours = true;
-            break;
-
-          case "Minutes":
-            this.thresholdInformation.thresholdMinutes = true;
-            break;
-
-          case "Seconds":
-            this.thresholdInformation.thresholdSeconds = true;
-            break;
-        }
-
-        if (thresholdInformation.millisecondsToTarget === 0) {
-          this.ended = true;
-          thresholdInformation.ended = true;
-        }
-
-        this.fire('timerthreshold', thresholdInformation);
-      },
-
-      onTimerTick: function(currentValue) {
-        this.value = currentValue;
-      },
-
-      /**
-       * Used to take the current values from the element's prototype to set
-       * the corresponding values on the timer.
-       *
-       * @private
-       */
-      configureTimer_: function() {
-        if (!this.timer) return;
-
-        var targetDate = Date.parse(this.date);
-
-        if (isNaN(targetDate)) {
-          targetDate = Date.now();
-        }
-
-        targetDate = new Date(targetDate);
-
-        this.timer.configure({
-          targetDate: targetDate,
-          adjustmentInDays: this.dateAdjustment,
-          easeInTime: this.easeInTime,
-          waitTime: this.waitTime,
-          easeOutTime: this.easeOutTime
-        });
-      }
-
-    });
-
-  })();
+      });
+    }());
   </script>
-</polymer-element>
+</dom-module>
