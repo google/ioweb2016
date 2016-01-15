@@ -56,7 +56,7 @@ Creates a countdown timer to a specific date.
     </div>
   </template>
   <script>
-    (function () {
+    (function() {
       Polymer({
         is: 'countdown-timer',
 
@@ -148,15 +148,21 @@ Creates a countdown timer to a specific date.
             notify: true
           },
 
-          timer: { value: null },
+
+          /**
+           * The underlying timer object.
+           */
+          timer: {
+            readOnly: true,
+            value: null
+          },
 
           /**
            * The current value of the countdown.
            */
           value: {
             value: null,
-            notify: true,
-
+            notify: true
           },
 
           /**
@@ -195,10 +201,10 @@ Creates a countdown timer to a specific date.
           // Create the timer and set it with whatever the current
           // values are. If the user updates any values then the
           // timer will get reconfigured.
-          this.timer = new IOWA.CountdownTimer.Element(this.$.surface);
-          this.configureTimer_();
-          this.timer.setOnTimerThresholdReachedCallback(this.onTimerThresholdReached_.bind(this));
-          this.timer.setOnTimerTickCallback(this.onTimerTick.bind(this));
+          this._setTimer(new IOWA.CountdownTimer.Element(this.$.surface));
+          this._configureTimer();
+          this.timer.setOnTimerThresholdReachedCallback(this._onTimerThresholdReached.bind(this));
+          this.timer.setOnTimerTickCallback(this._onTimerTick.bind(this));
 
           this.async(function() {
             if (!this.autoStart) {
@@ -210,14 +216,14 @@ Creates a countdown timer to a specific date.
           });
         },
 
-        detached: function () {
+        detached: function() {
           this.timer.destroy();
         },
 
         /**
          * Stops the timer.
          */
-        stop: function () {
+        stop: function() {
           this.timer.stop();
         },
 
@@ -228,21 +234,11 @@ Creates a countdown timer to a specific date.
           this.timer.start();
         },
 
-        _configChanged: function() {
-          if (!this.timer) {
-            return;
-          }
-          this.configureTimer_();
-          this.timer.drawIfAnimationIsNotRunning();
-        },
-
         /**
          * Resets the timer.
-         *
-         * @method reset
          */
-        reset: function () {
-          this.configureTimer_();
+        reset: function() {
+          this._configureTimer();
           this.timer.drawIfAnimationIsNotRunning();
         },
 
@@ -256,10 +252,18 @@ Creates a countdown timer to a specific date.
           }
           Polymer.dom(this).node.style.opacity = 0;
           // Fade in the countdown timer
-          this.async(function () {
+          this.async(function() {
             this.timer.resizeRenderer();
             Polymer.dom(this).node.style.opacity = 1;
           }, 600);
+        },
+
+        _configChanged: function() {
+          if (!this.timer) {
+            return;
+          }
+          this._configureTimer();
+          this.timer.drawIfAnimationIsNotRunning();
         },
 
         _bgColorChanged: function() {
@@ -273,7 +277,7 @@ Creates a countdown timer to a specific date.
          *
          * @param {{label: string, millisecondsToTarget: number, ended: boolean}} passes the label and the milliseconds remaining.
          */
-        onTimerThresholdReached_: function(thresholdInformation) {
+        _onTimerThresholdReached: function(thresholdInformation) {
           this.thresholdInformation = {
             thresholdDays: false,
             thresholdHours: false,
@@ -281,18 +285,18 @@ Creates a countdown timer to a specific date.
             thresholdSeconds: false
           };
           switch (thresholdInformation.label) {
-          case 'Days':
-            this.set('thresholdInformation.thresholdDays', true);
-            break;
-          case 'Hours':
-            this.set('thresholdInformation.thresholdHours', true);
-            break;
-          case 'Minutes':
-            this.set('thresholdInformation.thresholdMinutes', true);
-            break;
-          case 'Seconds':
-            this.set('thresholdInformation.thresholdSeconds', true);
-            break;
+            case 'Days':
+              this.set('thresholdInformation.thresholdDays', true);
+              break;
+            case 'Hours':
+              this.set('thresholdInformation.thresholdHours', true);
+              break;
+            case 'Minutes':
+              this.set('thresholdInformation.thresholdMinutes', true);
+              break;
+            case 'Seconds':
+              this.set('thresholdInformation.thresholdSeconds', true);
+              break;
           }
           if (thresholdInformation.millisecondsToTarget === 0) {
             this._setEnded(true);
@@ -301,7 +305,7 @@ Creates a countdown timer to a specific date.
           this.fire('timerthreshold', thresholdInformation);
         },
 
-        onTimerTick: function(currentValue) {
+        _onTimerTick: function(currentValue) {
           this.value = currentValue;
           var label = this.label ? ', until ' + this.label : '';
           Polymer.dom(this).setAttribute('aria-label',
@@ -314,10 +318,8 @@ Creates a countdown timer to a specific date.
         /**
          * Used to take the current values from the element's prototype to set
          * the corresponding values on the timer.
-         *
-         * @private
          */
-        configureTimer_: function() {
+        _configureTimer: function() {
           if (!this.timer) {
             return;
           }

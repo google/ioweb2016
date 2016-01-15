@@ -4,14 +4,15 @@
 
 {% define "masthead" %}
 <div id="countdown-container" class="photo__masthead--fullbleed" fit>
-  <countdown-timer auto-start bg-color="#00BCD4"
+  <countdown-timer auto-start
+      bg-color="#00BCD4"
       date="{% .StartDateStr %}"
-      ease-in-time="490" wait-time="100"
+      ease-in-time="490"
+      wait-time="100"
       ease-out-time="400"
       value="{{countdownValue}}"
       label="Google I/O"
-      role="timer">
-  </countdown-timer>
+      role="timer"></countdown-timer>
 </div>
 {% end %}
 
@@ -110,7 +111,7 @@
   <template is="dom-if" if="{{fullscreenVideoActive}}">
     <div class="fullvideo__container" fit hidden>
       <img src="images/home/recap-500@2x.jpg" class="fullvideo_thumbnail" alt="Watch the I/O Recap Video" fit>
-      <google-youtube videoid="ksvdvCDO7pA" height="100%" width="100%" fit
+      <google-youtube video-id="ksvdvCDO7pA" height="100%" width="100%" fit
                       autohide="1" controls="2" modestbranding="1" showinfo="0"
                       iv_load_policy="3" rel="0" autoplay="1"></google-youtube>
     </div>
