@@ -38,6 +38,8 @@ IOWA.PageAnimation = (function() {
     fill: 'forwards'
   };
 
+  const RIPPLE_COLOR = '#fff';
+
   /**
    * Fades element out.
    * @param {Element} el DOM element.
@@ -400,20 +402,10 @@ IOWA.PageAnimation = (function() {
    */
   function playMastheadRippleTransition(startPage, endPage, e, sourceEl) {
     return new Promise(function(resolve, reject) {
-      var t = IOWA.Elements.Template;
-      var startBgClass = t.pages[startPage].mastheadBgClass;
-      var endBgClass = t.pages[endPage].mastheadBgClass;
-
-      var isFadeRipple = startBgClass === endBgClass;
-      var mastheadColor = t.rippleColors[startBgClass];
-      var rippleColor = isFadeRipple ? '#fff' : t.rippleColors[endBgClass];
-
       var x = e.touches ? e.touches[0].pageX : e.pageX;
       var y = e.touches ? e.touches[0].pageY : e.pageY;
-      var duration = 300;//isFadeRipple ? 300 : 600;
       var rippleAnim = rippleEffect(
-            IOWA.Elements.Ripple, x, y, duration,
-            rippleColor, isFadeRipple);
+          IOWA.Elements.Ripple, x, y, 300, RIPPLE_COLOR, true);
       var animation = new GroupEffect([rippleAnim, contentSlideOut()]);
       play(animation, resolve);
     });
@@ -426,10 +418,6 @@ IOWA.PageAnimation = (function() {
   function playHeroTransitionStart(startPage, endPage, e, sourceEl) {
     var touchData = (e.type == 'touchstart') ? e.touches[0] : e;
     return new Promise(function(resolve, reject) {
-      var t = IOWA.Elements.Template;
-      var endBgClass = t.pages[endPage].mastheadBgClass;
-      var rippleColor = t.rippleColors[endBgClass];
-
       // TODO: This may need some perf tweaking for FF.
       var card = null;
       var currentEl = sourceEl;
@@ -440,7 +428,7 @@ IOWA.PageAnimation = (function() {
         }
       }
       play(pageCardTakeoverOut(
-          card, touchData.pageX, touchData.pageY, 300, rippleColor), resolve);
+          card, touchData.pageX, touchData.pageY, 300, RIPPLE_COLOR), resolve);
     });
   }
 
