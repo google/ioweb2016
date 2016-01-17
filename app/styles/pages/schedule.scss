@@ -39,10 +39,6 @@ $name: 'page-schedule';
   paper-tab {
     flex: none;
   }
-
-  paper-dropdown-menu {
-    flex-shrink: 0;
-  }
 }
 
 .page__filters {
@@ -392,11 +388,6 @@ iron-icon[icon="schedule"] {
   }
   .masthead-container {
     padding-bottom: $subnavTabsPadding;
-  }
-  .masthead-meta {
-    paper-dropdown-menu {
-      right: $mobileKeyline + 40px; // fab width + mobileKeyline
-    }
   }
   .card__container {
     @include shadow-z1();

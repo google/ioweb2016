@@ -181,7 +181,6 @@ gulp.task('concat-and-uglify-js', ['js', 'generate-page-metadata'], function() {
     'main.js',
     'pages.js',
     '../bower_components/moment/moment.js',
-    '../bower_components/moment-timezone/builds/moment-timezone-with-data.min.js',
     'helper/util.js',
     '../bower_components/es6-promise/dist/es6-promise.min.js',
     'helper/auth.js',
