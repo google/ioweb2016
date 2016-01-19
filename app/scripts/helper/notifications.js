@@ -45,10 +45,10 @@ IOWA.Notifications = IOWA.Notifications || (function() {
   /**
    * {boolean} Whether the browser supports all the prerequisites for using push notifications.
    */
-  var isSupported = (window.ServiceWorkerRegistration &&
-                     window.ServiceWorkerRegistration.prototype.showNotification &&
-                     window.PushManager &&
-                     window.Notification) ? true : false;
+  var isSupported = Boolean(window.ServiceWorkerRegistration &&
+    window.ServiceWorkerRegistration.prototype.showNotification &&
+    window.PushManager &&
+    window.Notification);
 
   /**
    * Checks whether the logged in user has notifications enabled globally on our backend.
@@ -70,9 +70,9 @@ IOWA.Notifications = IOWA.Notifications || (function() {
     }).then(function(subscription) {
       if (subscription && subscription.endpoint) {
         return true;
-      } else {
-        return false;
       }
+
+      return false;
     }).catch(IOWA.Util.reportError);
   };
 
@@ -100,9 +100,9 @@ IOWA.Notifications = IOWA.Notifications || (function() {
         }
         // If subscribing succeeds, send the subscription to the server. Return a resolved promise.
         return enableNotificationsPromise_(endpoint);
-      } else {
-        throw Error('Unable to subscribe due to an unknown error.');
       }
+
+      throw Error('Unable to subscribe due to an unknown error.');
     });
   };
 
