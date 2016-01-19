@@ -15,6 +15,8 @@
  */
 
 (function() {
+  'use strict';
+
   function initWorker() {
     var MAX_WORKER_TIMEOUT_ = 10 * 1000; // 10s
     var worker;

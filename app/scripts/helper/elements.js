@@ -68,9 +68,7 @@ IOWA.Elements = (function() {
     var main = document.querySelector('.io-main');
 
     var drawer = document.querySelector('paper-drawer-panel');
-    drawer.addEventListener('iron-activate', function() {
-      this.closeDrawer();
-    });
+    drawer.addEventListener('iron-activate', drawer.closeDrawer);
 
     var masthead = document.querySelector('.masthead');
     var mastheadMeta = masthead.querySelector('.masthead-meta');
