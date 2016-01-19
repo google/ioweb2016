@@ -212,26 +212,13 @@ Fired when loading animation is complete.
         this.backgroundTarget = parent.querySelector('[iologobackground]');
         this.masthead = document.querySelector('.masthead');
         this.destination = document.querySelector('[iologodestination]');
-        this.fab = document.querySelector('.fab:not([hidden])');
         if (this.hideMasthead) {
           this.backgroundTarget.style.opacity = 0;
         }
-        // // If for some reason these animation elements are not in the DOM at this
-        // // point, wait for the auto-binding template to stamp them and retry.
-        // // Use the cached FAB var as an indicator the template has stamped.
-        // if (!(this.destination && this.fab && this.masthead)) {
-        //   var observer = new PathObserver(IOWA.Elements, 'FAB');
-        //   observer.open(function (fab, oldValue) {
-        //     if (fab) {
-        //       this.moveLogo();
-        //     }
-        //   }.bind(this));
-        //   return;
-        // }
+
         var current = this.getBoundingClientRect();
         var dest = this.destination.getBoundingClientRect();
         var mast = this.masthead.getBoundingClientRect();
-        var fabMetrics = this.fab.getBoundingClientRect();
         var containerWidth = document.documentElement.clientWidth;
         var containerHeight = document.documentElement.clientHeight;
         var diffX = dest.left - current.left;
@@ -242,8 +229,7 @@ Fired when loading animation is complete.
           diffY -= 62;
           scale = 0.18;
         }
-        // Ensure FAB is in front of masthead transition up.
-        this.fab.style.zIndex = getComputedStyle(this.parentElement).zIndex + 1;
+
         var animationProps = {
           duration: 500,
           fill: 'forwards',
@@ -255,21 +241,8 @@ Fired when loading animation is complete.
           { transform: 'translateY(0)' },
           { transform: 'translateY(-' + mastheadY + 'px)' }
         ], animationProps);
-        // Fab hangs onto the masthead as it comes up.
-        var fabAnimation = new KeyframeEffect(this.fab, [
-          { transform: 'translateY(' + (mastheadY + fabMetrics.height / 2) + 'px)' },
-          { transform: 'translateY(0)' }
-        ], {
-          // Safari can't run fab pull-up animation so make it 0 duration.
-          // For everything else, run animation slightly faster than the masthead (more ground to cover).
-          duration: IOWA.Util.isSafari() ? 0 : 485,
-          easing: 'cubic-bezier(0,0,0.21,1)'
-        });
+
         if (isMobileSize) {
-          // Initialize fab offscreen.
-          this.fab.style.transform = 'translateY(' +
-                (mastheadY + fabMetrics.height / 2) + 'px)';
-          // Fade out I/O logo then clip masthead background.
           var animations = new SequenceEffect([// I/O logo fade out.
             new KeyframeEffect(this, [
               { opacity: 1 },
@@ -283,7 +256,6 @@ Fired when loading animation is complete.
           // At the same time, clip masthead background and move I/O logo.
           var animations = new GroupEffect([
             mastheadClipAnimation,
-            fabAnimation,
             // I/O logo movement.
             new KeyframeEffect(this, [
               {transform: 'none'},
@@ -296,25 +268,12 @@ Fired when loading animation is complete.
           var el = this.parentElement;
           if (isMobileSize) {
             document.timeline.play(new GroupEffect([
-              fabAnimation,
               mastheadClipAnimation
             ])).onfinish = function(e) {
-              this.fab.style.transform = 'none';
-              // Remove transform.
-              if (this.fab.localName === 'experiment-fab-container') {
-                this.fab.style.zIndex = 'auto';
-              } else {
-                this.fab.style.zIndex = '3';
-              }
               Polymer.dom(el.parentElement).removeChild(el);
               this.fire('io-logo-animation-done');
             }.bind(this);
           } else {
-            if (this.fab.localName === 'experiment-fab-container') {
-              this.fab.style.zIndex = 'auto';
-            } else {
-              this.fab.style.zIndex = '3';
-            }
             Polymer.dom(el.parentElement).removeChild(el);
             this.fire('io-logo-animation-done');
           }

@@ -1,0 +1,69 @@
+<script>
+window.IOBehaviors = window.IOBehaviors || {};
+IOBehaviors.PageBehavior = {
+
+  properties: {
+    /*
+     * Name of the page to load.
+     */
+    name: {
+      type: String
+    }
+  },
+
+  attached: function() {
+    if (this.onPageTransitionDone) {
+      this.listen(document.body, 'page-transition-done', 'onPageTransitionDone');
+    }
+
+    // Update page meta data.
+    document.body.id = 'page-' + this.name;
+    document.title = this.title || 'Google I/O 2016';
+
+    // Scroll to top of new page.
+    if (IOWA.Elements.ScrollContainer) {
+      IOWA.Elements.ScrollContainer.scrollTop = 0;
+    }
+  },
+
+  detached: function() {
+    this.unlisten(document.body, 'page-transition-done', 'onPageTransitionDone');
+  },
+
+  limit: function(array, howMany) {
+    return array.slice(0, howMany);
+  },
+
+  _equal: function(key, val) {
+    return key === val;
+  },
+
+  _ternary: function(boolean, yes, no) {
+    return boolean ? yes : no;
+  },
+
+  _propOfArrayItem: function(array, index, prop) {
+    return array[index][prop];
+  },
+
+  _addClass: function(name, prop) {
+    return prop ? name : '';
+  },
+
+  _enableTabIndex: function(val) {
+    return val ? 0 : -1;
+  },
+
+  _isPage: function(page, selectedPage) {
+    return this._equal(page, selectedPage);
+  },
+
+  _isSelectedSubpage: function(pageName, subpageName) {
+    if (!this.pages) {
+      return false;
+    }
+    return this.pages[pageName].selectedSubpage == subpageName;
+  }
+
+};
+</script>

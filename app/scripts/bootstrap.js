@@ -91,9 +91,6 @@
           template.closeVideoSection();
         }
       }
-      if (template.extendedMapActive) {
-        template.closeExtendedMapSection();
-      }
       if (template.mapGalleryActive) {
         template.closeMapGallery();
       }

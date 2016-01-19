@@ -45,7 +45,7 @@
 
 .masthead {
   position: relative;
-  max-height: 550px;
+  // max-height: 550px;
 
   &.bg-medium-grey {
     color: $color-bluegrey-700;
@@ -279,9 +279,6 @@ paper-drawer-panel {
   right: $mobileKeyline;
   width: 56px;
   height: 56px;
-}
-
-paper-fab {
   background: #fff !important;
   position: absolute;
   color: $color-fab-icon !important;
@@ -292,11 +289,11 @@ paper-fab {
     width: 40px;
     height: 40px;
   }
-  .masthead {
-    .photo__masthead--fullbleed {
-      top: -$navbarHeightMobile;
-    }
-  }
+  // .masthead {
+  //   .photo__masthead--fullbleed {
+  //     top: -$navbarHeightMobile;
+  //   }
+  // }
   .masthead-container {
     @include keyline-16l();
 
@@ -323,15 +320,15 @@ paper-fab {
 
   .masthead {
     position: relative;
-    margin-bottom: -115px;
-    min-height: 540px;
-    height: 540px; // Needed due to https://connect.microsoft.com/IE/feedback/details/802625/min-height-and-flexbox-flex-direction-column-dont-work-together-in-ie-10-11-preview
+    // margin-bottom: -115px;
+    //min-height: 540px;
+    //height: 540px; // Needed due to https://connect.microsoft.com/IE/feedback/details/802625/min-height-and-flexbox-flex-direction-column-dont-work-together-in-ie-10-11-preview
   }
 
-  .masthead-container {
-    max-width: 704px;
-    padding: 0 0 170px 0;
-  }
+  // .masthead-container {
+  //   max-width: 704px;
+  //   padding: 0 0 170px 0;
+  // }
 
   .fab {
     bottom: -28px; // fab's height / 2

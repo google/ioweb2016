@@ -23,14 +23,6 @@
   z-index: 1;
 }
 
-paper-fab {
-  z-index: 2;
-}
-
-experiment-fab-container, .fab {
-  z-index: 3;
-}
-
 #page-schedule .masthead-meta,
 .card__signin-intro {
   z-index: 4;
@@ -62,12 +54,4 @@ io-gallery {
 
 .io-logo-container {
   z-index: 12; // highest
-}
-
-experiment-fab-container[playmode="playing"],
-experiment-fab-container[playmode="paused"] {
-  z-index: 100002 !important; // highest when playing
-}
-experiment-fab-container[playmode="paused"][mode="pre"] {
-  z-index: auto !important;
 }

@@ -1,0 +1,61 @@
+<dom-module id="shared-app-styles">
+  <template>
+    <style>
+      [layout] {
+        @apply(--layout);
+      }
+      [layout][horizontal] {
+        @apply(--layout-horizontal);
+      }
+      [layout][vertical] {
+        @apply(--layout-vertical);
+      }
+      [layout][center] {
+        @apply(--layout-center);
+      }
+      [layout][center-center] {
+        @apply(--layout-center-center);
+      }
+      [flex] {
+        @apply(--layout-flex);
+      }
+      [two] {
+        @apply(--layout-flex-2);
+      }
+      [end-justified] {
+        @apply(--layout-end-justified);
+      }
+      [end] {
+        @apply(--layout-end);
+      }
+      [justified] {
+        @apply(--layout-justified);
+      }
+      [self-center] {
+        @apply(--layout-self-center);
+      }
+      [wrap] {
+         @apply(--layout-wrap);
+      }
+
+      .scrollable {
+        @apply(--layout-scroll);
+      }
+
+      paper-tabs.white {
+        --paper-tabs-selection-bar-color: #fff;
+      }
+
+      paper-tabs.white paper-tab {
+        --paper-tab-ink: rgba(255,255,255,0.5);
+        --paper-tab-content: {
+          opacity: 1 !important;
+        };
+      }
+
+      paper-dialog {
+        --paper-font-title: {}; /* nuke paper-dialog's styling */
+      }
+    </style>
+  </template>
+</dom-module>
