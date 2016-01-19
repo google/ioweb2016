@@ -208,9 +208,9 @@ gulp.task('concat-and-uglify-js', ['js', 'generate-page-metadata'], function() {
   var analyticsScriptStream = gulp.src([IOWA.appDir + '/scripts/analytics.js']);
 
   var serviceWorkerScriptStream = gulp.src([
-    IOWA.appDir + '/bower_components/shed/shed.js',
+    IOWA.appDir + '/bower_components/sw-toolbox/sw-toolbox.js',
     IOWA.appDir + '/scripts/helper/simple-db.js',
-    IOWA.appDir + '/scripts/shed/*.js'
+    IOWA.appDir + '/scripts/sw-toolbox/*.js'
   ])
     .pipe(reload({stream: true, once: true}))
     .pipe($.concat('shed-scripts.js'));
@@ -362,9 +362,9 @@ gulp.task('generate-data-worker-dev', function() {
 // Generate serve-worker.js for local dev env.
 gulp.task('generate-service-worker-dev', ['sass'], function(callback) {
   del.sync([IOWA.appDir + '/service-worker.js']);
-  var importScripts = glob.sync('scripts/shed/*.js', {cwd: IOWA.appDir});
+  var importScripts = glob.sync('scripts/sw-toolbox/*.js', {cwd: IOWA.appDir});
   importScripts.unshift('scripts/helper/simple-db.js');
-  importScripts.unshift('bower_components/shed/shed.js');
+  importScripts.unshift('bower_components/sw-toolbox/sw-toolbox.js');
 
   // Run with --fetch-dev to generate a service-worker.js that will handle fetch events.
   // By default, the generated service-worker.js will precache resources, but not actually serve

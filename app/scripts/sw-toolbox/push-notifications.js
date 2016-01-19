@@ -126,7 +126,7 @@
     // Ensure that we have an up-to-date sessions feed cached.
     // This will happen aysnchronously, independent from the notification creation, so it shouldn't be
     // necessary to wait on the promise resolutions.
-    global.caches.open(global.shed.options.cacheName).then(function(cache) {
+    global.caches.open(global.toolbox.options.cacheName).then(function(cache) {
       cache.match(SCHEDULE_ENDPOINT).then(function(response) {
         if (response) {
           // If there's a cached sessions feed, then update the changed fields and replace the cached
@@ -140,7 +140,7 @@
           });
         } else {
           // If there isn't anything already cached for the sessions feed, then cache the whole thing.
-          global.shed.cache(SCHEDULE_ENDPOINT);
+          global.toolbox.cache(SCHEDULE_ENDPOINT);
         }
       });
     }).catch(function(error) {

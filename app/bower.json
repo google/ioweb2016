@@ -63,12 +63,12 @@
     "paper-tabs": "PolymerElements/paper-tabs#^1.0.0",
     "paper-toast": "PolymerElements/paper-toast#^1.0.0",
     "polymer": "Polymer/polymer#^1.2.3",
-    "shed": "wibblymat/shed#^1.0.0",
     "es6-promise": "jakearchibald/es6-promise#^3.0.2",
     "web-animations-js": "web-animations/web-animations-js#^2.1.4",
     "moment": "~2.11.0",
     "moment-timezone": "~0.5.0",
-    "elevator": "tholman/elevator.js#6279b1dd365143730b2cd0d211d7aa3aff1c1e1d"
+    "elevator": "tholman/elevator.js#6279b1dd365143730b2cd0d211d7aa3aff1c1e1d",
+    "sw-toolbox": "^3.1.1"
   },
   "resolutions": {
     "web-animations-js": "^2.1.4"

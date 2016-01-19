@@ -15,5 +15,5 @@
  */
 
 (function(global) {
-  global.shed.router.get('/(.+)', global.shed.cacheFirst, {origin: /https?:\/\/fonts.+/});
+  global.toolbox.router.get('/experiment/(.+)', global.toolbox.networkFirst);
 })(self);

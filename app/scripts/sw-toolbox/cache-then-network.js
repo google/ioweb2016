@@ -23,11 +23,11 @@
     // Never fall back on the SW cache if this is a request that uses auth, unless it's a request
     // that has the X-Cache-Only header set.
     if (request.headers.has('Authorization') && !request.headers.has('X-Cache-Only')) {
-      return global.shed.networkOnly(request);
+      return global.toolbox.networkOnly(request);
     }
 
     if (request.headers.get('X-Cache-Only') === 'true') {
-      return global.shed.cacheOnly(request).then(function(response) {
+      return global.toolbox.cacheOnly(request).then(function(response) {
         if (response) {
           return response;
         } else {
@@ -41,16 +41,16 @@
 
     // If this is a request with either 'X-Cache-Only: false' or just a normal request without
     // it set, then perform a HTTP fetch and cache the result.
-    return global.shed.networkFirst(request);
+    return global.toolbox.networkFirst(request);
   }
 
   // temporary_api is useful for testing against static content.
-  global.shed.router.get('/(.+)temporary_api/(.+)', serveFromCacheOrNetwork);
-  global.shed.router.get('/(.+)api/(.+)', serveFromCacheOrNetwork);
+  global.toolbox.router.get('/(.+)temporary_api/(.+)', serveFromCacheOrNetwork);
+  global.toolbox.router.get('/(.+)api/(.+)', serveFromCacheOrNetwork);
 
   global.addEventListener('message', function(event) {
     if (event.data === 'clear-cached-user-data') {
-      global.caches.open(global.shed.options.cacheName).then(function(cache) {
+      global.caches.open(global.toolbox.options.cacheName).then(function(cache) {
         cache.keys().then(function(requests) {
           return requests.filter(function(request) {
             return request.url.indexOf(USER_DATA_URL_SUBSTRING) !== -1;

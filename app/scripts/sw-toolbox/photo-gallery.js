@@ -15,5 +15,10 @@
  */
 
 (function(global) {
-  global.shed.router.get('/js/api.js', global.shed.networkFirst, {origin: 'https://apis.google.com'});
+  // Use a cache for the Picasa API response for the Google I/O photo album.
+  // global.toolbox.router.get('/data/feed/api/user/(.*)',
+  // global.toolbox.networkFirst, {origin: /https?:\/\/picasaweb.google.com/});
+  // Use a cache for the actual image files as well.
+  global.toolbox.router.get('/(.+)', global.toolbox.networkFirst,
+    {origin: /https?:\/\/lh\d*.googleusercontent.com/});
 })(self);

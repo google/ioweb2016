@@ -15,7 +15,7 @@
  */
 
 (function(global) {
-  var OFFLINE_ANALYTICS_DB_NAME = 'shed-offline-analytics';
+  var OFFLINE_ANALYTICS_DB_NAME = 'toolbox-offline-analytics';
   var EXPIRATION_TIME_DELTA = 86400000; // One day, in milliseconds.
   var ORIGIN = /https?:\/\/((www|ssl)\.)?google-analytics\.com/;
 
@@ -72,8 +72,8 @@
     });
   }
 
-  global.shed.router.get('/collect', handleAnalyticsCollectionRequest, {origin: ORIGIN});
-  global.shed.router.get('/analytics.js', global.shed.networkFirst, {origin: ORIGIN});
+  global.toolbox.router.get('/collect', handleAnalyticsCollectionRequest, {origin: ORIGIN});
+  global.toolbox.router.get('/analytics.js', global.toolbox.networkFirst, {origin: ORIGIN});
 
   replayQueuedAnalyticsRequests();
 })(self);
