@@ -21,8 +21,6 @@
 IOWA.Router_ = function(window) {
   'use strict';
 
-  var MASTHEAD_BG_CLASS_REGEX = /(\s|^)bg-[a-z-]+(\s|$)/;
-
   /**
    * Replaces in-page <script> tag in xhr'd body content with runnable script.
    *
@@ -248,7 +246,6 @@ IOWA.Router_ = function(window) {
 
     // Update menu/drawer/subtabs selected item.
     this.t.selectedPage = pageName;
-    // this.t.pages[pageName].selectedSubpage = this.state.current.subpage;
     this.t.set(['pages', pageName, 'selectedSubpage'], this.state.current.subpage);
 
     IOWA.Elements.DrawerMenu.selected = pageName;
@@ -257,16 +254,9 @@ IOWA.Router_ = function(window) {
     if (this.state.current.page !== this.state.start.page) {
       document.body.id = 'page-' + pageName;
       document.title = pageMeta.title || 'Google I/O 2016';
-      IOWA.Util.setMetaThemeColor(
-          IOWA.Elements.Template.rippleColors[pageMeta.mastheadBgClass]);
 
-      // This cannot be updated via data binding, because the masthead
-      // is visible before the binding happens.
-      IOWA.Elements.Masthead.className = IOWA.Elements.Masthead.className.replace(
-        MASTHEAD_BG_CLASS_REGEX, ' ' + pageMeta.mastheadBgClass + ' ');
       // Reset subpage, since leaving the page.
       var startPage = this.state.start.page;
-      // this.t.pages[startPage].selectedSubpage = startPage.defaultSubpage;
       this.t.set(['pages', startPage, 'selectedSubpage'], startPage.defaultSubpage);
       // Scroll to top of new page.
       IOWA.Elements.ScrollContainer.scrollTop = 0;

@@ -36,7 +36,7 @@ var (
 	templatesRoot = flag.String("d", "app/templates", "templates dir")
 
 	// metaTemplates defines which templates go into a page meta as string values.
-	metaTemplates = []string{"title", "mastheadBgClass", "defaultSubpage", "selectedSubpage"}
+	metaTemplates = []string{"title", "defaultSubpage", "selectedSubpage"}
 	// these are treated separately
 	skipFiles = []string{"embed.html"}
 )

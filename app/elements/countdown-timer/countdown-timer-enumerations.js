@@ -20,6 +20,13 @@ IOWA.CountdownTimer.Colors = {
   Label: 'hsla(0, 0%, 0%, 0.57)',
   Rundown: [
     {
+      background: {h: 198, s: 16, l: 84, a: 1},
+      dark: {h: 187, s: 100, l: 38, a: 1},
+      medium: {h: 187, s: 72, l: 71, a: 1},
+      light: {h: 187, s: 72, l: 93, a: 1}
+    },
+
+    {
       background: {h: 188, s: 83, l: 46, a: 1},
       dark: {h: 187, s: 100, l: 38, a: 1},
       medium: {h: 187, s: 72, l: 71, a: 1},

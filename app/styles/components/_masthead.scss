@@ -1,5 +1,5 @@
 /**
- * Copyright 2014 Google Inc. All rights reserved.
+ * Copyright 2016 Google Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@
   width: 60px;
 
   &.medium {
-    // height: 136px;
     width: 177px;
     height: 128px;
   }
@@ -30,9 +29,6 @@
     height: 184px;
     width: 256px;
   }
-  // &.huge {
-  //   height: 272px;
-  // }
 
   /* Adds a white circle behind the I/O logo as a focus state */
   &::after {
@@ -54,17 +50,9 @@
   &.bg-medium-grey {
     color: $color-bluegrey-700;
   }
-  &.bg-cyan {
-    color: $color-cyan-900;
-  }
-  &.bg-dark-grey {
-    color: $color-bluegrey-100;
-  }
-  &.bg-photo {
-    color: white;
-  }
 
   paper-toolbar {
+    // need :not(.style-scope) as to not collide with shady dom scoping for <io-logo> element.
     .io-logo:not(.style-scope) {
       margin-top: $mobileKeyline / 2;
       margin-left: $mobileKeyline / 2;
@@ -148,12 +136,11 @@ paper-drawer-panel {
 
 #navbar {
   background-color: transparent;
-  // height: $navbarHeight;
+  color: inherit;
 
   paper-tabs {
     display: none;
     text-transform: uppercase;
-    background-color: inherit;
   }
 
   paper-tab {
