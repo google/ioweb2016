@@ -36,9 +36,9 @@
         // This will cause the promise to reject, triggering the .catch() function.
         // It will also result in a generic HTTP error being returned to the controlled page.
         return Response.error();
+      } else {
+        return response;
       }
-
-      return response;
     }).catch(function() {
       queueFailedSessionUpdateRequest(request);
     });

@@ -17,7 +17,8 @@
 self.IOWA = self.IOWA || {};
 
 IOWA.Request = IOWA.Request || (function() {
-  'use strict';
+
+  "use strict";
 
   /**
    * Helper method to populate the Authorization header of an XMLHttpRequest.
@@ -76,7 +77,7 @@ IOWA.Request = IOWA.Request || (function() {
     freshXhr.setRequestHeader('X-Cache-Only', 'false');
 
     freshXhr.onload = function() {
-      if (this.status < 400 && this.response !== cachedResponse) {
+      if (this.status < 400 && this.response != cachedResponse) {
         // Indicate that we've received the fresh content, just in case the request for cached
         // content is still pending.
         freshContentPending = false;

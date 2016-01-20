@@ -15,7 +15,7 @@
  */
 
 IOWA.Elements = (function() {
-  'use strict';
+  "use strict";
 
   const ANALYTICS_LINK_ATTR = 'data-track-link';
 
@@ -34,7 +34,7 @@ IOWA.Elements = (function() {
 
   function updateElements() {
     var ioLogo = document.querySelector('io-logo');
-    ioLogo.addEventListener('io-logo-animation-done', function() {
+    ioLogo.addEventListener('io-logo-animation-done', function(e) {
       // Load auth after logo transition is done. This helps timing with
       // fetching user's schedule and makes sure the worker has returned
       // the main schedule data.
@@ -68,7 +68,9 @@ IOWA.Elements = (function() {
     var main = document.querySelector('.io-main');
 
     var drawer = document.querySelector('paper-drawer-panel');
-    drawer.addEventListener('iron-activate', drawer.closeDrawer);
+    drawer.addEventListener('iron-activate', function(e) {
+      this.closeDrawer();
+    });
 
     var masthead = document.querySelector('.masthead');
     var mastheadMeta = masthead.querySelector('.masthead-meta');
@@ -127,6 +129,7 @@ IOWA.Elements = (function() {
         // document.getElementById('template-masthead-container').stamp().root);
 // IOWA.Elements.Main.appendChild(
         // document.getElementById('template-content-container').stamp().root);
+
   }
 
   function init() {
@@ -161,144 +164,144 @@ IOWA.Elements = (function() {
 
     template.timezoneNames = {
       'GMT-11:00': {
-        name: 'US/Samoa',
-        title: 'Midway',
-        GMTOffset: -11 * 60
+        'name': 'US/Samoa',
+        'title': 'Midway',
+        'GMTOffset': -11 * 60
       },
       'GMT-10:00': {
-        name: 'US/Hawaii',
-        title: 'Hawaii-Aleutian Standard Time',
-        GMTOffset: -10 * 60
+        'name': 'US/Hawaii',
+        'title': 'Hawaii-Aleutian Standard Time',
+        'GMTOffset': -10 * 60
       },
       'GMT-08:00': {
-        name: 'US/Alaska',
-        title: 'Alaska Daylight Time',
-        GMTOffset: -8 * 60
+        'name': 'US/Alaska',
+        'title': 'Alaska Daylight Time',
+        'GMTOffset': -8 * 60
       },
       'GMT-07:00': {
-        name: 'US/Pacific',
-        title: 'Pacific Daylight Time, Tijuana',
-        GMTOffset: -7 * 60
+        'name': 'US/Pacific',
+        'title': 'Pacific Daylight Time, Tijuana',
+        'GMTOffset': -7 * 60
       },
       'GMT-06:00': {
-        name: 'US/Mountain',
-        title: 'Chihuahua, Mountain Daylight Time, Costa Rica, Regina',
-        GMTOffset: -6 * 60
+        'name': 'US/Mountain',
+        'title': 'Chihuahua, Mountain Daylight Time, Costa Rica, Regina',
+        'GMTOffset': -6 * 60
       },
       'GMT-05:00': {
-        name: 'US/Central',
-        title: 'Central Daylight Time, Mexico City, Bogota',
-        GMTOffset: -5 * 60
+        'name': 'US/Central',
+        'title': 'Central Daylight Time, Mexico City, Bogota',
+        'GMTOffset': -5 * 60
       },
       'GMT-04:00': {
-        name: 'US/Eastern',
-        title: 'Eastern Daylight Time, Barbados, Manaus',
-        GMTOffset: -5 * 60
+        'name': 'US/Eastern',
+        'title': 'Eastern Daylight Time, Barbados, Manaus',
+        'GMTOffset': -5 * 60
       },
       'GMT-04:30': {
-        name: 'America/Caracas',
-        title: 'Caracas',
-        GMTOffset: -4 * 60 + 30
+        'name': 'America/Caracas',
+        'title': 'Caracas',
+        'GMTOffset': -4 * 60 + 30
       },
       'GMT-03:00': {
-        name: 'America/Buenos_Aires',
-        title: 'Halifax, Santiago, São Paulo, Buenos Aires, Nuuk, Montevideo',
-        GMTOffset: -3 * 60
+        'name': 'America/Buenos_Aires',
+        'title': 'Halifax, Santiago, São Paulo, Buenos Aires, Nuuk, Montevideo',
+        'GMTOffset': -3 * 60
       },
       'GMT-02:30': {
-        name: 'Canada/Newfoundland',
-        title: 'St. John’s',
-        GMTOffset: -2 * 60 + 30
+        'name': 'Canada/Newfoundland',
+        'title': 'St. John’s',
+        'GMTOffset': -2 * 60 + 30
       },
       'GMT-02:00': {
-        name: 'Atlantic/South_Georgia',
-        title: 'South Georgia',
-        GMTOffset: -2 * 60
+        'name': 'Atlantic/South_Georgia',
+        'title': 'South Georgia',
+        'GMTOffset': -2 * 60
       },
       'GMT-01:00': {
-        name: 'Atlantic/Cape_Verde',
-        title: 'Cape Verde',
-        GMTOffset: -60
+        'name': 'Atlantic/Cape_Verde',
+        'title': 'Cape Verde',
+        'GMTOffset': -60
       },
       'GMT-00:00': {
-        name: 'GMT',
-        title: 'Azores',
-        GMTOffset: 0
+        'name': 'GMT',
+        'title': 'Azores',
+        'GMTOffset': 0
       },
       'GMT+01:00': {
-        name: 'Europe/London',
-        title: 'Casablanca,Lisbon,London,Windhoek,Brazzaville',
-        GMTOffset: 60
+        'name': 'Europe/London',
+        'title': 'Casablanca,Lisbon,London,Windhoek,Brazzaville',
+        'GMTOffset': 60
       },
       'GMT+02:00': {
-        name: 'Europe/Amsterdam',
-        title: 'Amsterdam,Belgrade,Brussels,Sarajevo,Cairo,Harare',
-        GMTOffset: 2 * 60
+        'name': 'Europe/Amsterdam',
+        'title': 'Amsterdam,Belgrade,Brussels,Sarajevo,Cairo,Harare',
+        'GMTOffset': 2 * 60
       },
       'GMT+03:00': {
-        name: 'Europe/Moscow',
-        title: 'Amman,Athens,Beirut,Helsinki,Jerusalem,Minsk,Baghdad,Moscow,Kuwait,Nairobi',
-        GMTOffset: 3 * 60
+        'name': 'Europe/Moscow',
+        'title': 'Amman,Athens,Beirut,Helsinki,Jerusalem,Minsk,Baghdad,Moscow,Kuwait,Nairobi',
+        'GMTOffset': 3 * 60
       },
       'GMT+04:00': {
-        name: 'Europe/Moscow',
-        title: 'Tbilisi,Yerevan,Dubai',
-        GMTOffset: 4 * 60
+        'name': 'Europe/Moscow',
+        'title': 'Tbilisi,Yerevan,Dubai',
+        'GMTOffset': 4 * 60
       },
       'GMT+04:30': {
-        name: 'Asia/Tehran',
-        title: 'Tehran, Kabul',
-        GMTOffset: 4 * 60 + 30
+        'name': 'Asia/Tehran',
+        'title': 'Tehran, Kabul',
+        'GMTOffset': 4 * 60 + 30
       },
       'GMT+05:00': {
-        name: 'Asia/Tehran',
-        title: 'Baku,Karachi,Oral,Yekaterinburg',
-        GMTOffset: 5 * 60
+        'name': 'Asia/Tehran',
+        'title': 'Baku,Karachi,Oral,Yekaterinburg',
+        'GMTOffset': 5 * 60
       },
       'GMT+05:45': {
-        name: 'Asia/Kathmandu',
-        title: 'Kathmandu',
-        GMTOffset: 5 * 60 + 45
+        'name': 'Asia/Kathmandu',
+        'title': 'Kathmandu',
+        'GMTOffset': 5 * 60 + 45
       },
       'GMT+06:00': {
-        name: 'Asia/Almaty',
-        title: 'Almaty',
-        GMTOffset: 6 * 60
+        'name': 'Asia/Almaty',
+        'title': 'Almaty',
+        'GMTOffset': 6 * 60
       },
       'GMT+07:00': {
-        name: 'Asia/Jakarta',
-        title: 'Krasnoyarsk, Bangkok, Jakarta',
-        GMTOffset: 7 * 60
+        'name': 'Asia/Jakarta',
+        'title': 'Krasnoyarsk, Bangkok, Jakarta',
+        'GMTOffset': 7 * 60
       },
       'GMT+08:00': {
-        name: 'Asia/Taipei',
-        title: 'Shanghai,Hong Kong,Irkutsk,Kuala Lumpur,Perth,Taipei',
-        GMTOffset: 8 * 60
+        'name': 'Asia/Taipei',
+        'title': 'Shanghai,Hong Kong,Irkutsk,Kuala Lumpur,Perth,Taipei',
+        'GMTOffset': 8 * 60
       },
       'GMT+09:00': {
-        name: 'Asia/Seoul',
-        title: 'Seoul, Tokyo, Yakutsk',
-        GMTOffset: 9 * 60
+        'name': 'Asia/Seoul',
+        'title': 'Seoul, Tokyo, Yakutsk',
+        'GMTOffset': 9 * 60
       },
       'GMT+09:30': {
-        name: 'Australia/Darwin',
-        title: 'Adelaide, Darwin',
-        GMTOffset: 9 * 60 + 30
+        'name': 'Australia/Darwin',
+        'title': 'Adelaide, Darwin',
+        'GMTOffset': 9 * 60 + 30
       },
       'GMT+10:00': {
-        name: 'Australia/Sydney',
-        title: 'Brisbane,Hobart,Sydney,Vladivostok,Guam,Magadan',
-        GMTOffset: 10 * 60
+        'name': 'Australia/Sydney',
+        'title': 'Brisbane,Hobart,Sydney,Vladivostok,Guam,Magadan',
+        'GMTOffset': 10 * 60
       },
       'GMT+12:00': {
-        name: 'Pacific/Auckland',
-        title: 'Majuro,Auckland,Fiji',
-        GMTOffset: 12 * 60
+        'name': 'Pacific/Auckland',
+        'title': 'Majuro,Auckland,Fiji',
+        'GMTOffset': 12 * 60
       },
       'GMT+13:00': {
-        name: 'Pacific/Tongatapu',
-        title: 'Tongatapu',
-        GMTOffset: 13 * 60
+        'name': 'Pacific/Tongatapu',
+        'title': 'Tongatapu',
+        'GMTOffset': 13 * 60
       }
     };
 
@@ -335,7 +338,7 @@ IOWA.Elements = (function() {
       }
       var superAwesomeSessionId = '21718f8b-b6d4-e411-b87f-00155d5066d7';
       var superAwesomeSession = null;
-      var filteredSessions = this.scheduleData.sessions.filter(function(s) {
+      var filteredSessions = this.scheduleData.sessions.filter(function(s, i) {
         if (s.id === superAwesomeSessionId) {
           superAwesomeSession = s;
         }
@@ -350,7 +353,7 @@ IOWA.Elements = (function() {
 
     template.formatSessionTagsFilter = function(tagList) {
       if (!tagList) {
-        return undefined;
+        return;
       }
       var list = tagList.map(function(tag) {
         tag = this.scheduleData.tags[tag];
@@ -391,7 +394,7 @@ IOWA.Elements = (function() {
       nav.classList.toggle('active');
     };
 
-    template.closeVideoCard = function() {
+    template.closeVideoCard = function(e, detail) {
       this.cardVideoTakeover(this.currentCard, true);
       this.toggleVideoOverlayNav();
     };
@@ -442,18 +445,19 @@ IOWA.Elements = (function() {
         direction: reverse ? 'reverse' : 'normal'
       });
 
-      playButtonPlayer.onfinish = function() {
+      playButtonPlayer.onfinish = function(e) {
+
         var startTransform = 'translate(' + cardPhotoMetrics.left + 'px, ' + top + 'px) ' +
                              'scale(' + scaleX + ', ' + scaleY + ')';
 
-        if (reverse) {
-          // Fade in thumbnail before shrinking.
-          thumbnail.classList.remove('fadeout');
-        } else {
+        if (!reverse) {
           // Scale down the video container before unhiding it.
           // TODO(ericbidelman): shouldn't have to do this. The initial state
           // is setup in the animate() below.
           videoContainer.style.transform = videoContainer.style.webkitTransform = startTransform;
+        } else {
+          // Fade in thumbnail before shrinking.
+          thumbnail.classList.remove('fadeout');
         }
 
         // Container is shrunk and in the card's location.
@@ -471,7 +475,7 @@ IOWA.Elements = (function() {
           easing: 'cubic-bezier(0.4,0,0.2,1)'
         });
 
-        player.onfinish = function() {
+        player.onfinish = function(e) {
           if (reverse) {
             this.fullscreenVideoActive = false; // remove from DOM.
             this.currentCard = null;
@@ -483,7 +487,7 @@ IOWA.Elements = (function() {
       }.bind(this);
     };
 
-    template.playVideo = function(e) {
+    template.playVideo = function(e, detail) {
       this.currentCard = Polymer.dom(e).rootTarget;
       this.fullscreenVideoActive = true; // Active the placeholder template.
 
@@ -496,7 +500,7 @@ IOWA.Elements = (function() {
       });
     };
 
-    template.openVideo = function(e) {
+    template.openVideo = function(e, detail) {
       var path = Polymer.dom(e).path;
 
       var target = null;
@@ -526,7 +530,7 @@ IOWA.Elements = (function() {
       var videoContainer = document.querySelector('.fullvideo__container');
       var video = videoContainer.querySelector('google-youtube');
 
-      video.addEventListener('google-youtube-ready', function() {
+      video.addEventListener('google-youtube-ready', function(e) {
         video.videoId = videoId;
         this.cardVideoTakeover(this.currentCard);
       }.bind(this));
@@ -535,11 +539,11 @@ IOWA.Elements = (function() {
       thumbnail.src = this.currentCard.getAttribute('data-videoimg'); // IE10 doesn't support .dataset.
     };
 
-    template.closeMastheadVideo = function() {
+    template.closeMastheadVideo = function(e, detail) {
       this.mastheadVideoActive = false;
     };
 
-    template.openMastheadVideo = function(e) {
+    template.openMastheadVideo = function(e, detail) {
       var target = Polymer.dom(e).rootTarget;
 
       IOWA.Analytics.trackEvent(
@@ -552,14 +556,14 @@ IOWA.Elements = (function() {
       var dialog = IOWA.Elements.Main.querySelector('paper-dialog');
       var video = dialog.querySelector('google-youtube');
 
-      video.addEventListener('google-youtube-ready', function() { // eslint-disable-line no-extra-bind
+      video.addEventListener('google-youtube-ready', function(e) {
         // First session is the keynote.
         // video.videoId = this.toVideoIdFilter(this.scheduleData.sessions[0].youtubeUrl);
         dialog.toggle();
       }.bind(this));
     };
 
-    template.openShareWindow = function(e) {
+    template.openShareWindow = function(e, detail) {
       e.preventDefault();
 
       var type = Polymer.dom(e).rootTarget.getAttribute('data-share-type');
@@ -570,15 +574,18 @@ IOWA.Elements = (function() {
                        height + ',width=' + width;
 
       var title = document.title;
+      var summary = null;
 
 // TODO: update for polymer 1.0 port
       var selectedSession = Polymer.dom(e).rootTarget.templateInstance.model.selectedSession;
       if (selectedSession) {
         title = selectedSession.title;
+        summary = selectedSession.description;
       }
 
       // Shorten current URL so it's ready to go.
       IOWA.Util.shortenURL(location.href).then(function(shortURL) {
+
         switch (type) {
           case 'fb':
             height = 229;
@@ -618,9 +625,10 @@ IOWA.Elements = (function() {
 
         window.open(url, 'share', winOptions);
       });
+
     };
 
-    template.openSettings = function(e) {
+    template.openSettings = function(e, detail) {
       var attr = Polymer.dom(e).rootTarget.getAttribute(ANALYTICS_LINK_ATTR);
       if (attr) {
         IOWA.Analytics.trackEvent('link', 'click', attr);
@@ -632,7 +640,7 @@ IOWA.Elements = (function() {
       this.selectedPage = 'home';
     };
 
-    template.backToTop = function(e) {
+    template.backToTop = function(e, detail) {
       e.preventDefault();
 
       // Audio from BenSound (http://www.bensound.com/) - Creative Commons.
@@ -678,7 +686,7 @@ IOWA.Elements = (function() {
       IOWA.Elements.GoogleSignIn.signOut();
     };
 
-    template.updateNotifyUser = function(e) {
+    template.updateNotifyUser = function(e, detail) {
       // Both these functions are asynchronous and return promises. Since there's no specific
       // callback or follow-up that needs to be performed once they complete, the returned promise
       // is ignored.
@@ -752,24 +760,24 @@ IOWA.Elements = (function() {
       }
     };
 
-    template.shiftContentLeft = function() {
+    template.shiftContentLeft = function(e, detail) {
       IOWA.PageAnimation.shiftContentLeft(
           IOWA.Elements.Main.querySelector('.featured__videos'));
     };
 
-    template.shiftContentRight = function() {
+    template.shiftContentRight = function(e, detail) {
       IOWA.PageAnimation.shiftContentRight(
           IOWA.Elements.Main.querySelector('.featured__videos'));
     };
 
     template.addEventListener('dom-change', updateElements);
 
-    template.addEventListener('page-transition-done', function() {
+    template.addEventListener('page-transition-done', function(e) {
       this.pageTransitionDone = true;
       IOWA.Elements.NavPaperTabs.style.pointerEvents = '';
     });
 
-    template.addEventListener('page-transition-start', function() {
+    template.addEventListener('page-transition-start', function(e) {
       this.pageTransitionDone = false;
       IOWA.Elements.NavPaperTabs.style.pointerEvents = 'none';
     });
@@ -794,7 +802,7 @@ IOWA.Elements = (function() {
       if (!this.pages) {
         return false;
       }
-      return this.pages[pageName].selectedSubpage === subpageName;
+      return this.pages[pageName].selectedSubpage == subpageName;
     };
 
     template._disableNotify = function(notify) {
