@@ -96,7 +96,7 @@ Fired when the user toggles bookmarking/removing a session.
           </div>
 
           <template is="dom-repeat" items="[[sessions]]" as="session"
-                    filter="matchesFilters" observe="saved">
+                    filter="matchesFilters" observe="saved" initial-count="10">
 
             <template is="dom-if" if="[[session.firstOfBlock]]">
               <div class="schedule-row" hidden$="{{!_showSession(session, day)}}">
@@ -144,7 +144,7 @@ Fired when the user toggles bookmarking/removing a session.
             <div class="card-content" layout vertical>
 
               <template id="schedulelist" is="dom-repeat" items="[[sessions]]"
-                        as="session" filter="matchesFilters">
+                        as="session" filter="matchesFilters" initial-count="10">
 
                 <template is="dom-if" if="[[session.firstOfBlock]]">
                   <div class="schedule-row" hidden$="{{!_showSession(session, day)}}">
