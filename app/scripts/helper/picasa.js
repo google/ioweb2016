@@ -17,8 +17,7 @@
 window.IOWA = window.IOWA || {};
 
 IOWA.Picasa = (function() {
-
-  "use strict";
+  'use strict';
 
   var API_ENDPOINT = 'api/v1/photoproxy';
   var GDEVELOPER_USER_ID = '111395306401981598462';
@@ -32,7 +31,7 @@ IOWA.Picasa = (function() {
     return 'https://picasaweb.google.com/data/feed/api/user/' +
            GDEVELOPER_USER_ID + '/albumid/' + albumId +
            '?alt=jsonc&kind=photo&hl=' + lang +
-           '&imgmax=' + Math.min(parseInt(viewPortWidth * (window.devicePixelRatio || 1)), 1440) +
+           '&imgmax=' + Math.min(parseInt(viewPortWidth * (window.devicePixelRatio || 1), 10), 1440) +
            '&max-results=5000&v=2';
   }
 
@@ -45,8 +44,8 @@ IOWA.Picasa = (function() {
 
     var xhr = new XMLHttpRequest();
     xhr.open('GET', url);
-    xhr.onload = function(e) {
-      if (this.status != 200) {
+    xhr.onload = function() {
+      if (this.status !== 200) {
         return;
       }
       var photos = JSON.parse(this.response).data.items;
@@ -64,5 +63,4 @@ IOWA.Picasa = (function() {
     fetchPhotos: fetchPhotos,
     fetchExtendedPhotos: fetchExtendedPhotos
   };
-
 })();

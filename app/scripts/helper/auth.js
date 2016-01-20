@@ -17,8 +17,7 @@
 window.IOWA = window.IOWA || {};
 
 IOWA.Auth = IOWA.Auth || (function() {
-
-  "use strict";
+  'use strict';
 
   // TODO: Find a place to store constants that are shared between the controlled page and SW.
   var DB_KEY = 'token';
@@ -167,5 +166,4 @@ IOWA.Auth = IOWA.Auth || (function() {
     getTokenResponse: getTokenResponse_,
     waitForSignedIn: waitForSignedIn
   };
-
 })();

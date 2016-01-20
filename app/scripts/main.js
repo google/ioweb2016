@@ -25,5 +25,4 @@
   // exports.addEventListener('page-transition-done', function(e) {
   //   // TODO
   // })
-
 })(window);

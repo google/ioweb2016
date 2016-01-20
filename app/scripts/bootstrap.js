@@ -15,6 +15,7 @@
  */
 
 (function() {
+  'use strict';
 
   function initWorker() {
     var MAX_WORKER_TIMEOUT_ = 10 * 1000; // 10s
@@ -36,12 +37,15 @@
       worker = new Worker('data-worker-scripts.js');
     }
 
+    var workerFetchTime;
+    if (doMetrics) {
+      workerFetchTime = window.performance.now();
+    }
+
     worker.addEventListener('message', function(e) {
       if (!e.data) {
         return;
       }
-
-      var template = IOWA.Elements.Template;
 
       var data = e.data;
       if (data.scheduleData) {
@@ -59,16 +63,11 @@
       }
     });
 
-    var workerFetchTime;
-    if (doMetrics) {
-      workerFetchTime = window.performance.now();
-    }
-
     worker.postMessage({cmd: 'FETCH_SCHEDULE'});
   }
 
   function afterImports() {
-    IOWA.Router = IOWA.Router_(window);
+    IOWA.Router = IOWA.Router_(window); // eslint-disable-line new-cap
     IOWA.Elements.init();
     IOWA.Router.init(IOWA.Elements.Template);
     IOWA.Notifications.init();
@@ -109,15 +108,13 @@
     IOWA.Elements.Drawer.closeDrawer();
   });
 
-  window.addEventListener('offline', function(e) {
+  window.addEventListener('offline', function() {
     IOWA.Elements.Toast.showMessage(
         'Offline. Changes you make to My Schedule will be saved for later.');
   });
 
   // Watch for sign-in changes to fetch user schedule, update UI, etc.
   window.addEventListener('signin-change', function(e) {
-    var template = IOWA.Elements.Template;
-
     if (e.detail.signedIn) {
       // Check to see if there are any failed session modification requests, and
       // if so, replay them before fetching the user schedule.
@@ -138,7 +135,6 @@
           }
         });
       }
-
     } else {
       IOWA.Schedule.clearUserSchedule();
     }

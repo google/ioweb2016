@@ -15,7 +15,7 @@
  */
 
 IOWA.ServiceWorkerRegistration = (function() {
-  "use strict";
+  'use strict';
 
   // Ensure we only attempt to register the SW once.
   var isAlreadyRegistered = false;
@@ -31,7 +31,7 @@ IOWA.ServiceWorkerRegistration = (function() {
           // Check to see if there's an updated version of service-worker.js with new files to cache:
           // https://slightlyoff.github.io/ServiceWorker/spec/service_worker/index.html#service-worker-registration-update-method
           // Note: registration.update() is not yet widely implemented.
-          if (typeof registration.update == 'function') {
+          if (typeof registration.update === 'function') {
             registration.update();
           }
 
@@ -50,7 +50,7 @@ IOWA.ServiceWorkerRegistration = (function() {
                   break;
 
                 case 'redundant':
-                  throw 'The installing service worker became redundant.';
+                  throw Error('The installing service worker became redundant.');
               }
             };
           };
