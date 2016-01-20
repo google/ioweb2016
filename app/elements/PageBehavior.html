@@ -30,7 +30,18 @@ IOBehaviors.PageBehavior = {
     this.unlisten(document.body, 'page-transition-done', 'onPageTransitionDone');
   },
 
-  limit: function(array, howMany) {
+  scrollLock: function(enable) {
+    document.body.classList.toggle('noscroll', enable);
+  },
+
+  _toVideoIdFilter: function(youtubeUrl) {
+    if (!youtubeUrl) {
+      return youtubeUrl;
+    }
+    return youtubeUrl.replace(/https?:\/\/youtu\.be\//, '');
+  },
+
+  _limit: function(array, howMany) {
     return array.slice(0, howMany);
   },
 
@@ -54,8 +65,8 @@ IOBehaviors.PageBehavior = {
     return val ? 0 : -1;
   },
 
-  _isPage: function(page, selectedPage) {
-    return this._equal(page, selectedPage);
+  _isPage: function(pageName, selectedPageName) {
+    return this._equal(pageName, selectedPageName);
   },
 
   _isSelectedSubpage: function(pageName, subpageName) {
@@ -63,6 +74,10 @@ IOBehaviors.PageBehavior = {
       return false;
     }
     return this.pages[pageName].selectedSubpage == subpageName;
+  },
+
+  _applyActiveClassWhenSubpage: function(selectedSubpage, subpageName) {
+    return this._addClass('active', selectedSubpage === subpageName);
   }
 
 };

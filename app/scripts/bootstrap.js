@@ -83,7 +83,7 @@
       if (template.photoGalleryActive) {
         template.togglePhotoGallery();
       }
-      if (template.fullscreenVideoActive) {
+      if (template.app.fullscreenVideoActive) {
         if (template.closeVideoCard) {
           template.closeVideoCard();
         }

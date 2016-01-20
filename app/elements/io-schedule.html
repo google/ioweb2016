@@ -398,8 +398,8 @@ Fired when the user toggles bookmarking/removing a session.
 
           if (day !== 'myschedule') {
             var dayAsNumber = parseInt(day.split('day')[1]); // 'day1' => 1
-            var ioStartDay = new Date(this.gmtDayOne).getDate(); // 28
-            var dateIndex = (session.day % ioStartDay); // May 28 === 0
+            var ioStartDay = new Date(this.gmtDayOne).getDate(); // 18
+            var dateIndex = (session.day % ioStartDay); // May 18 === 0
 
             if (!isNaN(dayAsNumber) && (dateIndex + 1) === dayAsNumber) {
               showSession = true;

@@ -398,6 +398,12 @@ limitations under the License.
           <template is="dom-if" name="onsite" restamp>
             <io-onsite-page app="[[app]]"></io-onsite-page>
           </template>
+          <template is="dom-if" name="schedule" restamp>
+            <io-schedule-page
+                app="[[app]]"
+                user="[[currentUser]]"
+                date="{% .StartDateStr %}"></io-schedule-page>
+          </template>
         </lazy-pages>
 
       </main>

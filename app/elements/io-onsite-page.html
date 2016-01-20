@@ -15,6 +15,7 @@ limitations under the License.
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/paper-toolbar/paper-toolbar.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 
 <link rel="import" href="io-gallery.html">
 <link rel="import" href="shared-app-styles.html">
@@ -29,7 +30,7 @@ limitations under the License.
   </style>
 
 <div class="masthead-container" layout horizontal end>
-  <div>
+  <div class="masthead-meta">
     <h1>Onsite</h1>
     <paper-tabs id="subpage-tabs" class="white"
                 selected="{{selectedSubpage}}"
@@ -64,7 +65,7 @@ limitations under the License.
 
 <div class="subpage__container">
 
-  <section class$="subpage-event subpage__content {{_activeClassForSubpageSelection(selectedSubpage, 'event')}}">
+  <section class$="subpage-event subpage__content {{_applyActiveClassWhenSubpage(selectedSubpage, 'event')}}">
 
     <div class="card__container card__container--top slide-up">
       <div class="card">
@@ -145,7 +146,7 @@ limitations under the License.
   </section>
 
   <section
-      class$="subpage-travel subpage__content {{_activeClassForSubpageSelection(selectedSubpage, 'travel')}}">
+      class$="subpage-travel subpage__content {{_applyActiveClassWhenSubpage(selectedSubpage, 'travel')}}">
 
     <div class="card__container card__container--top slide-up">
       <div class="card">
@@ -258,17 +259,13 @@ limitations under the License.
       this.mapGalleryActive = false;
 
       // Wait 1 rAF for template to stamp.
-      IOWA.Elements.Template.async(function() {
+      this.async(function() {
         IOWA.A11y.addFocusStates(SUBTAB_SELECTOR);
       });
     },
 
     detached: function() {
       IOWA.A11y.removeFocusStates(SUBTAB_SELECTOR);
-    },
-
-    _activeClassForSubpageSelection: function(selectedSubpage, subpageName) {
-      return this._addClass('active', selectedSubpage === subpageName);
     },
 
     runMapGalleryAnimation: function(opt_reverse, opt_callback) {

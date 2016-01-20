@@ -35,25 +35,27 @@ limitations under the License.
   </style>
 
   <div class="masthead-container" layout horizontal end>
-    <div id="countdown-container" class="photo__masthead--fullbleed" fit>
-      <countdown-timer auto-start
-          bg-color="rgb(83,97,250)"
-          date="[[date]]"
-          ease-in-time="490"
-          wait-time="100"
-          ease-out-time="400"
-          value="{{countdownValue}}"
-          label="Google I/O"
-          role="timer"></countdown-timer>
+    <div class="masthead-meta">
+      <div id="countdown-container" fit>
+        <countdown-timer auto-start
+            bg-color="rgb(83,97,250)"
+            date="[[date]]"
+            ease-in-time="490"
+            wait-time="100"
+            ease-out-time="400"
+            value="{{countdownValue}}"
+            label="Google I/O"
+            role="timer"></countdown-timer>
+      </div>
     </div>
   </div>
 
   <!-- <paper-toolbar class="navbar__overlay navbar__overlay--video"
-                 aria-hidden$="{{!fullscreenVideoActive}}" fit>
+                 aria-hidden$="{{!app.fullscreenVideoActive}}" fit>
     <paper-icon-button icon="arrow-back"
         on-tap="closeVideoCard"
         aria-label="Close video"
-        tabindex="[[_enableTabIndex(fullscreenVideoActive)]]"></paper-icon-button>
+        tabindex="[[_enableTabIndex(app.fullscreenVideoActive)]]"></paper-icon-button>
     <span flex>Watch the 2014 I/O Recap Video</span>
   </paper-toolbar> -->
 
@@ -123,7 +125,7 @@ limitations under the License.
 
         <template is="dom-if" if="[[_showSocialPosts(socialPosts, 3)]]">
           <div class="sidebyside" layout horizontal vertical$="{{app.isPhoneSize}}">
-            <template is="dom-repeat" items="{{limit(socialPosts, 3)}}" as="post">
+            <template is="dom-repeat" items="{{_limit(socialPosts, 3)}}" as="post">
               <social-post kind="[[post.kind]]"
                            author="[[post.author]]"
                            url="[[post.url]]"
@@ -138,7 +140,7 @@ limitations under the License.
     </div>
   </div>
 
-  <template is="dom-if" if="{{fullscreenVideoActive}}">
+  <template is="dom-if" if="{{app.fullscreenVideoActive}}">
     <div class="fullvideo__container" fit hidden>
       <img src="images/home/recap-500@2x.jpg" class="fullvideo_thumbnail" alt="Watch the I/O Recap Video" fit>
       <google-youtube video-id="ksvdvCDO7pA" height="100%" width="100%" fit

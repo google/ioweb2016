@@ -47,7 +47,7 @@ limitations under the License.
   </style>
 
   <div class="masthead-container" layout horizontal end>
-    <div>
+    <div class="masthead-meta">
       <h1>About</h1>
     </div>
   </div>
@@ -227,6 +227,19 @@ limitations under the License.
         this.photoGalleryActive = false;
       }.bind(this));
       history.replaceState({}, null, location.pathname); // Remove #photos hash from URL.
+    },
+
+    playVideo: function(e, detail) {
+      this.currentCard = Polymer.dom(e).rootTarget;
+      this.set('app.fullscreenVideoActive', true); // Active the placeholder template.
+
+      IOWA.Analytics.trackEvent(
+          'link', 'click', this.currentCard.getAttribute(ANALYTICS_LINK_ATTR));
+
+      // Wait one rAF for template to have stamped.
+      this.async(function() {
+        this.cardVideoTakeover(this.currentCard);
+      });
     },
 
     togglePhotoGallery: function(e, detail) {

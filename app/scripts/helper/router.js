@@ -23,25 +23,6 @@ IOWA.Router_ = function(window) {
   "use strict";
 
   /**
-   * Replaces in-page <script> tag in xhr'd body content with runnable script.
-   *
-   * @param {Node} node Container element to replace script content.
-   * @private
-   */
-  function replaceScriptTagWithRunnableScript(node) {
-    var script = document.createElement('script');
-    script.text = node.text || node.textContent || node.innerHTML;
-    // IE doesn't execute the script when it's appended to the middle
-    // of the DOM. Append it to body instead, then remove.
-    if (IOWA.Util.isIE()) {
-      document.body.appendChild(script);
-      document.body.removeChild(script);
-    } else {
-      node.parentNode.replaceChild(script, node); // FF
-    }
-  }
-
-  /**
    * @constructor
    */
   var Router = function() {};
@@ -137,87 +118,6 @@ IOWA.Router_ = function(window) {
     'page-slide-transition': 'playPageSlideIn'
   };
 
-  // /**
-  //  * Imports the content of a new page via HTML Import.
-  //  * @return {Promise}
-  //  * @private
-  //  */
-  // Router.prototype.importPage = function() {
-  //   var pageName = this.state.end.page;
-
-  //   return new Promise(function(resolve, reject) {
-  //     Polymer.Base.importHref(pageName + '?partial', function(e) {
-  //       // Don't proceed if import didn't load correctly.
-  //       var htmlImport = e.target.import;
-  //       // FF doesn't execute the <script> inside the main content <template>
-  //       // (inside page partial import). Instead, the first time the partial is
-  //       // loaded, find any script tags in and make them runnable by appending
-  //       // them back to the template.
-  //       if (IOWA.Util.isFF() || IOWA.Util.isIE()) {
-  //         var contentTemplate = document.querySelector(
-  //            '#template-' + pageName + '-content');
-  //         if (!contentTemplate) {
-  //           var containerTemplate = htmlImport.querySelector(
-  //               '[data-ajax-target-template="template-content-container"]');
-  //           var scripts = containerTemplate.content.querySelectorAll('script');
-  //           Array.prototype.forEach.call(scripts, function(node, i) {
-  //             replaceScriptTagWithRunnableScript(node);
-  //           });
-  //         }
-  //       }
-  //       // Update content of the page.
-  //       resolve(htmlImport);
-  //     }, function(e) {
-  //       console.error('Page could not be dynamically loaded', e);
-  //       IOWA.Util.reportError(e);
-  //       reject(e);
-  //     }, true);
-  //   });
-  // };
-
-  // /**
-  //  * Swaps in partial from new imported template content.
-  //  * @return {Promise}
-  //  * @private
-  //  */
-  // Router.prototype.renderTemplates = function(importContent) {
-  //   var pageName = this.state.end.page;
-
-  //   return new Promise(function(resolve, reject) {
-  //     // Add freshly fetched templates to DOM, if not yet present.
-  //     var newTemplates = importContent.querySelectorAll('.js-ajax-template');
-  //     for (var i = 0; i < newTemplates.length; ++i) {
-  //       var newTmpl = newTemplates[i];
-  //       if (!document.getElementById(newTmpl.id)) {
-  //         document.body.appendChild(newTmpl);
-  //       }
-  //     }
-  //     // Replace current templates content with new one.
-  //     var existingTemplates = document.querySelectorAll('.js-ajax-' + pageName);
-  //     for (var j = 0; j < existingTemplates.length; ++j) {
-  //       var tmpl = existingTemplates[j];
-  //       var template = document.getElementById(
-  //           tmpl.getAttribute('data-ajax-target-template'));
-  //       if (template) {
-  //         // template.setAttribute('ref', tmpl.id);
-  //         template.innerHTML = '';
-  //         // var content = document.importNode(tmpl.content, true);
-  //         var content = tmpl.content;
-  //         // var content = tmpl.stamp().root;
-
-  //         // TODO: polymer 1.0 update. Find solution for dynamic pages.
-  //         // For page transitions, content does not contain upgraded elements.
-  //         template.appendChild(content);
-  //       }
-  //     }
-
-  //     // Wait for the template ref= to settle.
-  //     // IOWA.Elements.Template.async(function() {
-  //       resolve();
-  //     // });
-  //   });
-  // };
-
   /**
    * Runs custom page handlers for load, unload, transitions if one is present.
    * @param {string} funcName 'load', 'unload' or 'onPageTransitionDone'.
@@ -240,22 +140,20 @@ IOWA.Router_ = function(window) {
    */
   Router.prototype.updateUIstate = function() {
     var pageName = this.state.current.page;
-
     IOWA.Elements.DrawerMenu.selected = pageName;
 
     // Show correct subpage.
     var subpages = IOWA.Elements.Main.querySelectorAll('.subpage__content');
     var selectedSubpageSection = IOWA.Elements.Main.querySelector(
         '.subpage-' + this.state.current.subpage);
+
     if (selectedSubpageSection) {
-      for (var i = 0; i < subpages.length; i++) {
-        var subpage = subpages[i];
+      Array.prototype.forEach.call(subpages, function(subpage) {
         subpage.style.display = 'none';
-        subpage.classList.remove('active');
-      }
+      });
       selectedSubpageSection.style.display = '';
-      selectedSubpageSection.classList.add('active');
     }
+
     // If current href is different than the url, update it in the browser.
     if (this.state.current.href !== window.location.href) {
       history.pushState({
@@ -293,31 +191,16 @@ IOWA.Router_ = function(window) {
     var enterAnimation = IOWA.PageAnimation[Router.pageEnterTransitions[transition]];
 
     exitAnimation(router.state.start.page, router.state.end.page, e, source)
-      // // Run page's custom unload handlers.
-      // .then(this.runPageHandler.bind(this, 'unload', this.state.start.page))
-      // // Fetch the content of the new page.
-      // .then(this.importPage.bind(this))
-      // .then(function(htmlImport) {
-      //   return new Promise(function(resolve, reject) {
-      //     // Run page's custom load handlers.
-      //     this.runPageHandler('load', router.state.end.page);
-      //     resolve(htmlImport);
-      //   }.bind(this));
-      // }.bind(this))
-      // Render the content of the new page.
-      // .then(this.renderTemplates.bind(this))
       .then(function() {
-        // Select page in lazy-pages.
+        // Select page in lazy-pages. In its own promise so the router state
+        // happens in the next tick.
         IOWA.Elements.LazyPages.selected = router.state.end.page;
       })
       .then(function() {
-        return new Promise(function(resolve, reject) {
-          // Update state of the page in Router.
-          router.state.current = router.parseUrl(router.state.end.href);
-          // Update UI state based on the router's state.
-          router.updateUIstate();
-          resolve();
-        });
+        // Update state of the page in Router.
+        router.state.current = router.parseUrl(router.state.end.href);
+        // Update UI state based on the router's state.
+        router.updateUIstate();
       })
       .then(enterAnimation)
       .then(function() {
@@ -355,8 +238,10 @@ IOWA.Router_ = function(window) {
         })
         // Play entry sequence.
         .then(IOWA.PageAnimation.playSectionSlideIn.bind(null, newSubpage))
-        .then(this.runPageHandler.bind(
-            this, 'onSubpageTransitionDone', router.state.current.page));
+        .then(function() {
+          router.runPageHandler(
+              'onSubpageTransitionDone', IOWA.Elements.LazyPages.selectedPage);
+        });
     }
   };
 
