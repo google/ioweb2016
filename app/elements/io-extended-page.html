@@ -15,7 +15,6 @@ limitations under the License.
 <link rel="import" href="../bower_components/paper-toolbar/paper-toolbar.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 
-<!-- <link rel="import" href="io-gallery.html"> -->
 <link rel="import" href="shared-app-styles.html">
 <link rel="import" href="PageBehavior.html">
 
@@ -40,19 +39,6 @@ limitations under the License.
         tabindex="{{_enableTabIndex(app.fullscreenVideoActive)}}"></paper-icon-button>
     <span flex>Watch the 2014 I/O Extended recap video</span>
   </paper-toolbar>
-
-  <!-- <paper-toolbar class="navbar__overlay navbar__overlay--gallery"
-                 aria-hidden$="{{!photoGalleryActive}}" fit>
-    <paper-icon-button icon="arrow-back" on-tap="closeExtendedPhotoGallery"
-        aria-label="Close gallery"
-        tabindex="{{_enableTabIndex(photoGalleryActive)}}"></paper-icon-button>
-    <span flex>I/O Extended Photos</span>
-  </paper-toolbar> -->
-
-  <!-- <io-gallery id="gallery" hidden$="{{!photoGalleryActive}}"
-              mobile="[[app.isPhoneSize]]"
-              image-path="media.image.url"
-              active="{{photoGalleryActive}}" fit></io-gallery> -->
 
   <template is="dom-if" if="[[app.fullscreenVideoActive]]" restamp>
     <div class="fullvideo__container" fit>
@@ -141,65 +127,13 @@ limitations under the License.
 
     behaviors: [IOBehaviors.PageBehavior],
 
-    properties: {
-      // /*
-      //  * True if the photo gallery overlay is active.
-      //  */
-      // photoGalleryActive: {
-      //   type: Boolean,
-      //   value: false
-      // }
-    },
-
     title: 'I/O Extended',
     name: 'offsite',
 
     attached: function() {
       // Reset state for when revisiting the page.
-      //this.photoGalleryActive = false;
       this.set('app.fullscreenVideoActive', false);
     },
-
-    // onPageTransitionDone: function(e) {
-    //   if (!this.$.gallery.items.length) {
-    //     IOWA.Picasa.fetchExtendedPhotos(function(photos) {
-    //       this.$.gallery.items = photos;
-    //     }.bind(this));
-    //   }
-
-    //   if (location.hash.substring(1) == 'photos') {
-    //     this.toggleExtendedGallery(e);
-    //   }
-    // },
-
-    // closeExtendedPhotoGallery: function(e) {
-    //   this.runExtendedGalleryAnimation(true, function() {
-    //     this.photoGalleryActive = false;
-    //   });
-
-    //   history.replaceState({}, null, window.location.pathname); // Remove #photos hash from URL.
-    // },
-
-    // toggleExtendedGallery: function(e) {
-    //   e.preventDefault();
-
-    //   var target = Polymer.dom(e).rootTarget;
-
-    //   if (target && target.hasAttribute('data-track-link')) {
-    //     IOWA.Analytics.trackEvent(
-    //         'link', 'click', target.getAttribute('data-track-link'));
-    //   } else {
-    //     IOWA.Analytics.trackEvent('link', 'click', 'onsite-photos-extended-deeplink');
-    //   }
-
-    //   if (!this.photoGalleryActive) {
-    //     this.photoGalleryActive = true;
-    //     this.runExtendedGalleryAnimation();
-    //   } else {
-    //     this.runExtendedGalleryAnimation(true); // reverse animation when gallery is open.
-    //     this.photoGalleryActive = false;
-    //   }
-    // },
 
     onOffsiteVideoReady: function() {
       this.runVideoSectionAnimation();
@@ -285,31 +219,7 @@ limitations under the License.
         ]), opt_callback);
         navOverlay.classList.add('active');
       }
-    },
-
-    // runExtendedGalleryAnimation: function(opt_reverse, opt_callback) {
-    //   var root = Polymer.dom(this.root);
-    //   var navOverlay = root.querySelector('.navbar__overlay--gallery');
-
-    //   var reverse = opt_reverse || false;
-
-    //   var animation = new KeyframeEffect(this.$.gallery, [
-    //     {opacity: 0}, {opacity: 1}
-    //   ], {
-    //     duration: 500,
-    //     fill: 'forwards',
-    //     direction: reverse ? 'reverse' : 'normal',
-    //     easing: 'cubic-bezier(0.4,0,0.2,1)'
-    //   });
-
-    //   IOWA.PageAnimation.play(animation, opt_callback);
-
-    //   if (reverse) {
-    //     navOverlay.classList.remove('active');
-    //   } else {
-    //     navOverlay.classList.add('active');
-    //   }
-    // }
+    }
   });
 
 })();

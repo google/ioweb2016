@@ -1,4 +1,11 @@
 <script>
+/**
+`IOBehaviors.PageBehavior` provides common functionality and util methods for
+page elements.
+
+@polymerBehavior IOBehaviors.PageBehavior
+*/
+
 (function() {
 'use strict';
 
@@ -7,7 +14,7 @@ IOBehaviors.PageBehavior = {
 
   properties: {
     /*
-     * Name of the page to load.
+     * Slug name of the page.
      */
     name: {
       type: String
@@ -33,10 +40,21 @@ IOBehaviors.PageBehavior = {
     this.unlisten(document.body, 'page-transition-done', 'onPageTransitionDone');
   },
 
+  /**
+   * Prevents main page scrolling.
+   *
+   * @param {boolean} enable Disabled scrolling when truthy.
+   */
   scrollLock: function(enable) {
     document.body.classList.toggle('noscroll', enable);
   },
 
+  /**
+   * Returns the video ID of a Youtube embed URL.
+   *
+   * @param {string} youtubeUrl A full URL to a Youtube video.
+   * @return {string} video id.
+   */
   _toVideoIdFilter: function(youtubeUrl) {
     if (!youtubeUrl) {
       return youtubeUrl;
@@ -44,6 +62,12 @@ IOBehaviors.PageBehavior = {
     return youtubeUrl.replace(/https?:\/\/youtu\.be\//, '');
   },
 
+  /**
+   * Returns a subset of an array
+   *
+   * @param {array} array The array.
+   * @param {number} howMany A full URL to a youtube video.
+   */
   _limit: function(array, howMany) {
     return array.slice(0, howMany);
   },

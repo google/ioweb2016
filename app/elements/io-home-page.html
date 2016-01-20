@@ -12,15 +12,13 @@ limitations under the License.
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<!-- <link rel="import" href="../bower_components/iron-media-query/iron-media-query.html"> -->
-<!-- <link rel="import" href="../bower_components/iron-a11y-keys/iron-a11y-keys.html"> -->
-<!-- <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html"> -->
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/paper-progress/paper-progress.html">
 <link rel="import" href="../bower_components/google-youtube/google-youtube.html">
 
 <link rel="import" href="social-poller.html">
 <link rel="import" href="social-post.html">
+<link rel="import" href="countdown-timer/countdown-timer.html">
 
 <link rel="import" href="shared-app-styles.html">
 <link rel="import" href="PageBehavior.html">
@@ -49,15 +47,6 @@ limitations under the License.
       </div>
     </div>
   </div>
-
-  <!-- <paper-toolbar class="navbar__overlay navbar__overlay--video"
-                 aria-hidden$="{{!app.fullscreenVideoActive}}" fit>
-    <paper-icon-button icon="arrow-back"
-        on-tap="closeVideoCard"
-        aria-label="Close video"
-        tabindex="[[_enableTabIndex(app.fullscreenVideoActive)]]"></paper-icon-button>
-    <span flex>Watch the 2014 I/O Recap Video</span>
-  </paper-toolbar> -->
 
   <div class="active">
     <div class="card__container card__container--top slide-up">
@@ -200,7 +189,7 @@ limitations under the License.
         }
 
         IOWA.Schedule.bookmarkSessionNotification(
-            true, "You'll be reminded when I/O starts.")
+            true, 'You\'ll be reminded when I/O starts.');
       }.bind(this));
     },
 
