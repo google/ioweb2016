@@ -19,7 +19,8 @@
   */
 
 IOWA.Router_ = function(window) {
-  'use strict';
+
+  "use strict";
 
   /**
    * Replaces in-page <script> tag in xhr'd body content with runnable script.
@@ -100,7 +101,7 @@ IOWA.Router_ = function(window) {
           return;
         }
         // Use IOWA.Util.smoothScroll for scroll links.
-        if (el.getAttribute('data-transition') === 'smooth-scroll') {
+        if (el.getAttribute('data-transition') == 'smooth-scroll') {
           e.preventDefault();
           return;
         }
@@ -159,7 +160,7 @@ IOWA.Router_ = function(window) {
             var containerTemplate = htmlImport.querySelector(
                 '[data-ajax-target-template="template-content-container"]');
             var scripts = containerTemplate.content.querySelectorAll('script');
-            Array.prototype.forEach.call(scripts, function(node) {
+            Array.prototype.forEach.call(scripts, function(node, i) {
               replaceScriptTagWithRunnableScript(node);
             });
           }
@@ -182,7 +183,7 @@ IOWA.Router_ = function(window) {
   Router.prototype.renderTemplates = function(importContent) {
     var pageName = this.state.end.page;
 
-    return new Promise(function(resolve) {
+    return new Promise(function(resolve, reject) {
       // Add freshly fetched templates to DOM, if not yet present.
       var newTemplates = importContent.querySelectorAll('.js-ajax-template');
       for (var i = 0; i < newTemplates.length; ++i) {
@@ -212,7 +213,7 @@ IOWA.Router_ = function(window) {
 
       // Wait for the template ref= to settle.
       // IOWA.Elements.Template.async(function() {
-      resolve();
+        resolve();
       // });
     });
   };
@@ -226,7 +227,7 @@ IOWA.Router_ = function(window) {
    */
   Router.prototype.runPageHandler = function(funcName, pageName) {
     var template = this.t;
-    return new Promise(function(resolve) {
+    return new Promise(function(resolve, reject) {
       var page = template.pages[pageName];
       if (page && page[funcName]) {
         // If page we're going to has a load handler, run it.
@@ -277,7 +278,7 @@ IOWA.Router_ = function(window) {
     // If current href is different than the url, update it in the browser.
     if (this.state.current.href !== window.location.href) {
       history.pushState({
-        path: this.state.current.path + this.state.current.hash
+        'path': this.state.current.path + this.state.current.hash
       }, '', this.state.current.href);
     }
   };
@@ -313,7 +314,7 @@ IOWA.Router_ = function(window) {
       // Fetch the content of the new page.
       .then(this.importPage.bind(this))
       .then(function(htmlImport) {
-        return new Promise(function(resolve) {
+        return new Promise(function(resolve, reject) {
           // Run page's custom load handlers.
           this.runPageHandler('load', router.state.end.page);
           resolve(htmlImport);
@@ -322,7 +323,7 @@ IOWA.Router_ = function(window) {
       // Render the content of the new page.
       .then(this.renderTemplates.bind(this))
       .then(function() {
-        return new Promise(function(resolve) {
+        return new Promise(function(resolve, reject) {
           // Update state of the page in Router.
           router.state.current = router.parseUrl(router.state.end.href);
           // Update UI state based on the router's state.
@@ -419,14 +420,14 @@ IOWA.Router_ = function(window) {
     // Get subpage from url or set to the default subpage for this page.
     var subpage = hashParts[0] || defaultSubpage;
     return {
-      pathname: parser.pathname,
-      search: parser.search,
-      hash: parser.hash,
-      href: parser.href,
-      page: page,
-      subpage: subpage,
-      resourceId: hashParts[1],
-      params: params
+      'pathname': parser.pathname,
+      'search': parser.search,
+      'hash': parser.hash,
+      'href': parser.href,
+      'page': page,
+      'subpage': subpage,
+      'resourceId': hashParts[1],
+      'params': params
     };
   };
 

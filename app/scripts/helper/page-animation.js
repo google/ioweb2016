@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-/**
- * @fileOverview Animations for page transitions.
- */
+ /**
+  * @fileOverview Animations for page transitions.
+  */
 
 IOWA.PageAnimation = (function() {
+
   var CONTENT_SLIDE_DURATION = 300;
   var CONTENT_SLIDE_DELAY = 200;
   var CONTENT_SLIDE_EASING = 'cubic-bezier(0.4, 0, 0.2, 1)';
@@ -43,7 +44,7 @@ IOWA.PageAnimation = (function() {
    * Fades element out.
    * @param {Element} el DOM element.
    * @param {Object} option Options for the transition, e.g. duration.
-   * @return {KeyframeEffect} Ripple animation definition.
+   * @return {Animation} Ripple animation definition.
    */
   function elementFadeOut(el, options) {
     options.fill = 'forwards'; // Always keep the state at the end of animation.
@@ -54,7 +55,7 @@ IOWA.PageAnimation = (function() {
    * Fades element in.
    * @param {Element} el DOM element.
    * @param {Object} option Options for the transition, e.g. duration.
-   * @return {KeyframeEffect} Ripple animation definition.
+   * @return {Animation} Ripple animation definition.
    */
   function elementFadeIn(el, options) {
     options.fill = 'forwards'; // Always keep the state at the end of animation.
@@ -65,7 +66,7 @@ IOWA.PageAnimation = (function() {
    * Returns an animation to slide out and fade out a section of a page.
    * Used together with sectionSlideIn for subpage transitions.
    * @param {Element} section Section to slide out.
-   * @return {KeyframeEffect} Page animation definition.
+   * @return {Animation} Page animation definition.
    */
   function sectionSlideOut(section) {
     var main = section.querySelector('.slide-up');
@@ -80,7 +81,7 @@ IOWA.PageAnimation = (function() {
     };
     return new GroupEffect([
       new KeyframeEffect(main, [start, end], CONTENT_SLIDE_DELAY_OPTIONS),
-      new KeyframeEffect(mainDelayed, [start, end], CONTENT_SLIDE_OPTIONS)
+      new KeyframeEffect(mainDelayed, [start, end], CONTENT_SLIDE_OPTIONS),
     ]);
   }
 
@@ -103,7 +104,7 @@ IOWA.PageAnimation = (function() {
     };
     return new GroupEffect([
       new KeyframeEffect(main, [start, end], CONTENT_SLIDE_OPTIONS),
-      new KeyframeEffect(mainDelayed, [start, end], CONTENT_SLIDE_DELAY_OPTIONS)
+      new KeyframeEffect(mainDelayed, [start, end], CONTENT_SLIDE_DELAY_OPTIONS),
     ]);
   }
 
@@ -141,8 +142,8 @@ IOWA.PageAnimation = (function() {
    */
   function navSlideOut() {
     return new KeyframeEffect(IOWA.Elements.Nav, [
-      {transform: 'translateY(0)'},
-      {transform: 'translateY(-100%)'}
+       {transform: 'translateY(0)'},
+       {transform: 'translateY(-100%)'}
     ], CONTENT_SLIDE_OPTIONS);
   }
 
@@ -152,8 +153,8 @@ IOWA.PageAnimation = (function() {
    */
   function navSlideIn() {
     return new KeyframeEffect(IOWA.Elements.Nav, [
-      {transform: 'translateY(-100%)'},
-      {transform: 'translateY(0)'}
+       {transform: 'translateY(-100%)'},
+       {transform: 'translateY(0)'}
     ], CONTENT_SLIDE_OPTIONS);
   }
 
@@ -214,13 +215,14 @@ IOWA.PageAnimation = (function() {
   /**
    * An animation for the page slide in transition. It slides the content in
    * and fades in the masthead meta and IO logo.
-   * @return {GroupEffect} Ripple animation definition.
+   * @return {Animation} Ripple animation definition.
    */
   function pageSlideIn() {
-    return new GroupEffect([
+    var animationGroup =  new GroupEffect([
       contentSlideIn(),
-      elementFadeIn(IOWA.Elements.MastheadMeta, CONTENT_SLIDE_OPTIONS)
+      elementFadeIn(IOWA.Elements.MastheadMeta, CONTENT_SLIDE_OPTIONS),
     ], CONTENT_SLIDE_OPTIONS);
+    return animationGroup;
   }
 
   /**
@@ -228,7 +230,7 @@ IOWA.PageAnimation = (function() {
    *     plays a ripple on itself and grows to cover the masthead.
    * @param {Element} card Card DOM element.
    * @param {number} x X coordinate of the center of the ripple.
-   * @param {number} y Y coordinate of the center of the ripple.
+   * @param {number} x Y coordinate of the center of the ripple.
    * @param {number} duration Duration of the animation.
    * @param {string} color Color of the ripple.
    * @return {Animation} Ripple animation definition.
@@ -244,7 +246,7 @@ IOWA.PageAnimation = (function() {
     var scaleY = mastheadRect.height / rippleRect.height;
     var scale = 'scale(' + scaleX + ', ' + scaleY + ')';
     var translate = 'translate3d(' + (-rippleRect.left) + 'px,' +
-      (-rippleRect.top) + 'px, 0)';
+        (-rippleRect.top)  + 'px, 0)';
 
     card.style.transformOrigin = '0 0';
     card.style.webkitTransformOrigin = '0 0';
@@ -295,7 +297,7 @@ IOWA.PageAnimation = (function() {
     var transform = container.style.transform;
 
     // "translate3d(100px, 0px, 0px)" -> 100
-    var lastX = transform ? parseInt(transform.split('(')[1].split(',')[0], 10) : 0;
+    var lastX = transform ? parseInt(transform.split('(')[1].split(',')[0]) : 0;
 
     var cardRect = container.querySelector('.item:last-of-type').getBoundingClientRect();
     var cardWidth = cardRect.width;
@@ -314,7 +316,7 @@ IOWA.PageAnimation = (function() {
     var transform = container.style.transform;
 
     // "translate3d(100px, 0px, 0px)" -> 100
-    var lastX = transform ? parseInt(transform.split('(')[1].split(',')[0], 10) : 0;
+    var lastX = transform ? parseInt(transform.split('(')[1].split(',')[0]) : 0;
 
     var containerWidth = container.getBoundingClientRect().width;
     var cardRect = container.querySelector('.item:last-of-type').getBoundingClientRect();
@@ -348,13 +350,14 @@ IOWA.PageAnimation = (function() {
    * Slides in the content of the page.
    */
   function playPageSlideIn() {
-    return new Promise(function(resolve) {
+    return new Promise(function(resolve, reject) {
       // Wait 1 rAF for DOM to settle.
       // IOWA.Elements.Template.async(function() {
-      // Hide the masthead ripple before proceeding with page transition.
-      play(elementFadeOut(IOWA.Elements.Ripple, {duration: 0}));
-      play(pageSlideIn(), resolve);
+        // Hide the masthead ripple before proceeding with page transition.
+        play(elementFadeOut(IOWA.Elements.Ripple, {duration: 0}));
+        play(pageSlideIn(), resolve);
       // });
+
     });
   }
 
@@ -362,10 +365,10 @@ IOWA.PageAnimation = (function() {
    * Slides out the content of the page.
    */
   function playPageSlideOut() {
-    return new Promise(function(resolve) {
+    return new Promise(function(resolve, reject) {
       // Wait 1rAF for smooth animation.
       // IOWA.Elements.Template.async(function() {
-      play(contentSlideOut(), resolve);
+        play(contentSlideOut(), resolve);
       // });
     });
   }
@@ -374,7 +377,7 @@ IOWA.PageAnimation = (function() {
    * Slides out the content of the section.
    */
   function playSectionSlideOut(section) {
-    return new Promise(function(resolve) {
+    return new Promise(function(resolve, reject) {
       play(new GroupEffect([
         sectionSlideOut(section),
         elementFadeOut(IOWA.Elements.Footer, {duration: 400})
@@ -386,7 +389,7 @@ IOWA.PageAnimation = (function() {
    * Slides in the content of the section.
    */
   function playSectionSlideIn(section) {
-    return new Promise(function(resolve) {
+    return new Promise(function(resolve, reject) {
       play(new GroupEffect([
         sectionSlideIn(section),
         elementFadeIn(IOWA.Elements.Footer, {duration: 400})
@@ -397,12 +400,12 @@ IOWA.PageAnimation = (function() {
   /**
    * Runs the ripple across the masthead, while sliding out the content.
    */
-  function playMastheadRippleTransition(startPage, endPage, e, sourceEl) { // eslint-disable-line no-unused-vars
-    return new Promise(function(resolve) {
+  function playMastheadRippleTransition(startPage, endPage, e, sourceEl) {
+    return new Promise(function(resolve, reject) {
       var x = e.touches ? e.touches[0].pageX : e.pageX;
       var y = e.touches ? e.touches[0].pageY : e.pageY;
       var rippleAnim = rippleEffect(
-        IOWA.Elements.Ripple, x, y, 300, RIPPLE_COLOR, true);
+          IOWA.Elements.Ripple, x, y, 300, RIPPLE_COLOR, true);
       var animation = new GroupEffect([rippleAnim, contentSlideOut()]);
       play(animation, resolve);
     });
@@ -413,8 +416,8 @@ IOWA.PageAnimation = (function() {
    * while sliding out the content.
    */
   function playHeroTransitionStart(startPage, endPage, e, sourceEl) {
-    var touchData = (e.type === 'touchstart') ? e.touches[0] : e;
-    return new Promise(function(resolve) {
+    var touchData = (e.type == 'touchstart') ? e.touches[0] : e;
+    return new Promise(function(resolve, reject) {
       // TODO: This may need some perf tweaking for FF.
       var card = null;
       var currentEl = sourceEl;
@@ -425,7 +428,7 @@ IOWA.PageAnimation = (function() {
         }
       }
       play(pageCardTakeoverOut(
-        card, touchData.pageX, touchData.pageY, 300, RIPPLE_COLOR), resolve);
+          card, touchData.pageX, touchData.pageY, 300, RIPPLE_COLOR), resolve);
     });
   }
 
@@ -433,7 +436,7 @@ IOWA.PageAnimation = (function() {
    * Slides in the content, the navbar and the logo.
    */
   function playHeroTransitionEnd() {
-    return new Promise(function(resolve) {
+    return new Promise(function(resolve, reject) {
       // Wait 1 rAF for DOM to settle.
       IOWA.Elements.Template.async(function() {
         play(
@@ -455,4 +458,5 @@ IOWA.PageAnimation = (function() {
     shiftContentLeft: shiftContentLeft,
     shiftContentRight: shiftContentRight
   };
+
 })();

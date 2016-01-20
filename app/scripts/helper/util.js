@@ -17,10 +17,13 @@
 window.IOWA = window.IOWA || {};
 
 IOWA.Util = IOWA.Util || (function() {
-  'use strict';
+
+  "use strict";
 
   /**
-   * @return {{promise: !Promise, resolve: function(), reject: function()}} A deferred object, allowing a Promise to be fulfilled at a later time.
+   * Create a deferred object, allowing a Promise to be fulfilled at a later
+   * time.
+   * @return {{promise: !Promise, resolve: function(), reject: function()}}
    */
   function createDeferred() {
     var resolveFn;
@@ -128,8 +131,8 @@ IOWA.Util = IOWA.Util || (function() {
   }
 
   /**
+   * Returns the static base URL of the running app.
    * https://events.google.com/io2016/about -> https://events.google.com/io2016/
-   * @return {string} The static base URL of the running app.
    */
   function getStaticBaseURL() {
     var url = location.href.replace(location.hash, '');
@@ -143,11 +146,11 @@ IOWA.Util = IOWA.Util || (function() {
    */
   function getURLParameter(param) {
     if (!window.location.search) {
-      return undefined;
+      return;
     }
     var m = new RegExp(param + '=([^&]*)').exec(window.location.search.substring(1));
     if (!m) {
-      return undefined;
+      return;
     }
     return decodeURIComponent(m[1]);
   }
@@ -199,7 +202,7 @@ IOWA.Util = IOWA.Util || (function() {
   /**
    * Use Google's URL shortener to compress an URL for social.
    * @param {string} url - The full url.
-   * @return {Promise} Resolves with the new short URL on success.
+   * @return {Promise}
    */
   function shortenURL(url) {
     var SHORTENER_API_URL = 'https://www.googleapis.com/urlshortener/v1/url';
@@ -214,7 +217,7 @@ IOWA.Util = IOWA.Util || (function() {
       xhr.open('POST', endpoint, true);
       xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
 
-      xhr.onloadend = function() {
+      xhr.onloadend = function(e) {
         if (this.status === 200) {
           try {
             var data = JSON.parse(this.response);
@@ -264,9 +267,9 @@ IOWA.Util = IOWA.Util || (function() {
   };
 
   /**
+   * Returns the target element that was clicked/tapped.
    * @param {Event} e The click/tap event.
    * @param {string} tagName The element tagName to stop at.
-   * @return {Element} The target element that was clicked/tapped.
    */
   var getEventSender = function(e, tagName) {
     var path = Polymer.dom(e).path;
@@ -302,4 +305,5 @@ IOWA.Util = IOWA.Util || (function() {
     resizeRipple: resizeRipple,
     reportError: reportError
   };
+
 })();

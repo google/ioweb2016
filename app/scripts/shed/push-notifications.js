@@ -27,7 +27,7 @@
     'io-soon': './',
     'session-start': 'schedule#myschedule',
     'video-available': 'schedule#myschedule',
-    'survey': 'schedule#myschedule'
+    survey: 'schedule#myschedule'
   };
   var UTM_SOURCE_PARAM = 'utm_source=notification';
   var SESSION_DEEPLINK_PREFIX = 'schedule?sid=';
@@ -109,9 +109,9 @@
       })).then(function() {
         return body.token;
       });
+    } else {
+      throw Error('Unable to generate notification details.');
     }
-
-    throw Error('Unable to generate notification details.');
   }
 
   /**
@@ -244,14 +244,14 @@
         icon: DEFAULT_ICON,
         tag: tag
       };
+    } else {
+      return {
+        title: 'Some events in My Schedule have new videos',
+        body: 'New videos are available for ' + sessionTitles.join(', '),
+        icon: DEFAULT_ICON,
+        tag: 'video-available'
+      };
     }
-
-    return {
-      title: 'Some events in My Schedule have new videos',
-      body: 'New videos are available for ' + sessionTitles.join(', '),
-      icon: DEFAULT_ICON,
-      tag: 'video-available'
-    };
   }
 
   /**

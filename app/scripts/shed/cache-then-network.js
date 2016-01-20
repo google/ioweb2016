@@ -30,12 +30,12 @@
       return global.shed.cacheOnly(request).then(function(response) {
         if (response) {
           return response;
+        } else {
+          return new Response('', {
+            status: 204,
+            statusText: 'No cached content available.'
+          });
         }
-
-        return new Response('', {
-          status: 204,
-          statusText: 'No cached content available.'
-        });
       });
     }
 

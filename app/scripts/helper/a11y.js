@@ -17,7 +17,8 @@
 window.IOWA = window.IOWA || {};
 
 IOWA.A11y = IOWA.A11y || (function() {
-  'use strict';
+
+  "use strict";
 
   function init() {
     // Differentiate focus coming from mouse and keyboard.
@@ -27,7 +28,7 @@ IOWA.A11y = IOWA.A11y || (function() {
   }
 
   // Handlers managed by the addFocusStates and removeFocusStates methods.
-  var onMouseDown = function() {
+  var onMouseDown = function(e) {
     this.classList.add('pressed');
     // this hackery is required for paper-slider which prevents
     // default on mousedown so dragging doesn't select text on screen
@@ -36,11 +37,11 @@ IOWA.A11y = IOWA.A11y || (function() {
     this.focus();
   };
 
-  var onMouseUp = function() {
+  var onMouseUp = function(e) {
     this.classList.remove('pressed');
   };
 
-  var onFocus = function() {
+  var onFocus = function(e) {
     // Only render the "focused" state if the element gains focus due to
     // keyboard navigation.
     if (!this.classList.contains('pressed')) {
@@ -48,7 +49,7 @@ IOWA.A11y = IOWA.A11y || (function() {
     }
   };
 
-  var onBlur = function() {
+  var onBlur = function(e) {
     this.classList.remove('focused');
   };
 
@@ -95,4 +96,5 @@ IOWA.A11y = IOWA.A11y || (function() {
     focusNavigation: focusNavigation,
     announceLiveChange: announceLiveChange
   };
+
 })();
