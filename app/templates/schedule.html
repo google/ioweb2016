@@ -26,24 +26,12 @@
       </paper-tab>
     </paper-tabs>
 
-    <paper-dropdown-menu class="white" always-float-label
-        label="Select timezone" horizontal-align="right"
-        hidden$="{{_hideTimezoneSelector(isPhoneSize, selectedPage)}}">
-      <paper-listbox class="dropdown-content" selected="{{selectedTimezone}}"
-                     attr-for-selected="label"
-                     on-iron-activate="selectTimezone">
-        <template is="dom-repeat" items="[[timezones]]" as="zone">
-          <paper-item label="{{zone}}">{{prettifyTimezone(zone)}}</paper-item>
-        </template>
-      </paper-listbox>
-    </paper-dropdown-menu>
-
   </div>
 {% end %}
 
 {% define "content" %}
 <!-- backdrop shouldn't be applied on ios - github.com/Polymer/paper-dialog/issues/16 -->
-<paper-dialog class="session__detail"
+<paper-dialog class="session__detail scrollable"
               entry-animation="scale-up-animation"
               exit-animation="fade-out-animation"
               with-backdrop="[[!isIOS]]"
@@ -244,7 +232,7 @@
   <section class$="subpage-agenda subpage__content {{_computeActiveClassForSubpage(pages.schedule.selectedSubpage, 'schedule', 'agenda')}}">
     <section class="page__section page__section--top slide-up">
       <div class="card__container card__container--top">
-        <div class="card js-experiment-visualizer">
+        <div class="card">
           <div class="card-content">
             <h4>May 27, 2015</h4>
           </div>
@@ -266,7 +254,7 @@
     <div class="slide-up-delay">
       <section class="page__section">
         <div class="card__container card__container--top">
-          <div class="card js-experiment-visualizer">
+          <div class="card">
             <div class="card-content">
               <h4>May 28, 2015</h4>
             </div>
@@ -310,7 +298,7 @@
       </section>
       <section class="page__section">
         <div class="card__container card__container--top">
-          <div class="card js-experiment-visualizer">
+          <div class="card">
             <div class="card-content">
               <h4>May 29, 2015</h4>
             </div>
@@ -352,7 +340,7 @@
       <div id="signin-prompt"
           class$="card__container card__container--top {{_addClass('prompt-hidden', currentUser)}}"
           hidden$="{{_equal(pages.schedule.selectedSubpage, 'myschedule')}}">
-        <div class="card js-experiment-visualizer">
+        <div class="card">
           <div class="card-content">
             <h3 class="card__title">Create your custom I/O schedule</h3>
             <div>Sign in to add events to My Schedule.
@@ -371,7 +359,7 @@
 
       <div class="card__container card__container--top"
            hidden$="{{!_equal(pages.schedule.selectedSubpage, 'myschedule')}}">
-        <div class="card js-experiment-visualizer">
+        <div class="card">
 
           <template is="dom-if" if="[[!currentUser]]">
             <div class="card-content">
@@ -423,36 +411,24 @@
                         attr-for-selected="label"
                         on-iron-activate="selectFilter">
               <paper-item label="Filters">Filters</paper-item>
-              <template is="dom-repeat" items="{{filterThemes}}" as="theme">
-                <paper-item label="{{theme}}"
-                  class="{{ {'paper-item-separator': i === 0} | tokenList}}">{{theme}}</paper-item>
+              <template is="dom-repeat" items="[[filterThemes]]" as="theme">
+                <paper-item label="[[theme]]">[[theme]]</paper-item>
               </template>
               <template is="dom-repeat" items="{{filterSessionTypes}}" as="type">
-                <paper-item label="{{type}}"
-                    class="{{ {'paper-item-separator': i === 0} | tokenList}}">{{type}}</paper-item>
+                <paper-item label="[[type]]">[[type]]</paper-item>
               </template>
               <paper-item label="Live streamed">Live streamed</paper-item>
             </paper-menu>
           </paper-dropdown-menu>
         </span>
-        <paper-dropdown-menu horizontal-align="right">
-          <paper-menu class="dropdown-content" selected="{{selectedTimezone}}"
-                      attr-for-selected="label">
-            <template is="dom-repeat" items="{{timezones}}" as="zone">
-              <paper-item label="{{zone}}">{{prettifyTimezone(zone)}}</paper-item>
-            </template>
-          </paper-menu>
-        </paper-dropdown-menu>
       </div>
       <section class="page__section">
-        <io-schedule day="{{_computeDay(days)}}"
+        <io-schedule day="[[pages.schedule.selectedSubpage]]"
           sessions="{{scheduleData.sessions}}"
-          session-themes="{{filterThemes}}"
-          session-topics="{{filterTopics}}"
-          session-types="{{filterSessionTypes}}"
+          session-themes="[[filterThemes]]"
+          session-topics="[[filterTopics]]"
+          session-types="[[filterSessionTypes]]"
           user-sessions="{{savedSessions}}"
-          timezone="{{selectedTimezone}}"
-          timezone-names="{{timezoneNames}}"
           fetching-user-data="{{scheduleFetchingUserData}}"
           filters="{{sessionURLFilters}}"
           on-session-bookmark="toggleSaveSession"
@@ -480,7 +456,6 @@
       }
 
       IOWA.Elements.Template.dontAutoSubscribe = false;
-      IOWA.Elements.Template.selectedTimezone = 'GMT' + moment().format('Z'); // Local timezone.
 
       var getFiltersFromURL = function(opt_parsedUrl) {
         var parsedUrl = opt_parsedUrl || IOWA.Router.parseUrl(window.location.toString());
@@ -503,8 +478,8 @@
         // Deep link into schedule tab.
         var parsedUrl = IOWA.Router.parseUrl(window.location.toString());
         template.sessionURLFilters = getFiltersFromURL(parsedUrl);
-        // template.selectedTimezone = 'GMT' + moment().format('Z'); // Local timezone.
-        template.selectTimezone();
+        // TODO: find way to elegantly move into io-schedule element.
+        ioScheduleEl._deepLinkRadioButtons();
 
         // Deep link into session. First, try to pull session id from the
         // ?sid= param. If that isn't present, use the parsed id from the fragment.
@@ -575,7 +550,7 @@
       };
 
       var sessionDetailsPopstateHandler = function(e) {
-        ioScheduleEl.filters = getFiltersFromURL();
+        IOWA.Elements.Template.sessionURLFilters = getFiltersFromURL();
         if (!detailsPanel.opened && IOWA.Elements.Template.selectedSession) {
           detailsPanel.open();
         } else {
@@ -627,6 +602,8 @@
         }
       };
 
+// TODO: fix logic
+
       IOWA.Elements.Template.selectFilter = function(e, detail) {
         var menu = Polymer.dom(e.target).node;
 
@@ -637,7 +614,7 @@
         // the change watcher automatically. For unknown reason, on mobile only, Polymer
         // is accepting the new value for filters attribute, but not triggering
         // the change watcher, so we call it manually here.
-        ioScheduleEl.filtersChanged(oldFilters, newFilters);
+        ioScheduleEl._filtersChanged(newFilters, oldFilters);
       };
 
       IOWA.Elements.Template.onRelatedContent = function(e, detail) {
@@ -648,7 +625,7 @@
         if (target && target.hasAttribute('data-track-link')) {
           IOWA.Analytics.trackEvent('link', 'click', target.getAttribute('data-track-link'));
         }
-        ioScheduleEl.filters = [this.selectedSession.id];
+        this.sessionURLFilters = [this.selectedSession.id];
       };
 
       IOWA.Elements.Template.onRateSession = function(e, detail) {
@@ -670,23 +647,6 @@
         IOWA.Schedule.saveSurvey(this.selectedSession.id, this.answers).then(function() {
           this.set('selectedSession.rated', true);
         }.bind(this));
-      };
-
-      IOWA.Elements.Template.selectTimezone = function(e, detail) {
-        var day1LocalizedTime = ioScheduleEl.getLocalizedTime(ioScheduleEl.gmtDayOne);
-        var day2LocalizedTime = moment(day1LocalizedTime).add(1, 'day');
-
-        this.days = {
-          day1: {
-            value: parseInt(day1LocalizedTime.format('D'))
-          },
-          day2: {
-            value: parseInt(day2LocalizedTime.format('D'))
-          },
-          myschedule: {
-            value: 'myschedule'
-          }
-        };
       };
 
       IOWA.Elements.Template.onScheduleVideoReady = function(e, detail) {
@@ -747,10 +707,6 @@
         }
         var isFinished = new Date(session.endTimestamp) < Date.now();
         return session.rated || session.id == '__afterhours__' || !isFinished;
-      };
-
-      IOWA.Elements.Template._computeDay = function(days) {
-        return this.days[this.pages[this.selectedPage].selectedSubpage];
       };
 
       IOWA.Elements.Template._computeSessionSavedIcon = function(selectedSession) {

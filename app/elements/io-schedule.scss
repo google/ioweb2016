@@ -36,7 +36,7 @@
   background-color: #B2EBF2;
 }
 
-.schedule-rows .schedule-row,
+.schedule-row,
 .filter-rows > paper-label {
   margin-bottom: $tabletKeyline;
 }
@@ -131,10 +131,6 @@ paper-progress {
 @media (min-width: $tablet-breakpoint-min) {
   .page__section {
     padding-bottom: $desktopKeyline;
-  }
-  .schedule-rows {
-    width: 100%;
-    box-sizing: border-box;
   }
 }
 

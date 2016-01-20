@@ -112,24 +112,6 @@ IOWA.Elements = (function() {
 
     // Kickoff a11y helpers for elements
     IOWA.A11y.init();
-
-    // Do top secret stuff.
-    // IOWA.Request.xhrPromise('GET', 'api/v1/easter-egg').then(function(response) {
-    //   IOWA.Elements.Template.eeFooterLink = response.link;
-    // });
-
-// var t = document.createElement('template', 'dom-bind'),
-// span = document.createElement('span');
-// span.innerHTML = document.getElementById('template-masthead-container').innerHTML;
-// t.content.appendChild(span);
-// //t.hello = 'hey';
-// IOWA.Elements.MastheadMeta.appendChild(t);
-
-// IOWA.Elements.MastheadMeta.appendChild(
-        // document.getElementById('template-masthead-container').stamp().root);
-// IOWA.Elements.Main.appendChild(
-        // document.getElementById('template-content-container').stamp().root);
-
   }
 
   function init() {
@@ -162,159 +144,6 @@ IOWA.Elements = (function() {
 
     IOWA.Util.setMetaThemeColor('#CFD8DC'); // bg-medium-grey in colors.scss.
 
-    template.timezoneNames = {
-      'GMT-11:00': {
-        'name': 'US/Samoa',
-        'title': 'Midway',
-        'GMTOffset': -11 * 60
-      },
-      'GMT-10:00': {
-        'name': 'US/Hawaii',
-        'title': 'Hawaii-Aleutian Standard Time',
-        'GMTOffset': -10 * 60
-      },
-      'GMT-08:00': {
-        'name': 'US/Alaska',
-        'title': 'Alaska Daylight Time',
-        'GMTOffset': -8 * 60
-      },
-      'GMT-07:00': {
-        'name': 'US/Pacific',
-        'title': 'Pacific Daylight Time, Tijuana',
-        'GMTOffset': -7 * 60
-      },
-      'GMT-06:00': {
-        'name': 'US/Mountain',
-        'title': 'Chihuahua, Mountain Daylight Time, Costa Rica, Regina',
-        'GMTOffset': -6 * 60
-      },
-      'GMT-05:00': {
-        'name': 'US/Central',
-        'title': 'Central Daylight Time, Mexico City, Bogota',
-        'GMTOffset': -5 * 60
-      },
-      'GMT-04:00': {
-        'name': 'US/Eastern',
-        'title': 'Eastern Daylight Time, Barbados, Manaus',
-        'GMTOffset': -5 * 60
-      },
-      'GMT-04:30': {
-        'name': 'America/Caracas',
-        'title': 'Caracas',
-        'GMTOffset': -4 * 60 + 30
-      },
-      'GMT-03:00': {
-        'name': 'America/Buenos_Aires',
-        'title': 'Halifax, Santiago, São Paulo, Buenos Aires, Nuuk, Montevideo',
-        'GMTOffset': -3 * 60
-      },
-      'GMT-02:30': {
-        'name': 'Canada/Newfoundland',
-        'title': 'St. John’s',
-        'GMTOffset': -2 * 60 + 30
-      },
-      'GMT-02:00': {
-        'name': 'Atlantic/South_Georgia',
-        'title': 'South Georgia',
-        'GMTOffset': -2 * 60
-      },
-      'GMT-01:00': {
-        'name': 'Atlantic/Cape_Verde',
-        'title': 'Cape Verde',
-        'GMTOffset': -60
-      },
-      'GMT-00:00': {
-        'name': 'GMT',
-        'title': 'Azores',
-        'GMTOffset': 0
-      },
-      'GMT+01:00': {
-        'name': 'Europe/London',
-        'title': 'Casablanca,Lisbon,London,Windhoek,Brazzaville',
-        'GMTOffset': 60
-      },
-      'GMT+02:00': {
-        'name': 'Europe/Amsterdam',
-        'title': 'Amsterdam,Belgrade,Brussels,Sarajevo,Cairo,Harare',
-        'GMTOffset': 2 * 60
-      },
-      'GMT+03:00': {
-        'name': 'Europe/Moscow',
-        'title': 'Amman,Athens,Beirut,Helsinki,Jerusalem,Minsk,Baghdad,Moscow,Kuwait,Nairobi',
-        'GMTOffset': 3 * 60
-      },
-      'GMT+04:00': {
-        'name': 'Europe/Moscow',
-        'title': 'Tbilisi,Yerevan,Dubai',
-        'GMTOffset': 4 * 60
-      },
-      'GMT+04:30': {
-        'name': 'Asia/Tehran',
-        'title': 'Tehran, Kabul',
-        'GMTOffset': 4 * 60 + 30
-      },
-      'GMT+05:00': {
-        'name': 'Asia/Tehran',
-        'title': 'Baku,Karachi,Oral,Yekaterinburg',
-        'GMTOffset': 5 * 60
-      },
-      'GMT+05:45': {
-        'name': 'Asia/Kathmandu',
-        'title': 'Kathmandu',
-        'GMTOffset': 5 * 60 + 45
-      },
-      'GMT+06:00': {
-        'name': 'Asia/Almaty',
-        'title': 'Almaty',
-        'GMTOffset': 6 * 60
-      },
-      'GMT+07:00': {
-        'name': 'Asia/Jakarta',
-        'title': 'Krasnoyarsk, Bangkok, Jakarta',
-        'GMTOffset': 7 * 60
-      },
-      'GMT+08:00': {
-        'name': 'Asia/Taipei',
-        'title': 'Shanghai,Hong Kong,Irkutsk,Kuala Lumpur,Perth,Taipei',
-        'GMTOffset': 8 * 60
-      },
-      'GMT+09:00': {
-        'name': 'Asia/Seoul',
-        'title': 'Seoul, Tokyo, Yakutsk',
-        'GMTOffset': 9 * 60
-      },
-      'GMT+09:30': {
-        'name': 'Australia/Darwin',
-        'title': 'Adelaide, Darwin',
-        'GMTOffset': 9 * 60 + 30
-      },
-      'GMT+10:00': {
-        'name': 'Australia/Sydney',
-        'title': 'Brisbane,Hobart,Sydney,Vladivostok,Guam,Magadan',
-        'GMTOffset': 10 * 60
-      },
-      'GMT+12:00': {
-        'name': 'Pacific/Auckland',
-        'title': 'Majuro,Auckland,Fiji',
-        'GMTOffset': 12 * 60
-      },
-      'GMT+13:00': {
-        'name': 'Pacific/Tongatapu',
-        'title': 'Tongatapu',
-        'GMTOffset': 13 * 60
-      }
-    };
-
-    template.timezones = Object.keys(template.timezoneNames);
-
-    template.prettifyTimezone = function(zone) {
-      var z = template.timezoneNames[zone];
-      if (z && z.name) {
-        return moment.tz(z.name).zoneAbbr();
-      }
-      return zone;
-    };
-
     template.formatSessionTimeFilter = function(dateStr) {
       var date = new Date(dateStr);
       return date.toLocaleTimeString().replace(/:\d+ /, ' ');
@@ -330,25 +159,6 @@ IOWA.Elements = (function() {
         return 'June ' + day;
       }
       return day;
-    };
-
-    template.featuredSessionsFilter = function(sessions) {
-      if (!sessions) {
-        return [];
-      }
-      var superAwesomeSessionId = '21718f8b-b6d4-e411-b87f-00155d5066d7';
-      var superAwesomeSession = null;
-      var filteredSessions = this.scheduleData.sessions.filter(function(s, i) {
-        if (s.id === superAwesomeSessionId) {
-          superAwesomeSession = s;
-        }
-        return s.isFeatured && template.toVideoIdFilter(s.youtubeUrl);
-      });
-      if (superAwesomeSession) {
-        filteredSessions.splice(filteredSessions.indexOf(superAwesomeSession), 1);
-        filteredSessions.unshift(superAwesomeSession);
-      }
-      return filteredSessions;
     };
 
     template.formatSessionTagsFilter = function(tagList) {
@@ -822,10 +632,6 @@ IOWA.Elements = (function() {
     };
 
     // Schedule ---
-
-    template._hideTimezoneSelector = function(isPhoneSize, selectedPage) {
-      return isPhoneSize || this.pages[selectedPage].selectedSubpage === 'agenda';
-    };
 
     template._hideSessionFilters = function(isPhoneSize, selectedPage) {
       return !isPhoneSize || this.pages[selectedPage].selectedSubpage === 'myschedule';
