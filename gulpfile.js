@@ -133,13 +133,12 @@ gulp.task('clean', ['clear'], function() {
 
 gulp.task('vulcanize', [
   'vulcanize-elements',
-  'vulcanize-extended-elements',
-  'vulcanize-gadget-elements']
-);
+  // 'vulcanize-extended-elements',
+  // 'vulcanize-gadget-elements'
+]);
 
 // copy needed assets (images, polymer elements, etc) to /dist directory
 gulp.task('copy-assets', function() {
-  var assets = $.useref.assets();
   var templates = [
     IOWA.appDir + '/templates/**/*.html',
     IOWA.appDir + '/templates/**/*.json'
@@ -149,8 +148,6 @@ gulp.task('copy-assets', function() {
   }
 
   var templateStream = gulp.src(templates, {base: './'})
-    .pipe(assets)
-    .pipe(assets.restore())
     .pipe($.useref());
 
   var otherAssetStream = gulp.src([
@@ -163,6 +160,7 @@ gulp.task('copy-assets', function() {
     IOWA.appDir + '/elements/**/images/*',
     IOWA.appDir + '/elements/webgl-globe/shaders/*.{frag,vert}',
     IOWA.appDir + '/elements/webgl-globe/textures/*.{jpg,png}',
+    IOWA.appDir + '/bower_components/webcomponentsjs/webcomponents-lite.min.js',
     IOWA.appDir + '/bower_components/webcomponentsjs/webcomponents.min.js',
     IOWA.appDir + '/bower_components/es6-promise/dist/es6-promise.min.js',
     IOWA.appDir + '/bower_components/elevator/demo/music/*'
