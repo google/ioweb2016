@@ -140,7 +140,6 @@ IOWA.Router_ = function(window) {
    */
   Router.prototype.updateUIstate = function() {
     var pageName = this.state.current.page;
-    IOWA.Elements.DrawerMenu.selected = pageName;
 
     // Show correct subpage.
     var subpages = IOWA.Elements.Main.querySelectorAll('.subpage__content');
@@ -173,7 +172,6 @@ IOWA.Router_ = function(window) {
    *     + Run new page's custom load handlers.
    *     + Play new page entry animation.
    *     + End transition.
-   * TODO: Limit usage of bind() for performance.
    * @param {Event} e Event that triggered the transition.
    * @param {Element} source Element that triggered the transition.
    * @private

@@ -43,9 +43,9 @@ IOWA.Analytics = IOWA.Analytics || (function(exports) {
 
     this.trackPageView(); // Track initial pageview.
 
-    this.trackPerfEvent('template-bound', 'Polymer');
+    this.trackPerfEvent('dom-bound', 'Polymer');
     this.trackPerfEvent('HTMLImportsLoaded', 'Polymer');
-    this.trackPerfEvent('polymer-ready', 'Polymer');
+    this.trackPerfEvent('WebComponentsReady', 'Polymer');
 
     this.trackNotificationPermission();
 

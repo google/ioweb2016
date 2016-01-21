@@ -53,6 +53,7 @@
     "paper-drawer-panel": "PolymerElements/paper-drawer-panel#^1.0.0",
     "paper-dropdown-menu": "PolymerElements/paper-dropdown-menu#^1.0.0",
     "paper-fab": "PolymerElements/paper-fab#^1.0.0",
+    "paper-header-panel": "PolymerElements/paper-header-panel#^1.1.2",
     "paper-item": "PolymerElements/paper-item#^1.0.0",
     "paper-input": "PolymerElements/paper-input#^1.0.0",
     "paper-listbox": "PolymerElements/paper-listbox#^1.1.0",
