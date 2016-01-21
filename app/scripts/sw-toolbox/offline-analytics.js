@@ -15,9 +15,9 @@
  */
 
 (function(global) {
-  var OFFLINE_ANALYTICS_DB_NAME = 'toolbox-offline-analytics';
-  var EXPIRATION_TIME_DELTA = 86400000; // One day, in milliseconds.
-  var ORIGIN = /https?:\/\/((www|ssl)\.)?google-analytics\.com/;
+  const OFFLINE_ANALYTICS_DB_NAME = 'toolbox-offline-analytics';
+  const EXPIRATION_TIME_DELTA = 86400000; // One day, in milliseconds.
+  const ORIGIN = /https?:\/\/((www|ssl)\.)?google-analytics\.com/;
 
   function replayQueuedAnalyticsRequests() {
     global.simpleDB.open(OFFLINE_ANALYTICS_DB_NAME).then(function(db) {

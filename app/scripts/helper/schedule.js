@@ -20,10 +20,10 @@ IOWA.Schedule = (function() {
 
   "use strict";
 
-  var SCHEDULE_ENDPOINT = 'api/v1/schedule';
-  var SCHEDULE_ENDPOINT_USERS = 'api/v1/user/schedule';
-  var SURVEY_ENDPOINT_USERS = 'api/v1/user/survey';
-  var QUEUED_SESSION_UPDATES_DB_NAME = 'toolbox-offline-session-updates';
+  const SCHEDULE_ENDPOINT = 'api/v1/schedule';
+  const SCHEDULE_ENDPOINT_USERS = 'api/v1/user/schedule';
+  const SURVEY_ENDPOINT_USERS = 'api/v1/user/survey';
+  const QUEUED_SESSION_UPDATES_DB_NAME = 'toolbox-offline-session-updates';
 
   var scheduleData_ = null;
   var cache = {

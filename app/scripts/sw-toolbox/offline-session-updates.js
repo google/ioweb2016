@@ -15,7 +15,7 @@
  */
 
 (function(global) {
-  var QUEUED_SESSION_UPDATES_DB_NAME = 'toolbox-offline-session-updates';
+  const QUEUED_SESSION_UPDATES_DB_NAME = 'toolbox-offline-session-updates';
 
   function queueFailedSessionUpdateRequest(request) {
     console.log('Queueing failed request:', request);
