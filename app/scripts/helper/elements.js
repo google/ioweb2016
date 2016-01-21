@@ -92,6 +92,7 @@ IOWA.Elements = (function() {
     IOWA.Elements.Footer = footer;
     IOWA.Elements.GoogleSignIn = signin;
     IOWA.Elements.LazyPages = lazyPages;
+    IOWA.Elements.ScrollContainer = IOWA.Elements.Template.$.headerpanel.scroller;
 
     // TODO: move to data binding.
     var phoneMQ = document.getElementById('mq-phone');
@@ -511,9 +512,6 @@ IOWA.Elements = (function() {
     };
 
     IOWA.Elements.Template = template;
-    IOWA.Elements.ScrollContainer = document.querySelector(
-        'paper-drawer-panel [main]');
-    template.ScrollContainer = IOWA.Elements.ScrollContainer;
   }
 
   return {

@@ -217,9 +217,12 @@ limitations under the License.
 
 <!-- Intro animation background is outside of Polymer to reduce perceived latency in polyfilled browsers. -->
 <div class="io-logo-container">
-  <io-logo width="312" height="165" page="{% .Slug %}" class="bg-medium-grey" hide-masthead></io-logo>
+  <io-logo width="312" height="165" page="{% .Slug %}"
+           class="bg-medium-grey" hide-masthead></io-logo>
   <div class="bg-medium-grey" iologobackground></div>
 </div>
+
+<template is="dom-bind" id="t">
 
 <paper-drawer-panel force-narrow>
   <div drawer layout vertical>
@@ -259,11 +262,7 @@ limitations under the License.
       </paper-menu>
     </div>
   </div>
-  <div main>
-
-    <div id="content-container">
-
-    <template is="dom-bind" id="t">
+  <paper-header-panel id="headerpanel" mode="waterfall" main>
 
       <google-signin client-id="{% .ClientID %}"
                      scopes="https://www.googleapis.com/auth/drive.appfolder"
@@ -277,7 +276,7 @@ limitations under the License.
       <iron-media-query id="mq-desktop" query="(min-width:945px)"
                         query-matches="{{app.isDesktopSize}}"></iron-media-query>
 
-      <header class="masthead" layout vertical>
+      <div class="masthead paper-header" layout vertical>
         <div class="masthead__ripple">
           <div class="masthead__ripple__content" id="masthead-ripple"></div>
         </div>
@@ -324,19 +323,19 @@ limitations under the License.
             </paper-tab>
           </paper-tabs>
           <span id="signin-nav-elements" layout horizontal center>
-            <!-- Note: Use on-click instead of on-tap so oauth popup is not blocked. Needs user gesture. -->
-            <!-- /fakesignin is not a real endpoint, but we need it to trick router not
-                 to return early from the document-level touchstart listener on mobile. -->
+            <!-- Note: Use on-click instead of on-tap so oauth popup is not
+                 blocked. Needs user gesture. -->
             <span class="anchor-like button-link" data-track-link="nav-signin"
                   on-click="signIn" hidden="{{currentUser}}">Sign in</span>
             <template is="dom-if" if="{{currentUser}}" restamp>
               <img src$="{{currentUser.picture}}" class="profilepic">
               <paper-menu-button horizontal-align="right" vertical-align="top">
-                <paper-icon-button icon="io:more-vert" class="dropdown-trigger"
+                <paper-icon-button icon="io:more-vert"
+                                   class="dropdown-trigger"
                                    aria-label="Settings"></paper-icon-button>
-<!-- TODO: update events polymer 1.0 -->
-                <div id="signin-settings-panel"  class="dropdown-content"
-                                on-paper-dropdown-open="getNotificationState">
+                <div id="signin-settings-panel"
+                     class="dropdown-content"
+                     on-paper-dropdown-open="getNotificationState">
                   <div class="card-content" layout horizontal>
                     <div><img src$="{{currentUser.picture}}" class="profilepic"></div>
                     <div>
@@ -372,22 +371,7 @@ limitations under the License.
           </span>
         </paper-toolbar>
 
-      </header>
-
-      <!-- <template is="dom-if" if="{{_isPage('home', selectedPage)}}" restamp>
-        <div id="iolive" class="{{ {show: selectedPage === 'home'} | tokenList }}" fit>
-          <io-live mode="{{liveModuleMode}}" date="{% .StartDateStr %}"
-                   sessions="{{scheduleData.sessions}}"
-                   speakers="{{scheduleData.speakers}}"
-                   user-sessions="{{savedSessions}}"
-                   fetching-user-data="{{scheduleFetchingUserData}}"
-                   social-posts="{{socialPosts}}"
-                   {% .LiveIDs | json | safeAttr "liveStreamChannelIds" %}
-                   auto-open-fab="{{pageTransitionDone}}" fit>
-            <h2>I/O is starting soon. #io15</h2>
-          </io-live>
-        </div>
-      </template> -->
+      </div>
 
       <main class$="io-main {{_addClass('transitionIn', pageTransitioningIn)}} {{_addClass('transitionOut', pageTransitioningOut)}}">
 
@@ -424,8 +408,6 @@ limitations under the License.
             <a href="https://twitter.com/googledevs" target="_blank" class="share-icon" data-track-link="footer-share-twitter" data-share-type="twitter" on-click="openShareWindow"><iron-icon icon="io:post-twitter"></iron-icon></a>
           </span>
 
-<!-- TODO: update polymer 1.0 -->
-<!-- <iron-a11y-keys target="{{$.backtotop}}" keys="enter" on-keys-pressed="backToTop"></iron-a11y-keys> -->
           <a href="#" id="backtotop" class="footer-backtotop" on-click="backToTop" data-track-link="footer-backtop-new">Back to the top <iron-icon icon="expand-less"></iron-icon></a>
         </div>
 
@@ -464,19 +446,14 @@ limitations under the License.
         </div>
       </footer>
 
-    </template>
-
-    </div>
-  </div>
+  </paper-header-panel>
 </paper-drawer-panel>
 
+</template>
+
 <io-toast id="toast" duration="9000"></io-toast>
-<!--
-  Append messages from the toast to this aria-live region to have
-  them read aloud
--->
-<div id="live-status" role="status" aria-live="polite" aria-atomic="true">
-</div>
+<!-- Append messages from the toast to this aria-live region to have them read aloud -->
+<div id="live-status" role="status" aria-live="polite" aria-atomic="true"></div>
 
 <!-- build:js scripts/site-scripts.js -->
 <script src="scripts/main.js"></script>
