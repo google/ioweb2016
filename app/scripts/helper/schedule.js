@@ -23,11 +23,7 @@ IOWA.Schedule = (function() {
   const SCHEDULE_ENDPOINT = 'api/v1/schedule';
   const SCHEDULE_ENDPOINT_USERS = 'api/v1/user/schedule';
   const SURVEY_ENDPOINT_USERS = 'api/v1/user/survey';
-<<<<<<< HEAD
   const QUEUED_SESSION_UPDATES_DB_NAME = 'toolbox-offline-session-updates';
-=======
-  const QUEUED_SESSION_UPDATES_DB_NAME = 'shed-offline-session-updates';
->>>>>>> Fixed up and simplified animations
 
   var scheduleData_ = null;
   var cache = {
