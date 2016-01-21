@@ -15,7 +15,7 @@
  */
 
 (function(global) {
-  var QUEUED_SESSION_UPDATES_DB_NAME = 'shed-offline-session-updates';
+  const QUEUED_SESSION_UPDATES_DB_NAME = 'toolbox-offline-session-updates';
 
   function queueFailedSessionUpdateRequest(request) {
     console.log('Queueing failed request:', request);
@@ -44,6 +44,6 @@
     });
   }
 
-  global.shed.router.put('/(.+)api/v1/user/schedule/(.+)', handleSessionUpdateRequest);
-  global.shed.router.delete('/(.+)api/v1/user/schedule/(.+)', handleSessionUpdateRequest);
+  global.toolbox.router.put('/(.+)api/v1/user/schedule/(.+)', handleSessionUpdateRequest);
+  global.toolbox.router.delete('/(.+)api/v1/user/schedule/(.+)', handleSessionUpdateRequest);
 })(self);
