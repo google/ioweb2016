@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright 2015 Google Inc. All Rights Reserved.
+# Copyright 2016 Google Inc. All Rights Reserved.
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -14,19 +14,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-if [ "$(git rev-parse --abbrev-ref HEAD)" != "master" ]; then
-  exit 0;
-fi
-
-gulp jshint &> /dev/null
+gulp eslint &> /dev/null
 if [ "$?" != "0" ]; then
-  echo "Found some JS errors. Check with 'gulp jshint' before committing."
+  echo "Found some JS style issues or errors. Run 'gulp eslint' before committing."
   exit 1;
 fi
-
-gulp jscs &> /dev/null
-if [ "$?" != "0" ]; then
-  echo "Unstyled JS. Check with 'gulp jscs' before committing."
-  exit 1;
-fi
-
