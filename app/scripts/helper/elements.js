@@ -15,13 +15,13 @@
  */
 
 IOWA.Elements = (function() {
-  "use strict";
+  'use strict';
 
   const ANALYTICS_LINK_ATTR = 'data-track-link';
 
   function updateElements() {
     var ioLogo = document.querySelector('io-logo');
-    ioLogo.addEventListener('io-logo-animation-done', function(e) {
+    ioLogo.addEventListener('io-logo-animation-done', function() {
       // Load auth after logo transition is done. This helps timing with
       // fetching user's schedule and makes sure the worker has returned
       // the main schedule data.
@@ -115,7 +115,7 @@ IOWA.Elements = (function() {
       nav.classList.toggle('active');
     };
 
-    template.closeVideoCard = function(e, detail) {
+    template.closeVideoCard = function() {
       this.cardVideoTakeover(this.currentCard, true);
       this.toggleVideoOverlayNav();
     };
@@ -166,19 +166,18 @@ IOWA.Elements = (function() {
         direction: reverse ? 'reverse' : 'normal'
       });
 
-      playButtonPlayer.onfinish = function(e) {
-
+      playButtonPlayer.onfinish = function() {
         var startTransform = 'translate(' + cardPhotoMetrics.left + 'px, ' + top + 'px) ' +
                              'scale(' + scaleX + ', ' + scaleY + ')';
 
-        if (!reverse) {
+        if (reverse) {
+          // Fade in thumbnail before shrinking.
+          thumbnail.classList.remove('fadeout');
+        } else {
           // Scale down the video container before unhiding it.
           // TODO(ericbidelman): shouldn't have to do this. The initial state
           // is setup in the animate() below.
           videoContainer.style.transform = videoContainer.style.webkitTransform = startTransform;
-        } else {
-          // Fade in thumbnail before shrinking.
-          thumbnail.classList.remove('fadeout');
         }
 
         // Container is shrunk and in the card's location.
@@ -196,7 +195,7 @@ IOWA.Elements = (function() {
           easing: 'cubic-bezier(0.4,0,0.2,1)'
         });
 
-        player.onfinish = function(e) {
+        player.onfinish = function() {
           if (reverse) {
             this.set('app.fullscreenVideoActive', false); // remove from DOM.
             this.currentCard = null;
@@ -208,7 +207,7 @@ IOWA.Elements = (function() {
       }.bind(this);
     };
 
-    template.openVideo = function(e, detail) {
+    template.openVideo = function(e) {
       var path = Polymer.dom(e).path;
 
       var target = null;
@@ -238,7 +237,7 @@ IOWA.Elements = (function() {
       var videoContainer = document.querySelector('.fullvideo__container');
       var video = videoContainer.querySelector('google-youtube');
 
-      video.addEventListener('google-youtube-ready', function(e) {
+      video.addEventListener('google-youtube-ready', function() {
         video.videoId = videoId;
         this.cardVideoTakeover(this.currentCard);
       }.bind(this));
@@ -247,11 +246,11 @@ IOWA.Elements = (function() {
       thumbnail.src = this.currentCard.getAttribute('data-videoimg'); // IE10 doesn't support .dataset.
     };
 
-    template.closeMastheadVideo = function(e, detail) {
+    template.closeMastheadVideo = function() {
       this.mastheadVideoActive = false;
     };
 
-    template.openMastheadVideo = function(e, detail) {
+    template.openMastheadVideo = function(e) {
       var target = Polymer.dom(e).rootTarget;
 
       IOWA.Analytics.trackEvent(
@@ -264,14 +263,12 @@ IOWA.Elements = (function() {
       var dialog = IOWA.Elements.Main.querySelector('paper-dialog');
       var video = dialog.querySelector('google-youtube');
 
-      video.addEventListener('google-youtube-ready', function(e) {
-        // First session is the keynote.
-        // video.videoId = this._toVideoIdFilter(this.scheduleData.sessions[0].youtubeUrl);
+      video.addEventListener('google-youtube-ready', function() {
         dialog.toggle();
-      }.bind(this));
+      });
     };
 
-    template.openShareWindow = function(e, detail) {
+    template.openShareWindow = function(e) {
       e.preventDefault();
 
       var type = Polymer.dom(e).rootTarget.getAttribute('data-share-type');
@@ -282,18 +279,15 @@ IOWA.Elements = (function() {
                        height + ',width=' + width;
 
       var title = document.title;
-      var summary = null;
 
 // TODO: update for polymer 1.0 port
       var selectedSession = Polymer.dom(e).rootTarget.templateInstance.model.selectedSession;
       if (selectedSession) {
         title = selectedSession.title;
-        summary = selectedSession.description;
       }
 
       // Shorten current URL so it's ready to go.
       IOWA.Util.shortenURL(location.href).then(function(shortURL) {
-
         switch (type) {
           case 'fb':
             height = 229;
@@ -333,10 +327,9 @@ IOWA.Elements = (function() {
 
         window.open(url, 'share', winOptions);
       });
-
     };
 
-    template.openSettings = function(e, detail) {
+    template.openSettings = function(e) {
       var attr = Polymer.dom(e).rootTarget.getAttribute(ANALYTICS_LINK_ATTR);
       if (attr) {
         IOWA.Analytics.trackEvent('link', 'click', attr);
@@ -348,7 +341,7 @@ IOWA.Elements = (function() {
       this.selectedPage = 'home';
     };
 
-    template.backToTop = function(e, detail) {
+    template.backToTop = function(e) {
       e.preventDefault();
 
       // Audio from BenSound (http://www.bensound.com/) - Creative Commons.
@@ -394,7 +387,7 @@ IOWA.Elements = (function() {
       IOWA.Elements.GoogleSignIn.signOut();
     };
 
-    template.updateNotifyUser = function(e, detail) {
+    template.updateNotifyUser = function(e) {
       // Both these functions are asynchronous and return promises. Since there's no specific
       // callback or follow-up that needs to be performed once they complete, the returned promise
       // is ignored.
@@ -482,12 +475,12 @@ IOWA.Elements = (function() {
 
     template.addEventListener('dom-change', updateElements);
 
-    template.addEventListener('page-transition-done', function(e) {
+    template.addEventListener('page-transition-done', function() {
       this.set('app.pageTransitionDone', true);
       IOWA.Elements.NavPaperTabs.style.pointerEvents = '';
     });
 
-    template.addEventListener('page-transition-start', function(e) {
+    template.addEventListener('page-transition-start', function() {
       this.set('app.pageTransitionDone', false);
       IOWA.Elements.NavPaperTabs.style.pointerEvents = 'none';
     });

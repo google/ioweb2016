@@ -1,0 +1,28 @@
+{
+  "extends": "google",
+  "env": {
+    "browser": true
+  },
+  "rules": {
+    "camelcase": 0,
+    "default-case": 0,
+    "max-len": 0,
+    "max-nested-callbacks": 0,
+    "no-inline-comments": 0,
+    "no-warning-comments": 0,
+    "require-jsdoc": 0,
+    "valid-jsdoc": 0
+  },
+  "globals": {
+    "DocumentTouch": true,
+    "GroupEffect": true,
+    "IOWA": true,
+    "KeyframeEffect": true,
+    "Polymer": true,
+    "SequenceEffect": true,
+    "ga": true,
+    "gapi": true,
+    "moment": true,
+    "simpleDB": true
+  }
+}

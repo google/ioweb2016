@@ -17,8 +17,7 @@
 self.IOWA = self.IOWA || {};
 
 IOWA.Schedule = (function() {
-
-  "use strict";
+  'use strict';
 
   const SCHEDULE_ENDPOINT = 'api/v1/schedule';
   const SCHEDULE_ENDPOINT_USERS = 'api/v1/user/schedule';
@@ -27,8 +26,8 @@ IOWA.Schedule = (function() {
 
   var scheduleData_ = null;
   var cache = {
-    'userSavedSessions': [],
-    'userSavedSurveys': []
+    userSavedSessions: [],
+    userSavedSurveys: []
   };
 
   // A promise fulfilled by the loaded schedule.
@@ -171,14 +170,13 @@ IOWA.Schedule = (function() {
   function saveSession(sessionId, save) {
     IOWA.Analytics.trackEvent('session', 'bookmark', save ? 'save' : 'remove');
 
-    return IOWA.Auth.waitForSignedIn(
-        'Sign in to add events to My Schedule').then(function() {
+    return IOWA.Auth.waitForSignedIn('Sign in to add events to My Schedule').then(function() {
       IOWA.Elements.Template.set('app.scheduleFetchingUserData', true);
+
       var url = SCHEDULE_ENDPOINT_USERS + '/' + sessionId;
       var method = save ? 'PUT' : 'DELETE';
-      return submitSessionRequest(
-          url, method, null, 'Unable to modify My Schedule.',
-          clearCachedUserSchedule);
+      return submitSessionRequest(url, method, null,
+        'Unable to modify My Schedule.', clearCachedUserSchedule);
     });
   }
 
@@ -207,7 +205,6 @@ IOWA.Schedule = (function() {
         }
         throw error;
       });
-
   }
 
   /**
@@ -218,8 +215,8 @@ IOWA.Schedule = (function() {
    */
   function saveSurvey(sessionId, answers) {
     IOWA.Analytics.trackEvent('session', 'rate', sessionId);
-    return IOWA.Auth.waitForSignedIn(
-        'Sign in to submit feedback').then(function() {
+
+    return IOWA.Auth.waitForSignedIn('Sign in to submit feedback').then(function() {
       var url = SURVEY_ENDPOINT_USERS + '/' + sessionId;
       var callback = function(response) {
         IOWA.Elements.Template.set('app.savedSurveys', response);
@@ -236,14 +233,14 @@ IOWA.Schedule = (function() {
    * "Added to My Schedule" toast.
    */
   function bookmarkSessionNotification(saved, opt_message) {
-    var message = opt_message || "You'll get a notification when it starts.";
+    var message = opt_message || 'You\'ll get a notification when it starts.';
     var template = IOWA.Elements.Template;
 
     if (saved) {
       // If IOWA.Elements.Template.dontAutoSubscribe is true, this promise will reject immediately, and we'll just
       // add the session without attempting to auto-subscribe.
       return IOWA.Notifications.subscribePromise(template.app.dontAutoSubscribe).then(function() {
-        IOWA.Elements.Toast.showMessage("Added to My Schedule. " + message);
+        IOWA.Elements.Toast.showMessage('Added to My Schedule. ' + message);
       }).catch(function(error) {
         template.set('app.dontAutoSubscribe', true);
         if (error && error.name === 'AbortError') {
@@ -258,9 +255,8 @@ IOWA.Schedule = (function() {
           IOWA.Elements.Toast.showMessage('Added to My Schedule.');
         }
       });
-    } else {
-      IOWA.Elements.Toast.showMessage('Removed from My Schedule');
     }
+    IOWA.Elements.Toast.showMessage('Removed from My Schedule');
   }
 
   function generateFilters(tags) {
@@ -376,9 +372,9 @@ IOWA.Schedule = (function() {
       }).catch(function() {
         IOWA.Elements.Toast.showMessage('Offline changes could not be applied to My Schedule.');
       });
-    } else {
-      return Promise.resolve();
     }
+
+    return Promise.resolve();
   }
 
   /**
@@ -408,5 +404,4 @@ IOWA.Schedule = (function() {
     clearQueuedRequests: clearQueuedRequests,
     clearUserSchedule: clearUserSchedule
   };
-
 })();

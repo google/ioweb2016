@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Google Inc. All rights reserved.
+ * Copyright 2016 Google Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,7 @@
 window.IOWA = window.IOWA || {};
 
 IOWA.A11y = IOWA.A11y || (function() {
-
-  "use strict";
+  'use strict';
 
   function init() {
     // Differentiate focus coming from mouse and keyboard.
@@ -28,7 +27,7 @@ IOWA.A11y = IOWA.A11y || (function() {
   }
 
   // Handlers managed by the addFocusStates and removeFocusStates methods.
-  var onMouseDown = function(e) {
+  var onMouseDown = function() {
     this.classList.add('pressed');
     // this hackery is required for paper-slider which prevents
     // default on mousedown so dragging doesn't select text on screen
@@ -37,11 +36,11 @@ IOWA.A11y = IOWA.A11y || (function() {
     this.focus();
   };
 
-  var onMouseUp = function(e) {
+  var onMouseUp = function() {
     this.classList.remove('pressed');
   };
 
-  var onFocus = function(e) {
+  var onFocus = function() {
     // Only render the "focused" state if the element gains focus due to
     // keyboard navigation.
     if (!this.classList.contains('pressed')) {
@@ -49,7 +48,7 @@ IOWA.A11y = IOWA.A11y || (function() {
     }
   };
 
-  var onBlur = function(e) {
+  var onBlur = function() {
     this.classList.remove('focused');
   };
 
@@ -96,5 +95,4 @@ IOWA.A11y = IOWA.A11y || (function() {
     focusNavigation: focusNavigation,
     announceLiveChange: announceLiveChange
   };
-
 })();

@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Google Inc. All rights reserved.
+ * Copyright 2016 Google Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,7 @@
   */
 
 IOWA.Router_ = function(window) {
-
-  "use strict";
+  'use strict';
 
   /**
    * @constructor
@@ -82,7 +81,7 @@ IOWA.Router_ = function(window) {
           return;
         }
         // Use IOWA.Util.smoothScroll for scroll links.
-        if (el.getAttribute('data-transition') == 'smooth-scroll') {
+        if (el.getAttribute('data-transition') === 'smooth-scroll') {
           e.preventDefault();
           return;
         }
@@ -126,7 +125,7 @@ IOWA.Router_ = function(window) {
    * @private
    */
   Router.prototype.runPageHandler = function(funcName, selectedPage) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function(resolve) {
       if (selectedPage && selectedPage[funcName]) {
         selectedPage[funcName]();
       }
@@ -139,8 +138,6 @@ IOWA.Router_ = function(window) {
    * @private
    */
   Router.prototype.updateUIstate = function() {
-    var pageName = this.state.current.page;
-
     // Show correct subpage.
     var subpages = IOWA.Elements.Main.querySelectorAll('.subpage__content');
     var selectedSubpageSection = IOWA.Elements.Main.querySelector(
@@ -156,7 +153,7 @@ IOWA.Router_ = function(window) {
     // If current href is different than the url, update it in the browser.
     if (this.state.current.href !== window.location.href) {
       history.pushState({
-        'path': this.state.current.path + this.state.current.hash
+        path: this.state.current.path + this.state.current.hash
       }, '', this.state.current.href);
     }
   };
@@ -290,14 +287,14 @@ IOWA.Router_ = function(window) {
     // Get subpage from url or set to the default subpage for this page.
     var subpage = hashParts[0] || defaultSubpage;
     return {
-      'pathname': parser.pathname,
-      'search': parser.search,
-      'hash': parser.hash,
-      'href': parser.href,
-      'page': page,
-      'subpage': subpage,
-      'resourceId': hashParts[1],
-      'params': params
+      pathname: parser.pathname,
+      search: parser.search,
+      hash: parser.hash,
+      href: parser.href,
+      page: page,
+      subpage: subpage,
+      resourceId: hashParts[1],
+      params: params
     };
   };
 
