@@ -149,7 +149,7 @@ limitations under the License.
       var target = Polymer.dom(e).rootTarget;
 
       IOWA.Analytics.trackEvent(
-          'link', 'click', target.getAttribute('data-track-link'));
+          'link', 'click', target.getAttribute(this.app.ANALYTICS_LINK_ATTR));
 
       // Only smooth scroll to content if not on mobile.
       if (this.app.isPhoneSize) {

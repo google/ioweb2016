@@ -306,9 +306,9 @@ limitations under the License.
 
       var target = Polymer.dom(e).rootTarget;
 
-      if (target && target.hasAttribute('data-track-link')) {
+      if (target && target.hasAttribute(this.app.ANALYTICS_LINK_ATTR)) {
         IOWA.Analytics.trackEvent(
-            'link', 'click', target.getAttribute('data-track-link'));
+            'link', 'click', target.getAttribute(this.app.ANALYTICS_LINK_ATTR));
       } else {
         IOWA.Analytics.trackEvent('link', 'click', 'onsite-venue-map-deeplink');
       }

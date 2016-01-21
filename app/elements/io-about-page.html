@@ -234,8 +234,8 @@ limitations under the License.
       this.currentCard = Polymer.dom(e).rootTarget;
       this.set('app.fullscreenVideoActive', true); // Active the placeholder template.
 
-      IOWA.Analytics.trackEvent(
-          'link', 'click', this.currentCard.getAttribute(ANALYTICS_LINK_ATTR));
+      IOWA.Analytics.trackEvent('link', 'click',
+          this.currentCard.getAttribute(this.app.ANALYTICS_LINK_ATTR));
 
       // Wait one rAF for template to have stamped.
       this.async(function() {
@@ -246,9 +246,9 @@ limitations under the License.
     togglePhotoGallery: function(e, detail) {
       var target = Polymer.dom(e).rootTarget;
 
-      if (target && target.hasAttribute('data-track-link')) {
+      if (target && target.hasAttribute(this.app.ANALYTICS_LINK_ATTR)) {
         IOWA.Analytics.trackEvent(
-            'link', 'click', target.getAttribute('data-track-link'));
+            'link', 'click', target.getAttribute(this.app.ANALYTICS_LINK_ATTR));
       } else {
         IOWA.Analytics.trackEvent('link', 'click', 'about-photos-deeplink');
       }

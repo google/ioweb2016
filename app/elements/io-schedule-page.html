@@ -663,8 +663,9 @@ limitations under the License.
 
       var target = Polymer.dom(e).rootTarget;
 
-      if (target && target.hasAttribute('data-track-link')) {
-        IOWA.Analytics.trackEvent('link', 'click', target.getAttribute('data-track-link'));
+      if (target && target.hasAttribute(this.app.ANALYTICS_LINK_ATTR)) {
+        IOWA.Analytics.trackEvent('link', 'click',
+            target.getAttribute(this.app.ANALYTICS_LINK_ATTR));
       }
       this.sessionURLFilters = [this.selectedSession.id];
     },
@@ -672,8 +673,9 @@ limitations under the License.
     onRateSession: function(e, detail) {
       var target = Polymer.dom(e).rootTarget;
 
-      if (target && target.hasAttribute('data-track-link')) {
-        IOWA.Analytics.trackEvent('link', 'click', target.getAttribute('data-track-link'));
+      if (target && target.hasAttribute(this.app.ANALYTICS_LINK_ATTR)) {
+        IOWA.Analytics.trackEvent('link', 'click',
+            target.getAttribute(this.app.ANALYTICS_LINK_ATTR));
       }
       this.answers = {}; // Reset answers.
       ratePanel.open();
@@ -702,9 +704,10 @@ limitations under the License.
       this.startScheduleVideo = true;
 
       var target = Polymer.dom(e).rootTarget;
-      if (target.hasAttribute('data-track-link')) {
+      if (target.hasAttribute(this.app.ANALYTICS_LINK_ATTR)) {
         IOWA.Analytics.trackEvent(
-            'schedule', 'video play', target.getAttribute('data-track-link'));
+            'schedule', 'video play',
+            target.getAttribute(this.app.ANALYTICS_LINK_ATTR));
       }
     },
 

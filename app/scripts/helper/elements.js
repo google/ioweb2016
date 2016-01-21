@@ -111,6 +111,7 @@ IOWA.Elements = (function() {
     template.app.pageTransitionDone = false;
     template.app.fullscreenVideoActive = false;
     template.app.isIOS = IOWA.Util.isIOS();
+    template.app.ANALYTICS_LINK_ATTR = ANALYTICS_LINK_ATTR;
 
     template.pages = IOWA.PAGES; // defined in auto-generated ../pages.js
     template.selectedPage = IOWA.Router.parseUrl(window.location.href).page;

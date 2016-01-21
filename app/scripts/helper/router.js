@@ -73,9 +73,9 @@ IOWA.Router_ = function(window) {
       var el = e.path[i];
       if (el.localName === 'a') {
         // First, record click event if link requests it.
-        if (el.hasAttribute('data-track-link')) {
+        if (el.hasAttribute(this.t.app.ANALYTICS_LINK_ATTR)) {
           IOWA.Analytics.trackEvent(
-              'link', 'click', el.getAttribute('data-track-link'));
+              'link', 'click', el.getAttribute(this.t.app.ANALYTICS_LINK_ATTR));
         }
         // Ignore links that go offsite.
         if (el.target) {
