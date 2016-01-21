@@ -68,6 +68,7 @@
   }
 
   function afterImports() {
+console.timeEnd('HTMLImportsLoaded')
     IOWA.Router = IOWA.Router_(window);
     IOWA.Elements.init();
     IOWA.Router.init(IOWA.Elements.Template);
@@ -97,7 +98,7 @@
 
   window.addEventListener('resize', function() {
     IOWA.Util.resizeRipple(IOWA.Elements.Ripple);
-    IOWA.Elements.Drawer.closeDrawer();
+    IOWA.Elements.Template.closeDrawer();
   });
 
   window.addEventListener('offline', function(e) {
@@ -138,6 +139,6 @@
   if (IOWA.Util.supportsHTMLImports) {
     afterImports();
   } else {
-    document.addEventListener('WebComponentsReady', afterImports);
+    document.addEventListener('HTMLImportsLoaded', afterImports);
   }
 })();

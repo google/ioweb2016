@@ -19,14 +19,6 @@ IOWA.Elements = (function() {
 
   const ANALYTICS_LINK_ATTR = 'data-track-link';
 
-  // TODO: do in data binding.
-  function disableDrawerIfNotMobile(mq) {
-    // Disable swiping drawer on tablet/desktop.
-    var isPhoneSize = mq.queryMatches;
-    IOWA.Elements.Drawer.querySelector('[drawer]').hidden = !isPhoneSize;
-    IOWA.Elements.Drawer.disableSwipe = !isPhoneSize;
-  }
-
   function updateElements() {
     var ioLogo = document.querySelector('io-logo');
     ioLogo.addEventListener('io-logo-animation-done', function(e) {
@@ -57,17 +49,10 @@ IOWA.Elements = (function() {
 
     var main = document.querySelector('.io-main');
 
-    // TODO: do in an on-iron-activate handler.
-    var drawer = document.querySelector('paper-drawer-panel');
-    drawer.addEventListener('iron-activate', function(e) {
-      this.closeDrawer();
-    });
-
     var masthead = document.querySelector('.masthead');
     var mastheadMetaCorner = masthead.querySelector('.masthead-meta--corner');
     var nav = masthead.querySelector('#navbar');
     var navPaperTabs = nav.querySelector('paper-tabs');
-    var drawerMenu = document.getElementById('drawer-menu');
     var footer = document.querySelector('footer');
     var toast = document.getElementById('toast');
     var liveStatus = document.getElementById('live-status');
@@ -79,12 +64,11 @@ IOWA.Elements = (function() {
     var ripple = masthead.querySelector('.masthead__ripple__content');
     IOWA.Util.resizeRipple(ripple);
 
-    IOWA.Elements.Drawer = drawer;
+    IOWA.Elements.Drawer = IOWA.Elements.Template.$.appdrawer;
     IOWA.Elements.Masthead = masthead;
     IOWA.Elements.MastheadMetaCorner = mastheadMetaCorner;
     IOWA.Elements.Main = main;
     IOWA.Elements.Nav = nav;
-    IOWA.Elements.DrawerMenu = drawerMenu;
     IOWA.Elements.NavPaperTabs = navPaperTabs;
     IOWA.Elements.Ripple = ripple;
     IOWA.Elements.Toast = toast;
@@ -93,13 +77,6 @@ IOWA.Elements = (function() {
     IOWA.Elements.GoogleSignIn = signin;
     IOWA.Elements.LazyPages = lazyPages;
     IOWA.Elements.ScrollContainer = IOWA.Elements.Template.$.headerpanel.scroller;
-
-    // TODO: move to data binding.
-    var phoneMQ = document.getElementById('mq-phone');
-    phoneMQ.addEventListener('query-matches-changed', function() {
-      disableDrawerIfNotMobile(phoneMQ);
-    });
-    disableDrawerIfNotMobile(phoneMQ); // Do setup for initial page load.
 
     // Kickoff a11y helpers for elements
     IOWA.A11y.init();
@@ -491,6 +468,18 @@ IOWA.Elements = (function() {
       }
     };
 
+    template._isPage = function(page, selectedPage) {
+      return page === selectedPage;
+    };
+
+    template._disableNotify = function(notify) {
+      return notify === null;
+    };
+
+    template.closeDrawer = function() {
+      this.$.appdrawer.closeDrawer();
+    };
+
     template.addEventListener('dom-change', updateElements);
 
     template.addEventListener('page-transition-done', function(e) {
@@ -502,14 +491,6 @@ IOWA.Elements = (function() {
       this.set('app.pageTransitionDone', false);
       IOWA.Elements.NavPaperTabs.style.pointerEvents = 'none';
     });
-
-    template._isPage = function(page, selectedPage) {
-      return page === selectedPage;
-    };
-
-    template._disableNotify = function(notify) {
-      return notify === null;
-    };
 
     IOWA.Elements.Template = template;
   }
