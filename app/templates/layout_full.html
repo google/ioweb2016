@@ -175,55 +175,7 @@ limitations under the License.
   <link rel="canonical" href="{% .Canonical %}">
   {% end %}
 
-  <style is="custom-style">
-    [layout] {
-      @apply(--layout);
-    }
-    [layout][horizontal] {
-      @apply(--layout-horizontal);
-    }
-    [layout][vertical] {
-      @apply(--layout-vertical);
-    }
-    [layout][center] {
-      @apply(--layout-center);
-    }
-    [layout][center-center] {
-      @apply(--layout-center-center);
-    }
-    [flex] {
-      @apply(--layout-flex);
-    }
-    [two] {
-      @apply(--layout-flex-2);
-    }
-    [end-justified] {
-      @apply(--layout-end-justified);
-    }
-    [end] {
-      @apply(--layout-end);
-    }
-    [justified] {
-      @apply(--layout-justified);
-    }
-    [self-center] {
-      @apply(--layout-self-center);
-    }
-    [wrap] {
-       @apply(--layout-wrap);
-    }
-
-    paper-tabs.white {
-      --paper-tabs-selection-bar-color: #fff;
-    }
-
-    paper-tabs.white paper-tab {
-      --paper-tab-ink: rgba(255,255,255,0.5);
-      --paper-tab-content: {
-        opacity: 1 !important;
-      };
-    }
-
+  <style is="custom-style" include="shared-app-styles">
     paper-dropdown-menu.white {
       --paper-input-container-color: inherit;
       --paper-dropdown-menu-icon: {
@@ -259,38 +211,13 @@ limitations under the License.
         font: inherit;
       };
     }
-
-    :root {
-      --color-cyan-500: #00BCD4; /* Duplicated from _colors.scss */
-    }
-
-    .card__photo iron-image {
-      --iron-image-placeholder: {
-        background-color: var(--color-cyan-500);
-        background-size: contain !important;
-      };
-    }
-
-    #page-about .pics__section iron-image {
-      --iron-image-placeholder: {
-        background-size: 15% !important;
-      };
-    }
-
-    paper-dialog {
-      --paper-font-title: {}; /* nuke paper-dialog's styling */
-    }
-
-    .scrollable {
-      @apply(--layout-scroll);
-    }
   </style>
 </head>
 <body id="page-{% .Slug %}" class="bg-medium-grey">
 
 <!-- Intro animation background is outside of Polymer to reduce perceived latency in polyfilled browsers. -->
 <div class="io-logo-container">
-  <io-logo width="312" height="165" page="{% .Slug %}" class="bg-medium-grey"></io-logo>
+  <io-logo width="312" height="165" page="{% .Slug %}" class="bg-medium-grey" hide-masthead></io-logo>
   <div class="bg-medium-grey" iologobackground></div>
 </div>
 
@@ -307,15 +234,16 @@ limitations under the License.
       </div>
     </paper-toolbar>
     <div class="drawer-panel-content" flex>
+      <!-- TODO: move to paper-listbox and remove import -->
       <paper-menu id="drawer-menu" selected="{% .Slug %}" attr-for-selected="label">
         <paper-item label="home">
           <a href="./" data-ajax-link data-anim-drawer
              data-track-link="nav-drawer-home">Home</a>
         </paper-item>
-        <!-- <paper-item label="about">
+        <paper-item label="about">
           <a href="about" data-ajax-link data-anim-drawer
              data-track-link="nav-drawer-about">About</a>
-        </paper-item> -->
+        </paper-item>
         <paper-item label="schedule">
           <a href="schedule#day1" data-ajax-link data-anim-drawer
              data-track-link="nav-drawer-schedule">Schedule</a>
@@ -343,13 +271,13 @@ limitations under the License.
 
       <!-- Responsive handlers -->
       <iron-media-query id="mq-phone" full query="(min-width:320px) and (max-width:767px)"
-                        query-matches="{{isPhoneSize}}"></iron-media-query>
+                        query-matches="{{app.isPhoneSize}}"></iron-media-query>
       <iron-media-query id="mq-tablet" full query="(min-width:768px) and (max-width:944px)"
-                        query-matches="{{isTabletSize}}"></iron-media-query>
+                        query-matches="{{app.isTabletSize}}"></iron-media-query>
       <iron-media-query id="mq-desktop" query="(min-width:945px)"
-                        query-matches="{{isDesktopSize}}"></iron-media-query>
+                        query-matches="{{app.isDesktopSize}}"></iron-media-query>
 
-      <header class="masthead bg-medium-grey" layout vertical>
+      <header class="masthead" layout vertical>
         <div class="masthead__ripple">
           <div class="masthead__ripple__content" id="masthead-ripple"></div>
         </div>
@@ -369,21 +297,30 @@ limitations under the License.
           </div>
           <paper-tabs class="white" attr-for-selected="label"
                       selected="{{selectedPage}}" noink>
-            <!-- <paper-tab label="about" role="">
-              <a href="about" data-ajax-link data-track-link="nav-about" data-transition="masthead-ripple-transition" layout horizontal center>About</a>
-            </paper-tab> -->
+            <paper-tab label="about" role="">
+              <a href="about" data-ajax-link data-track-link="nav-about"
+                 data-transition="masthead-ripple-transition"
+                 layout horizontal center>About</a>
+            </paper-tab>
             <paper-tab label="schedule" role="">
-              <a href="schedule#day1" data-ajax-link data-track-link="nav-schedule" data-transition="masthead-ripple-transition" layout horizontal center>Schedule</a>
+              <a href="schedule#day1" data-ajax-link data-track-link="nav-schedule"
+                 data-transition="masthead-ripple-transition"
+                 layout horizontal center>Schedule</a>
             </paper-tab>
             <!-- <paper-tab label="videos" role="">
-              <a href="videos" data-ajax-link data-track-link="nav-videos" data-transition="masthead-ripple-transition" layout horizontal center>Videos</a>
+              <a href="videos" data-ajax-link data-track-link="nav-videos"
+                 data-transition="masthead-ripple-transition"
+                 layout horizontal center>Videos</a>
             </paper-tab> -->
             <paper-tab label="onsite" role="">
               <a href="onsite" data-ajax-link data-track-link="nav-onsite"
-                 data-transition="masthead-ripple-transition" layout horizontal center>Attending</a>
+                 data-transition="masthead-ripple-transition"
+                 layout horizontal center>Attending</a>
             </paper-tab>
             <paper-tab label="offsite" role="">
-              <a href="offsite" data-ajax-link data-track-link="nav-offsite" data-transition="masthead-ripple-transition" layout horizontal center>I/O Extended</a>
+              <a href="offsite" data-ajax-link data-track-link="nav-offsite"
+                 data-transition="masthead-ripple-transition"
+                 layout horizontal center>I/O Extended</a>
             </paper-tab>
           </paper-tabs>
           <span id="signin-nav-elements" layout horizontal center>
@@ -435,17 +372,6 @@ limitations under the License.
           </span>
         </paper-toolbar>
 
-        <div class="masthead-container" flex end$="{{!isPhoneSize}}"
-             layout vertical$="{{isPhoneSize}}" horizontal$="{{!isPhoneSize}}">
-          <div class$="masthead-meta {{_addClass('transition', pageTransitioningOut)}}"
-               layout vertical flex end-justified$="{{isPhoneSize}}">
-            <div id="template-masthead-container">{% template "masthead" .%}</div>
-          </div>
-        </div>
-        <a href="schedule#myschedule" data-ajax-link data-track-link="fab-myschedule">
-          <paper-fab class="fab" icon="event" title="My Schedule"
-                     mini$="{{isPhoneSize}}"></paper-fab>
-        </a>
       </header>
 
       <!-- <template is="dom-if" if="{{_isPage('home', selectedPage)}}" restamp>
@@ -464,11 +390,31 @@ limitations under the License.
       </template> -->
 
       <main class$="io-main {{_addClass('transitionIn', pageTransitioningIn)}} {{_addClass('transitionOut', pageTransitioningOut)}}">
-        <div id="template-content-container">{% template "content" .%}</div>
+
+        <lazy-pages>
+          <template is="dom-if" name="home" restamp>
+            <io-home-page app="[[app]]" date="{% .StartDateStr %}"></io-home-page>
+          </template>
+          <template is="dom-if" name="about" restamp>
+            <io-about-page app="[[app]]"></io-about-page>
+          </template>
+          <template is="dom-if" name="onsite" restamp>
+            <io-onsite-page app="[[app]]"></io-onsite-page>
+          </template>
+          <template is="dom-if" name="offsite" restamp>
+            <io-extended-page app="[[app]]"></io-extended-page>
+          </template>
+          <template is="dom-if" name="schedule" restamp>
+            <io-schedule-page
+                app="[[app]]"
+                user="[[currentUser]]"
+                date="{% .StartDateStr %}"></io-schedule-page>
+          </template>
+        </lazy-pages>
+
       </main>
 
       <footer layout vertical>
-      <!-- <footer layout vertical hidden$="{{_isPage('home', selectedPage)}}"> -->
 
         <span id="share-text" msgid="share-text" hidden>#io15 brings together devs to explore the next generation of tech and mobile. Join us online or in person May 28-29: https://google.com/io</span>
 
@@ -477,9 +423,6 @@ limitations under the License.
             <a href="https://plus.google.com/+GoogleDevelopers" target="_blank" class="share-icon" data-track-link="footer-share-gplus" data-share-type="gplus" on-click="openShareWindow"><iron-icon icon="io:post-gplus"></iron-icon></a>
             <a href="https://twitter.com/googledevs" target="_blank" class="share-icon" data-track-link="footer-share-twitter" data-share-type="twitter" on-click="openShareWindow"><iron-icon icon="io:post-twitter"></iron-icon></a>
           </span>
-          <!-- <span>
-            <a href$="{{eeFooterLink}}" class="invisible" hidden$="{{!eeFooterLink}}" target="_blank" data-track-link="footer-challenge-link">Ready for a challenge?</a>
-          </span> -->
 
 <!-- TODO: update polymer 1.0 -->
 <!-- <iron-a11y-keys target="{{$.backtotop}}" keys="enter" on-keys-pressed="backToTop"></iron-a11y-keys> -->
@@ -555,26 +498,6 @@ limitations under the License.
 <script src="scripts/helper/schedule.js"></script>
 <script src="scripts/bootstrap.js"></script>
 <!-- endbuild -->
-<script>
-(function() {
-
-  // Necessary for IE's lack of native <template>
-  // https://github.com/GoogleChrome/ioweb2015/issues/599
-  function init() {
-    if (typeof window._initPage == 'function') {
-      window._initPage();
-      window._initPage = null;
-    }
-  }
-
-  if (IOWA.Util.supportsHTMLImports) {
-    init();
-  } else {
-    document.addEventListener('HTMLImportsLoaded', init);
-  }
-
-})();
-</script>
 
 </body>
 </html>

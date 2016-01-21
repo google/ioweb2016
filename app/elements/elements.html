@@ -1,5 +1,5 @@
 <!--
-Copyright 2015 Google Inc. All rights reserved.
+Copyright 2016 Google Inc. All rights reserved.
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -14,115 +14,30 @@ limitations under the License.
 <!-- Shared by all pages -->
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
-<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
-
-<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<!-- Main app shell and components -->
 <link rel="import" href="../bower_components/paper-drawer-panel/paper-drawer-panel.html">
 <link rel="import" href="../bower_components/paper-toolbar/paper-toolbar.html">
 <link rel="import" href="../bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="io-icons.html">
 
 <link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
-<link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
-<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
-<link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 
 <link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
-<link rel="import" href="../bower_components/paper-progress/paper-progress.html">
-
-<link rel="import" href="../bower_components/google-youtube/google-youtube.html">
-
-<link rel="import" href="../bower_components/neon-animation/animations/scale-up-animation.html">
-<link rel="import" href="../bower_components/neon-animation/animations/fade-out-animation.html">
 
 <link rel="import" href="google-signin.html">
 <link rel="import" href="io-logo.html">
 <link rel="import" href="io-toast.html">
-<!-- <link rel="import" href="io-radio-button.html"> -->
-<!-- <link rel="import" href="io-checkbox.html"> -->
-<!-- <link rel="import" href="io-slider.html"> -->
-<link rel="import" href="countdown-timer/countdown-timer.html">
-<link rel="import" href="social-poller.html">
 
-<!-- Remove after Phase 3 -->
-<!-- <link rel="import" href="io-live.html"> -->
-
-<!-- Homepage -->
-<!-- <link rel="import" href="name-cycler.html"> -->
-<link rel="import" href="social-post.html">
-
-<!-- Offsite -->
-<!-- TODO: add back when ported to polymer 1.0 -->
-<!-- <link rel="import" href="webgl-globe/webgl-globe.html"> -->
-
-<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="../bower_components/google-apis/google-maps-api.html">
-
-<!-- Extended Form -->
-<!-- <link rel="import" href="io-extended-form.html"> -->
-
-<!-- About -->
-<link rel="import" href="io-gallery.html">
-
-<!-- Schedule -->
-<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
-<link rel="import" href="io-schedule.html">
-
-<!-- Live stream gadget -->
-<!-- <link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
-<link rel="import" href="../bower_components/paper-slider/paper-slider.html">
-<link rel="import" href="../bower_components/paper-input/paper-autogrow-textarea.html">
-<link rel="import" href="../bower_components/iron-label/iron-label.html"> -->
-
-<!-- Videos -->
-<link rel="import" href="../bower_components/iron-image/iron-image.html">
-
-<!-- <script>
-
-Polymer({
-  is: 'bind-ref',
-  // extends: 'template',
-
-  properties: {
-    ref: {
-      type: String,
-      observer: 'refChanged',
-    },
-  },
-
-  refChanged: function(newRef, oldRef) {
-    if (oldRef != undefined) {
-      this._removeChildren();
-      this._stamp();
-    }
-  },
-
-  _stamp: function() {
-    this._parent = Polymer.dom(this).parentNode;
-    var rootEl = this._parent;
-    while (Polymer.dom(rootEl).parentNode) {
-      rootEl = Polymer.dom(rootEl).parentNode;
-    }
-
-    var tpl = Polymer.dom(rootEl).querySelector('#' + this.ref);
-    var tplRoot = tpl.stamp().root;
-    this._children = Array.prototype.slice.call(tplRoot.childNodes);
-    Polymer.dom(this._parent).insertBefore(tplRoot, this);
-  },
-
-  _removeChildren: function() {
-    for (var i = 0; i < this._children.length; i++) {
-      Polymer.dom(this._parent).removeChild(this._children[i]);
-    }
-  },
-
-  attached: function() { this._stamp(); },
-  detached: function() { this._removeChildren(); },
-});
-</script> -->
+<!-- Pages -->
+<link rel="import" href="shared-app-styles.html">
+<link rel="import" href="lazy-pages.html">
+<link rel="import" href="io-home-page.html">
+<link rel="import" href="io-about-page.html">
+<link rel="import" href="io-onsite-page.html">
+<link rel="import" href="io-extended-page.html">
+<link rel="import" href="io-schedule-page.html">

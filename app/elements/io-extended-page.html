@@ -1,0 +1,227 @@
+<!--
+Copyright 2016 Google Inc. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+
+<link rel="import" href="shared-app-styles.html">
+<link rel="import" href="PageBehavior.html">
+
+<dom-module id="io-extended-page">
+<template>
+  <style include="shared-app-styles">
+    :host {
+      display: block;
+    }
+  </style>
+
+<div class="masthead-container" layout horizontal end>
+  <div class="masthead-meta">
+    <h1>I/O Extended</h1>
+  </div>
+</div>
+
+<paper-toolbar class="navbar__overlay navbar__overlay--video"
+               aria-hidden$="{{!app.fullscreenVideoActive}}" fit>
+    <paper-icon-button icon="arrow-back" on-tap="closeVideoSection"
+        aria-label="Close video"
+        tabindex="{{_enableTabIndex(app.fullscreenVideoActive)}}"></paper-icon-button>
+    <span flex>Watch the 2014 I/O Extended recap video</span>
+  </paper-toolbar>
+
+  <template is="dom-if" if="[[app.fullscreenVideoActive]]" restamp>
+    <div class="fullvideo__container" fit>
+     <google-youtube video-id="A-bjrru5bLU" height="100%" width="100%" fit
+                     autohide="1" controls="2" modestbranding="1" showinfo="0"
+                     iv_load_policy="3" rel="0" autoplay="1"
+                     on-google-youtube-ready="onOffsiteVideoReady"></google-youtube>
+    </div>
+  </template>
+
+<div class="active">
+
+<div class="card__container card__container--top sidebyside slide-up"
+     layout horizontal vertical$="{{app.isPhoneSize}}" relative>
+    <div class="card" layout vertical auto-vertical flex>
+      <div class="card-content" flex$="{{!app.isPhoneSize}}">
+        <h3 class="card__title">Live stream</h3>
+        <div>Watch the keynote and select sessions in real-time, from your laptop or mobile device.</div>
+      </div>
+      <div class="card-content">
+        <a href="schedule?filters=Live%20streamed#day1" data-track-link="offsite-browse-schedule" data-ajax-link data-transition="hero-card-transition">Browse Live Schedule</a>
+      </div>
+    </div>
+    <div class="card" auto-vertical flex>
+      <div class="card-content">
+        <h3 class="card__title">I/O Live Embed Widget</h3>
+        <div>Personalize the I/O live stream for your website and share the #io15 conversation from the event with your audience.</div>
+      </div>
+      <div class="card-content">
+        <a href="widget" data-track-link="offsite-widget" data-ajax-link data-transition="hero-card-transition">Customize I/O Live widget</a>
+      </div>
+    </div>
+    <div class="ripple">
+      <div class="ripple__content"></div>
+    </div>
+  </div>
+
+
+  <div class="slide-up-delay">
+    <section id="recap_video_section" class="card__photo--stage page__section" layout vertical center-center>
+      <div class="play__button__container" on-tap="openSectionVideo" data-track-link="offsite-watch-extended-recap-video">
+        <h5><i18n-msg msgid="ioextendedwatch">Watch the 2014 I/O Extended recap video</i18n-msg></h5>
+      </div>
+    </section>
+
+    <div class="card__container" relative>
+      <div class="card" auto-vertical flex>
+        <div class="card-content">
+          <h3 class="card__title">I/O Extended events</h3>
+          <div>I/O Extended events may include live streamed sessions, local developer demos, hackathons and more. These events are brought to you by our Google Developer Groups, Student Ambassadors, and local developers.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="card__container card__iorequest">
+    <div class="card" auto-vertical flex>
+      <div class="card-content">
+        <h3 class="card__title">#io15request</h3>
+        <p>Developers and product fans who are unable to attend Google I/O in-person are invited to participate in the <b>#io15request</b> program. During conference days, you can request images, information, and answers to your burning I/O questions, and a team of onsite Googlers will do their best to hunt down an answer for you.</p>
+        <div>To put in a request during I/O (May 28-29), all you need to do is create a <b>public</b> Google+ or Twitter post from your profile using the hashtag <b>#io15request</b>. We'll only be able to reply to requests written in English, French and German.</div>
+      </div>
+      <div class="card-content link-spacing">
+        <a href="https://plus.google.com/+topcontributors/" data-track-link="offsite-iorequest-gplus" target="_blank">See #io15requests on Google+</a>
+        <a href="https://twitter.com/search?f=realtime&q=%23io15request&src=typd" data-track-link="offsite-iorequest-twitter" target="_blank">See #io15requests on Twitter</a>
+      </div>
+    </div>
+  </div>
+
+  <section id="hashtag" class="page__section">
+    <div class="io__hash"></div>
+  </section>
+
+</div>
+
+</template>
+<script>
+(function() {
+  'use strict';
+
+  const ANIMATION_DURATION = 500;
+
+  Polymer({
+    is: 'io-extended-page',
+
+    behaviors: [IOBehaviors.PageBehavior],
+
+    title: 'I/O Extended',
+    name: 'offsite',
+
+    attached: function() {
+      // Reset state for when revisiting the page.
+      this.set('app.fullscreenVideoActive', false);
+    },
+
+    onOffsiteVideoReady: function() {
+      this.runVideoSectionAnimation();
+    },
+
+    closeVideoSection: function() {
+      this.runVideoSectionAnimation(true, function() {
+        this.set('app.fullscreenVideoActive', false);
+      }.bind(this));
+    },
+
+    openSectionVideo: function(e) {
+      var target = Polymer.dom(e).rootTarget;
+
+      IOWA.Analytics.trackEvent(
+          'link', 'click', target.getAttribute(this.app.ANALYTICS_LINK_ATTR));
+
+      // Only smooth scroll to content if not on mobile.
+      if (this.app.isPhoneSize) {
+        this.set('app.fullscreenVideoActive', true);
+      } else {
+        IOWA.Util.smoothScroll(this.$.recap_video_section, 300, function() {
+          this.set('app.fullscreenVideoActive', true);
+        }.bind(this));
+      }
+    },
+
+    runVideoSectionAnimation: function(opt_reverse, opt_callback) {
+      var root = Polymer.dom(this.root);
+      var topCard = root.querySelector('.card__container.slide-up');
+
+      var videoContainer = root.querySelector('.fullvideo__container');
+      var video = videoContainer.querySelector('google-youtube');
+
+      // Wait for cc module to load, then make the fontsize smaller.
+      // https://developers.google.com/youtube/iframe_api_reference#Events
+      var callback = function() {
+        video._player.setOption('captions', 'fontSize', -2);
+        video._player.removeEventListener('onApiChange', callback);
+      };
+      video._player.addEventListener('onApiChange', callback);
+
+      var animationTiming = {
+        duration: ANIMATION_DURATION,
+        fill: 'forwards',
+        direction: opt_reverse ? 'reverse' : 'normal',
+        easing: 'cubic-bezier(0.4,0,0.2,1)'
+      };
+
+      var button = root.querySelector('.play__button__container');
+
+      var animation = new KeyframeEffect(button, [
+        {opacity: 1}, {opacity: 0}
+      ], animationTiming);
+
+      // Only animate top/bottom cards offscreen if not on mobile.
+      if (!this.app.isPhoneSize) {
+        animation = new GroupEffect([
+          animation,
+          new KeyframeEffect(topCard, [
+            {transform: 'translateY(0)', opacity: 1},
+            {transform: 'translateY(-100px)', opacity: 0}
+          ], animationTiming)
+        ]);
+      }
+
+      var videoAnimation = new KeyframeEffect(video, [
+        {opacity: 0}, {opacity: 1}
+      ], animationTiming);
+
+      var navOverlay = root.querySelector('.navbar__overlay--video');
+
+      if (opt_reverse) {
+        // Fade out gallery and slide back in page sections at the same time.
+        IOWA.PageAnimation.play(new GroupEffect([
+          animation, videoAnimation
+        ]), opt_callback);
+        navOverlay.classList.remove('active');
+      } else {
+        // Slide out page sections, then fade in gallery.
+        IOWA.PageAnimation.play(new SequenceEffect([
+          animation, videoAnimation
+        ]), opt_callback);
+        navOverlay.classList.add('active');
+      }
+    }
+  });
+
+})();
+</script>
+</dom-module>

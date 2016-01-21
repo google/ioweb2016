@@ -1,0 +1,204 @@
+<!--
+Copyright 2016 Google Inc. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="../bower_components/google-youtube/google-youtube.html">
+
+<link rel="import" href="social-poller.html">
+<link rel="import" href="social-post.html">
+<link rel="import" href="countdown-timer/countdown-timer.html">
+
+<link rel="import" href="shared-app-styles.html">
+<link rel="import" href="PageBehavior.html">
+
+
+<dom-module id="io-home-page">
+<template>
+  <style include="shared-app-styles">
+    :host {
+      display: block;
+    }
+  </style>
+
+  <div class="masthead-container" layout horizontal end>
+    <div class="masthead-meta">
+      <div id="countdown-container" fit>
+        <countdown-timer auto-start
+            bg-color="rgb(83,97,250)"
+            date="[[date]]"
+            ease-in-time="490"
+            wait-time="100"
+            ease-out-time="400"
+            value="{{countdownValue}}"
+            label="Google I/O"
+            role="timer"></countdown-timer>
+      </div>
+    </div>
+  </div>
+
+  <div class="active">
+    <div class="card__container card__container--top slide-up">
+      <div class="card">
+        <div class="card-content">
+          <h3>Google I/O is for developers—the creative coders who are building what's next. Together we'll explore the latest in tech, mobile &amp; beyond.</h3>
+        </div>
+        <div relative>
+          <paper-progress indeterminate fit hidden$="{{!_ioReminder}}"></paper-progress>
+        </div>
+        <div class="card-content link-spacing">
+          <a href="about" data-ajax-link data-transition="hero-card-transition"
+             data-track-link="home-learn-more-about-io">Learn more about I/O</a>
+          <a href="#" data-track-link="home-set-reminder"
+             class="notification__feature" on-click="_onSetReminder">
+            <iron-icon icon="io:notifications-none"></iron-icon> Set a reminder
+          </a>
+        </div>
+        <div class="ripple">
+          <div class="ripple__content"></div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-up-delay">
+      <section class="home-photo page__section"></section>
+
+      <div class="registration__card card__container sidebyside"
+           layout horizontal vertical$="{{app.isPhoneSize}}">
+        <div class="card" auto-vertical flex>
+          <div class="card-content hide-on-mobile">
+            <h3>I/O is two days of hands-on interaction with the latest technologies, inspirational talks and a few surprises in between.</h3>
+          </div>
+          <div class="card-content">
+            <a href="schedule#myschedule" data-ajax-link
+               data-track-link="home-check-agenda">
+               <iron-icon icon="event" aria-hidden="true"></iron-icon> Create your schedule
+            </a>
+          </div>
+        </div>
+        <div class="card" layout vertical auto-vertical flex>
+          <div flex class="card__photo card__photo--plan"></div>
+          <div class="card-content">
+            <a href="onsite" data-ajax-link data-track-link="home-plan-experience">Plan your I/O experience</a>
+          </div>
+        </div>
+      </div>
+
+      <section id="join" class="page__section bg-light-grey">
+        <h2>Join the conversation now at #io15</h2>
+        <div class="join__social" layout vertical end hidden$="{{app.isPhoneSize}}">
+          <a href="https://plus.google.com/+GoogleDevelopers"
+             data-track-link="home-social-plus-google-developers" target="_blank">
+            +googledevelopers<iron-icon icon="io:post-gplus"></iron-icon>
+          </a>
+          <a href="https://twitter.com/googledevs"
+             data-track-link="home-social-twitter-google-devs" target="_blank">
+            @googledevs<iron-icon icon="io:post-twitter"></iron-icon>
+          </a>
+        </div>
+
+        <div class="io__hash" aria-label="I/O hash tag"></div>
+
+        <social-poller url="api/v1/social" posts="{{socialPosts}}"
+                       interval="30000"></social-poller>
+
+        <template is="dom-if" if="[[_showSocialPosts(socialPosts, 3)]]">
+          <div class="sidebyside" layout horizontal vertical$="{{app.isPhoneSize}}">
+            <template is="dom-repeat" items="{{_limit(socialPosts, 3)}}" as="post">
+              <social-post kind="[[post.kind]]"
+                           author="[[post.author]]"
+                           url="[[post.url]]"
+                           text="[[post.text]]"
+                           when="[[post.when]]">
+              </social-post>
+            </template>
+          </div>
+        </template>
+
+      </section>
+    </div>
+  </div>
+
+  <template is="dom-if" if="{{app.fullscreenVideoActive}}">
+    <div class="fullvideo__container" fit hidden>
+      <img src="images/home/recap-500@2x.jpg" class="fullvideo_thumbnail" alt="Watch the I/O Recap Video" fit>
+      <google-youtube video-id="ksvdvCDO7pA" height="100%" width="100%" fit
+                      autohide="1" controls="2" modestbranding="1" showinfo="0"
+                      iv_load_policy="3" rel="0" autoplay="1"></google-youtube>
+    </div>
+  </template>
+
+</template>
+<script>
+(function () {
+  'use strict';
+
+  Polymer({
+    is: 'io-home-page',
+
+    behaviors: [IOBehaviors.PageBehavior],
+
+    properties: {
+      /**
+       * The target date for I/O to start. Should be specified in ISO 8601
+       * format, e.g. `May 10 2016 09:00:00 GMT-0700 (PDT)`.
+       */
+      date: {
+        type: String,
+        value: 'May 10 2016 09:00:00 GMT-0700 (PDT)'
+      },
+
+      /*
+       * Toggles the save progress bar for being reminded about I/O.
+       */
+      _ioReminder: {
+        type: Boolean,
+        value: false
+      }
+    },
+
+    title: 'Google I/O 2016',
+    name: 'home',
+
+    attached: function() {
+      // Reset template variables for when revisiting the page.
+      this.set('app.fullscreenVideoActive', false);
+    },
+
+    _onSetReminder: function(e, detail) {
+      e.preventDefault();
+
+      this._ioReminder = true;
+
+      IOWA.Schedule.saveSession('__keynote__', true).then(function() {
+        this._ioReminder = false;
+
+        var savedSessions = this.app.savedSessions;
+        if (savedSessions.length) {
+          IOWA.Schedule.updateSavedSessionsUI(savedSessions);
+        }
+
+        IOWA.Schedule.bookmarkSessionNotification(
+            true, 'You\'ll be reminded when I/O starts.');
+      }.bind(this));
+    },
+
+    _showSocialPosts: function(posts, atLeast) {
+      return posts.length >= atLeast;
+    }
+
+  });
+
+}());
+</script>
+</dom-module>

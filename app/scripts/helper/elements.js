@@ -19,12 +19,7 @@ IOWA.Elements = (function() {
 
   const ANALYTICS_LINK_ATTR = 'data-track-link';
 
-  function optionallyLaunchExperiment() {
-    if (window.location.search.indexOf('experiment') > -1) {
-      IOWA.Elements.FAB.onFabClick();
-    }
-  }
-
+  // TODO: do in data binding.
   function disableDrawerIfNotMobile(mq) {
     // Disable swiping drawer on tablet/desktop.
     var isPhoneSize = mq.queryMatches;
@@ -41,25 +36,20 @@ IOWA.Elements = (function() {
       IOWA.Elements.GoogleSignIn.load = true;
 
       // Deep link into a subpage.
-      var t = IOWA.Elements.Template;
+      var selectedPageEl = IOWA.Elements.LazyPages.selectedPage;
       var parsedUrl = IOWA.Router.parseUrl(window.location.href);
-      var defaultSubpage = t.pages[t.selectedPage].defaultSubpage;
-      var selectedSubpage = parsedUrl.subpage || defaultSubpage;
-      var subpage = document.querySelector('.subpage-' + selectedSubpage);
-      if (subpage) {
-        t.set(['pages', t.selectedPage, 'selectedSubpage'], selectedSubpage);
-        subpage.classList.add('active');
-      }
+      // Select page's default subpage tab if there's no deep link in the URL.
+      selectedPageEl.selectedSubpage = parsedUrl.subpage || selectedPageEl.selectedSubpage;
+
+      var subpage = document.querySelector('.subpage-' + selectedPageEl.selectedSubpage);
+      // if (subpage) {
+      //   subpage.classList.add('active');
+      // }
 
       IOWA.PageAnimation.play(
         IOWA.PageAnimation.pageFirstRender(subpage), function() {
-          // Fire event when the page transitions are final.
+          // Let page know transitions are done.
           IOWA.Elements.Template.fire('page-transition-done');
-          // Run page's custom onPageTransitionDone handlers, if present.
-          if (t.pages[t.selectedPage].onPageTransitionDone) {
-            t.pages[t.selectedPage].onPageTransitionDone();
-          }
-          optionallyLaunchExperiment();
           IOWA.ServiceWorkerRegistration.register();
         }
       );
@@ -67,43 +57,43 @@ IOWA.Elements = (function() {
 
     var main = document.querySelector('.io-main');
 
+    // TODO: do in an on-iron-activate handler.
     var drawer = document.querySelector('paper-drawer-panel');
     drawer.addEventListener('iron-activate', function(e) {
       this.closeDrawer();
     });
 
     var masthead = document.querySelector('.masthead');
-    var mastheadMeta = masthead.querySelector('.masthead-meta');
     var mastheadMetaCorner = masthead.querySelector('.masthead-meta--corner');
     var nav = masthead.querySelector('#navbar');
     var navPaperTabs = nav.querySelector('paper-tabs');
     var drawerMenu = document.getElementById('drawer-menu');
-    var fab = masthead.querySelector('.fab');
     var footer = document.querySelector('footer');
     var toast = document.getElementById('toast');
     var liveStatus = document.getElementById('live-status');
     var signin = document.querySelector('google-signin');
+
+    var lazyPages = document.querySelector('lazy-pages');
+    lazyPages.selected = IOWA.Elements.Template.selectedPage;
 
     var ripple = masthead.querySelector('.masthead__ripple__content');
     IOWA.Util.resizeRipple(ripple);
 
     IOWA.Elements.Drawer = drawer;
     IOWA.Elements.Masthead = masthead;
-    IOWA.Elements.MastheadMeta = mastheadMeta;
     IOWA.Elements.MastheadMetaCorner = mastheadMetaCorner;
     IOWA.Elements.Main = main;
     IOWA.Elements.Nav = nav;
     IOWA.Elements.DrawerMenu = drawerMenu;
     IOWA.Elements.NavPaperTabs = navPaperTabs;
     IOWA.Elements.Ripple = ripple;
-    IOWA.Elements.FAB = fab;
     IOWA.Elements.Toast = toast;
     IOWA.Elements.LiveStatus = liveStatus;
     IOWA.Elements.Footer = footer;
     IOWA.Elements.GoogleSignIn = signin;
+    IOWA.Elements.LazyPages = lazyPages;
 
-    // TODO: consider moving everything under template dom-bind to take advantage
-    // of data bindings.
+    // TODO: move to data binding.
     var phoneMQ = document.getElementById('mq-phone');
     phoneMQ.addEventListener('query-matches-changed', function() {
       disableDrawerIfNotMobile(phoneMQ);
@@ -116,87 +106,30 @@ IOWA.Elements = (function() {
 
   function init() {
     var template = document.getElementById('t');
+
+    template.app = {}; // Shared global properties among pages.
+    template.app.pageTransitionDone = false;
+    template.app.fullscreenVideoActive = false;
+    template.app.isIOS = IOWA.Util.isIOS();
+    template.app.ANALYTICS_LINK_ATTR = ANALYTICS_LINK_ATTR;
+
     template.pages = IOWA.PAGES; // defined in auto-generated ../pages.js
     template.selectedPage = IOWA.Router.parseUrl(window.location.href).page;
-    template.fullscreenVideoActive = false;
-    template.mastheadVideoActive = false;
-    template.photoGalleryActive = false;
-    template.extendedMapActive = false;
-    template.pageTransitionDone = false;
-    template.offsiteGlobeVisible = false;
-    template.homeGlobeVisible = false;
-    template.selectedCity = null;
-    template.offsiteMarkerResults = [];
-    template.countdownEnded = false;
-    template.isIOS = IOWA.Util.isIOS();
     template.scheduleData = null;
     template.savedSessions = [];
-    template.eeFooterLink = null;
-    template.settingsIOReminder = false;
 
     // Sign-in defaults.
     template.isSignedIn = false;
     template.currentUser = null;
 
-    // Videos page defaults.
-    template.videoList = [];
-    template.filteredVideoList = [];
-
     IOWA.Util.setMetaThemeColor('#CFD8DC'); // bg-medium-grey in colors.scss.
 
-    template.formatSessionTimeFilter = function(dateStr) {
-      var date = new Date(dateStr);
-      return date.toLocaleTimeString().replace(/:\d+ /, ' ');
-    };
-
-    template.formatSessionDateFilter = function(dateStr) {
-      var date = new Date(dateStr);
-      var day = date.getDate();
-      var month = date.getMonth() + 1;
-      if (month === 5) {
-        return 'May ' + day;
-      } else if (month === 6) {
-        return 'June ' + day;
-      }
-      return day;
-    };
-
-    template.formatSessionTagsFilter = function(tagList) {
-      if (!tagList) {
-        return;
-      }
-      var list = tagList.map(function(tag) {
-        tag = this.scheduleData.tags[tag];
-        return tag ? tag.name : '';
-      }, this);
-      return list.join(', ');
-    };
-
-    template.speakerIdsToNameString = function(speakers) {
-      if (!speakers) {
-        return '';
-      }
-      if (typeof speakers === 'string') {
-        return speakers; // speakers is already a "," separated string.
-      }
-      return speakers.map(function(speakerId) {
-        return this.scheduleData.speakers[speakerId].name;
-      }.bind(this)).sort().join(', ');
-    };
-
-    template.toVideoIdFilter = function(youtubeUrl) {
+    // TODO: duplicated in PageBehavior.
+    template._toVideoIdFilter = function(youtubeUrl) {
       if (!youtubeUrl) {
         return youtubeUrl;
       }
       return youtubeUrl.replace(/https?:\/\/youtu\.be\//, '');
-    };
-
-    template.limit = function(array, howMany) {
-      return array.slice(0, howMany);
-    };
-
-    template.scrollLock = function(enable) {
-      document.body.classList.toggle('noscroll', enable);
     };
 
     template.toggleVideoOverlayNav = function() {
@@ -287,7 +220,7 @@ IOWA.Elements = (function() {
 
         player.onfinish = function(e) {
           if (reverse) {
-            this.fullscreenVideoActive = false; // remove from DOM.
+            this.set('app.fullscreenVideoActive', false); // remove from DOM.
             this.currentCard = null;
           } else {
             thumbnail.classList.add('fadeout');
@@ -295,19 +228,6 @@ IOWA.Elements = (function() {
           }
         }.bind(this);
       }.bind(this);
-    };
-
-    template.playVideo = function(e, detail) {
-      this.currentCard = Polymer.dom(e).rootTarget;
-      this.fullscreenVideoActive = true; // Active the placeholder template.
-
-      IOWA.Analytics.trackEvent(
-          'link', 'click', this.currentCard.getAttribute(ANALYTICS_LINK_ATTR));
-
-      // Wait one rAF for template to have stamped.
-      this.async(function() {
-        this.cardVideoTakeover(this.currentCard);
-      });
     };
 
     template.openVideo = function(e, detail) {
@@ -327,12 +247,12 @@ IOWA.Elements = (function() {
       }
 
       this.currentCard = target; // Polymer.dom(e).rootTarget;
-      this.fullscreenVideoActive = true; // Activate the placeholder template.
+      this.set('app.fullscreenVideoActive', true); // Activate the placeholder template.
 
       Polymer.dom.flush();
 
       // Note: IE10 doesn't support .dataset.
-      var videoId = this.toVideoIdFilter(
+      var videoId = this._toVideoIdFilter(
           this.currentCard.getAttribute('data-videoid'));
 
       IOWA.Analytics.trackEvent('video', 'watch', videoId);
@@ -368,7 +288,7 @@ IOWA.Elements = (function() {
 
       video.addEventListener('google-youtube-ready', function(e) {
         // First session is the keynote.
-        // video.videoId = this.toVideoIdFilter(this.scheduleData.sessions[0].youtubeUrl);
+        // video.videoId = this._toVideoIdFilter(this.scheduleData.sessions[0].youtubeUrl);
         dialog.toggle();
       }.bind(this));
     };
@@ -570,85 +490,25 @@ IOWA.Elements = (function() {
       }
     };
 
-    template.shiftContentLeft = function(e, detail) {
-      IOWA.PageAnimation.shiftContentLeft(
-          IOWA.Elements.Main.querySelector('.featured__videos'));
-    };
-
-    template.shiftContentRight = function(e, detail) {
-      IOWA.PageAnimation.shiftContentRight(
-          IOWA.Elements.Main.querySelector('.featured__videos'));
-    };
-
     template.addEventListener('dom-change', updateElements);
 
     template.addEventListener('page-transition-done', function(e) {
-      this.pageTransitionDone = true;
+      this.set('app.pageTransitionDone', true);
       IOWA.Elements.NavPaperTabs.style.pointerEvents = '';
     });
 
     template.addEventListener('page-transition-start', function(e) {
-      this.pageTransitionDone = false;
+      this.set('app.pageTransitionDone', false);
       IOWA.Elements.NavPaperTabs.style.pointerEvents = 'none';
     });
 
-    template._equal = function(key, val) {
-      return key === val;
-    };
-
-    template._ternary = function(boolean, yes, no) {
-      return boolean ? yes : no;
-    };
-
-    template._propOfArrayItem = function(array, index, prop) {
-      return array[index][prop];
-    };
-
     template._isPage = function(page, selectedPage) {
-      return this._equal(page, selectedPage);
-    };
-
-    template._isSelectedSubpage = function(pageName, subpageName) {
-      if (!this.pages) {
-        return false;
-      }
-      return this.pages[pageName].selectedSubpage == subpageName;
+      return page === selectedPage;
     };
 
     template._disableNotify = function(notify) {
       return notify === null;
     };
-
-    template._addClass = function(name, prop) {
-      return prop ? name : '';
-    };
-
-    template._enableTabIndex = function(val) {
-      return val ? 0 : -1;
-    };
-
-    template._showSocialPosts = function(posts, atLeast) {
-      return posts.length >= atLeast;
-    };
-
-    // Schedule ---
-
-    template._hideSessionFilters = function(isPhoneSize, selectedPage) {
-      return !isPhoneSize || this.pages[selectedPage].selectedSubpage === 'myschedule';
-    };
-
-    template._computeActiveClassForSubpage = function(selectedSubpage, pageName, subpageName, opt_negate) {
-      var isSubpage = this._isSelectedSubpage(pageName, subpageName);
-      if (opt_negate) {
-        isSubpage = !isSubpage;
-      }
-      return this._addClass('active', isSubpage);
-    };
-
-    template._computeHideSessionDetailProgress = function(user, sessions, fetching) {
-      return !user || (sessions && !fetching);
-    };
-    // ---
 
     IOWA.Elements.Template = template;
     IOWA.Elements.ScrollContainer = document.querySelector(

@@ -1,0 +1,91 @@
+<!--
+Copyright 2016 Google Inc. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<script>
+(function() {
+  "use strict";
+
+  Polymer({
+
+    is: 'lazy-pages',
+
+    properties: {
+      selected: {
+        type: String,
+        observer: '_selectedChanged'
+      },
+      /**
+       * The selected page as a DOM node.
+       * @type {HTMLElement}
+       */
+      selectedPage: {
+        readOnly: true
+      }
+    },
+
+    created: function() {
+      var self = this;
+      Polymer.dom(this).observeNodes(function(info) {
+        self._nodesChanged(info);
+      });
+      this._ifMap = {};
+    },
+
+    _templatesFilter: function(node) {
+      return node.is == 'dom-if';
+    },
+
+    _noTemplatesFilter: function(node) {
+      return node.is !== 'dom-if';
+    },
+
+    _nodesChanged: function(info) {
+      var added = info.addedNodes.filter(this._templatesFilter);
+      for (var i = 0, node; node = added[i]; i++) {
+        var name = node.getAttribute('name');
+        this._ifMap[name] = node;
+        if (this.selected == name) {
+          this._selectedChanged(name);
+        }
+      }
+      var removed = info.removedNodes.filter(this._templatesFilter);
+      for (var i = 0, node; node = removed[i]; i++) {
+        var name = node.getAttribute('name');
+        this._ifMap[name] = null;
+        if (this.selected == name) {
+          this._selectedChanged(null);
+        }
+      }
+    },
+
+    _selectedChanged: function(name) {
+      // De-select previous page.
+      if (this._selected) {
+        this._selected.if = false;
+      }
+      if (name && (this._selected = this._ifMap[name])) {
+        this._selected.if = true;
+        // Wait 1 tick for template to stamp.
+        this.async(function(){
+          this._setSelectedPage(
+              [].filter.call(this.children, this._noTemplatesFilter)[0]);
+        });
+      }
+    }
+
+  });
+
+})();
+</script>

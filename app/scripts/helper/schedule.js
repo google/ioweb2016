@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Google Inc. All rights reserved.
+ * Copyright 2016 Google Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,10 +46,12 @@ IOWA.Schedule = (function() {
     scheduleDeferredPromiseResolver = scheduleDeferred.resolve;
     scheduleDeferredPromise = scheduleDeferred.promise.then(function(data) {
       scheduleData_ = data.scheduleData;
-      IOWA.Elements.Template.scheduleData = data.scheduleData;
-      IOWA.Elements.Template.filterSessionTypes = data.tags.filterSessionTypes;
-      IOWA.Elements.Template.filterThemes = data.tags.filterThemes;
-      IOWA.Elements.Template.filterTopics = data.tags.filterTopics;
+
+      var template = IOWA.Elements.Template;
+      template.set('app.scheduleData', data.scheduleData);
+      template.set('app.filterSessionTypes', data.tags.filterSessionTypes);
+      template.set('app.filterThemes', data.tags.filterThemes);
+      template.set('app.filterTopics', data.tags.filterTopics);
 
       return scheduleData_;
     });
@@ -140,20 +142,20 @@ IOWA.Schedule = (function() {
   function loadUserSchedule() {
     // Only fetch their schedule if the worker has responded with the master schedule.
     schedulePromise().then(function() {
-      IOWA.Elements.Template.scheduleFetchingUserData = true;
+      IOWA.Elements.Template.set('app.scheduleFetchingUserData', true);
 
       // Fetch user's saved sessions.
       fetchUserSchedule(function(savedSessions) {
         var template = IOWA.Elements.Template;
-        template.scheduleFetchingUserData = false;
-        template.savedSessions = savedSessions;
-        updateSavedSessionsUI(template.savedSessions);
+        template.set('app.scheduleFetchingUserData', false);
+        template.set('app.savedSessions', savedSessions);
+        updateSavedSessionsUI(template.app.savedSessions);
       });
 
       // Fetch user's rated sessions.
       fetchResource(SURVEY_ENDPOINT_USERS, 'userSavedSurveys', function(savedSurveys) {
         var template = IOWA.Elements.Template;
-        template.savedSurveys = savedSurveys;
+        template.set('app.savedSurveys', savedSurveys);
         updateRatedSessions(savedSurveys);
       });
     });
@@ -171,7 +173,7 @@ IOWA.Schedule = (function() {
 
     return IOWA.Auth.waitForSignedIn(
         'Sign in to add events to My Schedule').then(function() {
-      IOWA.Elements.Template.scheduleFetchingUserData = true;
+      IOWA.Elements.Template.set('app.scheduleFetchingUserData', true);
       var url = SCHEDULE_ENDPOINT_USERS + '/' + sessionId;
       var method = save ? 'PUT' : 'DELETE';
       return submitSessionRequest(
@@ -220,7 +222,7 @@ IOWA.Schedule = (function() {
         'Sign in to submit feedback').then(function() {
       var url = SURVEY_ENDPOINT_USERS + '/' + sessionId;
       var callback = function(response) {
-        IOWA.Elements.Template.savedSurveys = response;
+        IOWA.Elements.Template.set('app.savedSurveys', response);
       };
       return submitSessionRequest(
           url, 'PUT', answers, 'Unable to save feedback results.', callback);
@@ -240,10 +242,10 @@ IOWA.Schedule = (function() {
     if (saved) {
       // If IOWA.Elements.Template.dontAutoSubscribe is true, this promise will reject immediately, and we'll just
       // add the session without attempting to auto-subscribe.
-      return IOWA.Notifications.subscribePromise(template.dontAutoSubscribe).then(function() {
+      return IOWA.Notifications.subscribePromise(template.app.dontAutoSubscribe).then(function() {
         IOWA.Elements.Toast.showMessage("Added to My Schedule. " + message);
       }).catch(function(error) {
-        template.dontAutoSubscribe = true;
+        template.set('app.dontAutoSubscribe', true);
         if (error && error.name === 'AbortError') {
           // AbortError indicates that the subscription couldn't be completed due to the page
           // persmissions for notifications being set to denied.
@@ -302,18 +304,20 @@ IOWA.Schedule = (function() {
 
   function updateSavedSessionsUI(savedSessions) {
     //  Mark/unmarked sessions the user has bookmarked.
-    var sessions = IOWA.Elements.Template.scheduleData.sessions;
+    var template = IOWA.Elements.Template;
+    var sessions = template.app.scheduleData.sessions;
     for (var i = 0; i < sessions.length; ++i) {
-      var session = sessions[i];
-      session.saved = savedSessions.indexOf(session.id) !== -1;
+      var isSaved = savedSessions.indexOf(sessions[i].id) !== -1;
+      template.set('app.scheduleData.sessions', i, 'saved', isSaved);
     }
   }
 
   function updateRatedSessions(savedSurveys) {
-    var sessions = IOWA.Elements.Template.scheduleData.sessions;
+    var template = IOWA.Elements.Template;
+    var sessions = template.app.scheduleData.sessions;
     for (var i = 0; i < sessions.length; ++i) {
-      var session = sessions[i];
-      session.rated = savedSurveys.indexOf(session.id) !== -1;
+      var isRated = savedSurveys.indexOf(sessions[i].id) !== -1;
+      template.set('app.scheduleData.sessions', i, 'rated', isRated);
     }
   }
 
@@ -326,8 +330,8 @@ IOWA.Schedule = (function() {
    */
   function clearUserSchedule() {
     var template = IOWA.Elements.Template;
-    template.savedSessions = [];
-    updateSavedSessionsUI(template.savedSessions);
+    template.set('app.savedSessions', []);
+    updateSavedSessionsUI(template.app.savedSessions);
     clearCachedUserSchedule();
   }
 

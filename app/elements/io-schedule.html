@@ -13,9 +13,7 @@ limitations under the License.
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
-<!-- <link rel="import" href="../bower_components/iron-label/iron-label.html"> -->
 <link rel="import" href="../bower_components/paper-progress/paper-progress.html">
-<!-- <link rel="import" href="../bower_components/iron-a11y-keys/iron-a11y-keys.html"> -->
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 
 <link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
@@ -96,7 +94,7 @@ Fired when the user toggles bookmarking/removing a session.
           </div>
 
           <template is="dom-repeat" items="[[sessions]]" as="session"
-                    filter="matchesFilters" observe="saved">
+                    filter="matchesFilters" observe="saved" initial-count="10">
 
             <template is="dom-if" if="[[session.firstOfBlock]]">
               <div class="schedule-row" hidden$="{{!_showSession(session, day)}}">
@@ -144,7 +142,7 @@ Fired when the user toggles bookmarking/removing a session.
             <div class="card-content" layout vertical>
 
               <template id="schedulelist" is="dom-repeat" items="[[sessions]]"
-                        as="session" filter="matchesFilters">
+                        as="session" filter="matchesFilters" initial-count="10">
 
                 <template is="dom-if" if="[[session.firstOfBlock]]">
                   <div class="schedule-row" hidden$="{{!_showSession(session, day)}}">
@@ -398,8 +396,8 @@ Fired when the user toggles bookmarking/removing a session.
 
           if (day !== 'myschedule') {
             var dayAsNumber = parseInt(day.split('day')[1]); // 'day1' => 1
-            var ioStartDay = new Date(this.gmtDayOne).getDate(); // 28
-            var dateIndex = (session.day % ioStartDay); // May 28 === 0
+            var ioStartDay = new Date(this.gmtDayOne).getDate(); // 18
+            var dateIndex = (session.day % ioStartDay); // May 18 === 0
 
             if (!isNaN(dayAsNumber) && (dateIndex + 1) === dayAsNumber) {
               showSession = true;

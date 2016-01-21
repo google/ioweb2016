@@ -1,0 +1,126 @@
+<!--
+Copyright 2016 Google Inc. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<script>
+/**
+`IOBehaviors.PageBehavior` provides common functionality and util methods for
+page elements.
+
+@polymerBehavior IOBehaviors.PageBehavior
+*/
+
+(function() {
+'use strict';
+
+window.IOBehaviors = window.IOBehaviors || {};
+IOBehaviors.PageBehavior = {
+
+  properties: {
+    /*
+     * Slug name of the page.
+     */
+    name: {
+      type: String
+    }
+  },
+
+  attached: function() {
+    if (this.onPageTransitionDone) {
+      this.listen(document.body, 'page-transition-done', 'onPageTransitionDone');
+    }
+
+    // Update page meta data.
+    document.body.id = 'page-' + this.name;
+    document.title = this.title || 'Google I/O 2016';
+
+    // Scroll to top of new page.
+    if (IOWA.Elements.ScrollContainer) {
+      IOWA.Elements.ScrollContainer.scrollTop = 0;
+    }
+  },
+
+  detached: function() {
+    this.unlisten(document.body, 'page-transition-done', 'onPageTransitionDone');
+  },
+
+  /**
+   * Prevents main page scrolling.
+   *
+   * @param {boolean} enable Disabled scrolling when truthy.
+   */
+  scrollLock: function(enable) {
+    document.body.classList.toggle('noscroll', enable);
+  },
+
+  /**
+   * Returns the video ID of a Youtube embed URL.
+   *
+   * @param {string} youtubeUrl A full URL to a Youtube video.
+   * @return {string} video id.
+   */
+  _toVideoIdFilter: function(youtubeUrl) {
+    if (!youtubeUrl) {
+      return youtubeUrl;
+    }
+    return youtubeUrl.replace(/https?:\/\/youtu\.be\//, '');
+  },
+
+  /**
+   * Returns a subset of an array
+   *
+   * @param {array} array The array.
+   * @param {number} howMany A full URL to a youtube video.
+   */
+  _limit: function(array, howMany) {
+    return array.slice(0, howMany);
+  },
+
+  _equal: function(key, val) {
+    return key === val;
+  },
+
+  _ternary: function(boolean, yes, no) {
+    return boolean ? yes : no;
+  },
+
+  _propOfArrayItem: function(array, index, prop) {
+    return array[index][prop];
+  },
+
+  _addClass: function(name, prop) {
+    return prop ? name : '';
+  },
+
+  _enableTabIndex: function(val) {
+    return val ? 0 : -1;
+  },
+
+  _isPage: function(pageName, selectedPageName) {
+    return this._equal(pageName, selectedPageName);
+  },
+
+  _isSelectedSubpage: function(pageName, subpageName) {
+    if (!this.pages) {
+      return false;
+    }
+    return this.pages[pageName].selectedSubpage == subpageName;
+  },
+
+  _applyActiveClassWhenSubpage: function(selectedSubpage, subpageName) {
+    return this._addClass('active', selectedSubpage === subpageName);
+  }
+
+};
+
+})();
+</script>

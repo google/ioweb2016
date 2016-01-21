@@ -20,18 +20,18 @@
 
 IOWA.PageAnimation = (function() {
 
-  var CONTENT_SLIDE_DURATION = 300;
-  var CONTENT_SLIDE_DELAY = 200;
-  var CONTENT_SLIDE_EASING = 'cubic-bezier(0.4, 0, 0.2, 1)';
-  var CONTENT_SLIDE_LENGTH = '100px';
+  const CONTENT_SLIDE_DURATION = 300;
+  const CONTENT_SLIDE_DELAY = 200;
+  const CONTENT_SLIDE_EASING = 'cubic-bezier(0.4, 0, 0.2, 1)';
+  const CONTENT_SLIDE_LENGTH = '100px';
 
-  var CONTENT_SLIDE_OPTIONS = {
+  const CONTENT_SLIDE_OPTIONS = {
     duration: CONTENT_SLIDE_DURATION,
     easing: CONTENT_SLIDE_EASING,
     fill: 'forwards'
   };
 
-  var CONTENT_SLIDE_DELAY_OPTIONS = {
+  const CONTENT_SLIDE_DELAY_OPTIONS = {
     duration: CONTENT_SLIDE_DURATION,
     delay: CONTENT_SLIDE_DELAY,
     easing: CONTENT_SLIDE_EASING,
@@ -44,7 +44,7 @@ IOWA.PageAnimation = (function() {
    * Fades element out.
    * @param {Element} el DOM element.
    * @param {Object} option Options for the transition, e.g. duration.
-   * @return {Animation} Ripple animation definition.
+   * @return {KeyframeEffect} Ripple animation definition.
    */
   function elementFadeOut(el, options) {
     options.fill = 'forwards'; // Always keep the state at the end of animation.
@@ -55,7 +55,7 @@ IOWA.PageAnimation = (function() {
    * Fades element in.
    * @param {Element} el DOM element.
    * @param {Object} option Options for the transition, e.g. duration.
-   * @return {Animation} Ripple animation definition.
+   * @return {KeyframeEffect} Ripple animation definition.
    */
   function elementFadeIn(el, options) {
     options.fill = 'forwards'; // Always keep the state at the end of animation.
@@ -66,11 +66,12 @@ IOWA.PageAnimation = (function() {
    * Returns an animation to slide out and fade out a section of a page.
    * Used together with sectionSlideIn for subpage transitions.
    * @param {Element} section Section to slide out.
-   * @return {Animation} Page animation definition.
+   * @return {GroupEffect} Page animation definition.
    */
   function sectionSlideOut(section) {
-    var main = section.querySelector('.slide-up');
-    var mainDelayed = section.querySelector('.slide-up-delay');
+    var prefix = section.classList.contains('active') ? '': '.active ';
+    var main = section.querySelector(prefix + '.slide-up');
+    var mainDelayed = section.querySelector(prefix + '.slide-up-delay');
     var start = {
       transform: 'translate(0, 0)',
       opacity: 1
@@ -89,11 +90,12 @@ IOWA.PageAnimation = (function() {
    * Returns an animation to slide up and fade in a section of a page.
    * Used together with sectionSlideOut for subpage transitions.
    * @param {Element} section Section to slide in.
-   * @return {Animation} Page animation definition.
+   * @return {GroupEffect} Page animation definition.
    */
   function sectionSlideIn(section) {
-    var main = section.querySelector('.slide-up');
-    var mainDelayed = section.querySelector('.slide-up-delay');
+    var prefix = section.classList.contains('active') ? '': '.active ';
+    var main = section.querySelector(prefix + '.slide-up');
+    var mainDelayed = section.querySelector(prefix + '.slide-up-delay');
     var start = {
       transform: 'translate(0, ' + CONTENT_SLIDE_LENGTH + ')',
       opacity: 0
@@ -111,12 +113,13 @@ IOWA.PageAnimation = (function() {
   /**
    * Returns an animation to slide and fade out the main content of the page.
    * Used together with contentSlideIn for page transitions.
-   * @return {Animation} Page animation definition.
+   * @return {GroupEffect} Page animation definition.
    */
   function contentSlideOut() {
+    var mastheadMeta = IOWA.Elements.Main.querySelector('.masthead-meta');
     return new GroupEffect([
       sectionSlideOut(IOWA.Elements.Main),
-      elementFadeOut(IOWA.Elements.MastheadMeta, CONTENT_SLIDE_OPTIONS),
+      elementFadeOut(mastheadMeta, CONTENT_SLIDE_OPTIONS),
       elementFadeOut(IOWA.Elements.MastheadMetaCorner, CONTENT_SLIDE_OPTIONS),
       elementFadeOut(IOWA.Elements.Footer, {duration: 0}) // Hide instantly.
     ]);
@@ -126,7 +129,7 @@ IOWA.PageAnimation = (function() {
    * Returns an animation to slide up and fade in the main content of the page.
    * Used together with contentSlideOut for page transitions.
    * TODO: Should be possible by reversing slideout animation.
-   * @return {Animation} Page animation definition.
+   * @return {GroupEffect} Page animation definition.
    */
   function contentSlideIn() {
     return new GroupEffect([
@@ -138,7 +141,7 @@ IOWA.PageAnimation = (function() {
 
   /**
    * Returns an animation to slide the top nav out of the screen.
-   * @return {Animation} Page animation definition.
+   * @return {KeyframeEffect} Page animation definition.
    */
   function navSlideOut() {
     return new KeyframeEffect(IOWA.Elements.Nav, [
@@ -149,7 +152,7 @@ IOWA.PageAnimation = (function() {
 
   /**
    * Returns an animation to slide the top nav into the screen.
-   * @return {Animation} Page animation definition.
+   * @return {KeyframeEffect} Page animation definition.
    */
   function navSlideIn() {
     return new KeyframeEffect(IOWA.Elements.Nav, [
@@ -167,7 +170,7 @@ IOWA.PageAnimation = (function() {
    * @param {string} duration color Ripple color.
    * @param {boolean} isFadeRipple If true, play a temporary glimpse ripple.
    *     If false, play a regular opaque color ripple.
-   * @return {Animation} Ripple animation definition.
+   * @return {KeyframeEffect} Ripple animation definition.
    */
   function rippleEffect(ripple, x, y, duration, color, isFadeRipple) {
     var translate = 'translate3d(' + x + 'px,' + y + 'px, 0)';
@@ -195,7 +198,7 @@ IOWA.PageAnimation = (function() {
   /**
    * An animation for the first page render. It slides the content in
    * and fades in the masthead meta.
-   * @return {Animation} Ripple animation definition.
+   * @return {GroupEffect} Ripple animation definition.
    */
   function pageFirstRender(section) {
     if (section) {
@@ -206,23 +209,24 @@ IOWA.PageAnimation = (function() {
       section.style.display = '';
     }
     var slideInAnimation = section ? sectionSlideIn(section) : contentSlideIn();
+    var mastheadMeta = IOWA.Elements.Main.querySelector('.masthead-meta');
     return new GroupEffect([
       slideInAnimation,
-      elementFadeIn(IOWA.Elements.MastheadMeta, CONTENT_SLIDE_OPTIONS)
+      elementFadeIn(mastheadMeta, CONTENT_SLIDE_OPTIONS)
     ], CONTENT_SLIDE_OPTIONS);
   }
 
   /**
    * An animation for the page slide in transition. It slides the content in
    * and fades in the masthead meta and IO logo.
-   * @return {Animation} Ripple animation definition.
+   * @return {GroupEffect} Ripple animation definition.
    */
   function pageSlideIn() {
-    var animationGroup =  new GroupEffect([
+    var mastheadMeta = IOWA.Elements.Main.querySelector('.masthead-meta');
+    return new GroupEffect([
       contentSlideIn(),
-      elementFadeIn(IOWA.Elements.MastheadMeta, CONTENT_SLIDE_OPTIONS),
+      elementFadeIn(mastheadMeta, CONTENT_SLIDE_OPTIONS),
     ], CONTENT_SLIDE_OPTIONS);
-    return animationGroup;
   }
 
   /**
@@ -233,7 +237,7 @@ IOWA.PageAnimation = (function() {
    * @param {number} x Y coordinate of the center of the ripple.
    * @param {number} duration Duration of the animation.
    * @param {string} color Color of the ripple.
-   * @return {Animation} Ripple animation definition.
+   * @return {SequenceEffect} Ripple animation definition.
    */
   function pageCardTakeoverOut(card, x, y, duration, color) {
     var ripple = card.querySelector('.ripple__content');
@@ -268,19 +272,21 @@ IOWA.PageAnimation = (function() {
       elementFadeOut(mainDelayed, CONTENT_SLIDE_OPTIONS)
     ]);
 
+    var mastheadMeta = IOWA.Elements.Main.querySelector('.masthead-meta');
+
     // ...then hide the content under the hero unit.
     return new SequenceEffect([
       animationGroup,
       elementFadeOut(IOWA.Elements.Ripple, {duration: 0}), // Hide instantly.
       elementFadeOut(IOWA.Elements.Footer, {duration: 0}),  // Same.
-      elementFadeOut(IOWA.Elements.MastheadMeta, {duration: 0}) // Same.
+      elementFadeOut(mastheadMeta, {duration: 0}) // Same.
     ]);
   }
 
   /**
    * An animation for the page hero card transition. It slides the page
    * and the top navigation in.
-   * @return {Animation} Ripple animation definition.
+   * @return {GroupEffect} Ripple animation definition.
    */
   function pageCardTakeoverIn() {
     return new GroupEffect([
@@ -334,8 +340,8 @@ IOWA.PageAnimation = (function() {
   /**
    * Plays an animation, animation group or animation sequence. Calls
    *     a callback when it finishes, if one was assigned.
-   * @param {AnimationNode} animation Animation or AnimationGroup or
-   *     AnimationSequence.
+   * @param {AnimationNode} animation KeyframeEffect, GroupEffect, or
+   *     SequenceEffect.
    * @param {function()=} opt_callback Callback to execute at the end of the
    *     animation.
    */
