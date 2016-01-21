@@ -15,22 +15,22 @@
  */
 
 (function(global) {
-  var NOTIFICATION_UPDATES_DB_KEY = 'token';
-  var NOTIFICATION_UPDATES_DB_NAME = 'push-notification-updates';
-  var DEFAULT_ICON = 'images/touch/homescreen192.png';
-  var SCHEDULE_ENDPOINT = 'api/v1/schedule';
-  var UPDATES_ENDPOINT = 'api/v1/user/updates';
+  const NOTIFICATION_UPDATES_DB_KEY = 'token';
+  const NOTIFICATION_UPDATES_DB_NAME = 'push-notification-updates';
+  const DEFAULT_ICON = 'images/touch/homescreen192.png';
+  const SCHEDULE_ENDPOINT = 'api/v1/schedule';
+  const UPDATES_ENDPOINT = 'api/v1/user/updates';
   // Contains a mapping of notification tag values to the corresponding URL that should be opened
   // when the notification is tapped/clicked.
-  var TAG_TO_DESTINATION_URL = {
+  const TAG_TO_DESTINATION_URL = {
     'session-details': 'schedule#myschedule',
     'io-soon': './',
     'session-start': 'schedule#myschedule',
     'video-available': 'schedule#myschedule',
-    survey: 'schedule#myschedule'
+    'survey': 'schedule#myschedule'
   };
-  var UTM_SOURCE_PARAM = 'utm_source=notification';
-  var SESSION_DEEPLINK_PREFIX = 'schedule?sid=';
+  const UTM_SOURCE_PARAM = 'utm_source=notification';
+  const SESSION_DEEPLINK_PREFIX = 'schedule?sid=';
 
   /**
    * Loads a SW token value from IndexedDB.
@@ -109,9 +109,9 @@
       })).then(function() {
         return body.token;
       });
-    } else {
-      throw Error('Unable to generate notification details.');
     }
+
+    throw Error('Unable to generate notification details.');
   }
 
   /**
@@ -244,14 +244,14 @@
         icon: DEFAULT_ICON,
         tag: tag
       };
-    } else {
-      return {
-        title: 'Some events in My Schedule have new videos',
-        body: 'New videos are available for ' + sessionTitles.join(', '),
-        icon: DEFAULT_ICON,
-        tag: 'video-available'
-      };
     }
+
+    return {
+      title: 'Some events in My Schedule have new videos',
+      body: 'New videos are available for ' + sessionTitles.join(', '),
+      icon: DEFAULT_ICON,
+      tag: 'video-available'
+    };
   }
 
   /**

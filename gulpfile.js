@@ -174,7 +174,7 @@ gulp.task('copy-assets', function() {
 });
 
 // Crush JS
-gulp.task('concat-and-uglify-js', ['js', 'generate-page-metadata'], function() {
+gulp.task('concat-and-uglify-js', ['eslint', 'generate-page-metadata'], function() {
   // The ordering of the scripts in the gulp.src() array matter!
   // This order needs to match the order in templates/layout_full.html
   var siteScripts = [
@@ -330,25 +330,15 @@ gulp.task('vulcanize-extended-elements', ['sass'], function() {
 // -----------------------------------------------------------------------------
 // Frontend dev tasks
 
-// JS linting ans style.
-gulp.task('js', ['jshint', 'jscs']);
 
 // Lint JavaScript
-gulp.task('jshint', function() {
+gulp.task('eslint', function() {
   return gulp.src([IOWA.appDir + '/scripts/**/*.js'])
-    .pipe(reload({stream: true, once: true}))
-    // .pipe($.jshint.extract()) // Extract JS from .html files
-    .pipe($.jshint({esnext: true}))
-    .pipe($.jshint.reporter('jshint-stylish'))
-    .pipe($.if(!browserSync.active, $.jshint.reporter('fail')));
+    .pipe($.eslint())
+    .pipe($.eslint.format())
+    .pipe($.eslint.failAfterError());
 });
 
-// Check JS style
-gulp.task('jscs', function() {
-  return gulp.src([IOWA.appDir + '/scripts/**/*.js'])
-    .pipe(reload({stream: true, once: true}))
-    .pipe($.jscs());
-});
 
 // Concat scripts for the data-fetching worker.
 gulp.task('generate-data-worker-dev', function() {

@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Google Inc. All rights reserved.
+ * Copyright 2016 Google Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 (function(global) {
   // Requests whose URLs contain this string contain user-specific data in their corresponding
   // Responses, and should be cleared when the user logs out.
-  var USER_DATA_URL_SUBSTRING = 'api/v1/user/';
+  const USER_DATA_URL_SUBSTRING = 'api/v1/user/';
 
   function serveFromCacheOrNetwork(request) {
     // Never fall back on the SW cache if this is a request that uses auth, unless it's a request
@@ -30,12 +30,12 @@
       return global.toolbox.cacheOnly(request).then(function(response) {
         if (response) {
           return response;
-        } else {
-          return new Response('', {
-            status: 204,
-            statusText: 'No cached content available.'
-          });
         }
+
+        return new Response('', {
+          status: 204,
+          statusText: 'No cached content available.'
+        });
       });
     }
 

@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Google Inc. All rights reserved.
+ * Copyright 2016 Google Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,7 @@
 self.IOWA = self.IOWA || {};
 
 IOWA.Request = IOWA.Request || (function() {
-
-  "use strict";
+  'use strict';
 
   /**
    * Helper method to populate the Authorization header of an XMLHttpRequest.
@@ -77,7 +76,7 @@ IOWA.Request = IOWA.Request || (function() {
     freshXhr.setRequestHeader('X-Cache-Only', 'false');
 
     freshXhr.onload = function() {
-      if (this.status < 400 && this.response != cachedResponse) {
+      if (this.status < 400 && this.response !== cachedResponse) {
         // Indicate that we've received the fresh content, just in case the request for cached
         // content is still pending.
         freshContentPending = false;

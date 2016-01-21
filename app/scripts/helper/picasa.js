@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Google Inc. All rights reserved.
+ * Copyright 2016 Google Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,12 @@
 window.IOWA = window.IOWA || {};
 
 IOWA.Picasa = (function() {
+  'use strict';
 
-  "use strict";
-
-  var API_ENDPOINT = 'api/v1/photoproxy';
-  var GDEVELOPER_USER_ID = '111395306401981598462';
-  var IO_ALBUM_ID = '6148448302499535601';
-  var EXTENDED_ALBUM_ID = '6151106494033928993';
+  const API_ENDPOINT = 'api/v1/photoproxy';
+  const GDEVELOPER_USER_ID = '111395306401981598462';
+  const IO_ALBUM_ID = '6148448302499535601';
+  const EXTENDED_ALBUM_ID = '6151106494033928993';
 
   var lang = document.documentElement.lang;
   var viewPortWidth = document.documentElement.clientWidth;
@@ -32,7 +31,7 @@ IOWA.Picasa = (function() {
     return 'https://picasaweb.google.com/data/feed/api/user/' +
            GDEVELOPER_USER_ID + '/albumid/' + albumId +
            '?alt=jsonc&kind=photo&hl=' + lang +
-           '&imgmax=' + Math.min(parseInt(viewPortWidth * (window.devicePixelRatio || 1)), 1440) +
+           '&imgmax=' + Math.min(parseInt(viewPortWidth * (window.devicePixelRatio || 1), 10), 1440) +
            '&max-results=5000&v=2';
   }
 
@@ -45,8 +44,8 @@ IOWA.Picasa = (function() {
 
     var xhr = new XMLHttpRequest();
     xhr.open('GET', url);
-    xhr.onload = function(e) {
-      if (this.status != 200) {
+    xhr.onload = function() {
+      if (this.status !== 200) {
         return;
       }
       var photos = JSON.parse(this.response).data.items;
@@ -64,5 +63,4 @@ IOWA.Picasa = (function() {
     fetchPhotos: fetchPhotos,
     fetchExtendedPhotos: fetchExtendedPhotos
   };
-
 })();
