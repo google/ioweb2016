@@ -33,10 +33,8 @@ IOWA.Elements = (function() {
       // Select page's default subpage tab if there's no deep link in the URL.
       selectedPageEl.selectedSubpage = parsedUrl.subpage || selectedPageEl.selectedSubpage;
 
-      var subpage = document.querySelector('.subpage-' + selectedPageEl.selectedSubpage);
-      // if (subpage) {
-      //   subpage.classList.add('active');
-      // }
+      var subpage = document.querySelector(
+          '.subpage-' + selectedPageEl.selectedSubpage);
 
       IOWA.PageAnimation.play(
         IOWA.PageAnimation.pageFirstRender(subpage), function() {
@@ -60,15 +58,11 @@ IOWA.Elements = (function() {
     var lazyPages = document.querySelector('lazy-pages');
     lazyPages.selected = IOWA.Elements.Template.selectedPage;
 
-    var ripple = masthead.querySelector('.masthead__ripple__content');
-    IOWA.Util.resizeRipple(ripple);
-
     IOWA.Elements.Drawer = IOWA.Elements.Template.$.appdrawer;
     IOWA.Elements.Masthead = masthead;
     IOWA.Elements.Main = main;
     IOWA.Elements.Nav = nav;
     IOWA.Elements.NavPaperTabs = navPaperTabs;
-    IOWA.Elements.Ripple = ripple;
     IOWA.Elements.Toast = toast;
     IOWA.Elements.LiveStatus = liveStatus;
     IOWA.Elements.Footer = footer;

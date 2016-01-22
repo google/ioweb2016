@@ -101,7 +101,6 @@ IOWA.Router_ = function(window) {
    * @private
    */
   Router.pageExitTransitions = {
-    'masthead-ripple-transition': 'playMastheadRippleTransition',
     'hero-card-transition': 'playHeroTransitionStart',
     'page-slide-transition': 'playPageSlideOut'
   };
@@ -112,7 +111,6 @@ IOWA.Router_ = function(window) {
    * @private
    */
   Router.pageEnterTransitions = {
-    'masthead-ripple-transition': 'playPageSlideIn',
     'hero-card-transition': 'playHeroTransitionEnd',
     'page-slide-transition': 'playPageSlideIn'
   };
