@@ -119,7 +119,6 @@ IOWA.PageAnimation = (function() {
     return new GroupEffect([
       sectionSlideOut(IOWA.Elements.Main),
       elementFadeOut(mastheadMeta, CONTENT_SLIDE_OPTIONS),
-      elementFadeOut(IOWA.Elements.MastheadMetaCorner, CONTENT_SLIDE_OPTIONS),
       elementFadeOut(IOWA.Elements.Footer, {duration: 0}) // Hide instantly.
     ]);
   }
@@ -133,7 +132,6 @@ IOWA.PageAnimation = (function() {
   function contentSlideIn() {
     return new GroupEffect([
       sectionSlideIn(IOWA.Elements.Main),
-      elementFadeIn(IOWA.Elements.MastheadMetaCorner, CONTENT_SLIDE_OPTIONS),
       elementFadeIn(IOWA.Elements.Footer, CONTENT_SLIDE_DELAY_OPTIONS)
     ]);
   }
@@ -276,7 +274,6 @@ IOWA.PageAnimation = (function() {
     // ...then hide the content under the hero unit.
     return new SequenceEffect([
       animationGroup,
-      elementFadeOut(IOWA.Elements.Ripple, {duration: 0}), // Hide instantly.
       elementFadeOut(IOWA.Elements.Footer, {duration: 0}),  // Same.
       elementFadeOut(mastheadMeta, {duration: 0}) // Same.
     ]);
@@ -359,7 +356,6 @@ IOWA.PageAnimation = (function() {
       // Wait 1 rAF for DOM to settle.
       // IOWA.Elements.Template.async(function() {
       // Hide the masthead ripple before proceeding with page transition.
-      play(elementFadeOut(IOWA.Elements.Ripple, {duration: 0}));
       play(pageSlideIn(), resolve);
       // });
     });

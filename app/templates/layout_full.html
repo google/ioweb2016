@@ -213,13 +213,13 @@ limitations under the License.
     }
   </style>
 </head>
-<body id="page-{% .Slug %}" class="bg-medium-grey">
+<body id="page-{% .Slug %}" class="bg-light-brey">
 
 <!-- Intro animation background is outside of Polymer to reduce perceived latency in polyfilled browsers. -->
 <div class="io-logo-container">
   <io-logo width="312" height="165" page="{% .Slug %}"
-           class="bg-medium-grey" hide-masthead></io-logo>
-  <div class="bg-medium-grey" iologobackground></div>
+           class="bg-light-grey" hide-masthead></io-logo>
+  <div class="bg-light-grey" iologobackground></div>
 </div>
 
 <template is="dom-bind" id="t">
@@ -279,48 +279,41 @@ limitations under the License.
   <paper-header-panel id="headerpanel" mode="waterfall" main>
 
     <div class="masthead paper-header" layout vertical>
-      <div class="masthead__ripple">
-        <div class="masthead__ripple__content" id="masthead-ripple"></div>
-      </div>
       <paper-toolbar id="navbar" role="navigation">
         <paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
         <div flex disabled$="{{_isPage('home', selectedPage)}}">
           <a href="./" class="io-logo-link"
               on-click="setSelectedPageToHome"
               data-track-link="nav-home" data-ajax-link
-              data-transition="masthead-ripple-transition">
+              data-transition="page-slide-transition">
             <div class="io-logo" iologodestination></div>
           </a>
-          <div class="masthead-meta--corner">
-            <h2 class="masthead-title">May 18 - 20, 2016</h2>
-            <h4 class="masthead-subtitle">Shoreline Amphitheatre,<br>Mountain View, CA</h4>
-          </div>
         </div>
-        <paper-tabs class="white" attr-for-selected="label"
-                    selected="{{selectedPage}}" noink>
+        <paper-tabs attr-for-selected="label"
+                    selected="{{selectedPage}}">
           <paper-tab label="about" role="">
             <a href="about" data-ajax-link data-track-link="nav-about"
-               data-transition="masthead-ripple-transition"
+               data-transition="page-slide-transition"
                layout horizontal center>About</a>
           </paper-tab>
           <paper-tab label="schedule" role="">
             <a href="schedule#day1" data-ajax-link data-track-link="nav-schedule"
-               data-transition="masthead-ripple-transition"
+               data-transition="page-slide-transition"
                layout horizontal center>Schedule</a>
           </paper-tab>
           <!-- <paper-tab label="videos" role="">
             <a href="videos" data-ajax-link data-track-link="nav-videos"
-               data-transition="masthead-ripple-transition"
+               data-transition="page-slide-transition"
                layout horizontal center>Videos</a>
           </paper-tab> -->
           <paper-tab label="onsite" role="">
             <a href="onsite" data-ajax-link data-track-link="nav-onsite"
-               data-transition="masthead-ripple-transition"
+               data-transition="page-slide-transition"
                layout horizontal center>Attending</a>
           </paper-tab>
           <paper-tab label="offsite" role="">
             <a href="offsite" data-ajax-link data-track-link="nav-offsite"
-               data-transition="masthead-ripple-transition"
+               data-transition="page-slide-transition"
                layout horizontal center>I/O Extended</a>
           </paper-tab>
         </paper-tabs>

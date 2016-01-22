@@ -22,6 +22,9 @@ IOWA.Elements = (function() {
   function updateElements() {
     var ioLogo = document.querySelector('io-logo');
     ioLogo.addEventListener('io-logo-animation-done', function() {
+      var dest = document.querySelector('[iologodestination]');
+      dest.classList.add('active');
+
       // Load auth after logo transition is done. This helps timing with
       // fetching user's schedule and makes sure the worker has returned
       // the main schedule data.
@@ -33,10 +36,8 @@ IOWA.Elements = (function() {
       // Select page's default subpage tab if there's no deep link in the URL.
       selectedPageEl.selectedSubpage = parsedUrl.subpage || selectedPageEl.selectedSubpage;
 
-      var subpage = document.querySelector('.subpage-' + selectedPageEl.selectedSubpage);
-      // if (subpage) {
-      //   subpage.classList.add('active');
-      // }
+      var subpage = document.querySelector(
+          '.subpage-' + selectedPageEl.selectedSubpage);
 
       IOWA.PageAnimation.play(
         IOWA.PageAnimation.pageFirstRender(subpage), function() {
@@ -50,7 +51,6 @@ IOWA.Elements = (function() {
     var main = document.querySelector('.io-main');
 
     var masthead = document.querySelector('.masthead');
-    var mastheadMetaCorner = masthead.querySelector('.masthead-meta--corner');
     var nav = masthead.querySelector('#navbar');
     var navPaperTabs = nav.querySelector('paper-tabs');
     var footer = document.querySelector('footer');
@@ -61,16 +61,11 @@ IOWA.Elements = (function() {
     var lazyPages = document.querySelector('lazy-pages');
     lazyPages.selected = IOWA.Elements.Template.selectedPage;
 
-    var ripple = masthead.querySelector('.masthead__ripple__content');
-    IOWA.Util.resizeRipple(ripple);
-
     IOWA.Elements.Drawer = IOWA.Elements.Template.$.appdrawer;
     IOWA.Elements.Masthead = masthead;
-    IOWA.Elements.MastheadMetaCorner = mastheadMetaCorner;
     IOWA.Elements.Main = main;
     IOWA.Elements.Nav = nav;
     IOWA.Elements.NavPaperTabs = navPaperTabs;
-    IOWA.Elements.Ripple = ripple;
     IOWA.Elements.Toast = toast;
     IOWA.Elements.LiveStatus = liveStatus;
     IOWA.Elements.Footer = footer;

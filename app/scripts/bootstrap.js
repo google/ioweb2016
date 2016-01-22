@@ -93,7 +93,6 @@
   // });
 
   window.addEventListener('resize', function() {
-    IOWA.Util.resizeRipple(IOWA.Elements.Ripple);
     IOWA.Elements.Template.closeDrawer();
   });
 
