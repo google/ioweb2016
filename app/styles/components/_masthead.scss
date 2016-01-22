@@ -47,10 +47,6 @@
   position: relative;
   // max-height: 550px;
 
-  &.bg-medium-grey {
-    color: $color-bluegrey-700;
-  }
-
   paper-toolbar {
     // need :not(.style-scope) as to not collide with shady dom scoping for <io-logo> element.
     .io-logo:not(.style-scope) {
@@ -76,10 +72,6 @@
   paper-tabs a {
     color: inherit;
   }
-}
-
-.masthead-meta--corner {
-  display: none;
 }
 
 .masthead__ripple, .ripple {

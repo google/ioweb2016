@@ -119,7 +119,6 @@ IOWA.PageAnimation = (function() {
     return new GroupEffect([
       sectionSlideOut(IOWA.Elements.Main),
       elementFadeOut(mastheadMeta, CONTENT_SLIDE_OPTIONS),
-      elementFadeOut(IOWA.Elements.MastheadMetaCorner, CONTENT_SLIDE_OPTIONS),
       elementFadeOut(IOWA.Elements.Footer, {duration: 0}) // Hide instantly.
     ]);
   }
@@ -133,7 +132,6 @@ IOWA.PageAnimation = (function() {
   function contentSlideIn() {
     return new GroupEffect([
       sectionSlideIn(IOWA.Elements.Main),
-      elementFadeIn(IOWA.Elements.MastheadMetaCorner, CONTENT_SLIDE_OPTIONS),
       elementFadeIn(IOWA.Elements.Footer, CONTENT_SLIDE_DELAY_OPTIONS)
     ]);
   }

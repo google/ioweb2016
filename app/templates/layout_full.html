@@ -213,13 +213,13 @@ limitations under the License.
     }
   </style>
 </head>
-<body id="page-{% .Slug %}" class="bg-medium-grey">
+<body id="page-{% .Slug %}" class="bg-light-brey">
 
 <!-- Intro animation background is outside of Polymer to reduce perceived latency in polyfilled browsers. -->
 <div class="io-logo-container">
   <io-logo width="312" height="165" page="{% .Slug %}"
-           class="bg-medium-grey" hide-masthead></io-logo>
-  <div class="bg-medium-grey" iologobackground></div>
+           class="bg-light-grey" hide-masthead></io-logo>
+  <div class="bg-light-grey" iologobackground></div>
 </div>
 
 <template is="dom-bind" id="t">
@@ -291,10 +291,6 @@ limitations under the License.
               data-transition="masthead-ripple-transition">
             <div class="io-logo" iologodestination></div>
           </a>
-          <div class="masthead-meta--corner">
-            <h2 class="masthead-title">May 18 - 20, 2016</h2>
-            <h4 class="masthead-subtitle">Shoreline Amphitheatre,<br>Mountain View, CA</h4>
-          </div>
         </div>
         <paper-tabs class="white" attr-for-selected="label"
                     selected="{{selectedPage}}" noink>

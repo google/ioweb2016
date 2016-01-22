@@ -118,7 +118,7 @@ limitations under the License.
 
         <div class="io__hash" aria-label="I/O hash tag"></div>
 
-        <social-poller url="api/v1/social" posts="{{socialPosts}}"
+        <social-poller url="[[resolveUrl('./api/v1/social')]]" posts="{{socialPosts}}"
                        interval="30000"></social-poller>
 
         <template is="dom-if" if="[[_showSocialPosts(socialPosts, 3)]]">
@@ -138,9 +138,9 @@ limitations under the License.
     </div>
   </div>
 
-  <template is="dom-if" if="{{app.fullscreenVideoActive}}">
+  <template is="dom-if" if="{{app.fullscreenVideoActive}}" restamp>
     <div class="fullvideo__container" fit hidden>
-      <img src="images/home/recap-500@2x.jpg" class="fullvideo_thumbnail" alt="Watch the I/O Recap Video" fit>
+      <img src$="[[resolveUrl('./images/home/recap-500@2x.jpg')]]" class="fullvideo_thumbnail" alt="Watch the I/O Recap Video" fit>
       <google-youtube video-id="ksvdvCDO7pA" height="100%" width="100%" fit
                       autohide="1" controls="2" modestbranding="1" showinfo="0"
                       iv_load_policy="3" rel="0" autoplay="1"></google-youtube>

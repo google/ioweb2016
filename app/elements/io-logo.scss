@@ -1,5 +1,5 @@
 /**
- * Copyright 2014 Google Inc. All rights reserved.
+ * Copyright 2016 Google Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,35 +24,11 @@
 }
 
 :host(.bg-light-grey) #o2 {
-  background-color: $color-body;
-}
-
-:host(.bg-dark-grey) #o2 {
-  background-color: $color-bluegrey-700;
-}
-
-// Cannot be comvined with previous rule because of
-// https://github.com/Polymer/polymer/issues/1787
-:host(.bg-photo) #o2 {
-  background-color: $color-bluegrey-700;
-}
-
-:host(.bg-medium-grey) #o2 {
-  background-color: $color-bluegrey-100;
-}
-
-:host(.bg-cyan) #o2 {
-  background-color: $color-cyan-500;
-}
-
-@media (min-width: $tablet-breakpoint-min) {
-  :host-context(.io-live-mode) {
-    background-color: transparent !important;
-  }
+  background-color: $color-grey-100;
 }
 
 .letter {
-  background: #fff;
+  background: $color-bluegrey-700;
 }
 
 #slash {
@@ -83,6 +59,6 @@
 
   h2 {
     font-weight: 500;
-    color: #fff;
+    color: $color-bluegrey-700;
   }
 }

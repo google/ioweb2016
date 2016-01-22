@@ -1,5 +1,5 @@
 /**
- * Copyright 2014 Google Inc. All rights reserved.
+ * Copyright 2016 Google Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,13 +30,6 @@ $name: 'page-home';
   .io-logo {
     display: inline-block;
   }
-}
-
-.masthead-meta--corner {
-  display: block;
-  position: absolute;
-  top: 16px;
-  left: 95px;
 }
 
 .card__photo--stage {
@@ -141,9 +134,6 @@ $name: 'page-home';
 }
 
 @media (max-width: $phone-breakpoint-max) {
-  .masthead-meta--corner {
-    display: none;
-  }
   .card__container--top {
     .link-spacing {
       > a {

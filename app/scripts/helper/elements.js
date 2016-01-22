@@ -50,7 +50,6 @@ IOWA.Elements = (function() {
     var main = document.querySelector('.io-main');
 
     var masthead = document.querySelector('.masthead');
-    var mastheadMetaCorner = masthead.querySelector('.masthead-meta--corner');
     var nav = masthead.querySelector('#navbar');
     var navPaperTabs = nav.querySelector('paper-tabs');
     var footer = document.querySelector('footer');
@@ -66,7 +65,6 @@ IOWA.Elements = (function() {
 
     IOWA.Elements.Drawer = IOWA.Elements.Template.$.appdrawer;
     IOWA.Elements.Masthead = masthead;
-    IOWA.Elements.MastheadMetaCorner = mastheadMetaCorner;
     IOWA.Elements.Main = main;
     IOWA.Elements.Nav = nav;
     IOWA.Elements.NavPaperTabs = navPaperTabs;
