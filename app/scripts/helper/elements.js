@@ -22,6 +22,9 @@ IOWA.Elements = (function() {
   function updateElements() {
     var ioLogo = document.querySelector('io-logo');
     ioLogo.addEventListener('io-logo-animation-done', function() {
+      var dest = document.querySelector('[iologodestination]');
+      dest.classList.add('active');
+
       // Load auth after logo transition is done. This helps timing with
       // fetching user's schedule and makes sure the worker has returned
       // the main schedule data.

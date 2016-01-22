@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Google Inc. All rights reserved.
+ * Copyright 2016 Google Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-.ripple {
-  z-index: -1;
-}
 
 .card__container, .card,
 .io-countdown h4 {
@@ -42,10 +38,6 @@
 
 io-gallery {
   z-index: 8;
-}
-
-.marker-results, .view__events {
-  z-index: 9;
 }
 
 .navbar__overlay {

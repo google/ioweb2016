@@ -15,20 +15,10 @@
  */
 
 .io-logo:not(.style-scope) {
-  background: url('../images/home/io-logo.png') no-repeat;
+  background: url('../images/home/io-logo-grey.png') no-repeat;
   background-size: contain;
   height: 40px;
   width: 60px;
-
-  &.medium {
-    width: 177px;
-    height: 128px;
-  }
-
-  &.large {
-    height: 184px;
-    width: 256px;
-  }
 
   /* Adds a white circle behind the I/O logo as a focus state */
   &::after {
@@ -44,9 +34,6 @@
 }
 
 .masthead {
-  position: relative;
-  // max-height: 550px;
-
   paper-toolbar {
     // need :not(.style-scope) as to not collide with shady dom scoping for <io-logo> element.
     .io-logo:not(.style-scope) {
@@ -56,13 +43,12 @@
     }
   }
 
-  .card__photo--stage {
-    background: linear-gradient(to top, transparent 86%, black 106%);
-    height: 100%;
-  }
+  [iologodestination] {
+    visibility: hidden;
 
-  .photo__masthead--fullbleed {
-    top: -$navbarHeight;
+    &.active {
+      visibility: visible
+    }
   }
 }
 
@@ -73,30 +59,6 @@
     color: inherit;
   }
 }
-
-// .masthead__ripple, .ripple {
-//   position: absolute;
-//   width: 100%;
-//   height: 100%;
-//   top: 0;
-//   left: 0;
-//   overflow: hidden;
-// }
-
-// .masthead__ripple__content {
-//   border-radius: 50%;
-//   position: absolute;
-//   will-change: transform;
-// }
-
-// .ripple__content {
-//   border-radius: 50%;
-//   position: absolute;
-//   will-change: transform;
-//   width: 100%;
-//   height: 100%;
-// }
-
 
 paper-drawer-panel {
   [drawer] {
@@ -269,26 +231,7 @@ paper-drawer-panel {
   line-height: 20px;
 }
 
-.fab {
-  bottom: -20px; // fab's height / 2
-  right: $mobileKeyline;
-  width: 56px;
-  height: 56px;
-  background: #fff !important;
-  position: absolute;
-  color: $color-fab-icon !important;
-}
-
 @media (max-width: $phone-breakpoint-max) {
-  .fab {
-    width: 40px;
-    height: 40px;
-  }
-  // .masthead {
-  //   .photo__masthead--fullbleed {
-  //     top: -$navbarHeightMobile;
-  //   }
-  // }
   .masthead-container {
     @include keyline-16l();
 
@@ -312,24 +255,6 @@ paper-drawer-panel {
 }
 
 @media (min-width: $tablet-breakpoint-min) {
-
-  .masthead {
-    position: relative;
-    // margin-bottom: -115px;
-    //min-height: 540px;
-    //height: 540px; // Needed due to https://connect.microsoft.com/IE/feedback/details/802625/min-height-and-flexbox-flex-direction-column-dont-work-together-in-ie-10-11-preview
-  }
-
-  // .masthead-container {
-  //   max-width: 704px;
-  //   padding: 0 0 170px 0;
-  // }
-
-  .fab {
-    bottom: -28px; // fab's height / 2
-    right: $desktopKeyline;
-  }
-
   #navbar {
     paper-tabs {
       display: inline-block;
@@ -362,8 +287,8 @@ paper-drawer-panel {
   }
 }
 
-@media (min-resolution: 2.0dppx), (-webkit-min-device-pixel-ratio: 2), (min-width: $tablet-breakpoint-min) {
-  .io-logo:not(.style-scope) {
-    background-image: url('../images/home/io-logo@2x.png');
-  }
-}
+// @media (min-resolution: 2.0dppx), (-webkit-min-device-pixel-ratio: 2), (min-width: $tablet-breakpoint-min) {
+//   .io-logo:not(.style-scope) {
+//     background-image: url('../images/home/io_grey.png');
+//   }
+// }
