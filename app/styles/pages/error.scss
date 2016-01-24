@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
+@import '../base/color';
 @import '../base/breakpoints';
 
 html, body {
   height: 100%;
   width: 100%;
   overflow: auto;
+}
+
+a {
+  color: $color-link-grey;
 }
 
 .iologo {
