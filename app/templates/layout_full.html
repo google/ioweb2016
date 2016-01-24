@@ -231,9 +231,9 @@ limitations under the License.
 <!-- Responsive handlers -->
 <iron-media-query id="mq-phone" full query="(min-width:320px) and (max-width:767px)"
                   query-matches="{{app.isPhoneSize}}"></iron-media-query>
-<iron-media-query id="mq-tablet" full query="(min-width:768px) and (max-width:944px)"
+<iron-media-query id="mq-tablet" full query="(min-width:768px) and (max-width:959px)"
                   query-matches="{{app.isTabletSize}}"></iron-media-query>
-<iron-media-query id="mq-desktop" query="(min-width:945px)"
+<iron-media-query id="mq-desktop" query="(min-width:960px)"
                   query-matches="{{app.isDesktopSize}}"></iron-media-query>
 
 <paper-drawer-panel id="appdrawer" force-narrow disable-swipe="{{!app.isPhoneSize}}">
@@ -257,10 +257,10 @@ limitations under the License.
           <a href="./" data-ajax-link data-anim-drawer
              data-track-link="nav-drawer-home">Home</a>
         </paper-item>
-        <paper-item label="about">
+        <!-- <paper-item label="about">
           <a href="about" data-ajax-link data-anim-drawer
              data-track-link="nav-drawer-about">About</a>
-        </paper-item>
+        </paper-item> -->
         <paper-item label="schedule">
           <a href="schedule#day1" data-ajax-link data-anim-drawer
              data-track-link="nav-drawer-schedule">Schedule</a>
@@ -291,11 +291,11 @@ limitations under the License.
         </div>
         <paper-tabs attr-for-selected="label"
                     selected="{{selectedPage}}">
-          <paper-tab label="about" role="">
+          <!-- <paper-tab label="about" role="">
             <a href="about" data-ajax-link data-track-link="nav-about"
                data-transition="page-slide-transition"
                layout horizontal center>About</a>
-          </paper-tab>
+          </paper-tab> -->
           <paper-tab label="schedule" role="">
             <a href="schedule#day1" data-ajax-link data-track-link="nav-schedule"
                data-transition="page-slide-transition"
@@ -410,34 +410,30 @@ limitations under the License.
         <div flex></div>
         <nav layout vertical end justified>
           <span><a href="faq" data-ajax-link data-track-link="footer-faq">FAQ</a></span>
-          <span><a href="https://www.google.com/events/io" target="_blank" data-track-link="footer-2014-site">I/O 2014</a></span>
-
-          <paper-dropdown-menu label="Google Developers" no-label-float
-                               vertical-align="bottom" noink>
-            <paper-listbox class="dropdown-content">
-              <paper-item><a href="https://developers.google.com" target="_blank" data-track-link="footer-link-devsite">developers.google.com</a></paper-item>
-              <paper-item><a href="https://plus.google.com/+GoogleDevelopers" target="_blank" data-track-link="footer-link-gplus">+googledevelopers</a></paper-item>
-              <paper-item><a href="https://twitter.com/googledevs" target="_blank" data-track-link="footer-link-twitter">@googledevs</a></paper-item>
-              <paper-item><a href="http://googledevelopers.blogspot.com/" target="_blank" data-track-link="footer-link-blog">Blog</a></paper-item>
-            </paper-listbox>
-          </paper-dropdown-menu>
-
+          <span>
+            <a href="https://events.google.com/io2015/" target="_blank"
+               data-track-link="footer-2015-site">I/O 2015</a>
+          </span>
+          <span>
+            <a href="https://developers.google.com" target="_blank"
+               data-track-link="footer-link-devsite">Google Developers</a>
+          </span>
           <span><a href="https://plus.google.com/u/0/communities/105113874753230740413" target="_blank" data-track-link="footer-community">I/O Community</a></span>
           <span><a href="https://www.google.com/intl/en/policies/privacy/" target="_blank">Privacy</a> &amp; <a href="https://www.google.com/intl/en/policies/terms/" target="_blank">Terms</a></span>
-          <span class="footer-share-links--bottom" layout horizontal>
+          <!-- <span class="footer-share-links--bottom" layout horizontal>
             <a href="https://plus.google.com/+GoogleDevelopers" target="_blank"
                class="share-icon"  data-track-link="footer-share-gplus" data-share-type="gplus"
                on-click="openShareWindow"><iron-icon icon="io:post-gplus"></iron-icon></a>
             <a href="https://twitter.com/googledevs" target="_blank" class="share-icon"
                data-track-link="footer-share-twitter" data-share-type="twitter"
                on-click="openShareWindow"><iron-icon icon="io:post-twitter"></iron-icon></a>
-          </span>
+          </span> -->
         </nav>
       </div>
 
       <div class="footer-content footer-logos" layout horizontal justified>
         <div><img src="images/google-logo.svg" alt="Google Logo"></div>
-        <a href="https://play.google.com/store/apps/details?id=com.google.samples.apps.iosched" target="_blank" data-track-link="footer-iosched"><img src="images/google_play_45.png" alt="Get the Google I/O Android app on Google Play" title="Get the Google I/O Android app on Google Play"></a>
+        <!-- <a href="https://play.google.com/store/apps/details?id=com.google.samples.apps.iosched" target="_blank" data-track-link="footer-iosched"><img src="images/google_play_45.png" alt="Get the Google I/O Android app on Google Play" title="Get the Google I/O Android app on Google Play"></a> -->
       </div>
     </footer>
 

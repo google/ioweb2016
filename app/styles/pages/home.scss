@@ -27,229 +27,66 @@ $name: 'page-home';
 
 .masthead-container {
   max-width: 100% !important;
-  .io-logo {
-    display: inline-block;
-  }
 }
 
-.card__photo--stage {
-  h5 {
-    color: white;
-    text-shadow: .5px .5px 1px rgba(0, 0, 0, 0.25);
-    position: relative;
-    top: $mobileKeyline;
-  }
+// .play__button__container {
+//   cursor: pointer;
+//   background-size: 40px;
+//   height: 60px;
+// }
+
+// .pics__section {
+//   height: 310px;
+//   padding: 0;
+
+//   > div {
+//     min-height: 310px;
+//   }
+// }
+
+.photo__people {
+  background-image: url(../images/home/people_card.jpg);
 }
 
-.play__button__container {
-  cursor: pointer;
-  background-size: 40px;
-  height: 60px;
-}
+.photo__recap {
+  background-image: url(../images/home/keynote2015@2x.jpg);
+  background-position: 0 50%;
 
-#join {
-  h2 {
-    max-width: 230px;
-  }
-
-  .join__social {
-    a {
-      margin-bottom: 15px;
-    }
-
-    iron-icon {
-      margin-left: 5px;
-    }
-  }
-}
-
-.pics__section {
-  height: 310px;
-  padding: 0;
-
-  > div {
-    min-height: 310px;
-  }
-}
-
-.photo__home {
-  background-image: url(../images/home/home1.jpg);
-  background-position: 50% 0;
-  background-size: cover;
-}
-
-.photo__home--top {
-  background-image: url(../images/home/home2.jpg);
-  background-position: 100% 0;
-  background-size: cover;
-}
-
-.photo__home--bottom {
-  background-image: url(../images/home/home3.jpg);
-  background-position: 0 0;
-  background-size: cover;
-}
-
-.page__section--featured {
-  overflow: hidden;
-}
-
-.featured__videos {
-  margin-top: $desktopKeyline;
-  transition: all 400ms cubic-bezier(0,0,0.2,1);
-
-  .card-content {
-    padding: $mobileKeyline;
-  }
-  .item {
-    width: 100%;
-    flex-shrink: 0;
-    box-sizing: content-box;
-  }
-  .card__photo {
+  &.card__play-button {
+    background-image: url(../images/play-video-button-grey.png),
+                      url(../images/home/keynote2015@2x.jpg);
+    background-position: 50% 50%, 0 50%;
+    background-size: 72px, cover;
     cursor: pointer;
-    min-height: 203px;
-    border-top-left-radius: inherit;
-    border-top-right-radius: inherit;
-  }
-
-  .card__video {
-    iron-image {
-      border-radius: inherit;
-      width: 100%;
-    }
-  }
-
-  .video-title,
-  .video-author {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .video-author {
-    color: $color-gray;
-    font-size: 14px;
   }
 }
 
 @media (max-width: $phone-breakpoint-max) {
-  .card__container--top {
-    .link-spacing {
-      > a {
-        margin-right: $mobileKeyline;
-
-        &:last-of-type {
-          margin-right: 0;
-        }
-      }
-    }
-  }
-
-  .page__section--featured {
-    .featured__videos {
-      margin-left: -$mobileKeyline;
-      margin-right: -$mobileKeyline;
-    }
+  .io__hash {
+    display: block;
+    margin: 0 auto;
+    min-height: 375px;
   }
 }
 
 @media (min-width: $tablet-breakpoint-min) {
-  $overlayCardTop: 153px;
-
   .io__hash {
-    margin: 80px auto;
-  }
-
-  .masthead-container {
-    .io-logo {
-      width: 256px;
-      height: 184px;
-    }
-  }
-
-  .page__section--featured {
-    margin-top: -103px;
-    padding-top: calc(103px + 40px);
-
-    .featured__videos {
-      margin-left: -$desktopKeyline;
-      margin-right: -$desktopKeyline;
-
-      .item {
-        width: 400px;
-        padding-right: $tabletKeyline;
-
-        &:first-of-type {
-          padding-left: $largeKeyline;
-        }
-        &:last-of-type {
-          padding-right: $largeKeyline;
-        }
-      }
-    }
-  }
-
-  .pics__section {
-    height: 600px;
-    margin-bottom: -105px;
-
-    > div {
-      min-height: 600px;
-    }
-  }
-
-  #join {
-    position: relative;
-    margin-top: -112px;
-    padding-top: $overlayCardTop;
-
-    .join__social {
-      position: absolute;
-      top: $overlayCardTop;
-      right: $desktopKeyline;
-    }
+    margin: $desktopKeyline + 8 0;
   }
 }
 
 @media (min-width: $tablet-breakpoint-min) and (max-width: $tablet-breakpoint-mid) {
-  .page__section--featured {
-    margin-top: -135px;
-    padding-top: calc(135px + 40px);
-  }
+
 }
 
 @media (min-width: $desktop-breakpoint-mid) {
-  $overlayCardTop: 181px;
 
-  .page__section--featured {
-    margin-top: -111px;
-
-    .featured__videos {
-      margin-left: -$largeKeyline;
-      margin-right: -$largeKeyline;
-    }
-  }
-
-  #join {
-    margin-top: -120px;
-    padding-top: $overlayCardTop;
-
-    h2 {
-      max-width: 350px;
-    }
-
-    .join__social {
-      right: $largeKeyline;
-      top: $overlayCardTop;
-    }
-  }
 }
 
-@media (min-resolution: 2.0dppx), (-webkit-min-device-pixel-ratio: 2), (min-width: $tablet-breakpoint-min) {
-  .photo__masthead {
-    background-image: url(../images/home/keynote2015@2x.jpg);
-  }
-}
+// @media (min-resolution: 2.0dppx), (-webkit-min-device-pixel-ratio: 2), (min-width: $tablet-breakpoint-min) {
+//   .photo__masthead {
+//     background-image: url(../images/home/keynote2015@2x.jpg);
+//   }
+// }
 
 }
