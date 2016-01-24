@@ -158,8 +158,6 @@ gulp.task('copy-assets', function() {
     IOWA.appDir + '/styles/pages/permissions.css',
     IOWA.appDir + '/styles/pages/error.css',
     IOWA.appDir + '/elements/**/images/*',
-    IOWA.appDir + '/elements/webgl-globe/shaders/*.{frag,vert}',
-    IOWA.appDir + '/elements/webgl-globe/textures/*.{jpg,png}',
     IOWA.appDir + '/bower_components/webcomponentsjs/webcomponents-lite.min.js',
     IOWA.appDir + '/bower_components/webcomponentsjs/webcomponents.min.js',
     IOWA.appDir + '/bower_components/es6-promise/dist/es6-promise.min.js',
