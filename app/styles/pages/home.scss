@@ -72,6 +72,8 @@ $name: 'page-home';
 @media (min-width: $tablet-breakpoint-min) {
   .io__hash {
     margin: $desktopKeyline + 8 0;
+    height: 250px;
+    background-position: 0 0;
   }
 }
 

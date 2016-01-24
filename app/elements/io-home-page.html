@@ -54,11 +54,12 @@ limitations under the License.
       <div class="card" layout horizontal wrap  vertical$="{{app.isPhoneSize}}">
         <div class="card-content box card--top-left-clip card__photo photo__people"></div>
         <div class="card-content card--top-right-clip box">
-          <p>To celebrate our 10th anniversary of developer gatherings, we'll be hosting I/O in our backyard at the Shoreline Amphitheatre in Mountain View, CA.</p>
+          <p>
+          To celebrate our 10th anniversary of developer gatherings, we'll be hosting I/O in our backyard at the Shoreline Amphitheatre in Mountain View, CA.</p>
           <p>Registration opens March 2.</p>
         </div>
         <div class="card-content box card--bottom-left-clip bg-indigo typo-white">
-          <social-poller url="[[resolveUrl('./api/v1/social')]]" posts="{{socialPosts}}"
+          <social-poller url="[[resolveUrl('../api/v1/social')]]" posts="{{socialPosts}}"
                          interval="30000"></social-poller>
 
           <template is="dom-if" if="[[_showSocialPosts(socialPosts, 3)]]">

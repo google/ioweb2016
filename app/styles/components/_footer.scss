@@ -1,5 +1,5 @@
 /**
- * Copyright 2014 Google Inc. All rights reserved.
+ * Copyright 2016 Google Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,107 +15,37 @@
  */
 
 footer {
-  min-height: 200px;
+  min-height: 139px;
   background: #fff;
-  color: $color-link-grey;
+  color: $color-bluegrey-600;
   font-size: 14px;
+  @include keyline-16();
+  padding-top: $mobileKeyline;
+  padding-bottom: $mobileKeyline;
 
   a {
     color: inherit;
   }
-
-  .footer-backtotop {
-    color: $color-cyan-A700;
-  }
-
-  .invisible {
-    color: white;
-  }
-
-  nav {
-    flex: 1 0 auto;
-  }
-
-  paper-dropdown-menu {
-    margin: 0;
-    padding: 0;
-    border: none;
-    font-weight: 500;
-  }
-
-  paper-dropdown {
-    min-width: 200px; // Needed for IE.
-  }
-}
-
-.footer-content {
-  @include keyline-16();
-  padding-top: $mobileKeyline;
-  padding-bottom: 0;
 
   img {
     vertical-align: bottom;
   }
 }
 
-.footer-content--middle {
-  padding-bottom: $mobileKeyline;
-}
-
-.share-icon {
-  margin-right: 16px;
-  &:last-child {
-    margin-right: 0;
-  }
-}
-
-.footer-logos {
-  padding-bottom: $mobileKeyline;
-  border-top: 1px solid $color-light-grey-border;
-
-  img {
-    height: 32px;
-  }
-}
-
-@media (max-width: $phone-breakpoint-max) {
-  footer {
-    nav {
-      > * {
-        margin-top: $mobileKeyline;
-      }
-    }
-  }
-  .footer-share-links--bottom {
-    display: none;
-  }
-}
-
 @media (min-width: $tablet-breakpoint-min) {
-  .footer-content {
+  footer {
     @include keyline-24();
     padding-top: $tabletKeyline;
-  }
-  .footer-top {
-    min-height: 110px; // Needed due to https://connect.microsoft.com/IE/feedback/details/802625/min-height-and-flexbox-flex-direction-column-dont-work-together-in-ie-10-11-preview
-  }
-  .footer-share-links--top {
-    visibility: hidden;
-    pointer-events: none;
-  }
-  .footer-content {
-    nav {
-      flex-direction: row !important;
-    }
-  }
-  .footer-content--middle,
-  .footer-logos {
     padding-bottom: $tabletKeyline;
+
+    nav > span {
+      margin-left: $mobileKeyline * 2;
+    }
   }
 }
 
-@media (min-width: $desktop-breakpoint-max) {
-  nav {
-    max-width: 50%;
+@media (min-width: $desktop-breakpoint-min) {
+  footer {
+    padding: $desktopKeyline 0;
   }
 }

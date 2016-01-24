@@ -160,8 +160,7 @@ gulp.task('copy-assets', function() {
     IOWA.appDir + '/elements/**/images/*',
     IOWA.appDir + '/bower_components/webcomponentsjs/webcomponents-lite.min.js',
     IOWA.appDir + '/bower_components/webcomponentsjs/webcomponents.min.js',
-    IOWA.appDir + '/bower_components/es6-promise/dist/es6-promise.min.js',
-    IOWA.appDir + '/bower_components/elevator/demo/music/*'
+    IOWA.appDir + '/bower_components/es6-promise/dist/es6-promise.min.js'
   ], {base: './'});
 
   return merge(templateStream, otherAssetStream)
