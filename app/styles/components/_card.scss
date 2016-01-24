@@ -20,7 +20,6 @@
 @import '../base/shadow';
 
 .card {
-  // position: relative;
   background: #fff;
   display: block;
 
@@ -106,16 +105,3 @@
     }
   }
 }
-
-// @media (min-width: $desktop-breakpoint-mid) {
-//   .card__container {
-//     max-width: 896px;
-//   }
-// }
-
-// @media (min-width: $desktop-breakpoint-max) {
-//   .card__container {
-//     max-width: 1024px;
-//   }
-// }
-
