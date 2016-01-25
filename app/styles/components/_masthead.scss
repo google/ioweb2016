@@ -15,7 +15,7 @@
  */
 
 .io-logo:not(.style-scope) {
-  background: url('../images/home/io-logo-grey.png') no-repeat;
+  background: url('../images/io-logo-grey.png') no-repeat;
   background-size: contain;
   height: 40px;
   width: 60px;
@@ -234,11 +234,6 @@ paper-drawer-panel {
 @media (max-width: $phone-breakpoint-max) {
   .masthead-container {
     @include keyline-16l();
-
-    paper-tabs[scrollable] {
-      left: -64px;
-      position: relative;
-    }
   }
 
   #navbar {
@@ -283,12 +278,6 @@ paper-drawer-panel {
 
 @media (min-width: $desktop-breakpoint-max) {
   .masthead-container {
-    max-width: 1024px;
+    max-width: 960px;
   }
 }
-
-// @media (min-resolution: 2.0dppx), (-webkit-min-device-pixel-ratio: 2), (min-width: $tablet-breakpoint-min) {
-//   .io-logo:not(.style-scope) {
-//     background-image: url('../images/home/io_grey.png');
-//   }
-// }

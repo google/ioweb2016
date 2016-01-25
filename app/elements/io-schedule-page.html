@@ -46,8 +46,7 @@ limitations under the License.
     <div layout horizontal justified>
       <paper-tabs id="subpage-tabs" class="white"
                   attr-for-selected="label"
-                  selected="{{selectedSubpage}}"
-                  scrollable$="{{app.isPhoneSize}}">
+                  selected="{{selectedSubpage}}">
         <paper-tab label="agenda" role="">
           <a href="#agenda" data-track-link="schedule-agenda" data-ajax-link
                             layout horizontal center-center>Agenda</a>
@@ -271,7 +270,7 @@ limitations under the License.
 <div class="subpage__container">
   <section class$="subpage-agenda subpage__content {{_applyActiveClassWhenSubpage(selectedSubpage, 'agenda')}}">
     <section class="page__section page__section--top slide-up">
-      <div class="card__container card__container--top">
+      <div class="card__container">
         <div class="card">
           <div class="card-content">
             <h4>May 27, 2015</h4>
@@ -293,7 +292,7 @@ limitations under the License.
     </section>
     <div class="slide-up-delay">
       <section class="page__section">
-        <div class="card__container card__container--top">
+        <div class="card__container">
           <div class="card">
             <div class="card-content">
               <h4>May 28, 2015</h4>
@@ -337,7 +336,7 @@ limitations under the License.
         </div>
       </section>
       <section class="page__section">
-        <div class="card__container card__container--top">
+        <div class="card__container">
           <div class="card">
             <div class="card-content">
               <h4>May 29, 2015</h4>
@@ -378,7 +377,7 @@ limitations under the License.
   <section class$="subpage-day1 subpage-day2 subpage-myschedule subpage__content {{_applyActiveClassWhenNotSubpage(selectedSubpage, 'agenda')}}">
     <section class="page__section page__section--top slide-up">
       <div id="signin-prompt"
-          class$="card__container card__container--top {{_addClass('prompt-hidden', user)}}"
+          class$="card__container {{_addClass('prompt-hidden', user)}}"
           hidden$="{{_equal(selectedSubpage, 'myschedule')}}">
         <div class="card">
           <div class="card-content">
@@ -397,7 +396,7 @@ limitations under the License.
         </div>
       </div>
 
-      <div class="card__container card__container--top"
+      <div class="card__container"
            hidden$="{{!_equal(selectedSubpage, 'myschedule')}}">
         <div class="card">
 

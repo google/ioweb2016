@@ -20,21 +20,19 @@
 @import '../base/shadow';
 
 .card {
-  position: relative;
   background: #fff;
   display: block;
 
   .card-content {
     padding: 0 $mobileKeyline;
+
+    &.box {
+      min-height: 375px;
+    }
   }
 
   a {
-    @include typo-button();
     white-space: nowrap;
-  }
-
-  h2, h3 {
-    color: $color-heading;
   }
 
   .card__title {
@@ -46,35 +44,29 @@
     background-size: cover;
     background-position: 50% 50%;
   }
-
-  .card__photo--recap {
-    background-image: url(../images/home/keynote2015.jpg);
-    background-position: 50% 0 !important;
-    cursor: pointer;
-    border-top-left-radius: inherit;
-    border-top-right-radius: inherit;
-    min-height: 200px;
-  }
 }
 
 .card--force-compositing {
   transform: translateZ(0);
 }
 
+.card--top-left-clip {
+  border-top-left-radius: inherit;
+}
+.card--top-right-clip {
+  border-top-right-radius: inherit;
+}
+.card--bottom-left-clip {
+  border-bottom-left-radius: inherit;
+}
+.card--bottom-right-clip {
+  border-bottom-right-radius: inherit;
+}
+
 @media (max-width: $phone-breakpoint-max) {
   .card {
-    border-bottom: 1px solid $color-light-grey-border;
-
-    &:last-child {
-      border-bottom: 0;
-    }
-
     .card-content {
       padding: $tabletKeyline $mobileKeyline;
-
-      &:not(:only-child):first-child {
-        padding-bottom: 0;
-      }
     }
 
     h3:not(.card__title) {
@@ -86,14 +78,8 @@
 
 @media (min-width: $tablet-breakpoint-min) {
   .card__container {
-    max-width: 704px;
+    max-width: 960px;
     margin: 0 auto;
-  }
-
-  .sidebyside {
-    > :not(:last-child) {
-      margin-right: $desktopKeyline;
-    }
   }
 
   .card {
@@ -102,17 +88,13 @@
 
     .card-content {
       padding: 32px;
-      &:not(:last-child) {
-        border-bottom: 1px solid #eee;
+
+      &.box {
+        height: 480px;
+        width: 50%;
       }
     }
 
-  }
-}
-
-@media (min-width: $tablet-breakpoint-min) and (max-width: $tablet-breakpoint-mid) {
-  .card__container--top {
-    max-width: 582px;
   }
 }
 
@@ -123,16 +105,3 @@
     }
   }
 }
-
-@media (min-width: $desktop-breakpoint-mid) {
-  .card__container {
-    max-width: 896px;
-  }
-}
-
-@media (min-width: $desktop-breakpoint-max) {
-  .card__container {
-    max-width: 1024px;
-  }
-}
-

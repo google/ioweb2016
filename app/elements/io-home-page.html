@@ -48,6 +48,45 @@ limitations under the License.
     </div>
   </div>
 
+  <div class="active">
+
+    <div class="card__container slide-up">
+      <div class="card" layout horizontal wrap  vertical$="{{app.isPhoneSize}}">
+        <div class="card-content box card--top-left-clip card__photo photo__people"></div>
+        <div class="card-content card--top-right-clip box">
+          <p>
+          To celebrate our 10th anniversary of developer gatherings, we'll be hosting I/O in our backyard at the Shoreline Amphitheatre in Mountain View, CA.</p>
+          <p>Registration opens March 2.</p>
+        </div>
+        <div class="card-content box card--bottom-left-clip bg-indigo typo-white">
+          <social-poller url="[[resolveUrl('../api/v1/social')]]" posts="{{socialPosts}}"
+                         interval="30000"></social-poller>
+
+          <template is="dom-if" if="[[_showSocialPosts(socialPosts, 3)]]">
+            <div layout vertical>
+              <template is="dom-repeat" items="{{_limit(socialPosts, 3)}}" as="post">
+                <social-post kind="[[post.kind]]"
+                             author="[[post.author]]"
+                             url="[[post.url]]"
+                             text="[[post.text]]"
+                             when="[[post.when]]">
+                </social-post>
+              </template>
+            </div>
+          </template>
+        </div>
+        <div class="card-content box card--bottom-right-clip card__play-button card__photo photo__recap">
+          <h4 class="typo-white">Watch the I/O 2015 recap</h4>
+        </div>
+      </div>
+    </div>
+
+    <div class="card__container slide-up-delay">
+      <div class="io__hash" aria-label="I/O hash tag"></div>
+    </div>
+
+  </div>
+
   <!-- <paper-toolbar class="navbar__overlay navbar__overlay--video"
                  aria-hidden$="{{!app.fullscreenVideoActive}}" fit>
     <paper-icon-button icon="arrow-back"
@@ -57,92 +96,14 @@ limitations under the License.
     <span flex>Watch the 2014 I/O Recap Video</span>
   </paper-toolbar> -->
 
-  <div class="active">
-    <div class="card__container card__container--top slide-up">
-      <div class="card">
-        <div class="card-content">
-          <h3>Google I/O is for developers—the creative coders who are building what's next. Together we'll explore the latest in tech, mobile &amp; beyond.</h3>
-        </div>
-        <div relative>
-          <paper-progress indeterminate fit hidden$="{{!_ioReminder}}"></paper-progress>
-        </div>
-        <div class="card-content link-spacing">
-          <a href="about" data-ajax-link data-transition="hero-card-transition"
-             data-track-link="home-learn-more-about-io">Learn more about I/O</a>
-          <a href="#" data-track-link="home-set-reminder"
-             class="notification__feature" on-click="_onSetReminder">
-            <iron-icon icon="io:notifications-none"></iron-icon> Set a reminder
-          </a>
-        </div>
-      </div>
-    </div>
-    <div class="slide-up-delay">
-      <section class="home-photo page__section"></section>
-
-      <div class="registration__card card__container sidebyside"
-           layout horizontal vertical$="{{app.isPhoneSize}}">
-        <div class="card" auto-vertical flex>
-          <div class="card-content hide-on-mobile">
-            <h3>I/O is two days of hands-on interaction with the latest technologies, inspirational talks and a few surprises in between.</h3>
-          </div>
-          <div class="card-content">
-            <a href="schedule#myschedule" data-ajax-link
-               data-track-link="home-check-agenda">
-               <iron-icon icon="event" aria-hidden="true"></iron-icon> Create your schedule
-            </a>
-          </div>
-        </div>
-        <div class="card" layout vertical auto-vertical flex>
-          <div flex class="card__photo card__photo--plan"></div>
-          <div class="card-content">
-            <a href="onsite" data-ajax-link data-track-link="home-plan-experience">Plan your I/O experience</a>
-          </div>
-        </div>
-      </div>
-
-      <section id="join" class="page__section bg-light-grey">
-        <h2>Join the conversation now at #io15</h2>
-        <div class="join__social" layout vertical end hidden$="{{app.isPhoneSize}}">
-          <a href="https://plus.google.com/+GoogleDevelopers"
-             data-track-link="home-social-plus-google-developers" target="_blank">
-            +googledevelopers<iron-icon icon="io:post-gplus"></iron-icon>
-          </a>
-          <a href="https://twitter.com/googledevs"
-             data-track-link="home-social-twitter-google-devs" target="_blank">
-            @googledevs<iron-icon icon="io:post-twitter"></iron-icon>
-          </a>
-        </div>
-
-        <div class="io__hash" aria-label="I/O hash tag"></div>
-
-        <social-poller url="[[resolveUrl('./api/v1/social')]]" posts="{{socialPosts}}"
-                       interval="30000"></social-poller>
-
-        <template is="dom-if" if="[[_showSocialPosts(socialPosts, 3)]]">
-          <div class="sidebyside" layout horizontal vertical$="{{app.isPhoneSize}}">
-            <template is="dom-repeat" items="{{_limit(socialPosts, 3)}}" as="post">
-              <social-post kind="[[post.kind]]"
-                           author="[[post.author]]"
-                           url="[[post.url]]"
-                           text="[[post.text]]"
-                           when="[[post.when]]">
-              </social-post>
-            </template>
-          </div>
-        </template>
-
-      </section>
-    </div>
-  </div>
-
-  <template is="dom-if" if="{{app.fullscreenVideoActive}}" restamp>
+  <!-- <template is="dom-if" if="{{app.fullscreenVideoActive}}" restamp>
     <div class="fullvideo__container" fit hidden>
       <img src$="[[resolveUrl('./images/home/recap-500@2x.jpg')]]" class="fullvideo_thumbnail" alt="Watch the I/O Recap Video" fit>
       <google-youtube video-id="ksvdvCDO7pA" height="100%" width="100%" fit
                       autohide="1" controls="2" modestbranding="1" showinfo="0"
                       iv_load_policy="3" rel="0" autoplay="1"></google-youtube>
     </div>
-  </template>
+  </template> -->
 
 </template>
 <script>

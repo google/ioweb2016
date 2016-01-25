@@ -1,5 +1,5 @@
 /**
- * Copyright 2014 Google Inc. All rights reserved.
+ * Copyright 2016 Google Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,26 +14,25 @@
  * limitations under the License.
  */
 
-
-$name: 'page-error_404';
-
 @import '../base/color';
 @import '../base/breakpoints';
 
 html, body {
   height: 100%;
   width: 100%;
-  background-color: $color-cyan-500;
   overflow: auto;
 }
 
-##{$name} {
+a {
+  color: $color-link-grey;
+}
 
-countdown-timer {
-  width: 500px;
+.iologo {
   height: 200px;
-  margin-left: -160px;
-  overflow: hidden;
+}
+
+.page__section {
+  text-align: center;
 }
 
 @media (max-width: $phone-breakpoint-max) {
@@ -41,36 +40,4 @@ countdown-timer {
     padding-left: 0;
     padding-right: 0;
   }
-}
-
-}
-
-$name: 'page-error_500';
-
-@import '../base/_color';
-@import '../base/_breakpoints';
-
-html, body {
-  height: 100%;
-  width: 100%;
-  background-color: $color-cyan-500;
-  overflow: auto;
-}
-
-##{$name} {
-
-countdown-timer {
-  height: 200px;
-  width: 550px;
-  margin-left: -160px;
-  overflow: hidden;
-}
-
-@media (max-width: $phone-breakpoint-max) {
-  .page__section {
-    padding-left: 0;
-    padding-right: 0;
-  }
-}
-
 }

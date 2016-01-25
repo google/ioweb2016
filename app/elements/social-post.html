@@ -54,16 +54,10 @@ Displays information about a social post, and linkifies certain URLs in the text
 
         /**
          * The username associated with the social post.
-         *
-         * @attribute author
-         * @type string
-         * @default ''
          */
         author: {
           type: String,
-          value: '',
-          notify: true,
-          observer: '_authorChanged'
+          value: ''
         },
 
         /**
@@ -71,8 +65,7 @@ Displays information about a social post, and linkifies certain URLs in the text
          */
         hideAuthor: {
           type: Boolean,
-          value: false,
-          notify: true
+          value: false
         },
 
         /**
@@ -116,13 +109,22 @@ Displays information about a social post, and linkifies certain URLs in the text
           type: String,
           value: '',
           observer: '_whenChanged'
+        },
+
+        /**
+         * The date and time that the post was made, in a format that `new Date()` can parse.
+         */
+        profileUrl: {
+          type: String,
+          computed: '_computeProfileUrl(author, kind)'
         }
       },
 
-      _authorChanged: function() {
+      _computeProfileUrl: function(author, kind) {
         if (this.kind == 'tweet') {
-          this.profileUrl = 'https://twitter.com/' + this.author.slice(1);
+          return 'https://twitter.com/' + this.author.slice(1);
         }
+        return this.author;
       },
 
       _textChanged: function() {

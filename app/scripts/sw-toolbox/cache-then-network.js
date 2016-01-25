@@ -32,7 +32,7 @@
           return response;
         }
 
-        return new Response('', {
+        return new Response(null, {
           status: 204,
           statusText: 'No cached content available.'
         });
