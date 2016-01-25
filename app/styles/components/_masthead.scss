@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@import '../base/layout';
+
 .io-logo:not(.style-scope) {
   background: url('../images/io-logo-grey.png') no-repeat;
   background-size: contain;
@@ -190,7 +192,7 @@ paper-drawer-panel {
   min-height: 268px;
   height: 268px;
   width: 100%;
-  max-width: $tablet-breakpoint-max;
+  max-width: $container-max-width;
   margin: 0 auto;
   position: relative;
   padding: 10px 0 40px 0;
@@ -261,23 +263,5 @@ paper-drawer-panel {
     [icon="menu"] {
       display: none;
     }
-  }
-}
-
-@media (min-width: $tablet-breakpoint-min) and (max-width: $tablet-breakpoint-mid) {
-  .masthead-container {
-    max-width: 582px;
-  }
-}
-
-@media (min-width: $desktop-breakpoint-mid) {
-  .masthead-container {
-    max-width: 896px;
-  }
-}
-
-@media (min-width: $desktop-breakpoint-max) {
-  .masthead-container {
-    max-width: 960px;
   }
 }
