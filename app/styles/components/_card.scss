@@ -78,7 +78,7 @@
 
 @media (min-width: $tablet-breakpoint-min) {
   .card__container {
-    max-width: 960px;
+    max-width: $container-max-width;
     margin: 0 auto;
   }
 
