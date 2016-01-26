@@ -16,6 +16,7 @@
     "originProd": "https://events.google.com"
   },
   "devDependencies": {
+    "babel-preset-es2015": "^6.3.13",
     "blink-diff": "^1.0.7",
     "bower": "^1.6.5",
     "browser-sync": "^2.0.0-rc8",
@@ -25,12 +26,14 @@
     "glob": "^6.0.1",
     "gulp": "^3.9.0",
     "gulp-autoprefixer": "^3.1.0",
+    "gulp-babel": "^6.1.1",
     "gulp-cache": "^0.4.0",
     "gulp-changed": "^1.1.0",
     "gulp-chmod": "^1.2.0",
     "gulp-concat": "^2.4.3",
     "gulp-crisper": "^1.0.0",
     "gulp-eslint": "^1.1.1",
+    "gulp-filter": "^3.0.1",
     "gulp-foreach": "0.1.0",
     "gulp-if": "^2.0.0",
     "gulp-imagemin": "^2.1.0",

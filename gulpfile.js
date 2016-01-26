@@ -194,8 +194,19 @@ gulp.task('concat-and-uglify-js', ['eslint', 'generate-page-metadata'], function
     return IOWA.appDir + '/scripts/' + script;
   });
 
+  // Only run our own scripts through babel.
+  var ownScriptsFilter = $.filter(
+      file => new RegExp(`${IOWA.appDir}/scripts/`).test(file.path),
+      {restore: true});
+
   var siteScriptStream = gulp.src(siteScripts)
     .pipe(reload({stream: true, once: true}))
+    .pipe(ownScriptsFilter)
+    .pipe($.babel({
+      presets: ['es2015'],
+      compact: false
+    }))
+    .pipe(ownScriptsFilter.restore)
     .pipe($.concat('site-scripts.js'));
 
   // analytics.js is loaded separately and shouldn't be concatenated.
