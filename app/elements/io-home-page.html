@@ -35,7 +35,8 @@ limitations under the License.
   <div class="masthead-container" layout horizontal end>
     <div class="masthead-meta">
       <div id="countdown-container" fit>
-        <countdown-timer auto-start
+        <countdown-timer id="ctimer"
+            auto-start
             bg-color="#F5F5F5"
             date="[[date]]"
             ease-in-time="490"
@@ -51,12 +52,25 @@ limitations under the License.
   <div class="active">
 
     <div class="card__container slide-up">
+      <div class="event__meta">
+        <span><iron-icon icon="event"></iron-icon> May 18-20</span>
+        <span class="event__meta-location">
+          <a href="https://goo.gl/maps/7hs1NJR3ErG2" target="_blank"
+             data-track-link="nav-shoreline-maps-link">
+            <iron-icon icon="io:place"></iron-icon>Shoreline Amphitheatre</a>
+        </span>
+      </div>
+
       <div class="card" layout horizontal wrap  vertical$="{{app.isPhoneSize}}">
         <div class="card-content box card--top-left-clip card__photo photo__people"></div>
-        <div class="card-content card--top-right-clip box">
-          <p>
-          To celebrate our 10th anniversary of developer gatherings, we'll be hosting I/O in our backyard at the Shoreline Amphitheatre in Mountain View, CA.</p>
+        <div class="card-content card--top-right-clip box" layout vertical justified>
+          <p>To celebrate our 10th anniversary of developer gatherings, we'll be hosting I/O in our backyard at the Shoreline Amphitheatre in Mountain View, CA.</p>
           <p>Registration opens March 2.</p>
+          <a href="https://goo.gl/maps/7hs1NJR3ErG2" target="_blank"
+             data-track-link="card-shoreline-maps-link"
+             layout horizontal justified flex end>Map the venue
+            <iron-icon icon="io:keyboard-arrow-right"></iron-icon>
+          </a>
         </div>
         <div class="card-content box card--bottom-left-clip bg-indigo typo-white">
           <social-poller url="[[resolveUrl('../api/v1/social')]]" posts="{{socialPosts}}"
@@ -140,6 +154,10 @@ limitations under the License.
     attached: function() {
       // Reset template variables for when revisiting the page.
       this.set('app.fullscreenVideoActive', false);
+    },
+
+    onPageTransitionDone: function() {
+      this.$.ctimer.show();
     },
 
     _onSetReminder: function(e, detail) {
