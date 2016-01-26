@@ -5,13 +5,10 @@
 Prerequisites
 
 * [Go 1.4](https://golang.org/dl/).
-* Optional: [gcloud tool](https://cloud.google.com/sdk/#Quick_Start)
-  and [app](https://cloud.google.com/sdk/gcloud-app#Installation) component
-  to run and deploy GAE-based backend (hint: `gcloud components update app`).
-
-  Once `gcloud` and `app` component are installed, you'll need to do a one-off
-  configuration by executing the following command: `gcloud config set project <project-id>`.
-  Project ID can be any non-empty string if you just want to run the app locally.
+* Optional: [Google App Engine SDK for Go](https://cloud.google.com/appengine/downloads).
+  Once installed, make sure the SDK root dir is in `$PATH`. You can verify it's been setup
+  correctly by running `goapp version`, which should output something like
+  `go version go1.4.2 (appengine-1.9.30) darwin/amd64`.
 
 Setup
 
@@ -44,7 +41,7 @@ by providing `--env` argument to the gulp task:
   ```
 
 Not that this does not change the way the backend code is compiled
-or the front-end is built. It merely changes a variable values,
+or the front-end is built. It merely changes a "environment" variable value,
 which the app takes into account when rendering a page or responding to a request.
 
 Running in `stage` or `prod` requires real credentials when accessing external services.
@@ -52,18 +49,16 @@ You'll need to run a one-off `gulp decrypt` which will decrypt a service account
 
 You can also use GAE dev appserver by running `gulp serve:gae`. This is closer to what
 we're using in our webapp environment but a bit slower on startup.
-You'll need `gcloud` tool and `app` component to do this.
+You'll need Google App Engine SDK for Go to do this.
 
 To change the app environment when using GAE SDK, provide `--env` argument:
 
-  ```
-  # run in dev mode, default:
-  gulp serve:gae
-  # set app environment to production:
-  gulp serve:gae --env prod
-  # or run as if we were in staging:
-  gulp serve:gae --env stage
-  ```
+    # run in dev mode, default:
+    gulp serve:gae
+    # set app environment to production:
+    gulp serve:gae --env prod
+    # or run as if we were in staging:
+    gulp serve:gae --env stage
 
 Other arguments are:
 
@@ -83,21 +78,15 @@ and navigating to http://localhost:8080.
 `serve:dist` runs the app in `prod` mode by default. You can change that
 by providing the `--env` argument as with other `serve` tasks. For instance:
 
-  ```
-  # run in stage instead of prod
-  gulp serve:dist --env stage
-  ```
+    # run in stage instead of prod
+    gulp serve:dist --env stage
 
 ### Deploying
 
 To deploy complete application on App Engine:
 
 1. Run `gulp` which will build both frontend and backend in `dist` directory.
-2. Run `gcloud preview app deploy dist/backend --version <v>`.
-
-The app will be deployed to the project configured in `gcloud` tool.
-To check which project you're deploying to, run `gcloud config list`
-and look for `project = ...` line.
+2. Run `GAE_SDK/goapp deploy -application <app-id> -version <v>`.
 
 ## Backend
 
