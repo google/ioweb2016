@@ -167,7 +167,6 @@ limitations under the License.
   <!-- Page styles -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
   <link rel="stylesheet" href="styles/main.css">
-  <!-- <link rel="stylesheet" href="styles/main_sd.css" shim-shadowdom> -->
 
   <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
   <link rel="import" href="elements/elements.html">
@@ -240,10 +239,6 @@ limitations under the License.
           <a href="./" data-ajax-link data-anim-drawer
              data-track-link="nav-drawer-home">Home</a>
         </paper-item>
-        <!-- <paper-item label="about">
-          <a href="about" data-ajax-link data-anim-drawer
-             data-track-link="nav-drawer-about">About</a>
-        </paper-item> -->
         <paper-item label="schedule">
           <a href="schedule#day1" data-ajax-link data-anim-drawer
              data-track-link="nav-drawer-schedule">Schedule</a>
@@ -274,11 +269,6 @@ limitations under the License.
         </div>
         <paper-tabs attr-for-selected="label"
                     selected="{{selectedPage}}">
-          <!-- <paper-tab label="about" role="">
-            <a href="about" data-ajax-link data-track-link="nav-about"
-               data-transition="page-slide-transition"
-               layout horizontal center>About</a>
-          </paper-tab> -->
           <paper-tab label="schedule" role="">
             <a href="schedule#day1" data-ajax-link data-track-link="nav-schedule"
                data-transition="page-slide-transition"
@@ -304,7 +294,7 @@ limitations under the License.
           <!-- Note: Use on-click instead of on-tap so oauth popup is not
                blocked. Needs user gesture. -->
           <span class="anchor-like button-link" data-track-link="nav-signin"
-                on-click="signIn" hidden="{{currentUser}}">Sign in</span>
+                on-click="signIn" hidden$="[[currentUser]]">Sign in</span>
           <template is="dom-if" if="{{currentUser}}" restamp>
             <img src$="{{currentUser.picture}}" class="profilepic">
             <paper-menu-button horizontal-align="right" vertical-align="top">

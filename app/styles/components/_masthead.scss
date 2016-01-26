@@ -56,10 +56,6 @@
 
 .masthead-meta {
   opacity: 0;  // Initial opacity, fades in on load.
-
-  paper-tabs a {
-    color: inherit;
-  }
 }
 
 paper-drawer-panel {
@@ -84,9 +80,6 @@ paper-drawer-panel {
     paper-item {
       font-size: inherit;
     }
-    a {
-      color: inherit;
-    }
   }
 }
 
@@ -104,7 +97,6 @@ paper-drawer-panel {
 
     a {
       flex: inherit; // Needed for IE11, in order to ensure that the <a> gets assigned a width.
-      color: inherit;
     }
 
     &.iron-selected {
@@ -195,7 +187,7 @@ paper-drawer-panel {
   max-width: $container-max-width;
   margin: 0 auto;
   position: relative;
-  padding: 10px 0 40px 0;
+  padding: 0 0 40px 0;
 
   paper-tabs {
     text-transform: uppercase;
