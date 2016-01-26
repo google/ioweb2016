@@ -287,22 +287,22 @@ IOWA.Util = IOWA.Util || (function() {
   };
 
   return {
-    createDeferred: createDeferred,
-    isFF: isFF,
-    isIE: isIE,
-    isIOS: isIOS,
-    isSafari: isSafari,
-    isTouchScreen: isTouchScreen,
-    setMetaThemeColor: setMetaThemeColor,
+    createDeferred,
+    isFF,
+    isIE,
+    isIOS,
+    isSafari,
+    isTouchScreen,
+    setMetaThemeColor,
     supportsHTMLImports: 'import' in document.createElement('link'),
-    smoothScroll: smoothScroll,
-    shortenURL: shortenURL,
-    getURLParameter: getURLParameter,
-    getStaticBaseURL: getStaticBaseURL,
-    setSearchParam: setSearchParam,
-    getEventSender: getEventSender,
-    removeSearchParam: removeSearchParam,
-    resizeRipple: resizeRipple,
-    reportError: reportError
+    smoothScroll,
+    shortenURL,
+    getURLParameter,
+    getStaticBaseURL,
+    setSearchParam,
+    getEventSender,
+    removeSearchParam,
+    resizeRipple,
+    reportError
   };
 })();
