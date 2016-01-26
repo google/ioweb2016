@@ -55,25 +55,16 @@ function copy(appenv, callback) {
  * @param {function} callback Callback function.
  */
 function test(opts, callback) {
-  var start = function(cmd) {
-    var run = singleTestRound.bind(null, cmd, opts.test);
-    var proc = run();
-    if (opts.watch) {
-      gulp.watch([IOWA.backendDir + '/**/*.go'], run);
-      gulp.watch([IOWA.appDir + '/templates/*'], run);
-      callback();
-      return;
-    }
-    proc.on('close', callback);
-  };
-
-  if (!opts.gae) {
-    start('go');
+  var cmd = opts.gae ? 'goapp' : 'go';
+  var run = singleTestRound.bind(null, cmd, opts.test);
+  var proc = run();
+  if (opts.watch) {
+    gulp.watch([IOWA.backendDir + '/**/*.go'], run);
+    gulp.watch([IOWA.appDir + '/templates/*'], run);
+    callback();
     return;
   }
-  gaeSdkDir(function(dir) {
-    start(dir + '/goapp');
-  });
+  proc.on('close', callback);
 }
 
 /**
@@ -171,12 +162,12 @@ function serveGAE(opts, callback) {
   var serverAddr = 'localhost:' + port;
   var url = 'http://' + serverAddr + IOWA.urlPrefix;
   var args = [
-    'preview', 'app', 'run', opts.dir,
-    '--host', serverAddr,
-    '--datastore-path', IOWA.backendDir + '/.gae_datastore'
+    opts.dir,
+    '--port', port,
+    '--datastore_path', IOWA.backendDir + '/.gae_datastore'
   ];
 
-  var backend = spawn('gcloud', args, {stdio: 'inherit'});
+  var backend = spawn('dev_appserver.py', args, {stdio: 'inherit'});
   if (!opts.reload) {
     console.log('The app should now be available at: ' + url);
     backend.on('close', callback);
@@ -312,28 +303,6 @@ function encrypt(passphrase, callback) {
   });
 }
 
-
-/**
- * Find GAE SDK root dir and return the path in the callback.
- *
- * @param {function} callback Callback function.
- */
-function gaeSdkDir(callback) {
-  var out = '';
-  var proc = spawn('gcloud', ['info', '--format' ,'json'], {
-    timeout: 3,
-    stdio: [process.stdin, 'pipe', process.stderr]
-  });
-
-  proc.stdout.on('data', function(chunk) {
-    out += chunk;
-  });
-
-  proc.stdout.on('end', function() {
-    var info = JSON.parse(out);
-    callback(info.config.paths.sdk_root + '/platform/google_appengine');
-  });
-}
 
 module.exports = {
   test: test,
