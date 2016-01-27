@@ -81,7 +81,8 @@ IOWA.Util = IOWA.Util || (function() {
       }
 
       var point = smoothStep(startTime, endTime, timestamp);
-      var scrollTop = Math.round(startTop + (destY * point));
+      var OFFSET = 100; // scroll adjustment for top nav.
+      var scrollTop = Math.round(startTop + (destY * point)) - OFFSET;
 
       scrollContainer.scrollTop = scrollTop;
 
