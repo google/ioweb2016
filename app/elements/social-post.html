@@ -12,6 +12,8 @@ limitations under the License.
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="shared-app-styles.html">
 
 <!--
 Displays information about a social post, and linkifies certain URLs in the text.
@@ -26,18 +28,36 @@ Displays information about a social post, and linkifies certain URLs in the text
 <dom-module id="social-post">
   <link rel="import" type="css" href="social-post.css">
   <template>
-    <header>
-      <a target="_blank" href$="{{profileUrl}}" hidden$="{{hideAuthor}}">{{author}}</a>
-      <div class="timestamp">
-        <a target="_blank" href$="{{url}}">{{timeAgo}}</a>
+    <style include="shared-app-styles"></style>
+
+    <template is="dom-if" if="[[_viewIs(view, 'card')]]">
+      <div class="social-card" layout vertical flex>
+        <h3 id="postContent"></h3>
+        <div layout end flex justified>
+          <span>
+            <iron-icon src="[[resolveUrl('../images/share-twitter.svg')]]"></iron-icon>
+            <a target="_blank" href$="{{profileUrl}}" hidden$="{{hideAuthor}}">{{author}}</a>
+          </span>
+          <div class="timestamp">
+            <a target="_blank" href$="{{url}}">{{timeAgo}}</a>
+          </div>
+        </div>
       </div>
-    </header>
-    <div id="postContent"></div>
-    <template is="dom-if" if="{{media}}">
-      <a target="_blank" href$="{{media.0.expanded_url}}">
-        <img src$="{{media.0.media_url_https}}" class="social-photo"
-             style$="{{_computeStyle(media)}}">
-      </a>
+    </template>
+    <template is="dom-if" if="[[_viewIs(view, 'list')]]">
+      <header>
+        <a target="_blank" href$="{{profileUrl}}" hidden$="{{hideAuthor}}">{{author}}</a>
+        <div class="timestamp">
+          <a target="_blank" href$="{{url}}">{{timeAgo}}</a>
+        </div>
+      </header>
+      <div id="postContent"></div>
+      <template is="dom-if" if="{{media}}">
+        <a target="_blank" href$="{{media.0.expanded_url}}">
+          <img src$="{{media.0.media_url_https}}" class="social-photo"
+               style$="{{_computeStyle(media)}}">
+        </a>
+      </template>
     </template>
   </template>
   <script>
@@ -50,6 +70,15 @@ Displays information about a social post, and linkifies certain URLs in the text
         _TWITTER_URL_REGEX: {
           value: /(https?:\/\/t\.co\/\w+)/,
           readOnly: true
+        },
+
+        /**
+         * How the post is rendered. One of 'list' or 'card'.
+         */
+        view: {
+          type: String,
+          value: 'list',
+          reflectToAttribute: true
         },
 
         /**
@@ -90,8 +119,7 @@ Displays information about a social post, and linkifies certain URLs in the text
          */
         text: {
           type: String,
-          value: '',
-          observer: '_textChanged'
+          value: ''
         },
 
         /**
@@ -120,6 +148,10 @@ Displays information about a social post, and linkifies certain URLs in the text
         }
       },
 
+      observers: [
+        '_updateContent(view, text)'
+      ],
+
       _computeProfileUrl: function(author, kind) {
         if (this.kind == 'tweet') {
           return 'https://twitter.com/' + this.author.slice(1);
@@ -127,36 +159,38 @@ Displays information about a social post, and linkifies certain URLs in the text
         return this.author;
       },
 
-      _textChanged: function() {
+      _updateContent: function(view, text) {
         if (this.kind == 'tweet') {
-          // Clear out the current children.
-          var el = Polymer.dom(this.$.postContent);
-          while (el.firstChild) {
-            el.removeChild(el.firstChild);
-          }
-          // In order to avoid injecting anything we don't intend to into the page, assume by default
-          // that all text gets added as the textContent of a new <span>.
-          // The one exception is text that matches our regex for Twitter's URL shortener.
-          // Those matches get wrapped in an appropriate <a> element.
-
-          var fragments = this.text.split(this._TWITTER_URL_REGEX);
-          fragments.forEach(function(fragment) {
-            var childElement;
-            if (this._TWITTER_URL_REGEX.test(fragment)) {
-              childElement = document.createElement('a');
-              childElement.target = '_blank';
-              childElement.href = fragment;
-              childElement.textContent = fragment;
-            } else {
-              childElement = document.createElement('span');
-              childElement.textContent = fragment;
+          // Wait 1rAF for dom-ifs to stamp.
+          this.async(function() {
+            // Clear out the current children.
+            var el = Polymer.dom(this.root).querySelector('#postContent')
+            while (el.firstChild) {
+              el.removeChild(el.firstChild);
             }
-            el.appendChild(childElement);
-          }.bind(this));
+            // In order to avoid injecting anything we don't intend to into the page, assume by default
+            // that all text gets added as the textContent of a new <span>.
+            // The one exception is text that matches our regex for Twitter's URL shortener.
+            // Those matches get wrapped in an appropriate <a> element.
+
+            var fragments = this.text.split(this._TWITTER_URL_REGEX);
+            fragments.forEach(function(fragment) {
+              var childElement;
+              if (this._TWITTER_URL_REGEX.test(fragment)) {
+                childElement = document.createElement('a');
+                childElement.target = '_blank';
+                childElement.href = fragment;
+                childElement.textContent = fragment;
+              } else {
+                childElement = document.createElement('span');
+                childElement.textContent = fragment;
+              }
+              el.appendChild(childElement);
+            }.bind(this));
+          });
         }
       },
 
-      // TODO: i18n of these strings.
       _whenChanged: function() {
         // delta is the time difference in minutes.
         var delta = Math.floor((Date.now() - new Date(this.when)) / (60 * 1000));
@@ -172,9 +206,14 @@ Displays information about a social post, and linkifies certain URLs in the text
           this.timeAgo = delta + (delta == 1 ? ' day ago' : ' days ago');
         }
       },
+
       _computeStyle: function(media) {
         return 'width:' + media[0].sizes.smasll.w + 'px;height:' +
                 media[0].sizes.smasll.h + 'px';
+      },
+
+      _viewIs: function(view, needle) {
+        return view === needle;
       }
     });
   })();

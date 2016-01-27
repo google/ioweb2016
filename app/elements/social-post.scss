@@ -17,20 +17,31 @@
 @import '_elements';
 
 a {
-  color: currentColor;
-  font-weight: 500;
+  color: inherit;
   text-decoration: none;
 }
 
-.timestamp a {
-  color: $color-link-grey;
-  font-weight: 400;
+:host([view="card"]) {
+  h3 {
+    font-size: 28px;
+    line-height: 42px;
+  }
+  iron-icon {
+    margin-right: $mobileKeyline / 2;
+  }
+  .timestamp {
+    opacity: 0.5;
+  }
 }
 
 .social-photo {
   max-width: 100%;
   margin-top: $mobileKeyline / 2;
   border-radius: 2px;
+}
+
+.social-card {
+  height: 100%;
 }
 
 @media (min-width: $tablet-breakpoint-min) {
