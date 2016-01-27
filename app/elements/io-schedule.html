@@ -67,6 +67,9 @@ Fired when the user toggles bookmarking/removing a session.
       [layout][center] {
         @apply(--layout-center);
       }
+      .sidebyside > :not(:last-child) {
+        margin-right: 32px;
+      }
     </style>
 
     <iron-media-query query="(min-width:320px) and (max-width:767px)"
