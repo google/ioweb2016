@@ -77,6 +77,26 @@ $name: 'page-home';
   }
 }
 
+#social_list {
+  position: relative;
+
+  social-post {
+    display: flex !important;
+    opacity: 0;
+    transition: opacity 800ms cubic-bezier(0,0,0.2,1);
+    will-change: opacity;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    pointer-events: none;
+  }
+  .iron-selected {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
 @media (max-width: $phone-breakpoint-max) {
   .io__hash {
     display: block;
