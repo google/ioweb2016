@@ -67,30 +67,27 @@ IOWA.Router_ = function(window) {
     if (e.metaKey || e.ctrlKey) {
       return;
     }
-    // Inject page if <a> has the data-ajax-link attribute.
-    for (var i = 0; i < e.path.length; ++i) {
-      var el = e.path[i];
-      if (el.localName === 'a') {
-        // First, record click event if link requests it.
-        if (el.hasAttribute(this.t.app.ANALYTICS_LINK_ATTR)) {
-          IOWA.Analytics.trackEvent(
-              'link', 'click', el.getAttribute(this.t.app.ANALYTICS_LINK_ATTR));
-        }
-        // Ignore links that go offsite.
-        if (el.target) {
-          return;
-        }
-        // Use IOWA.Util.smoothScroll for scroll links.
-        if (el.getAttribute('data-transition') === 'smooth-scroll') {
-          e.preventDefault();
-          return;
-        }
-        if (el.hasAttribute('data-ajax-link')) {
-          e.preventDefault();
-          e.stopPropagation();
-          this.navigate(el.href, e, el);
-        }
-        return; // found first navigation element, quit here.
+
+    var el = IOWA.Util.getEventSender(e, 'a');
+    if (el) {
+      // First, record click event in GA if link requests it.
+      if (el.hasAttribute(this.t.app.ANALYTICS_LINK_ATTR)) {
+        IOWA.Analytics.trackEvent(
+            'link', 'click', el.getAttribute(this.t.app.ANALYTICS_LINK_ATTR));
+      }
+      // Ignore external links.
+      if (el.target) {
+        return;
+      }
+      // Use IOWA.Util.smoothScroll for scroll links.
+      if (el.getAttribute('data-transition') === 'smooth-scroll') {
+        e.preventDefault();
+        return;
+      }
+      if (el.hasAttribute('data-ajax-link')) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.navigate(el.href, e, el);
       }
     }
   };
