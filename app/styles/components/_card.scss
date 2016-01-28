@@ -28,6 +28,14 @@
 
     &.box {
       min-height: 375px;
+
+      &.full {
+        width: 100%;
+      }
+    }
+
+    &.fullbleed {
+      padding: 0;
     }
   }
 
@@ -36,7 +44,7 @@
   }
 
   .card__title {
-    padding-bottom: $tabletKeyline;
+    padding-bottom: $mobileKeyline / 2;
   }
 
   .card__photo {
@@ -67,11 +75,6 @@
   .card {
     .card-content {
       padding: $tabletKeyline $mobileKeyline;
-    }
-
-    h3:not(.card__title) {
-      font-size: 16px;
-      line-height: 24px;
     }
   }
 }

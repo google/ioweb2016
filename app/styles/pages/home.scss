@@ -47,34 +47,25 @@ $name: 'page-home';
 //   }
 // }
 
-.event__meta {
-  @include typo-button();
-  padding: $mobileKeyline 0;
-
-  iron-icon {
-    margin-right: 4px;
-  }
-  .event__meta-location {
-    margin-left: $desktopKeyline;
-    color: $color-indigo-a200;
-  }
-}
-
 .photo__people {
   background-image: url(../images/home/people_card.jpg);
 }
 
 .photo__recap {
-  background-image: url(../images/home/keynote2015@2x.jpg);
+  background-image: url(../images/home/keynote_audience@2x.jpg);
   background-position: 0 50%;
 
   &.card__play-button {
-    background-image: url(../images/play-video-button-grey.png),
-                      url(../images/home/keynote2015@2x.jpg);
+    background-image: url(../images/play-video-button.png),
+                      url(../images/home/keynote_audience@2x.jpg);
     background-position: 50% 50%, 0 50%;
     background-size: 72px, cover;
     cursor: pointer;
   }
+}
+
+.io__hash {
+  background-size: 60%;
 }
 
 #social_list {
@@ -97,21 +88,21 @@ $name: 'page-home';
   }
 }
 
-@media (max-width: $phone-breakpoint-max) {
-  .io__hash {
-    display: block;
-    margin: 0 auto;
-    min-height: 375px;
-  }
-}
+// @media (max-width: $phone-breakpoint-max) {
+//   .io__hash {
+//     display: block;
+//     margin: 0 auto;
+//     min-height: 375px;
+//   }
+// }
 
-@media (min-width: $tablet-breakpoint-min) {
-  .io__hash {
-    margin: $desktopKeyline + 8 0;
-    height: 250px;
-    background-position: 0 0;
-  }
-}
+// @media (min-width: $tablet-breakpoint-min) {
+//   .io__hash {
+//     margin: $desktopKeyline + 8 0;
+//     height: 250px;
+//     background-position: 0 0;
+//   }
+// }
 
 @media (min-width: $tablet-breakpoint-min) and (max-width: $tablet-breakpoint-mid) {
 
