@@ -12,7 +12,8 @@ limitations under the License.
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/google-apis/google-js-api.html">
+<link rel="import" href="../bower_components/google-apis/google-client-loader.html">
+<script src="../bower_components/firebase/firebase.js"></script>
 <!-- <link rel="import" href="../bower_components/google-apis/google-client-api.html"> -->
 <!-- <link rel="import" href="../bower_components/google-apis/google-client-loader.html"> -->
 
@@ -43,12 +44,11 @@ Fired when sign in fails for some reason.
 <dom-module id="google-signin">
   <template>
     <template is="dom-if" if="[[load]]">
-      <google-js-api on-js-api-load="onLoadAuth"></google-js-api>
+      <google-client-loader on-js-api-load="onLoadAuth"></google-client-loader>
     </template>
   </template>
   <script>
     (function () {
-      var AUTH_ENDPOINT = 'api/v1/auth';
 
       Polymer({
         is: 'google-signin',
@@ -97,6 +97,16 @@ Fired when sign in fails for some reason.
             type: Object,
             value: null,
             notify: true
+          },
+
+          /**
+           * The Firebase Database reference for the logged-in user.
+           */
+          // TODO: Probably move this out of this element into an element dedicated to Firebase.
+          firebaseRef: {
+            type: Object,
+            value: null,
+            notify: true
           }
         },
 
@@ -115,7 +125,7 @@ Fired when sign in fails for some reason.
             this.auth2 = gapi.auth2.init({
               client_id: this.clientId,
               scope: this.scopes,
-              fetch_basic_profile: true,
+              fetch_basic_profile: false,
               cookie_policy: this.cookiePolicy
             });
             this.auth2.isSignedIn.listen(this.signinChangedHandler_);
@@ -126,81 +136,63 @@ Fired when sign in fails for some reason.
           if (!this.auth2 || this.auth2.isSignedIn.get()) {
             return;
           }
-          // Sign the user in.
-          // this.auth2.signIn().then(function() {
-          // Sign in user + offline access for server calls.
-          // TODO: check with server if user already has token.
-          this.auth2.grantOfflineAccess({'redirect_uri': 'postmessage'}).then(function(resp) {
-            // We have a one time code, but we're not signed in yet with a current
-            // user and access token. Stash the one time for signinChangedHandler
-            // to post it to the server.
-            this.oneTimeCode = resp.code;
-          }.bind(this), this.onSignInError);
+          // Starts the client side sign-in popup flow.
+          this.auth2.signIn().then(undefined, this.onSignInError);
         },
 
         signOut: function () {
           this.auth2.signOut().then(undefined, this.onSignInError.bind(this));
         },
 
-        signinChangedHandler: function(signedIn) {
-          this.signedIn = signedIn;
-          this.currentUser = this.auth2.currentUser.get();
+        loadUserInfo: function () {
           var token = this.currentUser.getAuthResponse();
-          if (this.signedIn) {
-            var profile = this.currentUser.getBasicProfile();
-            this.user = {
-              id: profile.getId(),
-              name: profile.getName(),
-              picture: profile.getImageUrl() || 'images/schedule/profile_placeholder.png',
-              email: profile.getEmail(),
-              tokenResponse: token
-            };
-            if (this.oneTimeCode) {
-              this.sendCodeToServer(this.oneTimeCode, function() {
-                this.fire('signin-change', {
-                  signedIn: true,
-                  user: this.user
-                });
-              }.bind(this));
-              this.oneTimeCode = null;
-            } else {
-              this.fire('signin-change', {signedIn: true, user: this.user});
-            }
-          } else {
-            this.user = null;
-            this.signedIn = false;
-            this.fire('signin-change', {signedIn: false, user: null});
+          gapi.client.load('plus', 'v1').then(function() {
+            gapi.client.plus.people.get({userId: 'me'}).then(function(e){
+              this.user = {
+                id: this.currentUser.getId(),
+                tokenResponse: token,
+                picture: e.result.image.url || 'images/schedule/profile_placeholder.png'
+              }
+            }.bind(this));
+          }.bind(this));
+        },
+
+        // TODO: Probably move this out of this element into an element dedicated to Firebase.
+        authFirebase: function () {
+          if (typeof Firebase != 'undefined') {
+            var token = this.currentUser.getAuthResponse();
+            // TODO: Sharding. Select the correct Database from a list of shards.
+            this.firebaseRef = new Firebase('https://iowa-2016-dev.firebaseio.com/');
+            this.firebaseRef.authWithOAuthToken('google', token, function (error) {
+              if (error) {
+                console.log('Login to Firebase Failed!', error);
+              } else {
+                console.log('Authenticated successfully to Firebase!');
+              }
+            });
           }
         },
 
-        sendCodeToServer: function (oneTimeCode, opt_callback) {
-          var xhr = new XMLHttpRequest();
-          xhr.open('POST', AUTH_ENDPOINT);
-          var token = this.auth2.currentUser.get().getAuthResponse();
-          xhr.setRequestHeader(
-              'Authorization', 'Bearer ' + (token.id_token || token.access_token));
-          xhr.setRequestHeader('Content-Type', 'application/json');
-          xhr.onload = function (e) {
-            if (e.target.status === 200) {
-              opt_callback && opt_callback();
-            } else {
-              this.signOut();
-              // One-time token could not be saved in backend. Log user out.
-              // handle a special case where the server does not possess an offline token anymore
-              // and so the whole auth flow should be retried again.
-              if (e.target.status === 498) {
-                // we could do this.auth2.disconnect().then(this.signIn.bind(this))
-                // but chrome blocks the popup window. so, just let the user tap
-                // on 'sign in' button again.
-                this.auth2.disconnect();
-              }
-              this.fire('signin-fail', {
-                error: 'Server-side auth failed with ' + e.target.status,
-                oneTimeCodeFail: true
-              });
-            }
-          }.bind(this);
-          xhr.send(JSON.stringify({ code: oneTimeCode }));
+        // TODO: Probably move this out of this element into an element dedicated to Firebase.
+        unAuthFirebase: function () {
+          if (typeof Firebase != 'undefined' && typeof this.firebaseRef != 'undefined') {
+            this.firebaseRef.unauth();
+            this.firebaseRef = undefined;
+          }
+        },
+
+        signinChangedHandler: function(signedIn) {
+          this.signedIn = signedIn;
+          this.currentUser = this.auth2.currentUser.get();
+          if (this.signedIn) {
+            this.authFirebase();
+            this.loadUserInfo();
+        } else {
+            this.user = null;
+            this.signedIn = false;
+            this.fire('signin-change', {signedIn: false, user: null});
+            this.unAuthFirebase();
+          }
         },
 
         onSignInError: function (error) {
