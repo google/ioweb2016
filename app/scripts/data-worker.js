@@ -21,36 +21,33 @@
 
 var schedulePromise = IOWA.Schedule.fetchSchedule();
 
-addEventListener('message', function(e) {
-
+addEventListener('message', e => {
   switch (e.data.cmd) {
     case 'FETCH_SCHEDULE':
-      schedulePromise.then(function(scheduleData) {
+      schedulePromise.then(scheduleData => {
         var tags = IOWA.Schedule.generateFilters(scheduleData.tags);
 
         // Mark the first session in each block.
         var currentBlock;
         var currentBlockForLivestream;
-        for (var i = 0, session; session = scheduleData.sessions[i]; ++i) {
+        for (let session of scheduleData.sessions || []) {
           if (session.block !== currentBlock) {
             session.firstOfBlock = true;
             currentBlock = session.block;
           }
           if (session.block !== currentBlockForLivestream && session.isLivestream) {
-            session.firstOfBlockForLivestream  = true;
+            session.firstOfBlockForLivestream = true;
             currentBlockForLivestream = session.block;
           }
         }
 
-        postMessage({scheduleData: scheduleData, tags: tags});
+        postMessage({scheduleData, tags});
 
         self.close(); // Terminate worker.
       });
-
       break;
 
     default:
       break;
   }
-
 });
