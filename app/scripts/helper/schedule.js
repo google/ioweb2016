@@ -259,7 +259,7 @@ IOWA.Schedule = (function() {
     IOWA.Elements.Toast.showMessage('Removed from My Schedule');
   }
 
-  function generateFilters(tags) {
+  function generateFilters(tags = {}) {
     var filterSessionTypes = [];
     var filterThemes = [];
     var filterTopics = [];

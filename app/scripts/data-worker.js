@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Google Inc. All rights reserved.
+ * Copyright 2016 Google Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,38 +19,35 @@
 // scripts/helper/request.js
 // scripts/helper/schedule.js
 
-var schedulePromise = IOWA.Schedule.fetchSchedule();
+let schedulePromise = IOWA.Schedule.fetchSchedule();
 
-addEventListener('message', function(e) {
-
+addEventListener('message', e => {
   switch (e.data.cmd) {
     case 'FETCH_SCHEDULE':
-      schedulePromise.then(function(scheduleData) {
-        var tags = IOWA.Schedule.generateFilters(scheduleData.tags);
+      schedulePromise.then(scheduleData => {
+        let tags = IOWA.Schedule.generateFilters(scheduleData.tags);
 
         // Mark the first session in each block.
-        var currentBlock;
-        var currentBlockForLivestream;
-        for (var i = 0, session; session = scheduleData.sessions[i]; ++i) {
+        let currentBlock;
+        let currentBlockForLivestream;
+        for (let session of scheduleData.sessions || []) {
           if (session.block !== currentBlock) {
             session.firstOfBlock = true;
             currentBlock = session.block;
           }
           if (session.block !== currentBlockForLivestream && session.isLivestream) {
-            session.firstOfBlockForLivestream  = true;
+            session.firstOfBlockForLivestream = true;
             currentBlockForLivestream = session.block;
           }
         }
 
-        postMessage({scheduleData: scheduleData, tags: tags});
+        postMessage({scheduleData, tags});
 
         self.close(); // Terminate worker.
       });
-
       break;
 
     default:
       break;
   }
-
 });

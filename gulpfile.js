@@ -63,7 +63,7 @@ var dataWorkerScripts = [
   IOWA.appDir + '/bower_components/es6-promise/dist/es6-promise.min.js',
   IOWA.appDir + '/scripts/helper/request.js',
   IOWA.appDir + '/scripts/helper/schedule.js',
-  IOWA.appDir + '/data-worker.js'
+  IOWA.appDir + '/scripts/data-worker.js'
 ];
 
 
@@ -228,7 +228,18 @@ gulp.task('concat-and-uglify-js', ['eslint', 'generate-page-metadata'], function
 
 // Concat and crush scripts for the data-fetching worker for dist.
 gulp.task('generate-data-worker-dist', function() {
+  // Only run our own scripts through babel.
+  var ownScriptsFilter = $.filter(
+    file => new RegExp(`${IOWA.appDir}/scripts/`).test(file.path),
+    {restore: true});
+
   return gulp.src(dataWorkerScripts)
+    .pipe(ownScriptsFilter)
+    .pipe($.babel({
+      presets: ['es2015'],
+      compact: false
+    }))
+    .pipe(ownScriptsFilter.restore)
     .pipe($.concat('data-worker-scripts.js'))
     .pipe($.uglify({preserveComments: 'some'}).on('error', function () {}))
     .pipe(gulp.dest(IOWA.distDir + '/' + IOWA.appDir))
