@@ -33,6 +33,7 @@ footer {
     @include keyline-24();
     padding-top: $tabletKeyline;
     padding-bottom: $tabletKeyline;
+    margin-top: 100px;
 
     nav > span {
       margin-left: $mobileKeyline * 2;

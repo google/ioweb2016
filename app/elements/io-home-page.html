@@ -12,7 +12,7 @@ limitations under the License.
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<!-- <link rel="import" href="../bower_components/iron-icon/iron-icon.html"> -->
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/paper-progress/paper-progress.html">
 <link rel="import" href="../bower_components/google-youtube/google-youtube.html">
@@ -53,18 +53,10 @@ limitations under the License.
   <div class="active">
 
     <div class="card__container slide-up">
-      <div class="event__meta">
-        <span><iron-icon icon="event"></iron-icon> May 18-20</span>
-        <span class="event__meta-location">
-          <a href="https://goo.gl/maps/7hs1NJR3ErG2" target="_blank"
-             data-track-link="nav-shoreline-maps-link">
-            <iron-icon icon="io:place"></iron-icon>Shoreline Amphitheatre</a>
-        </span>
-      </div>
 
       <div class="card" layout horizontal wrap  vertical$="{{app.isPhoneSize}}">
-        <div class="card-content box card--top-left-clip card__photo photo__people"></div>
-        <div class="card-content card--top-right-clip box" layout vertical>
+
+        <!-- <div class="card-content card--top-left-clip box" layout vertical>
           <p>To celebrate our 10th anniversary of developer gatherings, we'll be hosting I/O in our backyard at the Shoreline Amphitheatre in Mountain View, CA.</p>
           <p>Registration opens March 2.</p>
           <a href="https://goo.gl/maps/7hs1NJR3ErG2" target="_blank"
@@ -72,8 +64,34 @@ limitations under the License.
              layout horizontal justified flex end>Map the venue
             <iron-icon icon="io:keyboard-arrow-right"></iron-icon>
           </a>
+        </div> -->
+        <div class="card-content box card--top-left-clip bg-indigo typo-white" layout vertical>
+          <h3 class="card__title">May 18-20</h3>
+          <h3>
+            <a href="https://goo.gl/maps/7hs1NJR3ErG2" target="_blank"
+               data-track-link="nav-shoreline-maps-link">
+               <span>Shoreline Amphitheatre<br>Mountain View, CA</span>
+            </a>
+          </h3>
+          <div layout flex end>
+            <div>
+              <h4 class="typo-black">Registration opens March 2.</h4>
+              <h4>Google I/O is for developers - the creative coders who are building what's next. Each year, we explore the latest in tech, mobile &amp; beyond.</h4>
+            </div>
+          </div>
         </div>
-        <div class="card-content box card--bottom-left-clip bg-indigo typo-white">
+        <div class="card-content box card--top-right-clip card__photo photo__people"></div>
+
+        <div class="card-content box full fullbleed typo-white">
+          <div class="card-content card__play-button card__photo photo__recap"
+               style="height:100%">
+            <h4>Watch the I/O 2015 recap</h4>
+          </div>
+        </div>
+
+        <div class="card-content box card--bottom-left-clip io__hash"
+             aria-label="I/O hash tag"></div>
+        <div class="card-content box card--bottom-right-clip bg-cyan">
 
           <social-poller url="[[resolveUrl('../api/v1/social')]]" posts="{{socialPosts}}"
                          interval="30000"></social-poller>
@@ -92,15 +110,12 @@ limitations under the License.
           </iron-pages>
 
         </div>
-        <div class="card-content box card--bottom-right-clip card__play-button card__photo photo__recap">
-          <h4 class="typo-white">Watch the I/O 2015 recap</h4>
-        </div>
       </div>
     </div>
 
-    <div class="card__container slide-up-delay">
+    <!-- <div class="card__container slide-up-delay">
       <div class="io__hash" aria-label="I/O hash tag"></div>
-    </div>
+    </div> -->
 
   </div>
 
