@@ -1,7 +1,6 @@
 /* jshint node: true */
 
 /**
- *
  * Copyright 2016 Google Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -117,7 +116,6 @@ gulp.task('clear', 'Clears files cached by gulp-cache (e.g. anything using $.cac
   return $.cache.clearAll(done);
 });
 
-// TODO(ericbidelman): also remove generated .css files.
 gulp.task('clean', 'Remove built app', ['clear'], function() {
   return del([
     IOWA.distDir,
@@ -136,7 +134,7 @@ gulp.task('vulcanize', 'Vulcanize all polymer elements', [
   // 'vulcanize-gadget-elements'
 ]);
 
-gulp.task('copy-assets', 'Copy needed assets (images, polymer elements, etc) to /dist directory', function() {
+gulp.task('copy-assets', false, function() {
   var templates = [
     IOWA.appDir + '/templates/**/*.html',
     IOWA.appDir + '/templates/**/*.json'
