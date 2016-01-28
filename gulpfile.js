@@ -23,7 +23,7 @@ var fs = require('fs');
 var path = require('path');
 var spawn = require('child_process').spawn;
 
-var gulp = require('gulp');
+var gulp = require('gulp-help')(require('gulp'));
 var $ = require('gulp-load-plugins')();
 var runSequence = require('run-sequence');
 var browserSync = require('browser-sync').create();
@@ -90,36 +90,35 @@ gulp.task('default', ['clean'], function(done) {
 // -----------------------------------------------------------------------------
 // Setup tasks
 
-// Set up local dev environment.
-gulp.task('setup', function(cb) {
+gulp.task('setup', 'Sets up local dev environment', function(cb) {
   runSequence(['bower', 'godeps', 'addgithooks'], cb);
 });
 
 // Install/update bower components.
-gulp.task('bower', function(cb) {
-  var proc = spawn('../node_modules/bower/bin/bower', ['install'], {cwd: IOWA.appDir, stdio: 'inherit'});
+gulp.task('bower', false, function(cb) {
+  var proc = spawn('../node_modules/bower/bin/bower', ['install'],
+                   {cwd: IOWA.appDir, stdio: 'inherit'});
   proc.on('close', cb);
 });
 
 // Install backend dependencies.
-gulp.task('godeps', function(done) {
+gulp.task('godeps', false, function(done) {
   backend.installDeps(done);
 });
 
 // Setup git hooks.
-gulp.task('addgithooks', function() {
+gulp.task('addgithooks', false, function() {
   return gulp.src('util/pre-commit')
     .pipe($.chmod(755))
     .pipe(gulp.dest('.git/hooks'));
 });
 
-// Clears files cached by gulp-cache (e.g. anything using $.cache).
-gulp.task('clear', function (done) {
+gulp.task('clear', 'Clears files cached by gulp-cache (e.g. anything using $.cache)', function(done) {
   return $.cache.clearAll(done);
 });
 
 // TODO(ericbidelman): also remove generated .css files.
-gulp.task('clean', ['clear'], function() {
+gulp.task('clean', 'Remove built app', ['clear'], function() {
   return del([
     IOWA.distDir,
     IOWA.appDir + '/data-worker-scripts.js',
@@ -131,14 +130,13 @@ gulp.task('clean', ['clear'], function() {
 // -----------------------------------------------------------------------------
 // Frontend prod build tasks
 
-gulp.task('vulcanize', [
+gulp.task('vulcanize', 'Vulcanize all polymer elements', [
   'vulcanize-elements',
   // 'vulcanize-extended-elements',
   // 'vulcanize-gadget-elements'
 ]);
 
-// copy needed assets (images, polymer elements, etc) to /dist directory
-gulp.task('copy-assets', function() {
+gulp.task('copy-assets', 'Copy needed assets (images, polymer elements, etc) to /dist directory', function() {
   var templates = [
     IOWA.appDir + '/templates/**/*.html',
     IOWA.appDir + '/templates/**/*.json'
@@ -168,8 +166,7 @@ gulp.task('copy-assets', function() {
     .pipe($.size({title: 'copy-assets'}));
 });
 
-// Crush JS
-gulp.task('concat-and-uglify-js', ['eslint', 'generate-page-metadata'], function() {
+gulp.task('concat-and-uglify-js', 'Crush JS', ['eslint', 'generate-page-metadata'], function() {
   // The ordering of the scripts in the gulp.src() array matter!
   // This order needs to match the order in templates/layout_full.html
   var siteScripts = [
@@ -226,8 +223,7 @@ gulp.task('concat-and-uglify-js', ['eslint', 'generate-page-metadata'], function
     .pipe($.size({title: 'concat-and-uglify-js'}));
 });
 
-// Concat and crush scripts for the data-fetching worker for dist.
-gulp.task('generate-data-worker-dist', function() {
+gulp.task('generate-data-worker-dist', 'Generate data-worker.js for /dist.', function() {
   // Only run our own scripts through babel.
   var ownScriptsFilter = $.filter(
     file => new RegExp(`${IOWA.appDir}/scripts/`).test(file.path),
@@ -246,8 +242,7 @@ gulp.task('generate-data-worker-dist', function() {
     .pipe($.size({title: 'data-worker-dist'}));
 });
 
-// Generate prod service worker.
-gulp.task('generate-service-worker-dist', function(callback) {
+gulp.task('generate-service-worker-dist', 'Generate prod service worker', function(callback) {
   var distDir = path.join(IOWA.distDir, IOWA.appDir);
   del.sync([distDir + '/service-worker.js']);
   var importScripts = ['scripts/sw-toolbox-scripts.js'];
@@ -265,8 +260,7 @@ gulp.task('generate-service-worker-dist', function(callback) {
   });
 });
 
-// Compile SASS files.
-gulp.task('sass', function() {
+gulp.task('sass', 'Compile SASS files', function() {
   var sassOpts = {
     outputStyle: 'compressed'
   };
@@ -279,8 +273,7 @@ gulp.task('sass', function() {
     .pipe($.size({title: 'styles'}));
 });
 
-// Optimize Images
-gulp.task('images', function() {
+gulp.task('images', 'Optimize image assets', function() {
   return gulp.src([
       IOWA.appDir + '/images/**/*'
     ])
@@ -293,7 +286,7 @@ gulp.task('images', function() {
 });
 
 // vulcanize main site elements separately.
-gulp.task('vulcanize-elements', ['sass'], function() {
+gulp.task('vulcanize-elements', false, ['sass'], function() {
   return gulp.src([
       IOWA.appDir + '/elements/elements.html'
     ])
@@ -308,7 +301,7 @@ gulp.task('vulcanize-elements', ['sass'], function() {
 });
 
 // vulcanize embed gadget.
-gulp.task('vulcanize-gadget-elements', ['sass'], function() {
+gulp.task('vulcanize-gadget-elements', false, ['sass'], function() {
   return gulp.src([
       IOWA.appDir + '/elements/embed-elements.html'
     ])
@@ -323,7 +316,7 @@ gulp.task('vulcanize-gadget-elements', ['sass'], function() {
 });
 
 // vulcanize extended form elements separately.
-gulp.task('vulcanize-extended-elements', ['sass'], function() {
+gulp.task('vulcanize-extended-elements', false, ['sass'], function() {
   return gulp.src([
       IOWA.appDir + '/elements/io-extended-form.html'
     ])
@@ -347,34 +340,26 @@ gulp.task('vulcanize-extended-elements', ['sass'], function() {
 // -----------------------------------------------------------------------------
 // Frontend dev tasks
 
-
-// Lint JavaScript
-gulp.task('eslint', function() {
+gulp.task('eslint', 'Lint main site JS', function() {
   return gulp.src([IOWA.appDir + '/scripts/**/*.js'])
     .pipe($.eslint())
     .pipe($.eslint.format())
     .pipe($.eslint.failAfterError());
 });
 
-
-// Concat scripts for the data-fetching worker.
-gulp.task('generate-data-worker-dev', function() {
+gulp.task('generate-data-worker-dev', 'Generate data-worker.js for dev', function() {
   return gulp.src(dataWorkerScripts)
     .pipe($.concat('data-worker-scripts.js'))
     .pipe(gulp.dest(IOWA.appDir))
     .pipe($.size({title: 'data-worker-dev'}));
 });
 
-// Generate serve-worker.js for local dev env.
-gulp.task('generate-service-worker-dev', ['sass'], function(callback) {
+gulp.task('generate-service-worker-dev', 'Generate service worker for dev', ['sass'], function(callback) {
   del.sync([IOWA.appDir + '/service-worker.js']);
   var importScripts = glob.sync('scripts/sw-toolbox/*.js', {cwd: IOWA.appDir});
   importScripts.unshift('scripts/helper/simple-db.js');
   importScripts.unshift('bower_components/sw-toolbox/sw-toolbox.js');
 
-  // Run with --fetch-dev to generate a service-worker.js that will handle fetch events.
-  // By default, the generated service-worker.js will precache resources, but not actually serve
-  // them. This is preferable for dev, since things like live reload will work as expected.
   generateServiceWorker(IOWA.appDir, !!argv['fetch-dev'], importScripts, function(error, serviceWorkerFileContents) {
     if (error) {
       return callback(error);
@@ -386,10 +371,14 @@ gulp.task('generate-service-worker-dev', ['sass'], function(callback) {
       callback();
     });
   });
+}, {
+  options: {
+    'fetch-dev': 'generates the SW to handle fetch events. Without this flag, resources will be precached but not actually served. This is preferable for dev and to make live reload work as expected)',
+  }
 });
 
-// generate pages.js out of templates.
-gulp.task('generate-page-metadata', function(done) {
+// Generate pages.js from templates
+gulp.task('generate-page-metadata', false, function(done) {
   var pagesjs = fs.openSync(IOWA.appDir + '/scripts/pages.js', 'w');
   var proc = spawn('go', ['run', 'util/gen-pages.go'], {stdio: ['ignore', pagesjs, process.stderr]});
   proc.on('exit', done);
@@ -399,72 +388,88 @@ gulp.task('generate-page-metadata', function(done) {
 // -----------------------------------------------------------------------------
 // Backend stuff
 
-// Run backend tests.
-// To watch for changes and run tests in an infinite loop, add '--watch' arg.
-// To test GAE version, add '--gae' arg.
-// To run specific tests provide '--test TestMethodPattern'.
-gulp.task('backend:test', ['backend:config'], function(done) {
+gulp.task('backend:test', 'Run backend tests', ['backend:config'], function(done) {
   var opts = {gae: argv.gae, watch: argv.watch, test: argv.test};
   backend.test(opts, done);
+}, {
+  options: {
+    'watch': 'watch for changes and run tests in an infinite loop',
+    'gae': 'test GAE version',
+    'test TestMethodPattern': 'run specific tests provide'
+  }
 });
 
-// Build self-sufficient backend server binary w/o GAE support.
-gulp.task('backend:build', backend.build);
+gulp.task('backend:build', 'Build self-sufficient backend server binary w/o GAE support', backend.build);
 
-// Copy backend files to dist.
-gulp.task('backend:dist', function(done) {
+gulp.task('backend:dist', 'Copy backend files to dist', function(done) {
   backend.copy(argv.env || 'prod', done);
+}, {
+  options: {
+    'env': "App environment: 'dev', 'stage' or 'prod'. Defaults to 'prod'."
+  }
 });
 
-// Create server config with defaults.
-gulp.task('backend:config', function() {
+gulp.task('backend:config', 'Generates server.config', function() {
   backend.generateServerConfig(IOWA.backendDir, argv.env || 'dev');
+}, {
+  options: {
+    'env': "App environment: 'dev', 'stage' or 'prod'. Defaults to 'dev'."
+  }
 });
 
-// Create GAE config files.
-gulp.task('backend:gaeconfig', function(done) {
+gulp.task('backend:gaeconfig', 'Generates GAE config files like app.yaml', function(done) {
   backend.generateGAEConfig(IOWA.backendDir, done);
 });
 
-// decrypt backend/server.config.enc into backend/server.config.
-// use --pass cmd line arg to provide a pass phrase.
-gulp.task('decrypt', function(done) {
+gulp.task('decrypt', 'Decrypt backend/server.config.enc into backend/server.config', function(done) {
   backend.decrypt(argv.pass, done);
+}, {
+  options: {
+    'pass': 'Provide a pass phrase'
+  }
 });
 
-// encrypt backend/server.config into backend/server.config.enc.
-// use --pass cmd line arg to provide a pass phrase.
-gulp.task('encrypt', function(done) {
+gulp.task('encrypt', 'Encrypt backend/server.config into backend/server.config.enc.', function(done) {
   backend.encrypt(argv.pass, done);
+}, {
+  options: {
+    'pass': 'Provide a pass phrase'
+  }
 });
 
 // Start a standalone server (no GAE SDK needed) serving both front-end and backend,
 // watch for file changes and live-reload when needed.
 // If you don't want file watchers and live-reload, use '--no-watch' option.
 // App environment is 'dev' by default. Change with '--env=prod'.
-gulp.task('serve', ['backend:build', 'backend:config', 'sass', 'generate-page-metadata', 'generate-data-worker-dev', 'generate-service-worker-dev'], function(done) {
+gulp.task('serve', 'Starts a standalone server with live-reload', ['backend:build', 'backend:config', 'sass', 'generate-page-metadata', 'generate-data-worker-dev', 'generate-service-worker-dev'], function(done) {
   var opts = {dir: IOWA.backendDir, watch: argv.watch !== false, reload: argv.reload};
   var url = backend.serve(opts, done);
   openUrl(url);
   if (argv.watch) {
     watch();
   }
+}, {
+  options: {
+    'no-watch': 'Starts the server w/o file watchers and live-reload',
+    'env': "App environment: 'dev', 'stage' or 'prod'. Defaults to 'dev'."
+  }
 });
 
-// The same as 'serve' task but using GAE dev appserver.
-// If you don't want file watchers and live-reload, use '--no-watch' option.
-gulp.task('serve:gae', ['backend:config', 'backend:gaeconfig', 'sass', 'generate-page-metadata', 'generate-data-worker-dev', 'generate-service-worker-dev'], function(done) {
+gulp.task('serve:gae', "Same as the 'serve' task but uses GAE dev appserver", ['backend:config', 'backend:gaeconfig', 'sass', 'generate-page-metadata', 'generate-data-worker-dev', 'generate-service-worker-dev'], function(done) {
   var url = backend.serveGAE({dir: IOWA.backendDir, reload: argv.reload}, done);
   // give GAE server some time to start
   setTimeout(openUrl.bind(null, url, null, null), 1000);
   if (argv.watch !== false) {
     watch();
   }
+}, {
+  options: {
+    'no-watch': 'Starts the server w/o file watchers and live-reload',
+    'env': "App environment: 'dev', 'stage' or 'prod'. Defaults to 'dev'."
+  }
 });
 
-// Serve build with GAE dev appserver. This is how it would look in production.
-// There are no file watchers.
-gulp.task('serve:dist', ['default'], function(done) {
+gulp.task('serve:dist', 'Serves built app with GAE dev appserver (no file watchers, like production)', ['default'], function(done) {
   var backendDir = path.join(IOWA.distDir, IOWA.backendDir);
   var url = backend.serveGAE({dir: backendDir}, done);
   // give GAE server some time to start
@@ -495,7 +500,7 @@ function watch() {
 // The task performs a `git stash` prior to the checkout and then a `git stash pop` after the
 // completion, but on the off chance the task ends unexpectedly, you can manually switch back to
 // your current branch and run `git stash pop` to restore.
-gulp.task('screenshots', ['backend:build'], function(callback) {
+gulp.task('screenshots', 'Screenshot diffing', ['backend:build'], function(callback) {
   var seleniumScreenshots = require('./gulp_scripts/screenshots');
   // We don't want the service worker to served cached content when taking screenshots.
   del.sync([IOWA.appDir + '/service-worker.js']);
@@ -519,10 +524,16 @@ gulp.task('screenshots', ['backend:build'], function(callback) {
   var height = argv.height || 9999;
   seleniumScreenshots(branchOrCommit, IOWA.appDir, 'http://localhost:9999' + IOWA.urlPrefix + '/',
     pages, widths, height, callbackWrapper);
+}, {
+  options: {
+    'compareTo=branchOrCommit': '',
+    'pages=page1,page2,...': '',
+    'widths=width1,width2,...': '',
+    'height=height': ''
+  }
 });
 
-// Generate sitemap.xml. Not currently used as we're generating one dynamically on the backend.
-gulp.task('sitemap', function() {
+gulp.task('sitemap', "Generate sitemap.xml. Not currently used as we're generating one dynamically on the backend.", function() {
   gulp.src(IOWA.appDir + '/templates/!(layout_|error).html', {read: false})
     .pipe($.rename(function(path) {
       if (path.basename === 'home') {
@@ -542,9 +553,7 @@ gulp.task('sitemap', function() {
     .pipe(gulp.dest(IOWA.appDir));
 });
 
-// Run PageSpeed Insights
-// Update `url` below to the public URL for your site
-gulp.task('pagespeed', pagespeed.bind(null, {
+gulp.task('pagespeed', `Run PageSpeed Insights against ${IOWA.originProd + IOWA.urlPrefix}`, pagespeed.bind(null, {
   // By default, we use the PageSpeed Insights
   // free (no API key) tier. You can use a Google
   // Developer API key if you have one. See
