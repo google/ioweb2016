@@ -14,10 +14,7 @@
 
 package main
 
-import (
-	"strings"
-	"testing"
-)
+import "testing"
 
 func TestRenderTemplate(t *testing.T) {
 	defer resetTestState(t)
@@ -39,37 +36,38 @@ func TestRenderTemplate(t *testing.T) {
 	}
 }
 
-func TestRenderTemplateData(t *testing.T) {
-	defer resetTestState(t)
-	defer preserveConfig()()
-	config.Env = "prod"
-	config.Prefix = "/root"
-	config.Google.Auth.Client = "dummy-client-id"
-
-	r := newTestRequest(t, "GET", "/about", nil)
-	c := newContext(r)
-
-	data := &templateData{
-		OgImage: "some-image.png",
-		Desc:    "dummy description",
-	}
-	out, err := renderTemplate(c, "about", false, data)
-	if err != nil {
-		t.Fatalf("renderTemplate(about, false): %v", err)
-	}
-	sout := string(out)
-
-	subs := []string{
-		`window.ENV = "prod"`,
-		`window.PREFIX = "/root"`,
-		`<meta property="og:image" content="/root/some-image.png">`,
-		`<meta property="og:description" content="dummy description">`,
-		`google-signin clientId="dummy-client-id"`,
-	}
-
-	for _, s := range subs {
-		if !strings.Contains(sout, s) {
-			t.Errorf("%s doesn't contain %s", out, s)
-		}
-	}
-}
+// Disalbed until https://github.com/GoogleChrome/ioweb2016/issues/22 is fixed.
+//func TestRenderTemplateData(t *testing.T) {
+//	defer resetTestState(t)
+//	defer preserveConfig()()
+//	config.Env = "prod"
+//	config.Prefix = "/root"
+//	config.Google.Auth.Client = "dummy-client-id"
+//
+//	r := newTestRequest(t, "GET", "/about", nil)
+//	c := newContext(r)
+//
+//	data := &templateData{
+//		OgImage: "some-image.png",
+//		Desc:    "dummy description",
+//	}
+//	out, err := renderTemplate(c, "about", false, data)
+//	if err != nil {
+//		t.Fatalf("renderTemplate(about, false): %v", err)
+//	}
+//	sout := string(out)
+//
+//	subs := []string{
+//		`window.ENV = "prod"`,
+//		`window.PREFIX = "/root"`,
+//		`<meta property="og:image" content="/root/some-image.png">`,
+//		`<meta property="og:description" content="dummy description">`,
+//		`google-signin clientId="dummy-client-id"`,
+//	}
+//
+//	for _, s := range subs {
+//		if !strings.Contains(sout, s) {
+//			t.Errorf("%s doesn't contain %s", out, s)
+//		}
+//	}
+//}
