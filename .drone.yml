@@ -1,25 +1,36 @@
-image: crhym3/ci
-git:
+# Note: if you modify this file, don't forget to update
+# checksum in .drone.sec with:
+# drone secure --repo GoogleChrome/ioweb2016 --checksum
+clone:
   depth: 1
-script:
-  # workaround for cache, see https://github.com/drone/drone/issues/147
-  - mkdir -p /cache/npm /cache/bower /cache/node_modules
-  - npm config set cache /cache/npm
-  - rm -rf app/bower_components && ln -s /cache/bower app/bower_components
-  - rm -rf node_modules experiment/node_modules
-  - ln -s /cache/node_modules node_modules
-  - ln -s /cache/node_modules experiment/node_modules
-  # install dependencies
-  - npm -q install
-  - cd app && ../node_modules/bower/bin/bower install -q --allow-root && cd ..
-  - gulp godeps
-  # ensure the build works
-  - gulp
-  # backend testing
-  - gulp backend:test
-  - gulp backend:test --gae
-  # deploy to appspot if this is master branch
-  - util/auto-deploy
 cache:
-  - /cache
-
+  mount:
+    - node_modules
+    - app/bower_components
+build:
+  image: gcr.io/io-webapp-staging/ci-node4-go15
+  commands:
+    # install frontend dependencies
+    - npm -qq update --no-optional
+    - cd app && ../node_modules/bower/bin/bower install -q --allow-root && cd ..
+    # lint & build
+    - gulp eslint
+    - gulp --env stage # suitable for auto-deployment on staging
+    # backend testing
+    - gulp godeps
+    - gulp backend:test
+    - gulp backend:test --gae
+    # store ci state in case we're deploying
+    - "util/dump-ci-state > .state"
+deploy:
+  bash:
+    image: crhym3/drone-plugin-bash-node
+    when:
+      repo: GoogleChrome/ioweb2016
+    env:
+      - SERVICE_PASSPHRASE=$$SERVICE_PASSPHRASE
+      - CFG_PASSPHRASE=$$CFG_PASSPHRASE
+    script:
+      - cat .state
+      - . .state
+      - util/auto-deploy

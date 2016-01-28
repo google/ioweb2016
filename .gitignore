@@ -24,7 +24,8 @@ backend/*.config.*
 !backend/server.config.template
 *.pem
 *.p12
-util/drone-*.json
+util/drone*.json
+.drone.sec.yml
 
 # Other generated/common stuff.
 .tmp
