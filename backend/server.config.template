@@ -40,7 +40,7 @@
   },
   "twitter": {
     "account": "googledevs",
-    "filter": "#io15",
+    "filter": "#io16",
     "key": "an-app-key",
     "secret": "very-secret",
     "tokenUrl": "https://api.twitter.com/oauth2/token",
