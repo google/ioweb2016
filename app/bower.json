@@ -70,7 +70,8 @@
     "moment-timezone": "~0.5.0",
     "sw-toolbox": "^3.1.1",
     "firebase-element": "GoogleWebComponents/firebase-element#^1.0.11",
-    "firebase": "^2.4.0"
+    "firebase": "^2.4.0",
+    "js-crc": "^0.1.0"
   },
   "resolutions": {
     "web-animations-js": "^2.1.4"
