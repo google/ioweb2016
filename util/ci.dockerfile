@@ -1,56 +1,60 @@
-FROM buildpack-deps
+# Copyright 2016 Google Inc. All Rights Reserved.
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
 
-RUN apt-get update -qq && apt-get install -qqy locales
-RUN localedef -i en_US -f UTF-8 en_US.UTF-8
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
+# Docker environment for the webapp used in CI.
+# For CI to pick it up, use the following build command:
+#     docker build --rm -t gcr.io/io-webapp-staging/ci-node4-go15 -f ci.dockerfile .
 
-RUN apt-get install -y \
-	ca-certificates curl python-pip gcc libc6-dev make \
-	bzr git mercurial \
-	--no-install-recommends
-RUN pip install docker-py
+FROM node:4
 
+# gcc for cgo in case we need it
+# docker-py seems to be needed by gcloud
+RUN apt-get update && apt-get install -y --no-install-recommends \
+		g++ gcc libc6-dev make \
+		ca-certificates curl unzip python-pip \
+		bzr git mercurial \
+	&& rm -rf /var/lib/apt/lists/* \
+	&& pip install docker-py \
+	&& npm update -qq -g npm \
+	&& npm install -qq -g gulp bower
+
+# Go language
+ENV GOLANG_VERSION 1.5.3
+ENV GOLANG_DOWNLOAD_URL https://golang.org/dl/go$GOLANG_VERSION.linux-amd64.tar.gz
+ENV GOLANG_DOWNLOAD_SHA256 43afe0c5017e502630b1aea4d44b8a7f059bf60d7f29dfd58db454d4e4e0ae53
+RUN curl -fsSL "$GOLANG_DOWNLOAD_URL" -o golang.tar.gz \
+	&& echo "$GOLANG_DOWNLOAD_SHA256  golang.tar.gz" | sha256sum -c - \
+	&& tar -C /usr/local -xzf golang.tar.gz \
+	&& rm golang.tar.gz
+
+# Google Cloud Platform gcloud tool
 ENV CLOUDSDK_CORE_DISABLE_PROMPTS=1
 ENV CLOUDSDK_PYTHON_SITEPACKAGES=1
 ADD https://dl.google.com/dl/cloudsdk/release/google-cloud-sdk.tar.gz /gcloud.tar.gz
-RUN mkdir /gcloud && \
-  tar -xzf /gcloud.tar.gz --strip 1 -C /gcloud && \
-  /gcloud/install.sh && \
-  /gcloud/bin/gcloud components update app -q && \
-  rm -f /gcloud.tar.gz
-ENV PATH=/gcloud/bin:$PATH
+RUN mkdir /gcloud \
+  && tar -xzf /gcloud.tar.gz --strip 1 -C /gcloud \
+  && /gcloud/install.sh -q --path-update=false --command-completion=false \
+  && rm -f /gcloud.tar.gz
 
-ENV NODE_VERSION 0.10.38
-ENV NPM_VERSION 2.7.3
-# verify gpg and sha256: http://nodejs.org/dist/v0.10.31/SHASUMS256.txt.asc
-# gpg: aka "Timothy J Fontaine (Work) <tj.fontaine@joyent.com>"
-# gpg: aka "Julien Gilli <jgilli@fastmail.fm>"
-RUN gpg --keyserver pool.sks-keyservers.net --recv-keys 7937DFD2AB06298B2293C3187D33FF9D0246406D 114F43EE0176B71C7BC219DD50A3051F888C628D
+# Standalone App Engine SDK for Go
+RUN curl -sSLo /sdk.zip https://storage.googleapis.com/appengine-sdks/featured/go_appengine_sdk_linux_amd64-1.9.31.zip \
+	&& unzip -q /sdk.zip \
+	&& rm /sdk.zip
 
-RUN curl -SLO "http://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.gz" \
-	&& curl -SLO "http://nodejs.org/dist/v$NODE_VERSION/SHASUMS256.txt.asc" \
-	&& gpg --verify SHASUMS256.txt.asc \
-	&& grep " node-v$NODE_VERSION-linux-x64.tar.gz\$" SHASUMS256.txt.asc | sha256sum -c - \
-	&& tar -xzf "node-v$NODE_VERSION-linux-x64.tar.gz" -C /usr/local --strip-components=1 \
-	&& rm "node-v$NODE_VERSION-linux-x64.tar.gz" SHASUMS256.txt.asc \
-	&& npm install -g npm@"$NPM_VERSION" \
-	&& npm cache clear
-
-RUN npm install -g gulp bower
-
-ENV GOLANG_VERSION 1.4.2
-
-RUN curl -sSL https://golang.org/dl/go$GOLANG_VERSION.src.tar.gz \
-		| tar -C /usr/src -xz
-
-RUN cd /usr/src/go/src && ./make.bash --no-clean > /dev/null
-
-ENV PATH /usr/src/go/bin:$PATH
-
-RUN mkdir -p /go/src
+# Run environment
 ENV GOPATH /go
-ENV PATH /go/bin:$PATH
+ENV PATH $GOPATH/bin:/usr/local/go/bin:/go_appengine:/gcloud/bin:$PATH
+RUN mkdir -p $GOPATH
 WORKDIR /go
-
+CMD ["/bin/bash"]

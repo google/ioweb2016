@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright 2015 Google Inc. All Rights Reserved.
+# Copyright 2016 Google Inc. All Rights Reserved.
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -19,39 +19,35 @@ set -e
 
 PROJECT_ID=io-webapp-staging
 BRANCH_REGEX="^(master|phase[1-9])$"
+DIR=$(dirname $0)
 
-BRANCH=$(git rev-parse --abbrev-ref HEAD)
-if [ "$BRANCH" == "HEAD" ]; then
-  BRANCH=$CI_BRANCH  # set by drone
+if [ -n "$CI_PULL_REQUEST" ]; then
+  echo "Won't deploy on pull requests."
+  exit 0
 fi
-
-echo "Current branch is: $BRANCH"
-if [[ ! "$BRANCH" =~ $BRANCH_REGEX ]]; then
-  echo "Skip deploy."
+if [[ ! "$CI_BRANCH" =~ $BRANCH_REGEX ]]; then
+  echo "$CI_BRANCH branch doesn't match $BRANCH_REGEX. Skip deploy."
   exit 0;
 fi
 
-CWD=$(dirname $0)
-source $CWD/gcloud-install
-# install gcloud if missing and set GCLOUD_BIN
-install_or_update_gcloud
-
 # decrypt service account key used to deploy the app
+# and activate gcloud to use it
 openssl aes-256-cbc -d \
-  -in $SRV_ACCT_PRIVATE_KEY.enc -out $SRV_ACCT_PRIVATE_KEY \
-  -k $SRV_ACCT_PASSPHRASE
-# configure gcloud to use a service account
-$GCLOUD_BIN auth activate-service-account $SRV_ACCOUNT \
-  --key-file $SRV_ACCT_PRIVATE_KEY
+  -in $(dirname $0)/drone.json.enc \
+  -out drone.json \
+  -k $SERVICE_PASSPHRASE
+gcloud auth activate-service-account --key-file drone.json
+ACCESS_TOKEN=$(gcloud auth print-access-token)
 
-# decrypt prod server config
+# TODO: remove this and vendor packages instead using GO15VENDOREXPERIMENT.
+gulp godeps
+# decrypt server configs
 gulp decrypt --pass $CFG_PASSPHRASE
-# build prod version to deploy, with "stage" app env
-gulp --env stage
 # make sure we have the right config file
 cp backend/server.config.stage dist/backend/server.config
-# deploy the app to a version the original git push was made to
-$GCLOUD_BIN preview app deploy dist/backend \
-  --project $PROJECT_ID \
-  --version $BRANCH
-
+# deploy the app as a version the original git push was made to
+appcfg.py update dist/backend \
+  --skip_sdk_update_check \
+  --oauth2_access_token="$ACCESS_TOKEN" \
+  -A $PROJECT_ID \
+  -V $CI_BRANCH
