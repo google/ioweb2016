@@ -12,10 +12,13 @@ limitations under the License.
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<!-- <link rel="import" href="../bower_components/iron-icon/iron-icon.html"> -->
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/paper-progress/paper-progress.html">
 <link rel="import" href="../bower_components/google-youtube/google-youtube.html">
+
+<link rel="import" href="../bower_components/neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="../bower_components/neon-animation/animations/fade-out-animation.html">
 
 <link rel="import" href="social-poller.html">
 <link rel="import" href="social-post.html">
@@ -50,6 +53,33 @@ limitations under the License.
     </div>
   </div>
 
+  <!-- <paper-toolbar class="navbar__overlay navbar__overlay--video"
+                 aria-hidden$="{{!app.fullscreenVideoActive}}" fit>
+    <paper-icon-button icon="arrow-back"
+        on-tap="closeVideoCard"
+        aria-label="Close video"
+        tabindex$="[[_enableTabIndex(app.fullscreenVideoActive)]]"></paper-icon-button>
+    <span flex>Watch the I/O 2015 Recap</span>
+  </paper-toolbar> -->
+
+  <!-- backdrop shouldn't be applied on ios - github.com/Polymer/paper-dialog/issues/16 -->
+  <paper-dialog class="video_overlay-dialog"
+                entry-animation="scale-up-animation"
+                exit-animation="fade-out-animation"
+                with-backdrop="[[!app.isIOS]]"
+                on-iron-overlay-closed="closeDialogVideo"
+                auto-fit-on-attach>
+    <paper-icon-button icon="arrow-back" dialog-dismiss
+                       aria-label="Close dialog"></paper-icon-button>
+    <template is="dom-if" if="[[app.fullscreenVideoActive]]" restamp>
+      <div class="fullvideo__container" fit>
+        <google-youtube video-id="OT8wVt1Bt_Y" fit width="100%" height="100%"
+            autohide="1" controls="2" modestbranding="1" showinfo="0"
+            iv_load_policy="3" rel="0" autoplay="1"></google-youtube>
+      </div>
+    </template>
+  </paper-dialog>
+
   <div class="active">
 
     <div class="card__container slide-up">
@@ -82,9 +112,12 @@ limitations under the License.
         </div>
         <div class="card-content box card--top-right-clip card__photo photo__people"></div>
 
-        <div class="card-content box full fullbleed typo-white">
+        <div class="card-content box card__video box-full fullbleed typo-white" layout vertical>
           <div class="card-content card__play-button card__photo photo__recap"
-               style="height:100%">
+               style="height:100%"
+               on-tap="openDialogVideo"
+               data-track-link="home-watch-recap-video"
+               flex>
             <h4>Watch the I/O 2015 recap</h4>
           </div>
         </div>
@@ -113,29 +146,7 @@ limitations under the License.
       </div>
     </div>
 
-    <!-- <div class="card__container slide-up-delay">
-      <div class="io__hash" aria-label="I/O hash tag"></div>
-    </div> -->
-
   </div>
-
-  <!-- <paper-toolbar class="navbar__overlay navbar__overlay--video"
-                 aria-hidden$="{{!app.fullscreenVideoActive}}" fit>
-    <paper-icon-button icon="arrow-back"
-        on-tap="closeVideoCard"
-        aria-label="Close video"
-        tabindex="[[_enableTabIndex(app.fullscreenVideoActive)]]"></paper-icon-button>
-    <span flex>Watch the 2014 I/O Recap Video</span>
-  </paper-toolbar> -->
-
-  <!-- <template is="dom-if" if="{{app.fullscreenVideoActive}}" restamp>
-    <div class="fullvideo__container" fit hidden>
-      <img src$="[[resolveUrl('./images/home/recap-500@2x.jpg')]]" class="fullvideo_thumbnail" alt="Watch the I/O Recap Video" fit>
-      <google-youtube video-id="ksvdvCDO7pA" height="100%" width="100%" fit
-                      autohide="1" controls="2" modestbranding="1" showinfo="0"
-                      iv_load_policy="3" rel="0" autoplay="1"></google-youtube>
-    </div>
-  </template> -->
 
 </template>
 <script>
@@ -160,7 +171,7 @@ limitations under the License.
         value: 'May 10 2016 09:00:00 GMT-0700 (PDT)'
       },
 
-      /*
+      /**
        * Toggles the save progress bar for being reminded about I/O.
        */
       _ioReminder: {

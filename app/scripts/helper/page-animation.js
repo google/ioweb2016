@@ -446,16 +446,18 @@ IOWA.PageAnimation = (function() {
   }
 
   return {
-    pageFirstRender: pageFirstRender,
-    play: play,
-    playPageSlideOut: playPageSlideOut,
-    playPageSlideIn: playPageSlideIn,
-    playSectionSlideOut: playSectionSlideOut,
-    playSectionSlideIn: playSectionSlideIn,
-    playMastheadRippleTransition: playMastheadRippleTransition,
-    playHeroTransitionStart: playHeroTransitionStart,
-    playHeroTransitionEnd: playHeroTransitionEnd,
-    shiftContentLeft: shiftContentLeft,
-    shiftContentRight: shiftContentRight
+    elementFadeIn,
+    elementFadeOut,
+    pageFirstRender,
+    play,
+    playPageSlideOut,
+    playPageSlideIn,
+    playSectionSlideOut,
+    playSectionSlideIn,
+    playMastheadRippleTransition,
+    playHeroTransitionStart,
+    playHeroTransitionEnd,
+    shiftContentLeft,
+    shiftContentRight
   };
 })();
