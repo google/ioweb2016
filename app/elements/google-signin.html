@@ -13,7 +13,6 @@ limitations under the License.
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/google-apis/google-client-loader.html">
-<script src="../bower_components/firebase/firebase.js"></script>
 <!-- <link rel="import" href="../bower_components/google-apis/google-client-api.html"> -->
 <!-- <link rel="import" href="../bower_components/google-apis/google-client-loader.html"> -->
 
@@ -98,15 +97,6 @@ Fired when sign in fails for some reason.
             value: null,
             notify: true
           },
-
-          /**
-           * The Firebase Database reference for the logged-in user.
-           */
-          // TODO: Probably move this out of this element into an element dedicated to Firebase.
-          firebaseRef: {
-            type: Object,
-            value: null
-          }
         },
 
         created: function() {
@@ -151,46 +141,21 @@ Fired when sign in fails for some reason.
                 id: this.currentUser.getId(),
                 tokenResponse: token,
                 picture: e.result.image.url || 'images/schedule/profile_placeholder.png'
-              }
+              };
+              this.fire('signin-change', {signedIn: true, user: this.user});
             }.bind(this));
           }.bind(this));
-        },
-
-        // TODO: Probably move this out of this element into an element dedicated to Firebase.
-        authFirebase: function() {
-          if (typeof Firebase !== 'undefined') {
-            var token = this.currentUser.getAuthResponse();
-            // TODO: Sharding. Select the correct Database from a list of shards.
-            this.firebaseRef = new Firebase('https://iowa-2016-dev.firebaseio.com/');
-            this.firebaseRef.authWithOAuthToken('google', token, function(error) {
-              if (error) {
-                console.log('Login to Firebase Failed!', error);
-              } else {
-                console.log('Authenticated successfully to Firebase!');
-              }
-            }.bind(this));
-          }
-        },
-
-        // TODO: Probably move this out of this element into an element dedicated to Firebase.
-        unAuthFirebase: function() {
-          if (typeof Firebase != 'undefined' && this.firebaseRef) {
-            this.firebaseRef.unauth();
-            this.firebaseRef = null;
-          }
         },
 
         signinChangedHandler: function(signedIn) {
           this.signedIn = signedIn;
           this.currentUser = this.auth2.currentUser.get();
           if (this.signedIn) {
-            this.authFirebase();
             this.loadUserInfo();
           } else {
             this.user = null;
             this.signedIn = false;
             this.fire('signin-change', {signedIn: false, user: null});
-            this.unAuthFirebase();
           }
         },
 
