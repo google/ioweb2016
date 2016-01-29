@@ -18,7 +18,7 @@
   "devDependencies": {
     "babel-preset-es2015": "^6.3.13",
     "blink-diff": "^1.0.7",
-    "bower": "^1.6.5",
+    "bower": "^1.7.7",
     "browser-sync": "^2.0.0-rc8",
     "del": "^2.1.0",
     "es6-promise": "^3.0.2",
@@ -49,17 +49,14 @@
     "gulp-useref": "^3.0.1",
     "gulp-util": "^3.0.7",
     "gulp-vulcanize": "^6.1.0",
-    "jshint-stylish": "^2.1.0",
     "merge-stream": "^1.0.0",
-    "node-dir": "^0.1.6",
-    "opn": "^3.0.3",
+    "opn": "^4.0.0",
     "psi": "^2.0.2 ",
     "run-sequence": "^1.0.2",
     "selenium-standalone": "^4.7.1",
     "selenium-webdriver": "^2.44.0",
     "sprintf-js": "1.0.3",
     "sw-precache": "^2.3.0",
-    "vinyl-map": "^1.0.1",
     "yargs": "^3.30.0"
   }
 }
