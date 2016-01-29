@@ -105,8 +105,7 @@ Fired when sign in fails for some reason.
           // TODO: Probably move this out of this element into an element dedicated to Firebase.
           firebaseRef: {
             type: Object,
-            value: null,
-            notify: true
+            value: null
           }
         },
 
@@ -147,7 +146,7 @@ Fired when sign in fails for some reason.
         loadUserInfo: function () {
           var token = this.currentUser.getAuthResponse();
           gapi.client.load('plus', 'v1').then(function() {
-            gapi.client.plus.people.get({userId: 'me'}).then(function(e){
+            gapi.client.plus.people.get({userId: 'me'}).then(function(e) {
               this.user = {
                 id: this.currentUser.getId(),
                 tokenResponse: token,
@@ -158,26 +157,26 @@ Fired when sign in fails for some reason.
         },
 
         // TODO: Probably move this out of this element into an element dedicated to Firebase.
-        authFirebase: function () {
-          if (typeof Firebase != 'undefined') {
+        authFirebase: function() {
+          if (typeof Firebase !== 'undefined') {
             var token = this.currentUser.getAuthResponse();
             // TODO: Sharding. Select the correct Database from a list of shards.
             this.firebaseRef = new Firebase('https://iowa-2016-dev.firebaseio.com/');
-            this.firebaseRef.authWithOAuthToken('google', token, function (error) {
+            this.firebaseRef.authWithOAuthToken('google', token, function(error) {
               if (error) {
                 console.log('Login to Firebase Failed!', error);
               } else {
                 console.log('Authenticated successfully to Firebase!');
               }
-            });
+            }.bind(this));
           }
         },
 
         // TODO: Probably move this out of this element into an element dedicated to Firebase.
-        unAuthFirebase: function () {
-          if (typeof Firebase != 'undefined' && typeof this.firebaseRef != 'undefined') {
+        unAuthFirebase: function() {
+          if (typeof Firebase != 'undefined' && this.firebaseRef) {
             this.firebaseRef.unauth();
-            this.firebaseRef = undefined;
+            this.firebaseRef = null;
           }
         },
 
@@ -187,7 +186,7 @@ Fired when sign in fails for some reason.
           if (this.signedIn) {
             this.authFirebase();
             this.loadUserInfo();
-        } else {
+          } else {
             this.user = null;
             this.signedIn = false;
             this.fire('signin-change', {signedIn: false, user: null});
