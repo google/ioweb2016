@@ -51,7 +51,7 @@ limitations under the License.
                aria-hidden="[[!mapGalleryActive]]" fit>
   <paper-icon-button icon="arrow-back" on-tap="closeMapGallery"
                      aria-label="Close map"
-                     tabindex="{{_enableTabIndex(mapGalleryActive)}}"></paper-icon-button>
+                     tabindex$="[[_enableTabIndex(mapGalleryActive)]]"></paper-icon-button>
   <span flex>Venue map</span>
 </paper-toolbar>
 

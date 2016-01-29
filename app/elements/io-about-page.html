@@ -56,7 +56,7 @@ limitations under the License.
                  aria-hidden$="{{!photoGalleryActive}}" fit>
     <paper-icon-button icon="arrow-back" on-tap="closePhotoGallery"
                        aria-label="Close gallery"
-                       tabindex="{{_enableTabIndex(photoGalleryActive)}}"></paper-icon-button>
+                       tabindex$="[[_enableTabIndex(photoGalleryActive)]]"></paper-icon-button>
     <span flex><i18n-msg msgid="io-in-photos">I/O in Photos</i18n-msg></span>
   </paper-toolbar>
 
@@ -64,7 +64,7 @@ limitations under the License.
                  aria-hidden$="{{!app.fullscreenVideoActive}}" fit>
     <paper-icon-button icon="arrow-back" on-tap="closeVideoCard"
                        aria-label="Close video"
-                       tabindex="{{_enableTabIndex(app.fullscreenVideoActive)}}"></paper-icon-button>
+                       tabindex$="[[_enableTabIndex(app.fullscreenVideoActive)]]"></paper-icon-button>
     <span flex><i18n-msg msgid="watch-keynote-video">Watch the 2015 I/O Keynote</i18n-msg></span>
   </paper-toolbar>
 
