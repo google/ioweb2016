@@ -66,9 +66,7 @@ limitations under the License.
   <paper-dialog class="video_overlay-dialog"
                 entry-animation="scale-up-animation"
                 exit-animation="fade-out-animation"
-                with-backdrop="[[!app.isIOS]]"
-                on-iron-overlay-closed="closeDialogVideo"
-                auto-fit-on-attach>
+                on-iron-overlay-closed="closeDialogVideo">
     <paper-icon-button icon="arrow-back" dialog-dismiss
                        aria-label="Close dialog"></paper-icon-button>
     <template is="dom-if" if="[[app.fullscreenVideoActive]]" restamp>

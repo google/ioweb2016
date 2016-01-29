@@ -242,10 +242,13 @@ paper-progress {
 }
 
 .video_overlay-dialog {
-  height: 100%;
-  width: 100%;
-  max-height: 100%; // paper-dialog override.
-  max-width: 100%;  // paper-dialog override.
+  // overrides for paper-dialog
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
 
   paper-icon-button {
     position: absolute;
@@ -322,19 +325,5 @@ paper-progress {
     @include keyline-72();
     padding-top: $largeKeyline;
     padding-bottom: $largeKeyline;
-  }
-}
-
-@media (max-width: $phone-breakpoint-max) and (orientation: landscape) {
-  main {
-    paper-dialog {
-      top: 0 !important;
-      left: 0 !important;
-      bottom: 0 !important;
-      right: 0 !important;
-      margin: 0 !important;
-      width: 100% !important;
-      height: 100% !important;
-    }
   }
 }
