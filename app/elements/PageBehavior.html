@@ -64,10 +64,6 @@ IOBehaviors.PageBehavior = {
 
   closeDialogVideo: function(e) {
     this.set('app.fullscreenVideoActive', false);
-    var dialog = Polymer.dom(e).rootTarget;
-    // TODO: shouldn't need to force refit.
-    dialog.refit();
-    dialog.center();
   },
 
   openDialogVideo: function(e) {
