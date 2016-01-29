@@ -191,8 +191,7 @@ function generateServerConfig(dest, appenv) {
   appenv = appenv || 'dev';
 
   var files = [
-    IOWA.backendDir + '/server.config',
-    IOWA.backendDir + '/server.config.dev',
+    IOWA.backendDir + '/server.config.' + appenv,
     IOWA.backendDir + '/server.config.template'
   ];
   var src;
@@ -207,7 +206,6 @@ function generateServerConfig(dest, appenv) {
   }
 
   var cfg = JSON.parse(fs.readFileSync(src, 'utf8'));
-  cfg.env = appenv;
   cfg.prefix = IOWA.urlPrefix;
   fs.writeFileSync(dest, JSON.stringify(cfg, null, 2));
 }
