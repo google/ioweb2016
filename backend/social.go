@@ -109,7 +109,7 @@ func fetchTweets(c context.Context, account string, tc chan *tweetEntry) {
 	params := url.Values{
 		"screen_name": {config.Twitter.Account},
 		"count":       {"200"},
-		"include_rts": {"true"},
+		"include_rts": {"false"},
 	}
 	url := config.Twitter.TimelineURL + "?" + params.Encode()
 	req, nil := http.NewRequest("GET", url, nil)
