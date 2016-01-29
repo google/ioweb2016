@@ -449,7 +449,8 @@ gulp.task('serve', 'Starts a standalone server with live-reload', ['backend:buil
 }, {
   options: {
     'no-watch': 'Starts the server w/o file watchers and live-reload',
-    'env': "App environment: 'dev', 'stage' or 'prod'. Defaults to 'dev'."
+    'env': "App environment: 'dev', 'stage' or 'prod'. Defaults to 'dev'.",
+    'open': 'Opens a new browser tab to the app'
   }
 });
 
@@ -463,7 +464,8 @@ gulp.task('serve:gae', "Same as the 'serve' task but uses GAE dev appserver", ['
 }, {
   options: {
     'no-watch': 'Starts the server w/o file watchers and live-reload',
-    'env': "App environment: 'dev', 'stage' or 'prod'. Defaults to 'dev'."
+    'env': "App environment: 'dev', 'stage' or 'prod'. Defaults to 'dev'.",
+    'open': 'Opens a new browser tab to the app'
   }
 });
 
@@ -472,6 +474,10 @@ gulp.task('serve:dist', 'Serves built app with GAE dev appserver (no file watche
   var url = backend.serveGAE({dir: backendDir}, done);
   // give GAE server some time to start
   setTimeout(openUrl.bind(null, url, null, null), 1000);
+}, {
+  options: {
+    'open': 'Opens a new browser tab to the app'
+  }
 });
 
 
