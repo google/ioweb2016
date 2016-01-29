@@ -104,6 +104,10 @@
   // Watch for sign-in changes to fetch user schedule, update UI, etc.
   window.addEventListener('signin-change', function(e) {
     if (e.detail.signedIn) {
+      // Authorize the user to Firebase.
+      var user = e.detail.user;
+      IOWA.IOFirebase.auth(user.id, user.tokenResponse.access_token);
+
       // Check to see if there are any failed session modification requests, and
       // if so, replay them before fetching the user schedule.
       IOWA.Schedule.replayQueuedRequests().then(IOWA.Schedule.loadUserSchedule);
@@ -124,6 +128,7 @@
         });
       }
     } else {
+      IOWA.IOFirebase.unauth();
       IOWA.Schedule.clearUserSchedule();
     }
   });

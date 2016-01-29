@@ -21,6 +21,8 @@
     "Polymer": true,
     "SequenceEffect": true,
     "ga": true,
+    "crc32": true,
+    "Firebase": true,
     "gapi": true,
     "moment": true,
     "simpleDB": true
