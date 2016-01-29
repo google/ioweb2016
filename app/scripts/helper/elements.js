@@ -97,171 +97,158 @@ IOWA.Elements = (function() {
 
     IOWA.Util.setMetaThemeColor('#CFD8DC'); // bg-medium-grey in colors.scss.
 
-    // TODO: duplicated in PageBehavior.
-    template._toVideoIdFilter = function(youtubeUrl) {
-      if (!youtubeUrl) {
-        return youtubeUrl;
-      }
-      return youtubeUrl.replace(/https?:\/\/youtu\.be\//, '');
-    };
+    // template.closeVideoCard = function() {
+    //   this.cardVideoTakeover(this.currentCard, true);
+    //   this.toggleVideoOverlayNav();
+    // };
 
-    template.toggleVideoOverlayNav = function() {
-      var nav = document.querySelector('.navbar__overlay--video');
-      nav.classList.toggle('active');
-    };
+    // /**
+    //  * Material design video animation.
+    //  *
+    //  * @param {Element} card The card element to perform the takeover on.
+    //  * @param {bool} opt_reverse If true, runs the animation in reverse.
+    //  */
+    // template.cardVideoTakeover = function(card, opt_reverse) {
+    //   if (!card) {
+    //     return;
+    //   }
 
-    template.closeVideoCard = function() {
-      this.cardVideoTakeover(this.currentCard, true);
-      this.toggleVideoOverlayNav();
-    };
+    //   var reverse = opt_reverse || false;
 
-    /**
-     * Material design video animation.
-     *
-     * @param {Element} card The card element to perform the takeover on.
-     * @param {bool} opt_reverse If true, runs the animation in reverse.
-     */
-    template.cardVideoTakeover = function(card, opt_reverse) {
-      if (!card) {
-        return;
-      }
+    //   // Forward animation sequence. The reverse sequence is played when reverse == true.
+    //   // 1. Fade out the play button on the card.
+    //   // 2. Transform/scale the video container down to the location and size of the clicked card.
+    //   // 3. Remove 2's transform. This scales up video container to fill the viewport.
+    //   // 4. Drop down the video controls overlay bar.
+    //   // 5. Auto-play the video (on desktop). When it reaches the playing state, fade out the video thumbnail.
 
-      var reverse = opt_reverse || false;
+    //   var cardPhoto = card.querySelector('.card__photo');
+    //   var videoContainer = document.querySelector('.fullvideo__container');
+    //   var video = videoContainer.querySelector('.fullvideo__container google-youtube');
 
-      // Forward animation sequence. The reverse sequence is played when reverse == true.
-      // 1. Fade out the play button on the card.
-      // 2. Transform/scale the video container down to the location and size of the clicked card.
-      // 3. Remove 2's transform. This scales up video container to fill the viewport.
-      // 4. Drop down the video controls overlay bar.
-      // 5. Auto-play the video (on desktop). When it reaches the playing state, fade out the video thumbnail.
+    //   var thumbnail = videoContainer.querySelector('.fullvideo_thumbnail');
+    //   var playButton = card.querySelector('.play__button');
 
-      var cardPhoto = card.querySelector('.card__photo');
-      var videoContainer = document.querySelector('.fullvideo__container');
-      var video = videoContainer.querySelector('.fullvideo__container google-youtube');
+    //   var cardPhotoMetrics = cardPhoto.getBoundingClientRect();
 
-      var thumbnail = videoContainer.querySelector('.fullvideo_thumbnail');
-      var playButton = card.querySelector('.play__button');
+    //   var viewportWidth = document.documentElement.clientWidth;
+    //   var viewportHeight = document.documentElement.clientHeight;
 
-      var cardPhotoMetrics = cardPhoto.getBoundingClientRect();
+    //   var scaleX = cardPhotoMetrics.width / viewportWidth;
+    //   var scaleY = cardPhotoMetrics.height / viewportHeight;
+    //   var top = cardPhotoMetrics.top + window.scrollY;
 
-      var viewportWidth = document.documentElement.clientWidth;
-      var viewportHeight = document.documentElement.clientHeight;
+    //   video.pause(); // Pause a running video.
 
-      var scaleX = cardPhotoMetrics.width / viewportWidth;
-      var scaleY = cardPhotoMetrics.height / viewportHeight;
-      var top = cardPhotoMetrics.top + window.scrollY;
+    //   var playButtonPlayer = playButton.animate([{opacity: 1}, {opacity: 0}], {
+    //     duration: 350,
+    //     iterations: 1,
+    //     fill: 'forwards',
+    //     easing: 'cubic-bezier(0,0,0.21,1)',
+    //     direction: reverse ? 'reverse' : 'normal'
+    //   });
 
-      video.pause(); // Pause a running video.
+    //   playButtonPlayer.onfinish = function() {
+    //     var startTransform = 'translate(' + cardPhotoMetrics.left + 'px, ' + top + 'px) ' +
+    //                          'scale(' + scaleX + ', ' + scaleY + ')';
 
-      var playButtonPlayer = playButton.animate([{opacity: 1}, {opacity: 0}], {
-        duration: 350,
-        iterations: 1,
-        fill: 'forwards',
-        easing: 'cubic-bezier(0,0,0.21,1)',
-        direction: reverse ? 'reverse' : 'normal'
-      });
+    //     if (reverse) {
+    //       // Fade in thumbnail before shrinking.
+    //       thumbnail.classList.remove('fadeout');
+    //     } else {
+    //       // Scale down the video container before unhiding it.
+    //       // TODO(ericbidelman): shouldn't have to do this. The initial state
+    //       // is setup in the animate() below.
+    //       videoContainer.style.transform = videoContainer.style.webkitTransform = startTransform;
+    //     }
 
-      playButtonPlayer.onfinish = function() {
-        var startTransform = 'translate(' + cardPhotoMetrics.left + 'px, ' + top + 'px) ' +
-                             'scale(' + scaleX + ', ' + scaleY + ')';
+    //     // Container is shrunk and in the card's location.
+    //     // Unhide it so thumbnail is visible.
+    //     videoContainer.hidden = false;
 
-        if (reverse) {
-          // Fade in thumbnail before shrinking.
-          thumbnail.classList.remove('fadeout');
-        } else {
-          // Scale down the video container before unhiding it.
-          // TODO(ericbidelman): shouldn't have to do this. The initial state
-          // is setup in the animate() below.
-          videoContainer.style.transform = videoContainer.style.webkitTransform = startTransform;
-        }
+    //     var player = videoContainer.animate([
+    //       {transform: startTransform},
+    //       {transform: 'translate(0, 0) scale(1)'}
+    //     ], {
+    //       duration: 400,
+    //       direction: reverse ? 'reverse' : 'normal',
+    //       iterations: 1,
+    //       fill: 'forwards',
+    //       easing: 'cubic-bezier(0.4,0,0.2,1)'
+    //     });
 
-        // Container is shrunk and in the card's location.
-        // Unhide it so thumbnail is visible.
-        videoContainer.hidden = false;
+    //     player.onfinish = function() {
+    //       if (reverse) {
+    //         this.set('app.fullscreenVideoActive', false); // remove from DOM.
+    //         this.currentCard = null;
+    //       } else {
+    //         thumbnail.classList.add('fadeout');
+    //         this.toggleVideoOverlayNav(); // Drop down back button control.
+    //       }
+    //     }.bind(this);
+    //   }.bind(this);
+    // };
 
-        var player = videoContainer.animate([
-          {transform: startTransform},
-          {transform: 'translate(0, 0) scale(1)'}
-        ], {
-          duration: 400,
-          direction: reverse ? 'reverse' : 'normal',
-          iterations: 1,
-          fill: 'forwards',
-          easing: 'cubic-bezier(0.4,0,0.2,1)'
-        });
+    // template.openVideo = function(e) {
+    //   var path = Polymer.dom(e).path;
 
-        player.onfinish = function() {
-          if (reverse) {
-            this.set('app.fullscreenVideoActive', false); // remove from DOM.
-            this.currentCard = null;
-          } else {
-            thumbnail.classList.add('fadeout');
-            this.toggleVideoOverlayNav(); // Drop down back button control.
-          }
-        }.bind(this);
-      }.bind(this);
-    };
+    //   var target = null;
+    //   for (var i = 0; i < path.length; ++i) {
+    //     var el = path[i];
+    //     if (el.classList && el.classList.contains('card__video')) {
+    //       target = el;
+    //       break;
+    //     }
+    //   }
 
-    template.openVideo = function(e) {
-      var path = Polymer.dom(e).path;
+    //   if (!target) {
+    //     return;
+    //   }
 
-      var target = null;
-      for (var i = 0; i < path.length; ++i) {
-        var el = path[i];
-        if (el.classList && el.classList.contains('card__video')) {
-          target = el;
-          break;
-        }
-      }
+    //   this.currentCard = target; // Polymer.dom(e).rootTarget;
+    //   this.set('app.fullscreenVideoActive', true); // Activate the placeholder template.
 
-      if (!target) {
-        return;
-      }
+    //   Polymer.dom.flush();
 
-      this.currentCard = target; // Polymer.dom(e).rootTarget;
-      this.set('app.fullscreenVideoActive', true); // Activate the placeholder template.
+    //   // Note: IE10 doesn't support .dataset.
+    //   var videoId = this._toVideoIdFilter(
+    //       this.currentCard.getAttribute('data-videoid'));
 
-      Polymer.dom.flush();
+    //   IOWA.Analytics.trackEvent('video', 'watch', videoId);
 
-      // Note: IE10 doesn't support .dataset.
-      var videoId = this._toVideoIdFilter(
-          this.currentCard.getAttribute('data-videoid'));
+    //   var videoContainer = document.querySelector('.fullvideo__container');
+    //   var video = videoContainer.querySelector('google-youtube');
 
-      IOWA.Analytics.trackEvent('video', 'watch', videoId);
+    //   video.addEventListener('google-youtube-ready', function() {
+    //     video.videoId = videoId;
+    //     this.cardVideoTakeover(this.currentCard);
+    //   }.bind(this));
 
-      var videoContainer = document.querySelector('.fullvideo__container');
-      var video = videoContainer.querySelector('google-youtube');
+    //   var thumbnail = videoContainer.querySelector('.fullvideo_thumbnail');
+    //   thumbnail.src = this.currentCard.getAttribute('data-videoimg'); // IE10 doesn't support .dataset.
+    // };
 
-      video.addEventListener('google-youtube-ready', function() {
-        video.videoId = videoId;
-        this.cardVideoTakeover(this.currentCard);
-      }.bind(this));
+    // template.closeMastheadVideo = function() {
+    //   this.mastheadVideoActive = false;
+    // };
 
-      var thumbnail = videoContainer.querySelector('.fullvideo_thumbnail');
-      thumbnail.src = this.currentCard.getAttribute('data-videoimg'); // IE10 doesn't support .dataset.
-    };
+    // template.openMastheadVideo = function(e) {
+    //   var target = Polymer.dom(e).rootTarget;
 
-    template.closeMastheadVideo = function() {
-      this.mastheadVideoActive = false;
-    };
+    //   IOWA.Analytics.trackEvent(
+    //       'link', 'click', target.getAttribute(ANALYTICS_LINK_ATTR));
 
-    template.openMastheadVideo = function(e) {
-      var target = Polymer.dom(e).rootTarget;
+    //   this.mastheadVideoActive = true; // stamp template
 
-      IOWA.Analytics.trackEvent(
-          'link', 'click', target.getAttribute(ANALYTICS_LINK_ATTR));
+    //   Polymer.dom.flush();
 
-      this.mastheadVideoActive = true; // stamp template
+    //   var dialog = IOWA.Elements.Main.querySelector('paper-dialog');
+    //   var video = dialog.querySelector('google-youtube');
 
-      Polymer.dom.flush();
-
-      var dialog = IOWA.Elements.Main.querySelector('paper-dialog');
-      var video = dialog.querySelector('google-youtube');
-
-      video.addEventListener('google-youtube-ready', function() {
-        dialog.toggle();
-      });
-    };
+    //   video.addEventListener('google-youtube-ready', function() {
+    //     dialog.toggle();
+    //   });
+    // };
 
     template.openShareWindow = function(e) {
       e.preventDefault();

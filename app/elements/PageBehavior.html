@@ -62,6 +62,37 @@ IOBehaviors.PageBehavior = {
     document.body.classList.toggle('noscroll', enable);
   },
 
+  closeDialogVideo: function(e) {
+    this.set('app.fullscreenVideoActive', false);
+    var dialog = Polymer.dom(e).rootTarget;
+    // TODO: shouldn't need to force refit.
+    dialog.refit();
+    dialog.center();
+  },
+
+  openDialogVideo: function(e) {
+    var target = Polymer.dom(e).rootTarget;
+
+    IOWA.Analytics.trackEvent(
+        'link', 'click', target.getAttribute(this.app.ANALYTICS_LINK_ATTR));
+
+    this.set('app.fullscreenVideoActive', true); // stamps template.
+
+    Polymer.dom.flush();
+
+    var dialog = Polymer.dom(this.root).querySelector('paper-dialog');
+    var video = dialog.querySelector('google-youtube');
+
+    video.addEventListener('google-youtube-ready', function() {
+      dialog.toggle();
+    }.bind(this));
+  },
+
+  toggleVideoOverlayNav: function() {
+    var nav = document.querySelector('.navbar__overlay--video');
+    nav.classList.toggle('active');
+  },
+
   /**
    * Returns the video ID of a Youtube embed URL.
    *
