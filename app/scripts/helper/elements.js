@@ -85,11 +85,13 @@ IOWA.Elements = (function() {
     template.app.fullscreenVideoActive = false;
     template.app.isIOS = IOWA.Util.isIOS();
     template.app.ANALYTICS_LINK_ATTR = ANALYTICS_LINK_ATTR;
+    template.app.scheduleData = null;
+    template.app.savedSessions = [];
+    template.app.scheduleFetchingUserData = false;
+    template.app.dontAutoSubscribe = false;
 
     template.pages = IOWA.PAGES; // defined in auto-generated ../pages.js
     template.selectedPage = IOWA.Router.parseUrl(window.location.href).page;
-    template.scheduleData = null;
-    template.savedSessions = [];
 
     // Sign-in defaults.
     template.isSignedIn = false;
@@ -365,7 +367,7 @@ IOWA.Elements = (function() {
         // subscribePromise() handles registering a subscription with the browser's push manager
         // and toggling the notify state to true in the backend via an API call.
         IOWA.Notifications.subscribePromise().then(function() {
-          IOWA.Elements.Template.dontAutoSubscribe = false;
+          template.set('app.dontAutoSubscribe', false);
         }).catch(function(error) {
           if (error && error.name === 'AbortError') {
             IOWA.Elements.Toast.showMessage('Please update your notification permissions', null, 'Learn how', function() {
@@ -380,7 +382,7 @@ IOWA.Elements = (function() {
         // Note that we are deliberately not clearing the SW token stored in IDB, since that is tied
         // to the user's logged in state and will remain valid if notifications are re-enabled
         // later on.
-        IOWA.Elements.Template.dontAutoSubscribe = true;
+        this.set('app.dontAutoSubscribe', true);
         IOWA.Notifications.unsubscribeFromPushManagerPromise()
           .then(IOWA.Notifications.disableNotificationsPromise)
           .catch(IOWA.Util.reportError);

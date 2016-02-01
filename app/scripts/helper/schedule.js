@@ -388,20 +388,20 @@ IOWA.Schedule = (function() {
   }
 
   return {
-    bookmarkSessionNotification: bookmarkSessionNotification,
-    clearCachedUserSchedule: clearCachedUserSchedule,
-    fetchSchedule: fetchSchedule,
-    schedulePromise: schedulePromise,
-    resolveSchedulePromise: resolveSchedulePromise,
-    fetchUserSchedule: fetchUserSchedule,
-    loadUserSchedule: loadUserSchedule,
-    saveSession: saveSession,
-    saveSurvey: saveSurvey,
-    generateFilters: generateFilters,
-    getSessionById: getSessionById,
-    updateSavedSessionsUI: updateSavedSessionsUI,
-    replayQueuedRequests: replayQueuedRequests,
-    clearQueuedRequests: clearQueuedRequests,
-    clearUserSchedule: clearUserSchedule
+    bookmarkSessionNotification,
+    clearCachedUserSchedule,
+    fetchSchedule,
+    schedulePromise,
+    resolveSchedulePromise,
+    fetchUserSchedule,
+    loadUserSchedule,
+    saveSession,
+    saveSurvey,
+    generateFilters,
+    getSessionById,
+    updateSavedSessionsUI,
+    replayQueuedRequests,
+    clearQueuedRequests,
+    clearUserSchedule
   };
 })();

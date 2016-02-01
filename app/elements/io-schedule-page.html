@@ -70,7 +70,7 @@ limitations under the License.
 </div>
 
 <!-- backdrop shouldn't be applied on ios - github.com/Polymer/paper-dialog/issues/16 -->
-<paper-dialog class="session__detail scrollable"
+<paper-dialog id="sessionDetails" class="session__detail scrollable"
               entry-animation="scale-up-animation"
               exit-animation="fade-out-animation"
               with-backdrop="[[!app.isIOS]]"
@@ -81,8 +81,9 @@ limitations under the License.
                        aria-label="Close session"></paper-icon-button>
     <div class="card__photo" relative>
 
-      <template is="dom-if" if="{{sessionHasVideo(_startScheduleVideo, selectedSession.isLivestream, selectedSession.youtubeUrl)}}" restamp>
-        <google-youtube video-id="[[_toVideoIdFilter(selectedSession.youtubeUrl)]]"
+      <template is="dom-if" if="[[sessionHasVideo(_startScheduleVideo, selectedSession.isLivestream, selectedSession.youtubeUrl)]]" restamp>
+        <google-youtube
+            video-id="[[_toVideoIdFilter(selectedSession.youtubeUrl)]]"
             height="100%" width="100%" fit
             autohide="1" controls="2" modestbranding="1" showinfo="0"
             iv_load_policy="3" rel="0" autoplay="1"
@@ -100,7 +101,7 @@ limitations under the License.
       <paper-fab icon="{{_computeSessionSavedIcon(selectedSession.*)}}"
                  mini="[[app.isPhoneSize]]"
                  class$="[[_addClass('active', selectedSession.saved)]]"
-                 on-up="toggleSaveSession"
+                 on-up="_onToggleSaveSession"
                  disabled$="{{app.scheduleFetchingUserData}}"></paper-fab>
       <paper-progress indeterminate
           hidden$="{{_computeHideSessionDetailProgress(user, app.savedSessions, app.scheduleFetchingUserData)}}"></paper-progress>
@@ -168,7 +169,8 @@ limitations under the License.
   </div>
 </paper-dialog>
 
-<paper-dialog class="session__rate"
+<paper-dialog id="ratePanel"
+              class="session__rate"
               entry-animation="scale-up-animation"
               exit-animation="fade-out-animation"
               with-backdrop$="{{!app.isIOS}}">
@@ -462,7 +464,8 @@ limitations under the License.
         </span>
       </div>
       <section class="page__section">
-        <io-schedule day="[[selectedSubpage]]"
+        <io-schedule id="scheduleEl"
+          day="[[selectedSubpage]]"
           sessions="{{app.scheduleData.sessions}}"
           session-themes="[[app.filterThemes]]"
           session-topics="[[app.filterTopics]]"
@@ -470,7 +473,7 @@ limitations under the License.
           user-sessions="{{app.savedSessions}}"
           fetching-user-data="{{app.scheduleFetchingUserData}}"
           filters="{{sessionURLFilters}}"
-          on-session-bookmark="toggleSaveSession"
+          on-session-bookmark="_onToggleSaveSession"
           on-session-select="openSession"
           gmt-day-one="[[date]]"></io-schedule>
       </section>
@@ -485,9 +488,6 @@ limitations under the License.
 
   var SUBTAB_SELECTOR = '#subpage-tabs a';
   var pageIsDeepLinked_ = false; // Flag to not double-record page view on deep linking into session.
-  var ioScheduleEl = null;
-  var detailsPanel = null;
-  var ratePanel = null;
 
   function getFiltersFromURL(opt_parsedUrl) {
     var parsedUrl = opt_parsedUrl || IOWA.Router.parseUrl(window.location.toString());
@@ -496,15 +496,6 @@ limitations under the License.
       filters = parsedUrl.params.filters.split(',');
     }
     return filters;
-  }
-
-  function sessionDetailsPopstateHandler(e) {
-    this.sessionURLFilters = getFiltersFromURL();
-    if (!detailsPanel.opened && IOWA.Elements.Template.selectedSession) {
-      detailsPanel.open();
-    } else {
-      detailsPanel.close();
-    }
   }
 
   Polymer({
@@ -548,33 +539,19 @@ limitations under the License.
     title: 'Schedule',
     name: 'schedule',
 
-    ready: function() {
-      this.set('app.dontAutoSubscribe', false);
-    },
-
     attached: function() {
       // Reset template variables for when revisiting the page.
-      this.selectedSession = null;
       this.set('app.scheduleFetchingUserData', false);
-      this._startScheduleVideo = false;
 
-      // Wait 1 rAF for template to stamp.
-      this.async(function() {
-        ioScheduleEl = document.querySelector('io-schedule');
-        detailsPanel = document.querySelector('.session__detail');
-        detailsPanel.querySelector('iron-image').classList.remove('fadeout');
-        detailsPanel.querySelector('.play__button__container').classList.remove('fadeout');
-        ratePanel = ratePanel || document.querySelector('.session__rate');
+      // TODO: check that this is still needed in paper-tabs.
+      IOWA.A11y.addFocusStates(SUBTAB_SELECTOR);
 
-        // TODO: check that this is still needed in paper-tabs.
-        IOWA.A11y.addFocusStates(SUBTAB_SELECTOR);
-      });
-      window.addEventListener('popstate', sessionDetailsPopstateHandler);
+      this.listen(window, 'popstate', 'sessionDetailsPopstateHandler');
     },
 
     detached: function() {
       IOWA.A11y.removeFocusStates(SUBTAB_SELECTOR);
-      window.removeEventListener('popstate', sessionDetailsPopstateHandler);
+      this.unlisten(window, 'popstate', 'sessionDetailsPopstateHandler');
     },
 
     onPageTransitionDone: function(e) {
@@ -582,24 +559,43 @@ limitations under the License.
       var parsedUrl = IOWA.Router.parseUrl(window.location.toString());
       this.sessionURLFilters = getFiltersFromURL(parsedUrl);
       // TODO: find way to elegantly move into io-schedule element.
-      ioScheduleEl._deepLinkRadioButtons();
+      this.$.scheduleEl._deepLinkRadioButtons();
 
       // Deep link into session. First, try to pull session id from the
       // ?sid= param. If that isn't present, use the parsed id from the fragment.
       var sessionId = IOWA.Util.getURLParameter('sid') || parsedUrl.resourceId;
       if (sessionId) {
         pageIsDeepLinked_ = true;
-        IOWA.Elements.Template.openSession(IOWA.Schedule.getSessionById(sessionId));
+        this.openSession(IOWA.Schedule.getSessionById(sessionId));
       } else {
         pageIsDeepLinked_ = false;
       }
     },
 
-    // onSubpageTransitionDone: function() {
+    sessionDetailsPopstateHandler: function(e) {
+      this.sessionURLFilters = getFiltersFromURL();
+      if (!this.$.sessionDetails.opened && this.selectedSession) {
+        this.$.sessionDetails.open();
+      } else {
+        this.$.sessionDetails.close();
+      }
+    },
 
-    // },
+    openSettings: function(e) {
+      IOWA.Elements.Template.openSettings(e);
+    },
 
-    onSessionDetailsClose: function(e, detail) {
+    openSession: function(sessionOrEvent) {
+      if (!sessionOrEvent) {
+       return;
+      }
+      this.selectedSession = (
+          sessionOrEvent.detail ? sessionOrEvent.detail.session :
+                                  sessionOrEvent);
+      this.$.sessionDetails.open();
+    },
+
+    onSessionDetailsClose: function(e) {
       // Remove session id hash from URL.
       var search = IOWA.Util.removeSearchParam(window.location.search, 'sid');
       var url = IOWA.Router.composeUrl(
@@ -609,30 +605,27 @@ limitations under the License.
       document.title = 'Schedule';
       pageIsDeepLinked_ = false;
 
-      var parent = Polymer.dom(e.target).node;
-
       // Reset video state.
-      var video = parent.querySelector('google-youtube');
+      var video = this.$.sessionDetails.querySelector('google-youtube')
       if (video) {
         video.pause();
       }
-      parent.querySelector('iron-image').classList.remove('fadeout');
-      parent.querySelector('.play__button__container').classList.remove('fadeout');
-      this.startScheduleVideo = false;
+      this.$.sessionDetails.querySelector('iron-image').classList.remove('fadeout');
+      this.$.sessionDetails.querySelector('.play__button__container').classList.remove('fadeout');
+      this._startScheduleVideo = false;
     },
 
-    onSessionDetailsOpen: function(e, detail) {
-      var el = Polymer.dom(e.target).node;
-
-      el.querySelector('.session__title').focus();
+    onSessionDetailsOpen: function() {
+      this.$.sessionDetails.querySelector('.session__title').focus();
 
       document.title = this.selectedSession.title + ' - Google I/O Schedule';
 
       // Update URL with deep link. Always ensure sid parameter is set.
-      var search = IOWA.Util.setSearchParam(
-          window.location.search, 'sid', this.selectedSession.id);
-      var url = IOWA.Router.composeUrl(
-          'schedule', selectedSubpage, this.selectedSession.id, search);
+      var sessionId = this.selectedSession.id;
+
+      var search = IOWA.Util.setSearchParam(location.search, 'sid', sessionId);
+      var url = IOWA.Router.composeUrl('schedule', this.selectedSubpage,
+                                       sessionId, search);
       history.pushState({}, null, url);
 
       // Report session detail as pageview in GA, only if we're not loading
@@ -642,19 +635,35 @@ limitations under the License.
       }
     },
 
-// TODO: fix logic
+    _onToggleSaveSession: function(e, detail) {
+      e.stopPropagation();
+      // Bookmarking came from <io-schedule> event. We're passed a session object.
+      // Otherwise, there's a session detail card up and this.selectedSession
+      // is already set.
+      if (detail && detail.session) {
+        this.selectedSession = detail.session;
+      }
+      var saved = !this.selectedSession.saved;
+      IOWA.Schedule.saveSession(this.selectedSession.id, saved).then(function() {
+        this.set('app.scheduleFetchingUserData', false);
+        this.set('selectedSession.saved', saved);
+        IOWA.Schedule.bookmarkSessionNotification(saved);
+      }.bind(this));
+    },
+
+// TODO: fix logic. This is for the mobile dropdown.
 
     selectFilter: function(e, detail) {
-      var menu = Polymer.dom(e.target).node;
+      var menu = Polymer.dom(e).rootTarget;
 
-      var oldFilters = ioScheduleEl.filters;
-      ioScheduleEl.filters = menu.selectedIndex ? [menu.selected] : [];
-      var newFilters = ioScheduleEl.filters;
+      var oldFilters = this.$.scheduleEl.filters;
+      this.$.scheduleEl.filters = menu.selectedIndex ? [menu.selected] : [];
+      var newFilters = this.$.scheduleEl.filters;
       // This should not be necessary, since assigning filters above should trigger
       // the change watcher automatically. For unknown reason, on mobile only, Polymer
       // is accepting the new value for filters attribute, but not triggering
       // the change watcher, so we call it manually here.
-      ioScheduleEl._filtersChanged(newFilters, oldFilters);
+      this.$.scheduleEl._filtersChanged(newFilters, oldFilters);
     },
 
     onRelatedContent: function(e, detail) {
@@ -677,7 +686,7 @@ limitations under the License.
             target.getAttribute(this.app.ANALYTICS_LINK_ATTR));
       }
       this.answers = {}; // Reset answers.
-      ratePanel.open();
+      this.$.ratePanel.open();
     },
 
     onRateSessionSubmit: function(e, detail) {
@@ -692,15 +701,15 @@ limitations under the License.
     },
 
     onScheduleVideoReady: function(e, detail) {
-      detailsPanel.querySelector('iron-image').classList.add('fadeout');
-      detailsPanel.querySelector('.play__button__container').classList.add('fadeout');
+      this.$.sessionDetails.querySelector('iron-image').classList.add('fadeout');
+      this.$.sessionDetails.querySelector('.play__button__container').classList.add('fadeout');
     },
 
     onVideoPlay: function(e, detail) {
       e.stopPropagation();
       e.preventDefault();
 
-      this.startScheduleVideo = true;
+      this._startScheduleVideo = true;
 
       var target = Polymer.dom(e).rootTarget;
       if (target.hasAttribute(this.app.ANALYTICS_LINK_ATTR)) {
