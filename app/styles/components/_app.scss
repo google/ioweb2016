@@ -267,6 +267,42 @@ paper-progress {
   }
 }
 
+#fab {
+  position: relative;
+  left: 0;
+  right: 0;
+  bottom: 40px;
+  pointer-events: none;
+
+  &::before {
+    position: absolute;
+    content: '';
+    border-bottom: 1px solid #ddd;
+    width: 100%;
+    height: calc(56px / 2);
+  }
+
+  &.active paper-fab {
+    transform: scale(1);
+  }
+
+  &.fixed {
+    position: fixed;
+  }
+
+  paper-fab {
+    background: $color-indigo-a200;
+    transition: transform 400ms cubic-bezier(0,0,0.2,1);
+    will-change: transform;
+    transform: scale(0);
+    pointer-events: all;
+  }
+
+  .card__container {
+    max-width: $container-max-width + 56px * 3;
+  }
+}
+
 @media (max-width: $phone-breakpoint-max) {
   .navbar__overlay {
     font-size: 16px;

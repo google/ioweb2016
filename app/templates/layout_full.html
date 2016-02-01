@@ -175,6 +175,13 @@ limitations under the License.
   {% end %}
 
   <style is="custom-style" include="shared-app-styles">
+    #headerpanel {
+      --paper-header-panel-shadow: {
+        box-shadow: inset 0px 5px 6px -3px rgba(0, 0, 0, 0.4);
+        z-index: 1;
+      };
+    }
+
     paper-dropdown-menu.white {
       --paper-input-container-color: inherit;
       --paper-dropdown-menu-icon: {
@@ -258,7 +265,7 @@ limitations under the License.
 
     <div class="masthead paper-header" layout vertical>
       <paper-toolbar id="navbar" role="navigation">
-        <paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
+        <paper-icon-button icon="io:menu" paper-drawer-toggle></paper-icon-button>
         <div flex disabled$="{{_isPage('home', selectedPage)}}">
           <a href="./" class="io-logo-link"
               on-click="setSelectedPageToHome"
@@ -369,6 +376,14 @@ limitations under the License.
 
     </main>
 
+    <div id="fab" class="fixed" hidden$="[[app.isPhoneSize]]">
+      <div class="card__container" layout end-justified>
+        <a href="#" on-click="backToTop" data-track-link="link-backtotop">
+          <paper-fab icon="io:expand-less" noink></paper-fab>
+        </a>
+      </div>
+    </div>
+
     <footer layout horizontal center>
 
       <div class="card__container" flex>
@@ -389,10 +404,6 @@ limitations under the License.
             </span>
             <span><a href="https://plus.google.com/u/0/communities/105113874753230740413" target="_blank" data-track-link="footer-community">I/O Community</a></span>
             <span><a href="https://www.google.com/intl/en/policies/privacy/" target="_blank">Privacy</a> &amp; <a href="https://www.google.com/intl/en/policies/terms/" target="_blank">Terms</a></span>
-            <span>
-              <a href="#" id="backtotop" on-click="backToTop"
-                data-track-link="footer-backtop-new">Back to the top <iron-icon icon="expand-less"></iron-icon></a>
-            </span>
             <!-- <span><a href="https://play.google.com/store/apps/details?id=com.google.samples.apps.iosched" target="_blank" data-track-link="footer-iosched"><img src="images/google_play_45.png" alt="Get the Google I/O Android app on Google Play" title="Get the Google I/O Android app on Google Play"></a></span> -->
           </nav>
         </div>

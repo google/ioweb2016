@@ -181,7 +181,7 @@ paper-drawer-panel {
 }
 
 .masthead-container {
-  min-height: 268px;
+  // min-height: 268px;
   height: 268px;
   width: 100%;
   max-width: $container-max-width;
@@ -244,6 +244,10 @@ paper-drawer-panel {
 }
 
 @media (min-width: $tablet-breakpoint-min) {
+  .masthead-container {
+    height: 350px;
+  }
+
   #navbar {
     paper-tabs {
       display: inline-block;
@@ -252,7 +256,7 @@ paper-drawer-panel {
     paper-menu-button {
       padding: 0;
     }
-    [icon="menu"] {
+    [paper-drawer-toggle] {
       display: none;
     }
   }

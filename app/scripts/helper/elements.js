@@ -71,7 +71,11 @@ IOWA.Elements = (function() {
     IOWA.Elements.Footer = footer;
     IOWA.Elements.GoogleSignIn = signin;
     IOWA.Elements.LazyPages = lazyPages;
-    IOWA.Elements.ScrollContainer = IOWA.Elements.Template.$.headerpanel.scroller;
+
+    var headerPanel = IOWA.Elements.Template.$.headerpanel;
+    IOWA.Elements.ScrollContainer = headerPanel.scroller;
+
+    this.initFabScroll();
 
     // Kickoff a11y helpers for elements
     IOWA.A11y.init();
@@ -427,6 +431,45 @@ IOWA.Elements = (function() {
         this.async(function() {
           IOWA.Elements.GoogleSignIn.user.notify = false;
         });
+      }
+    };
+
+    template.initFabScroll = function() {
+      this.unlisten(this.$.headerpanel, 'content-scroll', '_onContentScroll');
+
+      if (!this.app.isPhoneSize) {
+        this.listen(this.$.headerpanel, 'content-scroll', '_onContentScroll');
+      }
+    };
+
+    template._onContentScroll = function(e, detail) {
+      var scroller = detail.target;
+      var scrollTop = scroller.scrollTop;
+
+      // TODO: consider caching these measurements ahead of time.
+      var scrollerHeight = scroller.clientHeight;
+      var totalScrollHeight = scroller.scrollHeight;
+      var footerHeight = IOWA.Elements.Footer.clientHeight;
+      var footerMargin = parseInt(
+          getComputedStyle(IOWA.Elements.Footer).marginTop, 10);
+
+      var OFFSET_TO_PIN = 100; // FAB sticks 100px from bottom of card.
+      var MIN_SCROLL_BEFORE_SHOW = 100;
+
+      this.$.fab.classList.toggle('active', scrollTop > MIN_SCROLL_BEFORE_SHOW);
+
+      var fabPinTopAt = totalScrollHeight - footerHeight - footerMargin;
+
+      var scrollDiff = fabPinTopAt - scrollTop;
+
+      if (scrollDiff <= scrollerHeight) {
+        this.$.fab.classList.remove('fixed');
+        this.$.fab.style.position = 'absolute';
+        this.$.fab.style.top = (fabPinTopAt - OFFSET_TO_PIN) + 'px';
+      } else {
+        this.$.fab.style.position = '';
+        this.$.fab.style.top = '';
+        this.$.fab.classList.add('fixed');
       }
     };
 
