@@ -44,7 +44,7 @@ class Schedule {
    * @constant
    * @type {string}
    */
-  static get SURVEY_ENDPOINT_USERS() {
+  static get SURVEY_ENDPOINT() {
     return 'api/v1/user/survey';
   }
 
@@ -269,7 +269,7 @@ class Schedule {
     IOWA.Analytics.trackEvent('session', 'rate', sessionId);
 
     return IOWA.Auth.waitForSignedIn('Sign in to submit feedback').then(() => {
-      let url = `${Schedule.SURVEY_ENDPOINT_USERS}/${sessionId}`;
+      let url = `${Schedule.SURVEY_ENDPOINT}/${sessionId}`;
       let callback = response => {
         IOWA.Elements.Template.set('app.savedSurveys', response);
         IOWA.IOFirebase.markSessionRated(sessionId);
