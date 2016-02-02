@@ -643,7 +643,12 @@ limitations under the License.
       if (detail && detail.session) {
         this.selectedSession = detail.session;
       }
-      var saved = this.selectedSession.saved;
+      var saved;
+      if (detail && detail.saved) {
+        saved = detail.saved;
+      } else {
+        saved = !this.selectedSession.saved;
+      }
       IOWA.Schedule.saveSession(this.selectedSession.id, saved).then(function() {
         this.set('app.scheduleFetchingUserData', false);
         this.set('selectedSession.saved', saved);
