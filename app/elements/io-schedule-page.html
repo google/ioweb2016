@@ -643,7 +643,14 @@ limitations under the License.
       if (detail && detail.session) {
         this.selectedSession = detail.session;
       }
-      var saved = !this.selectedSession.saved;
+      var saved;
+      if (detail && detail.saved !== undefined) {
+        // If event is triggered from a checkbox we can set the value directly.
+        saved = detail.saved;
+      } else {
+        // If even tis triggered from a FAB we toggle.
+        saved = !this.selectedSession.saved;
+      }
       IOWA.Schedule.saveSession(this.selectedSession.id, saved).then(function() {
         this.set('app.scheduleFetchingUserData', false);
         this.set('selectedSession.saved', saved);

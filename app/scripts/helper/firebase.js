@@ -46,6 +46,7 @@ class IOFirebase {
   /**
    * List of Firebase Database shards.
    * @static
+   * @constant
    * @type {Array.<string>}
    */
   static get FIREBASE_DATABASES_URL() {
@@ -102,6 +103,7 @@ class IOFirebase {
       // Make sure to detach any callbacks.
       let userId = this.firebaseRef.getAuth().uid;
       this.firebaseRef.child(`users/${userId}/my_sessions`).off();
+      this.firebaseRef.child(`users/${userId}/feedback`).off();
       // Unauthorize the Firebase reference.
       this.firebaseRef.unauth();
       if (window.ENV !== 'prod') {
@@ -176,6 +178,17 @@ class IOFirebase {
   }
 
   /**
+   * Register to get updates on saved session feedback. This should also be used to get the initial
+   * list of saved session feedback.
+   *
+   * @param {IOFirebase~updateCallback} callback A callback function that will be called with the
+   *     data for each saved session feedback when they get updated.
+   */
+  registerToFeedbackUpdates(callback) {
+    this._registerToUpdates('feedback', callback);
+  }
+
+  /**
    * Register to get updates on the given user data attribute.
    *
    * @private
@@ -225,30 +238,17 @@ class IOFirebase {
   }
 
   /**
-   * Provide feedback for a session.
+   * Mark that user has provided feedback for a session.
    *
    * @param {string} sessionUUID The session's UUID.
-   * @param {number|null} sessionRating The session's rating from 1 to 5 or `null` if it was not
-   *     provided.
-   * @param {number|null} relevanceRating The session's relevance rating from 1 to 5 or `null` if it
-   *     was not provided.
-   * @param {number|null} contentRating The session's content rating from 1 to 5 or `null` if it was
-   *     not provided.
-   * @param {number|null} speakerQualityRating The session's speaker quality rating from 1 to 5 or
-   *     `null` if it was not provided.
    * @param {number=} timestamp The timestamp when the feedback was provided. Use this to replay
    *     offline changes. If not provided the current timestamp will be used.
    * @return {Promise} Promise to track completion.
    */
-  addFeedbackForSession(sessionUUID, sessionRating, relevanceRating, contentRating,
-                        speakerQualityRating, timestamp) {
+  markSessionRated(sessionUUID, timestamp) {
     let value = {};
     value[sessionUUID] = {
-      timestamp: timestamp ? timestamp + this.clockOffset : Firebase.ServerValue.TIMESTAMP,
-      session_rating: sessionRating,
-      relevance_rating: relevanceRating,
-      content_rating: contentRating,
-      speaker_quality_rating: speakerQualityRating
+      timestamp: timestamp ? timestamp + this.clockOffset : Firebase.ServerValue.TIMESTAMP
     };
     return this._updateFirebaseUserData('feedback', value);
   }

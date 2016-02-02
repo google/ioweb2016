@@ -443,7 +443,7 @@ Fired when the user toggles bookmarking/removing a session.
           e.stopPropagation();
           this.fire('session-bookmark', {
             session: e.model.session,
-            save: e.target.checked
+            saved: e.target.checked
           });
         },
 
