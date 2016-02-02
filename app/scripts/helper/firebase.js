@@ -98,6 +98,10 @@ class IOFirebase {
    */
   unAuth() {
     if (this.firebaseRef) {
+      // Make sure to detach any callbacks.
+      let userId = this.firebaseRef.getAuth().uid;
+      this.firebaseRef.child(`users/${userId}/my_sessions`).off();
+      // Unauthorize the Firebase reference.
       this.firebaseRef.unauth();
       if (window.ENV !== 'prod') {
         console.log('Unauthorized Firebase');
