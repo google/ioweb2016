@@ -181,6 +181,13 @@ limitations under the License.
         z-index: 1;
       };
     }
+    /* Smooth scroll!
+       https://developers.google.com/web/updates/2016/02/smooth-scrolling-in-chrome-49 */
+    #headerpanel.smoothscroll {
+      --paper-header-panel-waterfall-container: {
+        scroll-behavior: smooth;
+      };
+    }
 
     paper-dropdown-menu.white {
       --paper-input-container-color: inherit;
