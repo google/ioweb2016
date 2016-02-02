@@ -178,15 +178,15 @@ class Schedule {
           if (data && data.bookmarked && savedSessions.indexOf(sessionId) === -1) {
             // Add session to bookmarked sessions.
             template.push('app.savedSessions', sessionId);
-            template.set('app.scheduleData.sessions', sessionsListIndex, 'saved', true);
+            template.set(`app.scheduleData.sessions.${sessionsListIndex}.saved`, true);
 
             if (window.ENV !== 'prod') {
               console.log(`Session ${sessionId} bookmarked!`);
             }
-          } else if (savedSessionsListIndex !== -1) {
+          } else if (data && !data.bookmarked && savedSessionsListIndex !== -1) {
             // Remove the session from the bookmarks if present.
             template.splice('app.savedSessions', savedSessionsListIndex, 1);
-            template.set('app.scheduleData.sessions', sessionsListIndex, 'saved', false);
+            template.set(`app.scheduleData.sessions.${sessionsListIndex}.saved`, false);
 
             if (window.ENV !== 'prod') {
               console.log(`Session ${sessionId} removed from bookmarks!`);
@@ -203,7 +203,7 @@ class Schedule {
           if (savedFeedback.indexOf(sessionId) === -1) {
             // Add feedback to saved feedbacks.
             template.push('app.savedSurveys', sessionId);
-            template.set('app.scheduleData.sessions', sessionsListIndex, 'rated', true);
+            template.set(`app.scheduleData.sessions.${sessionsListIndex}.rated`, true);
 
             if (window.ENV !== 'prod') {
               console.log(`Session ${sessionId} has received feedback!`);
