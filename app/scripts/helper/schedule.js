@@ -16,43 +16,70 @@
 
 self.IOWA = self.IOWA || {};
 
-IOWA.Schedule = (function() {
-  'use strict';
+class Schedule {
 
-  const SCHEDULE_ENDPOINT = 'api/v1/schedule';
-  const SCHEDULE_ENDPOINT_USERS = 'api/v1/user/schedule';
-  const SURVEY_ENDPOINT_USERS = 'api/v1/user/survey';
-  const QUEUED_SESSION_UPDATES_DB_NAME = 'toolbox-offline-session-updates';
+  /**
+   * Name of the local DB table keeping the queued updates to the API endpoint.
+   * @static
+   * @constant
+   * @type {string}
+   */
+  static get QUEUED_SESSION_API_UPDATES_DB_NAME() {
+    return 'toolbox-offline-session-updates';
+  }
 
-  var scheduleData_ = null;
-  var cache = {
-    userSavedSessions: [],
-    userSavedSurveys: []
-  };
+  /**
+   * Schedule API endpoint.
+   * @static
+   * @constant
+   * @type {string}
+   */
+  static get SCHEDULE_ENDPOINT() {
+    return 'api/v1/schedule';
+  }
 
-  // A promise fulfilled by the loaded schedule.
-  var scheduleDeferredPromise = null;
+  /**
+   * Survey API endpoint.
+   * @static
+   * @constant
+   * @type {string}
+   */
+  static get SURVEY_ENDPOINT_USERS() {
+    return 'api/v1/user/survey';
+  }
 
-  // The resolve function for scheduleDeferredPromise;
-  var scheduleDeferredPromiseResolver = null;
+  constructor() {
+    this.scheduleData_ = null;
+
+    this.cache = {
+      userSavedSessions: [],
+      userSavedSurveys: []
+    };
+
+    // A promise fulfilled by the loaded schedule.
+    this.scheduleDeferredPromise = null;
+
+    // The resolve function for scheduleDeferredPromise;
+    this.scheduleDeferredPromiseResolver = null;
+  }
 
   /**
    * Create the deferred schedule-fetching promise `scheduleDeferredPromise`.
    * @private
    */
-  function createScheduleDeferred_() {
-    var scheduleDeferred = IOWA.Util.createDeferred();
-    scheduleDeferredPromiseResolver = scheduleDeferred.resolve;
-    scheduleDeferredPromise = scheduleDeferred.promise.then(function(data) {
-      scheduleData_ = data.scheduleData;
+  createScheduleDeferred_() {
+    let scheduleDeferred = IOWA.Util.createDeferred();
+    this.scheduleDeferredPromiseResolver = scheduleDeferred.resolve;
+    this.scheduleDeferredPromise = scheduleDeferred.promise.then(data => {
+      this.scheduleData_ = data.scheduleData;
 
-      var template = IOWA.Elements.Template;
+      let template = IOWA.Elements.Template;
       template.set('app.scheduleData', data.scheduleData);
       template.set('app.filterSessionTypes', data.tags.filterSessionTypes);
       template.set('app.filterThemes', data.tags.filterThemes);
       template.set('app.filterTopics', data.tags.filterTopics);
 
-      return scheduleData_;
+      return this.scheduleData_;
     });
   }
 
@@ -62,14 +89,14 @@ IOWA.Schedule = (function() {
    * triggering a request for it, use `schedulePromise`.
    * @return {Promise} Resolves with response schedule data.
    */
-  function fetchSchedule() {
-    if (scheduleData_) {
-      return Promise.resolve(scheduleData_);
+  fetchSchedule() {
+    if (this.scheduleData_) {
+      return Promise.resolve(this.scheduleData_);
     }
 
-    return IOWA.Request.xhrPromise('GET', SCHEDULE_ENDPOINT, false).then(function(resp) {
-      scheduleData_ = resp;
-      return scheduleData_;
+    return IOWA.Request.xhrPromise('GET', Schedule.SCHEDULE_ENDPOINT, false).then(resp => {
+      this.scheduleData_ = resp;
+      return this.scheduleData_;
     });
   }
 
@@ -77,24 +104,24 @@ IOWA.Schedule = (function() {
    * Returns a promise fulfilled when the master schedule is loaded.
    * @return {!Promise} Resolves with response schedule data.
    */
-  function schedulePromise() {
-    if (!scheduleDeferredPromise) {
-      createScheduleDeferred_();
+  schedulePromise() {
+    if (!this.scheduleDeferredPromise) {
+      this.createScheduleDeferred_();
     }
 
-    return scheduleDeferredPromise;
+    return this.scheduleDeferredPromise;
   }
 
   /**
    * Resolves the schedule-fetching promise.
    * @param {{scheduleData, tags}} data
    */
-  function resolveSchedulePromise(data) {
-    if (!scheduleDeferredPromiseResolver) {
-      createScheduleDeferred_();
+  resolveSchedulePromise(data) {
+    if (!this.scheduleDeferredPromiseResolver) {
+      this.createScheduleDeferred_();
     }
 
-    scheduleDeferredPromiseResolver(data);
+    this.scheduleDeferredPromiseResolver(data);
   }
 
   /**
@@ -104,16 +131,22 @@ IOWA.Schedule = (function() {
    * response. It then tries to fetch a fresh copy of the data from the network, saves the response
    * locally in memory, and resolves the promise with that response.
    * @param {string} url The address of the resource.
-   * @param {Array} resourceCache A variable name to store the cached resource.
+   * @param {string} resourceCache A variable name to store the cached resource.
    * @param {function} callback The callback to execute when the user survey data is available.
    */
-  function fetchResource(url, resourceCache, callback) {
-    if (cache[resourceCache].length) {
-      callback(cache[resourceCache]);
+  // TODO: change and use this to cache Firebase requests instead of API requests.
+  // TODO: Might want to move all caching logic inside IOFirebase (not sure).
+  // TODO: Currently this is not being called.
+  // TODO: Might be best to change that to a "read from cache" instead of keeping it as a more
+  // TODO: generic "fetch" that does both cache+fetch because that's not really how Firebase works.
+  // TODO: Firebase relies only on events.
+  fetchResource(url, resourceCache, callback) {
+    if (this.cache[resourceCache].length) {
+      callback(this.cache[resourceCache]);
     } else {
-      var callbackWrapper = function(resource) {
-        cache[resourceCache] = resource || [];
-        callback(cache[resourceCache]);
+      let callbackWrapper = resource => {
+        this.cache[resourceCache] = resource || [];
+        callback(this.cache[resourceCache]);
       };
 
       IOWA.Request.cacheThenNetwork(url, callback, callbackWrapper, true);
@@ -121,41 +154,62 @@ IOWA.Schedule = (function() {
   }
 
   /**
-   * Fetches the user's saved sessions.
-   * If this is the first time it's been called, then uses the cache-then-network strategy to
-   * first try to read the data stored in the Cache Storage API, and invokes the callback with that
-   * response. It then tries to fetch a fresh copy of the data from the network, saves the response
-   * locally in memory, and resolves the promise with that response.
-   * @param {function} callback The callback to execute when the user schedule data is available.
-   */
-  function fetchUserSchedule(callback) {
-    fetchResource(SCHEDULE_ENDPOINT_USERS, 'userSavedSessions', callback);
-  }
-
-  /**
-   * Wait for the master schedule to have loaded, then use `fetchUserSchedule`
-   * to fetch the user's schedule and finally bind it for display.
-   * loadUserSchedule() doesn't wait for the user to be signed in, so ensure that there is a
+   * Wait for the master schedule to have loaded, then use `IOFirebase.registerToSessionUpdates()`
+   * to fetch the initial user's schedule, bind it for display and listen for further updates.
+   * registerToSessionUpdates() doesn't wait for the user to be signed in, so ensure that there is a
    * signed-in user before calling this function.
    */
-  function loadUserSchedule() {
+  loadUserSchedule() {
     // Only fetch their schedule if the worker has responded with the master schedule.
-    schedulePromise().then(function() {
+    this.schedulePromise().then(() => {
       IOWA.Elements.Template.set('app.scheduleFetchingUserData', true);
 
-      // Fetch user's saved sessions.
-      fetchUserSchedule(function(savedSessions) {
-        var template = IOWA.Elements.Template;
-        template.set('app.scheduleFetchingUserData', false);
-        template.set('app.savedSessions', savedSessions);
-        updateSavedSessionsUI(template.app.savedSessions);
-      });
+      // TODO: read user schedule and saved surveys list from cache first.
 
-      // Fetch user's rated sessions.
-      fetchResource(SURVEY_ENDPOINT_USERS, 'userSavedSurveys', function(savedSurveys) {
-        var template = IOWA.Elements.Template;
-        template.set('app.savedSurveys', savedSurveys);
-        updateRatedSessions(savedSurveys);
+      IOWA.Auth.waitForSignedIn('Sign in to add events to My Schedule').then(() => {
+        // Listen to session bookmark updates.
+        IOWA.IOFirebase.registerToSessionUpdates((sessionId, data) => {
+          let template = IOWA.Elements.Template;
+          template.set('app.scheduleFetchingUserData', false);
+          let savedSessions = template.app.savedSessions;
+          let savedSessionsListIndex = savedSessions.indexOf(sessionId);
+          let sessionsListIndex = template.app.scheduleData.sessions.findIndex(
+              session => session.id === sessionId);
+          if (data && data.bookmarked && savedSessions.indexOf(sessionId) === -1) {
+            // Add session to bookmarked sessions.
+            template.push('app.savedSessions', sessionId);
+            template.set('app.scheduleData.sessions', sessionsListIndex, 'saved', true);
+
+            if (window.ENV !== 'prod') {
+              console.log(`Session ${sessionId} bookmarked!`);
+            }
+          } else if (savedSessionsListIndex !== -1) {
+            // Remove the session from the bookmarks if present.
+            template.splice('app.savedSessions', savedSessionsListIndex, 1);
+            template.set('app.scheduleData.sessions', sessionsListIndex, 'saved', false);
+
+            if (window.ENV !== 'prod') {
+              console.log(`Session ${sessionId} removed from bookmarks!`);
+            }
+          }
+        });
+
+        // Listen to feedback updates.
+        IOWA.IOFirebase.registerToFeedbackUpdates(sessionId => {
+          let template = IOWA.Elements.Template;
+          let savedFeedback = template.app.savedSurveys;
+          let sessionsListIndex = template.app.scheduleData.sessions.findIndex(
+            session => session.id === sessionId);
+          if (savedFeedback.indexOf(sessionId) === -1) {
+            // Add feedback to saved feedbacks.
+            template.push('app.savedSurveys', sessionId);
+            template.set('app.scheduleData.sessions', sessionsListIndex, 'rated', true);
+
+            if (window.ENV !== 'prod') {
+              console.log(`Session ${sessionId} has received feedback!`);
+            }
+          }
+        });
       });
     });
   }
@@ -167,16 +221,14 @@ IOWA.Schedule = (function() {
    *     should be removed.
    * @return {Promise} Resolves with the server's response.
    */
-  function saveSession(sessionId, save) {
+  saveSession(sessionId, save) {
     IOWA.Analytics.trackEvent('session', 'bookmark', save ? 'save' : 'remove');
-
-    return IOWA.Auth.waitForSignedIn('Sign in to add events to My Schedule').then(function() {
+    return IOWA.Auth.waitForSignedIn('Sign in to add events to My Schedule').then(() => {
       IOWA.Elements.Template.set('app.scheduleFetchingUserData', true);
-
-      var url = SCHEDULE_ENDPOINT_USERS + '/' + sessionId;
-      var method = save ? 'PUT' : 'DELETE';
-      return submitSessionRequest(url, method, null,
-        'Unable to modify My Schedule.', clearCachedUserSchedule);
+      return IOWA.IOFirebase.toggleSession(sessionId, save)
+          .then(() => this.clearCachedUserSchedule())
+          .catch(error => IOWA.Elements.Toast.showMessage(
+              error + ' The change will be retried on your next visit.'));
     });
   }
 
@@ -189,17 +241,17 @@ IOWA.Schedule = (function() {
    * @param {function} callback Callback to be called with the resource.
    * @return {Promise} Resolves with the server's response.
    */
-  function submitSessionRequest(url, method, payload, errorMsg, callback) {
+  submitSessionRequest(url, method, payload, errorMsg, callback) {
     return IOWA.Request.xhrPromise(method, url, true, payload)
-      .then(callback)
-      .catch(function(error) {
+      .then(callback.bind(this))
+      .catch(error => {
         // error will be an XMLHttpRequestProgressEvent if the xhrPromise()
         // was rejected due to a network error.
         // Otherwise, error will be a Error object.
         if ('serviceWorker' in navigator && XMLHttpRequestProgressEvent &&
-            error instanceof XMLHttpRequestProgressEvent) {
+          error instanceof XMLHttpRequestProgressEvent) {
           IOWA.Elements.Toast.showMessage(
-              errorMsg + ' The change will be retried on your next visit.');
+            errorMsg + ' The change will be retried on your next visit.');
         } else {
           IOWA.Elements.Toast.showMessage(errorMsg);
         }
@@ -213,16 +265,17 @@ IOWA.Schedule = (function() {
    * @param {Object} answers An object with question/answer pairs.
    * @return {Promise} Resolves with the server's response.
    */
-  function saveSurvey(sessionId, answers) {
+  saveSurvey(sessionId, answers) {
     IOWA.Analytics.trackEvent('session', 'rate', sessionId);
 
-    return IOWA.Auth.waitForSignedIn('Sign in to submit feedback').then(function() {
-      var url = SURVEY_ENDPOINT_USERS + '/' + sessionId;
-      var callback = function(response) {
+    return IOWA.Auth.waitForSignedIn('Sign in to submit feedback').then(() => {
+      let url = `${Schedule.SURVEY_ENDPOINT_USERS}/${sessionId}`;
+      let callback = response => {
         IOWA.Elements.Template.set('app.savedSurveys', response);
+        IOWA.IOFirebase.markSessionRated(sessionId);
       };
-      return submitSessionRequest(
-          url, 'PUT', answers, 'Unable to save feedback results.', callback);
+      return this.submitSessionRequest(
+        url, 'PUT', answers, 'Unable to save feedback results.', callback);
     });
   }
 
@@ -232,23 +285,22 @@ IOWA.Schedule = (function() {
    * @param {string=} opt_message Optional override message for the
    * "Added to My Schedule" toast.
    */
-  function bookmarkSessionNotification(saved, opt_message) {
-    var message = opt_message || 'You\'ll get a notification when it starts.';
-    var template = IOWA.Elements.Template;
+  bookmarkSessionNotification(saved, opt_message) {
+    let message = opt_message || 'You\'ll get a notification when it starts.';
+    let template = IOWA.Elements.Template;
 
     if (saved) {
-      // If IOWA.Elements.Template.dontAutoSubscribe is true, this promise will reject immediately, and we'll just
-      // add the session without attempting to auto-subscribe.
-      return IOWA.Notifications.subscribePromise(template.app.dontAutoSubscribe).then(function() {
+      // If IOWA.Elements.Template.dontAutoSubscribe is true, this promise will reject immediately,
+      // and we'll just add the session without attempting to auto-subscribe.
+      return IOWA.Notifications.subscribePromise(template.app.dontAutoSubscribe).then(() => {
         IOWA.Elements.Toast.showMessage('Added to My Schedule. ' + message);
-      }).catch(function(error) {
+      }).catch(error => {
         template.set('app.dontAutoSubscribe', true);
         if (error && error.name === 'AbortError') {
           // AbortError indicates that the subscription couldn't be completed due to the page
-          // persmissions for notifications being set to denied.
-          IOWA.Elements.Toast.showMessage('Added to My Schedule. Want to enable notifications?', null, 'Learn how', function() {
-            window.open('permissions', '_blank');
-          });
+          // permissions for notifications being set to denied.
+          IOWA.Elements.Toast.showMessage('Added to My Schedule. Want to enable notifications?',
+              null, 'Learn how', () => window.open('permissions', '_blank'));
         } else {
           // If the subscription failed for some other reason, like because we're not
           // auto-subscribing, show the normal toast.
@@ -259,14 +311,14 @@ IOWA.Schedule = (function() {
     IOWA.Elements.Toast.showMessage('Removed from My Schedule');
   }
 
-  function generateFilters(tags = {}) {
-    var filterSessionTypes = [];
-    var filterThemes = [];
-    var filterTopics = [];
+  generateFilters(tags = {}) {
+    let filterSessionTypes = [];
+    let filterThemes = [];
+    let filterTopics = [];
 
-    var sortedTags = Object.keys(tags).map(function(tag) {
+    let sortedTags = Object.keys(tags).map(tag => {
       return tags[tag];
-    }).sort(function(a, b) {
+    }).sort((a, b) => {
       if (a.order_in_category < b.order_in_category) {
         return -1;
       }
@@ -276,8 +328,8 @@ IOWA.Schedule = (function() {
       return 0;
     });
 
-    for (var i = 0; i < sortedTags.length; ++i) {
-      var tag = sortedTags[i];
+    for (let i = 0; i < sortedTags.length; ++i) {
+      let tag = sortedTags[i];
       switch (tag.category) {
         case 'TYPE':
           filterSessionTypes.push(tag.name);
@@ -298,42 +350,23 @@ IOWA.Schedule = (function() {
     };
   }
 
-  function updateSavedSessionsUI(savedSessions) {
-    //  Mark/unmarked sessions the user has bookmarked.
-    var template = IOWA.Elements.Template;
-    var sessions = template.app.scheduleData.sessions;
-    for (var i = 0; i < sessions.length; ++i) {
-      var isSaved = savedSessions.indexOf(sessions[i].id) !== -1;
-      template.set('app.scheduleData.sessions', i, 'saved', isSaved);
-    }
-  }
-
-  function updateRatedSessions(savedSurveys) {
-    var template = IOWA.Elements.Template;
-    var sessions = template.app.scheduleData.sessions;
-    for (var i = 0; i < sessions.length; ++i) {
-      var isRated = savedSurveys.indexOf(sessions[i].id) !== -1;
-      template.set('app.scheduleData.sessions', i, 'rated', isRated);
-    }
-  }
-
-  function clearCachedUserSchedule() {
-    cache.userSavedSessions = [];
+  clearCachedUserSchedule() {
+    this.cache.userSavedSessions = [];
   }
 
   /**
    * Clear all user schedule data from display.
    */
-  function clearUserSchedule() {
-    var template = IOWA.Elements.Template;
+  clearUserSchedule() {
+    let template = IOWA.Elements.Template;
     template.set('app.savedSessions', []);
-    updateSavedSessionsUI(template.app.savedSessions);
-    clearCachedUserSchedule();
+    Schedule.updateSavedSessionsUI(template.app.savedSessions);
+    this.clearCachedUserSchedule();
   }
 
-  function getSessionById(sessionId) {
-    for (var i = 0; i < scheduleData_.sessions.length; ++i) {
-      var session = scheduleData_.sessions[i];
+  getSessionById(sessionId) {
+    for (let i = 0; i < this.scheduleData_.sessions.length; ++i) {
+      let session = this.scheduleData_.sessions[i];
       if (session.id === sessionId) {
         return session;
       }
@@ -347,31 +380,35 @@ IOWA.Schedule = (function() {
    *
    * @return {Promise} Resolves once the replay attempts are done, whether or not they succeeded.
    */
-  function replayQueuedRequests() {
+  // TODO: Not sure of this is ever called now. Might need to change this to Firebase stuff.
+  replayQueuedRequests() {
     // Only bother checking for queued requests if we're on a browser with service worker support,
     // since they can't be queued otherwise. This has a side effect of working around a bug in
     // Safari triggered by the simpleDB library.
     if ('serviceWorker' in navigator) {
-      return simpleDB.open(QUEUED_SESSION_UPDATES_DB_NAME).then(function(db) {
-        var replayPromises = [];
-        // forEach is a special method implemented by SimpleDB, and isn't the normal Array.forEach.
-        return db.forEach(function(url, method) {
-          var replayPromise = IOWA.Request.xhrPromise(method, url, true).then(function() {
-            return db.delete(url).then(function() {
-              return true;
+      // Replay the queued /API requests.
+      let queuedSessionApiUpdates = simpleDB.open(Schedule.QUEUED_SESSION_API_UPDATES_DB_NAME).then(
+        db => {
+          let replayPromises = [];
+          // forEach is a special method implemented by SimpleDB. It's not the normal Array.forEach.
+          return db.forEach(function(url, method) {
+            let replayPromise = IOWA.Request.xhrPromise(method, url, true).then(function() {
+              return db.delete(url).then(function() {
+                return true;
+              });
             });
+            replayPromises.push(replayPromise);
+          }).then(() => {
+            if (replayPromises.length) {
+              return Promise.all(replayPromises).then(() =>
+                IOWA.Elements.Toast.showMessage('My Schedule was updated with offline changes.'));
+            }
           });
-          replayPromises.push(replayPromise);
-        }).then(function() {
-          if (replayPromises.length) {
-            return Promise.all(replayPromises).then(function() {
-              IOWA.Elements.Toast.showMessage('My Schedule was updated with offline changes.');
-            });
-          }
+        }).catch(() => {
+          IOWA.Elements.Toast.showMessage('Offline changes could not be applied to My Schedule.');
         });
-      }).catch(function() {
-        IOWA.Elements.Toast.showMessage('Offline changes could not be applied to My Schedule.');
-      });
+
+      return Promise.all([queuedSessionApiUpdates]);
     }
 
     return Promise.resolve();
@@ -381,27 +418,12 @@ IOWA.Schedule = (function() {
    * Deletes the IndexedDB database used to queue up failed requests.
    * Useful when, e.g., the user has logged out.
    *
+   * @static
    * @return {Promise} Resolves once the IndexedDB database is deleted.
    */
-  function clearQueuedRequests() {
-    return simpleDB.delete(QUEUED_SESSION_UPDATES_DB_NAME);
+  static clearQueuedRequests() {
+    return simpleDB.delete(Schedule.QUEUED_SESSION_UPDATES_DB_NAME);
   }
+}
 
-  return {
-    bookmarkSessionNotification,
-    clearCachedUserSchedule,
-    fetchSchedule,
-    schedulePromise,
-    resolveSchedulePromise,
-    fetchUserSchedule,
-    loadUserSchedule,
-    saveSession,
-    saveSurvey,
-    generateFilters,
-    getSessionById,
-    updateSavedSessionsUI,
-    replayQueuedRequests,
-    clearQueuedRequests,
-    clearUserSchedule
-  };
-})();
+IOWA.Schedule = IOWA.Schedule || new Schedule();

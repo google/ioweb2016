@@ -110,7 +110,7 @@
 
       // Check to see if there are any failed session modification requests, and
       // if so, replay them before fetching the user schedule.
-      IOWA.Schedule.replayQueuedRequests().then(IOWA.Schedule.loadUserSchedule);
+      IOWA.Schedule.replayQueuedRequests().then(IOWA.Schedule.loadUserSchedule.bind(IOWA.Schedule));
 
       // If the user hasn't denied notifications permission in the current browser,
       // and the user has notifications turned on globally (i.e. in at least one other browser),
@@ -128,7 +128,7 @@
         });
       }
     } else {
-      IOWA.IOFirebase.unauth();
+      IOWA.IOFirebase.unAuth();
       IOWA.Schedule.clearUserSchedule();
     }
   });
