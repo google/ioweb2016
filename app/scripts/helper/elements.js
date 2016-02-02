@@ -71,7 +71,9 @@ IOWA.Elements = (function() {
     IOWA.Elements.Footer = footer;
     IOWA.Elements.GoogleSignIn = signin;
     IOWA.Elements.LazyPages = lazyPages;
-    IOWA.Elements.ScrollContainer = IOWA.Elements.Template.$.headerpanel.scroller;
+
+    var headerPanel = IOWA.Elements.Template.$.headerpanel;
+    IOWA.Elements.ScrollContainer = headerPanel.scroller;
 
     // Kickoff a11y helpers for elements
     IOWA.A11y.init();
@@ -96,6 +98,10 @@ IOWA.Elements = (function() {
     // Sign-in defaults.
     template.isSignedIn = false;
     template.currentUser = null;
+
+    // FAB scrolling effect caches.
+    template._scrollerHeight = null;
+    template._fabPinTopAt = null;
 
     IOWA.Util.setMetaThemeColor('#CFD8DC'); // bg-medium-grey in colors.scss.
 
@@ -327,7 +333,12 @@ IOWA.Elements = (function() {
 
     template.backToTop = function(e) {
       e.preventDefault();
+
+      this.$.headerpanel.classList.add('smoothscroll');
+      this.$.headerpanel.updateStyles(); // force css shim update.
       IOWA.Elements.ScrollContainer.scrollTop = 0;
+      this.$.headerpanel.classList.remove('smoothscroll');
+      this.$.headerpanel.updateStyles(); // force css shim update.
     };
 
     template.onCountdownTimerThreshold = function(e, detail) {
@@ -432,6 +443,45 @@ IOWA.Elements = (function() {
       }
     };
 
+    template.initFabScroll = function() {
+      var scroller = IOWA.Elements.ScrollContainer;
+      var footerMargin = parseInt(
+          getComputedStyle(IOWA.Elements.Footer).marginTop, 10);
+
+      this._scrollerHeight = scroller.clientHeight;
+      this._fabPinTopAt = scroller.scrollHeight -
+                          IOWA.Elements.Footer.clientHeight - footerMargin;
+
+      this.unlisten(this.$.headerpanel, 'content-scroll', '_onContentScroll');
+
+      if (!this.app.isPhoneSize) {
+        this.listen(this.$.headerpanel, 'content-scroll', '_onContentScroll');
+      }
+    };
+
+    template._onContentScroll = function(e, detail) {
+      var scrollTop = detail.target.scrollTop;
+
+      // Hide back to top FAB if user is at the top.
+      var MIN_SCROLL_BEFORE_SHOW = 100;
+      if (scrollTop <= MIN_SCROLL_BEFORE_SHOW) {
+        this.$.fab.classList.remove('active');
+        return; // cut out early.
+      }
+
+      this.$.fab.classList.add('active'); // Reveal FAB.
+
+      var scrollDiff = this._fabPinTopAt - scrollTop;
+      if (scrollDiff <= this._scrollerHeight) {
+        this.$.fab.classList.remove('fixed');
+        var OFFSET_TO_PIN_AT = 100; // FAB sticks 100px from bottom of the card.
+        this.$.fab.style.top = (this._fabPinTopAt - OFFSET_TO_PIN_AT) + 'px';
+      } else {
+        this.$.fab.style.top = '';
+        this.$.fab.classList.add('fixed');
+      }
+    };
+
     template._isPage = function(page, selectedPage) {
       return page === selectedPage;
     };
@@ -449,6 +499,8 @@ IOWA.Elements = (function() {
     template.addEventListener('page-transition-done', function() {
       this.set('app.pageTransitionDone', true);
       IOWA.Elements.NavPaperTabs.style.pointerEvents = '';
+
+      this.initFabScroll(); // init FAB scrolling behavior.
     });
 
     template.addEventListener('page-transition-start', function() {

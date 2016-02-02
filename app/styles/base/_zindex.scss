@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+.card__container {
+  z-index: 1;
+}
+
 #page-schedule .masthead-meta,
 .card__signin-intro {
   z-index: 4;

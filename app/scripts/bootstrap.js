@@ -93,7 +93,11 @@
   // });
 
   window.addEventListener('resize', function() {
-    IOWA.Elements.Template.closeDrawer();
+    IOWA.Elements.Template.debounce('resize', function() {
+      this.closeDrawer();
+      // remove fab sticky scrolling behavior for mobile. Add for desktop.
+      this.initFabScroll();
+    }, 400);
   });
 
   window.addEventListener('offline', function() {
