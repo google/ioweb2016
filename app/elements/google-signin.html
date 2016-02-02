@@ -96,7 +96,7 @@ Fired when sign in fails for some reason.
             type: Object,
             value: null,
             notify: true
-          },
+          }
         },
 
         created: function() {
@@ -140,7 +140,9 @@ Fired when sign in fails for some reason.
               this.user = {
                 id: this.currentUser.getId(),
                 tokenResponse: token,
-                picture: e.result.image.url || 'images/schedule/profile_placeholder.png'
+                picture: e.result.image.url || 'images/schedule/profile_placeholder.png',
+                name: e.result.displayName,
+                email: e.result.emails && e.result.emails.length ? e.result.emails[0].value : null
               };
               this.fire('signin-change', {signedIn: true, user: this.user});
             }.bind(this));
