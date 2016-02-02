@@ -82,13 +82,14 @@ class IOFirebase {
           console.error('Login to Firebase Failed!', error);
         }
       } else {
-        this.bumpLastActivityTimestamp();
+        this._bumpLastActivityTimestamp();
         IOWA.Analytics.trackEvent('login', 'success', firebaseShardUrl);
         if (window.ENV !== 'prod') {
           console.log('Authenticated successfully to Firebase shard', firebaseShardUrl);
         }
       }
     });
+
     // Update the clock offset.
     this._updateClockOffset();
   }
@@ -121,6 +122,20 @@ class IOFirebase {
         }
       });
     }
+  }
+
+  /**
+   * Update the user's last activity timestamp and make sure it will be updated when the user
+   * disconnects.
+   *
+   * @private
+   * @return {Promise} Promise to track completion.
+   */
+  _bumpLastActivityTimestamp() {
+    let userId = this.firebaseRef.getAuth().uid;
+    this.firebaseRef.child(`users/${userId}/last_activity_timestamp`).onDisconnect().set(
+      Firebase.ServerValue.TIMESTAMP);
+    return this._setFirebaseUserData('last_activity_timestamp', Firebase.ServerValue.TIMESTAMP);
   }
 
   /**
@@ -270,15 +285,6 @@ class IOFirebase {
   }
 
   /**
-   * Sets the user's last activity timestamp to now.
-   *
-   * @return {Promise} Promise to track completion.
-   */
-  bumpLastActivityTimestamp() {
-    return this._setFirebaseUserData('last_activity_timestamp', Firebase.ServerValue.TIMESTAMP);
-  }
-
-  /**
    * Update the given attribute of Firebase User data to the given value.
    *
    * @private
@@ -309,7 +315,7 @@ class IOFirebase {
    *
    * @private
    * @param {string} attribute The attribute to set in the user's data.
-   * @param {string|number} value The value to give to the attribute.
+   * @param {string|number|Object} value The value to give to the attribute.
    * @return {Promise} Promise to track completion.
    */
   _setFirebaseUserData(attribute, value) {
