@@ -268,7 +268,7 @@ paper-progress {
 }
 
 #fab {
-  position: relative;
+  position: absolute;
   left: 0;
   right: 0;
   bottom: 40px;
@@ -291,8 +291,9 @@ paper-progress {
   }
 
   paper-fab {
-    background: $color-indigo-a200;
-    transition: transform 400ms cubic-bezier(0,0,0.2,1);
+    background: #fff;
+    color: inherit;
+    transition: transform 300ms cubic-bezier(0,0,0.2,1);
     will-change: transform;
     transform: scale(0);
     pointer-events: all;

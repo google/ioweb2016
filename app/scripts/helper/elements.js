@@ -75,8 +75,6 @@ IOWA.Elements = (function() {
     var headerPanel = IOWA.Elements.Template.$.headerpanel;
     IOWA.Elements.ScrollContainer = headerPanel.scroller;
 
-    this.initFabScroll();
-
     // Kickoff a11y helpers for elements
     IOWA.A11y.init();
   }
@@ -98,6 +96,10 @@ IOWA.Elements = (function() {
     // Sign-in defaults.
     template.isSignedIn = false;
     template.currentUser = null;
+
+    // FAB scrolling effect caches.
+    template._scrollerHeight = null;
+    template._fabPinTopAt = null;
 
     IOWA.Util.setMetaThemeColor('#CFD8DC'); // bg-medium-grey in colors.scss.
 
@@ -435,6 +437,14 @@ IOWA.Elements = (function() {
     };
 
     template.initFabScroll = function() {
+      var scroller = IOWA.Elements.ScrollContainer;
+      var footerMargin = parseInt(
+          getComputedStyle(IOWA.Elements.Footer).marginTop, 10);
+
+      this._scrollerHeight = scroller.clientHeight;
+      this._fabPinTopAt = scroller.scrollHeight -
+                          IOWA.Elements.Footer.clientHeight - footerMargin;
+
       this.unlisten(this.$.headerpanel, 'content-scroll', '_onContentScroll');
 
       if (!this.app.isPhoneSize) {
@@ -443,31 +453,23 @@ IOWA.Elements = (function() {
     };
 
     template._onContentScroll = function(e, detail) {
-      var scroller = detail.target;
-      var scrollTop = scroller.scrollTop;
+      var scrollTop = detail.target.scrollTop;
 
-      // TODO: consider caching these measurements ahead of time.
-      var scrollerHeight = scroller.clientHeight;
-      var totalScrollHeight = scroller.scrollHeight;
-      var footerHeight = IOWA.Elements.Footer.clientHeight;
-      var footerMargin = parseInt(
-          getComputedStyle(IOWA.Elements.Footer).marginTop, 10);
-
-      var OFFSET_TO_PIN = 100; // FAB sticks 100px from bottom of card.
+      // Hide back to top FAB if user is at the top.
       var MIN_SCROLL_BEFORE_SHOW = 100;
+      if (scrollTop <= MIN_SCROLL_BEFORE_SHOW) {
+        this.$.fab.classList.remove('active');
+        return; // cut out early.
+      }
 
-      this.$.fab.classList.toggle('active', scrollTop > MIN_SCROLL_BEFORE_SHOW);
+      this.$.fab.classList.add('active'); // Reveal FAB.
 
-      var fabPinTopAt = totalScrollHeight - footerHeight - footerMargin;
-
-      var scrollDiff = fabPinTopAt - scrollTop;
-
-      if (scrollDiff <= scrollerHeight) {
+      var scrollDiff = this._fabPinTopAt - scrollTop;
+      if (scrollDiff <= this._scrollerHeight) {
         this.$.fab.classList.remove('fixed');
-        this.$.fab.style.position = 'absolute';
-        this.$.fab.style.top = (fabPinTopAt - OFFSET_TO_PIN) + 'px';
+        var OFFSET_TO_PIN_AT = 100; // FAB sticks 100px from bottom of the card.
+        this.$.fab.style.top = (this._fabPinTopAt - OFFSET_TO_PIN_AT) + 'px';
       } else {
-        this.$.fab.style.position = '';
         this.$.fab.style.top = '';
         this.$.fab.classList.add('fixed');
       }
@@ -490,6 +492,8 @@ IOWA.Elements = (function() {
     template.addEventListener('page-transition-done', function() {
       this.set('app.pageTransitionDone', true);
       IOWA.Elements.NavPaperTabs.style.pointerEvents = '';
+
+      this.initFabScroll(); // init FAB scrolling behavior.
     });
 
     template.addEventListener('page-transition-start', function() {
