@@ -1,43 +1,63 @@
-# The humans responsible & technology colophon - humanstxt.org/
+# The humans responsible & technology colophon - humanstxt.org
 
-# TEAM (SITE)
+# TEAM -----
 
   Eric Bidelman (lead dev) - ebidel
   Jeff Posnick (dev) - jeffposnick
-  Ewa Gasperowicz (dev) - devnook
   Alex Vaghin (dev) - crhym3
-  Paul Lewis (dev) - aerotwist
+  Nicolas Garnier (dev) - nicolasgarnier
   Brendan Kenny (dev) - brendankenny
-  Dan Schechter (design)
-  Chip Truex (design)
-  Evan Gütt (motion design)
 
-# TEAM (Experiment)
-
-  Thomas Reynolds (dev) - tdreyno
-  Alex Mahan (dev) - alexmahan
-  Destin Young (dev) - ourvice
-  Dan Schechter (design)
-  Chip Truex (design)
-  Evan Gütt (sound & motion design)
-  Amie Pascal (production)
-  Bethany Larson (production)
-
-# THANKS
+# THANKS -----
 
   Mat Scales - wibblymat
   Matthew Gaunt - gauntface
-  Jake Archibald - jakearchibald
-  Mat Groves - GoodBoyDigital
+  Frank van Puffelen - puff
 
-# TECHNOLOGY
+# TECHNOLOGY -----
 
-  Polymer / web components - polymer-project.org
-  Service Worker
-  Web Animations API
-  Web Audio API
-  WebGL (Pixi.js)
-  HTML5 / CSS3
-  Go (backend)
+FRONTEND
+  - Polymer 1.0 (polymer-project.org)
+    + web components: html imports, <template>, custom elements, shadow dom
+    + iron elements, paper elements, google web components
+  - ES6
+  - Promises
+  - Web Workers
+  - Service Workers
+    + cache api
+    + fetch() API
+    + Push notifications
+  - IndexedDB
+  - Firebase
+  - MOBILE
+    + add to homescreen
+    + app install banner
+    + <meta name="theme-color">
+  - CSS
+    + SaSS
+    + will-change
+    + scroll-behavior: smooth
+  - Web Animations API
 
-  Gulp / Bower / NPM
+APIS
+  - Firebase
+  - Google Sheets
+  - Google Cloud Messaging (GCM)
+  - Google Analytics
+  - Google Maps API
+  - Google Sign-in
+  - Google+
+  - Google Picasa
+  - YouTube player
+
+BACKEND
+  - Go
+  - App Engine
+  - Firebase REST API
+  - Google Cloud Messaging (GCM)
+
+BUILD
+ - Gulp
+ - Bower
+ - npm
+ - Vulcanize + Crisper
