@@ -1,0 +1,9 @@
+{
+  "public": "dist",
+  "rules": "firebase-security-rules.json",
+  "ignore": [
+    "firebase.json",
+    "**/.*",
+    "**/node_modules/**"
+  ]
+}

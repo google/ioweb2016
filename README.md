@@ -121,9 +121,25 @@ Useful for browsing original CMS data on staging GCS bucket:
 [go/iowastaging/debug/srvget?url=https://storage.googleapis.com/io2015-data-dev.google.com.a.appspot.com/manifest_v1.json](http://go/iowastaging/debug/srvget?url=https://storage.googleapis.com/io2015-data-dev.google.com.a.appspot.com/manifest_v1.json)
 
 
-### List contents of Google Drive AppFolder.
+### Configuring Firebase
 
-TODO
+// TODO: Centralize Firebase DB shards list in server.config files and automate rules upload with Gulp.
+
+You need to create and configure Firebase databases and configure the app to use them.
+First create one or more (depending on how many shards you need) Firebase databases from
+http://firebase.com and note their URL and IDs.
+In `scripts/helper/firebase.js` list the Firebase Database URLs in `FIREBASE_DATABASES_URL`.
+Configure these Firebase databases' rules by running for each database:
+
+```
+firebase login
+firebase deploy:rules -f <firebase-app-id> # e.g. firebase deploy:rules -f iowa-2016-dev
+```
+
+For each Firebase databases, configure Login and Auth on: `https://<firebase-app-id>.firebaseio.com/?page=Auth`
+If the database is going to be used on prod enter `events.google.com` in `Authorized Domains for OAuth Redirects`
+Below click on the `Google` tab then `Enable Google Authentication`
+and provide the `Google Client ID` that you are using for auth.
 
 
 ### Send GCM push notifications
