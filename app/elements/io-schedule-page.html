@@ -100,7 +100,7 @@ limitations under the License.
                   sizing="cover" preload fade fit></iron-image>
       <paper-fab icon="{{_computeSessionSavedIcon(selectedSession.*)}}"
                  mini="[[app.isPhoneSize]]"
-                 class$="[[_addClass('active', selectedSession.saved)]]"
+                 class$="{{_addClass('active', selectedSession.saved)}}"
                  on-up="_onToggleSaveSession"
                  disabled$="{{app.scheduleFetchingUserData}}"></paper-fab>
       <paper-progress indeterminate
