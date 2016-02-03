@@ -24,6 +24,7 @@ html, body {
 
 body {
   color: $color-bluegrey-600;
+  background-color: $color-body;
 }
 
 .noscroll {
@@ -121,6 +122,10 @@ paper-progress {
       margin-right: 0;
     }
   }
+}
+
+.bg-gray {
+  background-color: $color-body;
 }
 
 .bg-light-grey1 {
@@ -312,6 +317,14 @@ paper-progress {
 
   .card__container {
     max-width: $container-max-width + 56px * 3;
+  }
+}
+
+// TODO: relies on shady. Remove when
+// https://github.com/PolymerElements/paper-checkbox/issues/104 is fixed.
+paper-checkbox {
+  #checkmark {
+    box-sizing: content-box;
   }
 }
 

@@ -25,11 +25,6 @@ IOWA.Elements = (function() {
       var dest = document.querySelector('[iologodestination]');
       dest.classList.add('active');
 
-      // Load auth after logo transition is done. This helps timing with
-      // fetching user's schedule and makes sure the worker has returned
-      // the main schedule data.
-      IOWA.Elements.GoogleSignIn.load = true;
-
       // Deep link into a subpage.
       var selectedPageEl = IOWA.Elements.LazyPages.selectedPage;
       var parsedUrl = IOWA.Router.parseUrl(window.location.href);
@@ -89,7 +84,6 @@ IOWA.Elements = (function() {
     template.app.ANALYTICS_LINK_ATTR = ANALYTICS_LINK_ATTR;
     template.app.scheduleData = null;
     template.app.savedSessions = [];
-    template.app.scheduleFetchingUserData = false;
     template.app.dontAutoSubscribe = false;
 
     template.pages = IOWA.PAGES; // defined in auto-generated ../pages.js
@@ -324,7 +318,7 @@ IOWA.Elements = (function() {
       if (attr) {
         IOWA.Analytics.trackEvent('link', 'click', attr);
       }
-      IOWA.Elements.Nav.querySelector('#signin-settings-panel').open();
+      IOWA.Elements.Nav.querySelector('paper-menu-button').open();
     };
 
     template.setSelectedPageToHome = function() {

@@ -100,6 +100,10 @@ paper-drawer-panel {
     }
   }
 
+  paper-menu-button {
+    padding: 0;
+  }
+
   .button-link {
     text-transform: uppercase;
     color: inherit;
@@ -108,11 +112,6 @@ paper-drawer-panel {
 }
 
 #signin-nav-elements {
-  background-color: transparent;
-  /* Should match Polymer/paper-tabs/paper-tab.css#L17 */
-  transition: color .1s cubic-bezier(0.4, 0.0, 1, 1);
-  margin: 0;
-
   & > .button-link {
     padding: 16px 12px;
   }
@@ -243,9 +242,6 @@ paper-drawer-panel {
     paper-tabs {
       display: inline-block;
       margin: 0;
-    }
-    paper-menu-button {
-      padding: 0;
     }
     [paper-drawer-toggle] {
       display: none;
