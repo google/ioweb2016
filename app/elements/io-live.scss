@@ -51,7 +51,7 @@ countdown-timer {
   }
 
   a {
-    color: $color-cyan-A700;
+    color: $color-cyan-A400;
     font-weight: 500;
     text-decoration: none;
   }
@@ -74,7 +74,7 @@ countdown-timer {
   }
 
   h2 {
-    color: $color-heading;
+    // color: $color-heading;
     @include typo-heading-2();
     margin: 0;
 
@@ -85,7 +85,6 @@ countdown-timer {
   paper-fab {
     position: relative;
     background-color: #fff;
-    color: $color-fab-icon;
     z-index: 2;
   }
 }
@@ -143,12 +142,12 @@ countdown-timer {
 
     &.active {
       color: white;
-      background-color: $color-cyan-400;
+      background-color: $color-cyan-A400;
     }
 
     &[disabled] {
       background-color: $color-light-grey-border;
-      color: $color-gray;
+      color: $color-grey1;
     }
   }
 

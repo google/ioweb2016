@@ -22,7 +22,6 @@ limitations under the License.
 
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
-<link rel="import" href="../bower_components/paper-progress/paper-progress.html">
 <link rel="import" href="../bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
@@ -101,10 +100,7 @@ limitations under the License.
       <paper-fab icon="{{_computeSessionSavedIcon(selectedSession.*)}}"
                  mini="[[app.isPhoneSize]]"
                  class$="[[_addClass('active', selectedSession.saved)]]"
-                 on-up="_onToggleSaveSession"
-                 disabled$="{{app.scheduleFetchingUserData}}"></paper-fab>
-      <paper-progress indeterminate
-          hidden$="{{_computeHideSessionDetailProgress(user, app.savedSessions, app.scheduleFetchingUserData)}}"></paper-progress>
+                 on-up="_onToggleSaveSession"></paper-fab>
     </div>
     <div class="session__info__section">
       <h2 class="session__title" tabindex="-1">{{selectedSession.title}}</h2>
@@ -471,7 +467,6 @@ limitations under the License.
           session-topics="[[app.filterTopics]]"
           session-types="[[app.filterSessionTypes]]"
           user-sessions="{{app.savedSessions}}"
-          fetching-user-data="{{app.scheduleFetchingUserData}}"
           filters="{{sessionURLFilters}}"
           on-session-bookmark="_onToggleSaveSession"
           on-session-select="openSession"
@@ -540,9 +535,6 @@ limitations under the License.
     name: 'schedule',
 
     attached: function() {
-      // Reset template variables for when revisiting the page.
-      this.set('app.scheduleFetchingUserData', false);
-
       // TODO: check that this is still needed in paper-tabs.
       IOWA.A11y.addFocusStates(SUBTAB_SELECTOR);
 
@@ -652,7 +644,6 @@ limitations under the License.
         saved = !this.selectedSession.saved;
       }
       IOWA.Schedule.saveSession(this.selectedSession.id, saved).then(function() {
-        this.set('app.scheduleFetchingUserData', false);
         this.set('selectedSession.saved', saved);
         IOWA.Schedule.bookmarkSessionNotification(saved);
       }.bind(this));
@@ -766,10 +757,6 @@ limitations under the License.
       }
       var isFinished = new Date(session.endTimestamp) < Date.now();
       return session.rated || session.id == '__afterhours__' || !isFinished;
-    },
-
-    _computeHideSessionDetailProgress: function(user, sessions, fetching) {
-      return !user || (sessions && !fetching);
     },
 
     _computeSessionSavedIcon: function(selectedSession) {

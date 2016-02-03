@@ -162,15 +162,13 @@ class Schedule {
   loadUserSchedule() {
     // Only fetch their schedule if the worker has responded with the master schedule.
     this.schedulePromise().then(() => {
-      IOWA.Elements.Template.set('app.scheduleFetchingUserData', true);
-
       // TODO: read user schedule and saved surveys list from cache first.
 
       IOWA.Auth.waitForSignedIn('Sign in to add events to My Schedule').then(() => {
         // Listen to session bookmark updates.
         IOWA.IOFirebase.registerToSessionUpdates((sessionId, data) => {
           let template = IOWA.Elements.Template;
-          template.set('app.scheduleFetchingUserData', false);
+
           let savedSessions = template.app.savedSessions;
           let savedSessionsListIndex = savedSessions.indexOf(sessionId);
           let sessionsListIndex = template.app.scheduleData.sessions.findIndex(
@@ -224,7 +222,6 @@ class Schedule {
   saveSession(sessionId, save) {
     IOWA.Analytics.trackEvent('session', 'bookmark', save ? 'save' : 'remove');
     return IOWA.Auth.waitForSignedIn('Sign in to add events to My Schedule').then(() => {
-      IOWA.Elements.Template.set('app.scheduleFetchingUserData', true);
       return IOWA.IOFirebase.toggleSession(sessionId, save)
           .then(() => this.clearCachedUserSchedule())
           .catch(error => IOWA.Elements.Toast.showMessage(

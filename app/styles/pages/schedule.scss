@@ -111,7 +111,6 @@ iron-icon[icon="schedule"] {
   }
 
   .note {
-    color: $color-heading;
     font-size: 14px;
     margin-bottom: 0;
   }
@@ -143,7 +142,6 @@ iron-icon[icon="schedule"] {
   }
 
   .rate__header {
-    color: $color-heading;
     padding: 8px;
   }
 
@@ -253,12 +251,12 @@ iron-icon[icon="schedule"] {
 
     &.active {
       color: white !important;
-      background-color: $color-cyan-400 !important;
+      background-color: $color-google-green-500 !important;
     }
 
     &[disabled] {
       background-color: $color-light-grey-border !important;
-      color: $color-gray !important;
+      color: $color-grey1 !important;
     }
   }
   paper-progress {

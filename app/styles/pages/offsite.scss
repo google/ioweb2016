@@ -70,7 +70,7 @@ google-youtube {
     align-items: flex-start;
 
     paper-button {
-      color: $color-cyan-A400;
+      color: $color-google-green-500;
     }
 
     h4 {
@@ -140,7 +140,7 @@ google-youtube {
     }
 
     a {
-      color: $color-cyan-A700;
+      color: $color-google-green-500;
       text-transform: none;
     }
 
@@ -148,14 +148,14 @@ google-youtube {
       position: absolute;
       right: $mobileKeyline / 2;
       top: $mobileKeyline / 2;
-      color: $color-gray;
+      color: $color-grey1;
     }
   }
 }
 
 .marker-card--closest {
   font-size: 12px;
-  color: $color-gray;
+  color: $color-grey1;
   margin-top: $mobileKeyline / 2;
   display: none;
 

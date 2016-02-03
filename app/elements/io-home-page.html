@@ -14,7 +14,6 @@ limitations under the License.
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
-<link rel="import" href="../bower_components/paper-progress/paper-progress.html">
 <link rel="import" href="../bower_components/google-youtube/google-youtube.html">
 
 <link rel="import" href="../bower_components/neon-animation/animations/scale-up-animation.html">
@@ -93,7 +92,7 @@ limitations under the License.
             <iron-icon icon="io:keyboard-arrow-right"></iron-icon>
           </a>
         </div> -->
-        <div class="card-content box card--top-left-clip bg-indigo typo-white" layout vertical>
+        <div class="card-content box card--top-left-clip bg-google-blue typo-white" layout vertical>
           <h3 class="card__title">May 18-20</h3>
           <h3>
             <a href="https://goo.gl/maps/7hs1NJR3ErG2" target="_blank"
@@ -122,7 +121,7 @@ limitations under the License.
 
         <div class="card-content box card--bottom-left-clip io__hash"
              aria-label="I/O hash tag"></div>
-        <div class="card-content box card--bottom-right-clip bg-cyan">
+        <div class="card-content box card--bottom-right-clip bg-light-grey1">
 
           <social-poller url="[[resolveUrl('../api/v1/social')]]" posts="{{socialPosts}}"
                          interval="30000"></social-poller>
@@ -167,14 +166,6 @@ limitations under the License.
       date: {
         type: String,
         value: 'May 10 2016 09:00:00 GMT-0700 (PDT)'
-      },
-
-      /**
-       * Toggles the save progress bar for being reminded about I/O.
-       */
-      _ioReminder: {
-        type: Boolean,
-        value: false
       }
     },
 
@@ -199,11 +190,7 @@ limitations under the License.
     _onSetReminder: function(e, detail) {
       e.preventDefault();
 
-      this._ioReminder = true;
-
       IOWA.Schedule.saveSession('__keynote__', true).then(function() {
-        this._ioReminder = false;
-
         var savedSessions = this.app.savedSessions;
         if (savedSessions.length) {
           IOWA.Schedule.updateSavedSessionsUI(savedSessions);

@@ -27,7 +27,7 @@
 #livebanner {
   background: url(../images/io15-color.png) no-repeat $mobileKeyline 50%;
   background-size: 50px;
-  background-color: $color-cyan-500;
+  background-color: $color-cyan-A400;
   height: 64px;
   padding: 0 $mobileKeyline;
 
@@ -56,7 +56,7 @@
   .card__photo {
     background: url(../images/io15-color.png) no-repeat 50% 50%;
     background-size: contain;
-    background-color: $color-cyan-500;
+    background-color: $color-cyan-A400;
     border-radius: inherit;
   }
 
@@ -101,12 +101,12 @@ paper-dropdown-menu {
   border: none;
 
   &::shadow #arrow {
-    color: $color-cyan-A700;
+    color: $color-cyan-A400;
   }
 
   &::shadow #label {
     @include typo-button();
-    color: $color-cyan-A700;
+    color: $color-cyan-A400;
   }
 
   core-menu {
@@ -132,7 +132,7 @@ paper-dropdown-menu {
 }
 
 .video-author {
-  color: $color-gray;
+  color: $color-grey1;
   font-size: 14px;
 }
 
@@ -155,7 +155,7 @@ paper-dropdown-menu {
   }
 
   h1, a {
-    color: $color-cyan-400;
+    color: $color-cyan-A400;
   }
 
   img {

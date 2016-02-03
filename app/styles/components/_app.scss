@@ -24,6 +24,7 @@ html, body {
 
 body {
   color: $color-bluegrey-600;
+  background-color: $color-body;
 }
 
 .noscroll {
@@ -35,7 +36,6 @@ body {
 .anchor-like {
   @include typo-button();
   white-space: nowrap;
-  color: $color-cyan-A700;
   cursor: pointer;
 }
 
@@ -124,24 +124,40 @@ paper-progress {
   }
 }
 
-.bg-light-grey {
-  background-color: $color-grey-100;
+.bg-grey {
+  background-color: $color-body;
+}
+
+.bg-light-grey1 {
+  background-color: $color-grey1;
+}
+
+.bg-light-grey2 {
+  background-color: $color-grey2;
 }
 
 .bg-medium-grey {
-  background-color: $color-bluegrey-100;
+  background-color: $color-grey3;
 }
 
 .bg-dark-grey {
-  background-color: $color-bluegrey-700;
+  background-color: $color-grey4;
 }
 
-.bg-indigo {
-  background-color: $color-indigo-a200;
+.bg-google-blue {
+  background-color: $color-google-blue-500;
 }
 
-.bg-cyan {
-  background-color: $color-cyan-A400;
+.bg-google-red {
+  background-color: $color-google-red-500;
+}
+
+.bg-google-green {
+  background-color: $color-google-green-500;
+}
+
+.bg-google-yellow {
+  background-color: $color-google-yellow-500;
 }
 
 .navbar__overlay {
@@ -301,6 +317,14 @@ paper-progress {
 
   .card__container {
     max-width: $container-max-width + 56px * 3;
+  }
+}
+
+// TODO: relies on shady. Remove when
+// https://github.com/PolymerElements/paper-checkbox/issues/104 is fixed.
+paper-checkbox {
+  #checkmark {
+    box-sizing: content-box;
   }
 }
 
