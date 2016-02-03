@@ -178,17 +178,13 @@ class Schedule {
             template.push('app.savedSessions', sessionId);
             template.set(`app.scheduleData.sessions.${sessionsListIndex}.saved`, true);
 
-            if (window.ENV !== 'prod') {
-              console.log(`Session ${sessionId} bookmarked!`);
-            }
+            debugLog(`Session ${sessionId} bookmarked!`);
           } else if (data && !data.bookmarked && savedSessionsListIndex !== -1) {
             // Remove the session from the bookmarks if present.
             template.splice('app.savedSessions', savedSessionsListIndex, 1);
             template.set(`app.scheduleData.sessions.${sessionsListIndex}.saved`, false);
 
-            if (window.ENV !== 'prod') {
-              console.log(`Session ${sessionId} removed from bookmarks!`);
-            }
+            debugLog(`Session ${sessionId} removed from bookmarks!`);
           }
         });
 
@@ -203,9 +199,7 @@ class Schedule {
             template.push('app.savedSurveys', sessionId);
             template.set(`app.scheduleData.sessions.${sessionsListIndex}.rated`, true);
 
-            if (window.ENV !== 'prod') {
-              console.log(`Session ${sessionId} has received feedback!`);
-            }
+            debugLog(`Session ${sessionId} has received feedback!`);
           }
         });
       });
