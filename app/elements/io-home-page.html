@@ -14,7 +14,6 @@ limitations under the License.
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
-<link rel="import" href="../bower_components/paper-progress/paper-progress.html">
 <link rel="import" href="../bower_components/google-youtube/google-youtube.html">
 
 <link rel="import" href="../bower_components/neon-animation/animations/scale-up-animation.html">
@@ -167,14 +166,6 @@ limitations under the License.
       date: {
         type: String,
         value: 'May 10 2016 09:00:00 GMT-0700 (PDT)'
-      },
-
-      /**
-       * Toggles the save progress bar for being reminded about I/O.
-       */
-      _ioReminder: {
-        type: Boolean,
-        value: false
       }
     },
 
@@ -199,11 +190,7 @@ limitations under the License.
     _onSetReminder: function(e, detail) {
       e.preventDefault();
 
-      this._ioReminder = true;
-
       IOWA.Schedule.saveSession('__keynote__', true).then(function() {
-        this._ioReminder = false;
-
         var savedSessions = this.app.savedSessions;
         if (savedSessions.length) {
           IOWA.Schedule.updateSavedSessionsUI(savedSessions);
