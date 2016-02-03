@@ -1,0 +1,28 @@
+{
+  "rules": {
+    "users": {
+      "$user_id": {
+        ".read": "$user_id === auth.uid",
+        ".write": "$user_id === auth.uid",
+        "last_activity_timestamp": {
+          ".validate": "!data.exists() || newData.val() > data.val()"
+        },
+        "viewed_videos": {
+          "$viewed_video_id": {
+            ".validate": "!data.exists() || newData.val() > data.val()"
+          }
+        },
+        "my_sessions": {
+          "$session_id": {
+            ".validate": "!data.exists() || newData.child('timestamp').val() > data.child('timestamp').val()"
+          }
+        },
+        "feedback": {
+          "$session_id": {
+            ".validate": "!data.exists() || newData.child('timestamp').val() > data.child('timestamp').val()"
+          }
+        }
+      }
+    }
+  }
+}
