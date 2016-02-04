@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-$color-text: #212121;
-$color-body: #F5F5F5;
-$color-session-detail-light-grey: #BDBDBD;
-
 // 2016 palette.
 $color-bluegrey-700: #455A64;
 $color-bluegrey-600: #546E7A;
@@ -29,15 +25,21 @@ $color-teal-A400: #1de9b6;
 $color-yellow-A700: #ffd600;
 $color-orange-A700: #FFAB00;
 
-$color-google-blue-500: #4284f4;
+$color-google-blue-500: #4285f4;
 $color-google-yellow-500: #fbbc05;
 $color-google-red-500: #ea4335;
 $color-google-green-500: #33a850;
 
-$color-grey1: #edecea;
-$color-grey2: #bbbbbb;
+$color-grey-50: #FAFAFA;
+$color-grey-100: #F5F5F5;
+$color-grey2: #f5f6f7;
 $color-grey3: #757472;
 $color-grey4: #414141;
 
-$color-light-grey-border: $color-grey1;
-$color-link-grey: $color-grey2;
+$color-light-grey-border: $color-grey-50;
+$color-link-grey: $color-grey-100;
+
+$color-text: #263238;
+$color-body: $color-grey-50;
+$color-session-detail-light-grey: #BDBDBD;
+

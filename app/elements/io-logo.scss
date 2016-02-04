@@ -23,8 +23,12 @@
   z-index: 1; // above background outside this element.
 }
 
-:host(.bg-grey) #o2 {
-  background-color: $color-grey-100;
+:host(.bg-white) #o2 {
+  background-color: #fff;
+}
+
+:host(.bg-grey-50) #o2 {
+  background-color: $color-grey-50;
 }
 
 .letter {

@@ -40,7 +40,7 @@ limitations under the License.
       <div id="countdown-container" fit>
         <countdown-timer id="ctimer"
             auto-start
-            bg-color="#F5F5F5"
+            bg-color="#fff"
             date="[[date]]"
             ease-in-time="490"
             wait-time="100"
@@ -119,9 +119,9 @@ limitations under the License.
           </div>
         </div>
 
-        <div class="card-content box card--bottom-left-clip io__hash"
+        <div class="card-content box card--bottom-left-clip io__hash bg-grey-100"
              aria-label="I/O hash tag"></div>
-        <div class="card-content box card--bottom-right-clip bg-light-grey1">
+        <div class="card-content box card--bottom-right-clip bg-grey-50">
 
           <social-poller url="[[resolveUrl('../api/v1/social')]]" posts="{{socialPosts}}"
                          interval="30000"></social-poller>

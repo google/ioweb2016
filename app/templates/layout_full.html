@@ -209,13 +209,13 @@ limitations under the License.
     }
   </style>
 </head>
-<body id="page-{% .Slug %}" class="bg-grey">
+<body id="page-{% .Slug %}" class="bg-white">
 
 <!-- Intro animation background is outside of Polymer to reduce perceived latency in polyfilled browsers. -->
 <div class="io-logo-container">
   <io-logo width="312" height="165" page="{% .Slug %}"
-           class="bg-grey" hide-masthead></io-logo>
-  <div class="bg-grey" iologobackground></div>
+           class="bg-white" hide-masthead></io-logo>
+  <div class="bg-white" iologobackground></div>
 </div>
 
 <template is="dom-bind" id="t">
@@ -390,7 +390,7 @@ limitations under the License.
       </div>
     </div>
 
-    <footer layout horizontal center>
+    <footer class="bg-grey-50" layout horizontal center>
 
       <div class="card__container" flex>
 

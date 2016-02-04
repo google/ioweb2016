@@ -18,13 +18,14 @@
 @import '../base/typography';
 
 html, body {
-  font-family: 'Arial', 'sans-serif';
+  background: $color-body;
+  color: $color-text;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
   @include typo-body();
-}
-
-body {
-  color: $color-bluegrey-600;
-  background-color: $color-body;
 }
 
 .noscroll {
@@ -124,25 +125,25 @@ paper-progress {
   }
 }
 
-.bg-grey {
-  background-color: $color-body;
+.bg-white {
+  background-color: #fff;;
 }
 
-.bg-light-grey1 {
-  background-color: $color-grey1;
+.bg-grey-50 {
+  background-color: $color-grey-50;
 }
 
-.bg-light-grey2 {
-  background-color: $color-grey2;
+.bg-grey-100 {
+  background-color: $color-grey-100;
 }
 
-.bg-medium-grey {
-  background-color: $color-grey3;
-}
+// .bg-medium-grey {
+//   background-color: $color-grey3;
+// }
 
-.bg-dark-grey {
-  background-color: $color-grey4;
-}
+// .bg-dark-grey {
+//   background-color: $color-grey4;
+// }
 
 .bg-google-blue {
   background-color: $color-google-blue-500;
@@ -194,7 +195,9 @@ paper-progress {
 
 .io__hash {
   display: inline-block;
-  background: url(../images/hash.png) no-repeat 50% 50%;
+  background-image: url(../images/hash.png);
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
   background-size: contain;
   height: 116px;
   width: 280px;
