@@ -16,6 +16,18 @@
 
 window.IOWA = window.IOWA || {};
 
+/**
+ * Log to console if not in production.
+ * @param {...*} var_args
+ */
+window.debugLog = function debugLog(var_args) {
+  'use strict';
+
+  if (window.ENV !== 'prod') {
+    console.log.apply(console, arguments);
+  }
+};
+
 IOWA.Util = IOWA.Util || (function() {
   'use strict';
 

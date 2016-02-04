@@ -11,7 +11,12 @@
     "no-inline-comments": 0,
     "no-warning-comments": 0,
     "require-jsdoc": 0,
-    "valid-jsdoc": 0
+    "valid-jsdoc": 0,
+    "no-unused-vars": [2, {
+      "vars": "all",
+      "args": "after-used",
+      "argsIgnorePattern": "^var_args$"
+    }]
   },
   "globals": {
     "DocumentTouch": true,
@@ -25,6 +30,7 @@
     "Firebase": true,
     "gapi": true,
     "moment": true,
-    "simpleDB": true
+    "simpleDB": true,
+    "debugLog": true
   }
 }

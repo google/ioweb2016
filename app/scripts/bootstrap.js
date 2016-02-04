@@ -26,9 +26,7 @@
       worker = new Worker('data-worker-scripts.js');
       var total = window.performance.now() - workerStartTime;
 
-      if (window.ENV !== 'prod') {
-        console.info('worker startup:', total, 'ms');
-      }
+      debugLog('worker startup:', total, 'ms');
       IOWA.Analytics.trackPerf('worker', 'creation', Math.ceil(total),
                                null, MAX_WORKER_TIMEOUT_);
     } else {
@@ -50,9 +48,7 @@
         // Report how long the worker fetch took to GA.
         if (doMetrics) {
           var total = window.performance.now() - workerFetchTime;
-          if (window.ENV !== 'prod') {
-            console.info('worker fetch:', total, 'ms');
-          }
+          debugLog('worker fetch:', total, 'ms');
           IOWA.Analytics.trackPerf('worker', 'data fetch', Math.ceil(total),
                                    null, MAX_WORKER_TIMEOUT_);
         }

@@ -79,15 +79,11 @@ class IOFirebase {
     this.firebaseRef.authWithOAuthToken('google', accessToken, error => {
       if (error) {
         IOWA.Analytics.trackError('this.firebaseRef.authWithOAuthToken(...)', error);
-        if (window.ENV !== 'prod') {
-          console.error('Login to Firebase Failed!', error);
-        }
+        debugLog('Login to Firebase Failed!', error);
       } else {
         this._bumpLastActivityTimestamp();
         IOWA.Analytics.trackEvent('login', 'success', firebaseShardUrl);
-        if (window.ENV !== 'prod') {
-          console.log('Authenticated successfully to Firebase shard', firebaseShardUrl);
-        }
+        debugLog('Authenticated successfully to Firebase shard', firebaseShardUrl);
       }
     });
 
@@ -106,9 +102,7 @@ class IOFirebase {
       this.firebaseRef.child(`users/${userId}/feedback`).off();
       // Unauthorize the Firebase reference.
       this.firebaseRef.unauth();
-      if (window.ENV !== 'prod') {
-        console.log('Unauthorized Firebase');
-      }
+      debugLog('Unauthorized Firebase');
       this.firebaseRef = null;
     }
   }
@@ -123,9 +117,7 @@ class IOFirebase {
       let offsetRef = this.firebaseRef.child('/.info/serverTimeOffset');
       offsetRef.once('value', snap => {
         this.clockOffset = snap.val();
-        if (window.ENV !== 'prod') {
-          console.log('Updated clock offset to', this.clockOffset, 'ms');
-        }
+        debugLog('Updated clock offset to', this.clockOffset, 'ms');
       });
     }
   }
@@ -150,9 +142,7 @@ class IOFirebase {
    */
   static goOffline() {
     Firebase.goOffline();
-    if (window.ENV !== 'prod') {
-      console.log('Firebase went offline.');
-    }
+    debugLog('Firebase went offline.');
   }
 
   /**
@@ -161,9 +151,7 @@ class IOFirebase {
    */
   static goOnline() {
     Firebase.goOnline();
-    if (window.ENV !== 'prod') {
-      console.log('Firebase back online!');
-    }
+    debugLog('Firebase back online!');
   }
 
   /**
@@ -205,8 +193,8 @@ class IOFirebase {
       ref.on('child_added', dataSnapshot => callback(dataSnapshot.key(), dataSnapshot.val()));
       ref.on('child_changed', dataSnapshot => callback(dataSnapshot.key(), dataSnapshot.val()));
       ref.on('child_removed', dataSnapshot => callback(dataSnapshot.key(), null));
-    } else if (window.ENV !== 'prod') {
-      console.warn('Trying to subscribe to Firebase while not authorized.');
+    } else {
+      debugLog('Trying to subscribe to Firebase while not authorized.');
     }
   }
 
@@ -301,17 +289,15 @@ class IOFirebase {
       let userId = this.firebaseRef.getAuth().uid;
       let ref = this.firebaseRef.child(`users/${userId}/${attribute}`);
       return ref.update(value, error => {
-        if (window.ENV !== 'prod') {
-          if (error) {
-            console.error(`Error writing to Firebase data "${userId}/${attribute}":`, value, error);
-          } else {
-            console.log(`Successfully updated Firebase data "${userId}/${attribute}":`, value);
-          }
+        if (error) {
+          debugLog(`Error writing to Firebase data "${userId}/${attribute}":`, value, error);
+        } else {
+          debugLog(`Successfully updated Firebase data "${userId}/${attribute}":`, value);
         }
       });
-    } else if (window.ENV !== 'prod') {
-      console.warn('Trying to write to Firebase while not authorized.');
     }
+
+    debugLog('Trying to write to Firebase while not authorized.');
   }
 
   /**
@@ -327,17 +313,15 @@ class IOFirebase {
       let userId = this.firebaseRef.getAuth().uid;
       let ref = this.firebaseRef.child(`users/${userId}/${attribute}`);
       return ref.set(value, error => {
-        if (window.ENV !== 'prod') {
-          if (error) {
-            console.error(`Error writing to Firebase data "${userId}/${attribute}":`, value, error);
-          } else {
-            console.log(`Successfully updated Firebase data "${userId}/${attribute}":`, value);
-          }
+        if (error) {
+          debugLog(`Error writing to Firebase data "${userId}/${attribute}":`, value, error);
+        } else {
+          debugLog(`Successfully updated Firebase data "${userId}/${attribute}":`, value);
         }
       });
-    } else if (window.ENV !== 'prod') {
-      console.warn('Trying to write to Firebase while not authorized.');
     }
+
+    debugLog('Trying to write to Firebase while not authorized.');
   }
 
   /**
