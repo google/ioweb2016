@@ -256,24 +256,15 @@ class IOFirebase {
   }
 
   /**
-   * Saves the GCM subscription ID that the user is subscribed to.
+   * Adds the GCM subscription ID provided by the browser.
    *
    * @param {string} gcmId The GCM Subscription ID.
    * @return {Promise} Promise to track completion.
    */
-  setGcmId(gcmId) {
-    return this._setFirebaseUserData('gcm_id', gcmId);
-  }
-
-  /**
-   * Gets the GCM subscription ID that the user is subscribed to.
-   *
-   * @return {Promise} A promise returning the value of the gcm_id or `null` if it was never set.
-   */
-  getGcmId() {
-    let userId = this.firebaseRef.getAuth().uid;
-    let ref = this.firebaseRef.child(`users/${userId}/gcm_id`);
-    return ref.once('value').then(data => data.val());
+  addGcmId(gcmId) {
+    let value = {};
+    value[gcmId] = true;
+    return this._updateFirebaseUserData('gcm_ids', value);
   }
 
   /**
