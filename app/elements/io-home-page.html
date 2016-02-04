@@ -40,14 +40,7 @@ limitations under the License.
     <div class="masthead-meta">
       <div id="countdown-container" fit>
         <countdown-timer id="ctimer"
-            auto-start
-            bg-color="#fff"
             date="[[date]]"
-            ease-in-time="490"
-            wait-time="100"
-            ease-out-time="400"
-            value="{{countdownValue}}"
-            label="Google I/O"
             role="timer"></countdown-timer>
       </div>
     </div>
@@ -200,7 +193,6 @@ limitations under the License.
     },
 
     onPageTransitionDone: function() {
-      this.$.ctimer.show();
       //this._cycleSocialPosts(); TODO: add back after phase 1.
       this._cyclePhotos();
     },
