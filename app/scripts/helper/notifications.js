@@ -89,7 +89,7 @@ IOWA.Notifications = IOWA.Notifications || (function() {
     }
 
     return navigator.serviceWorker.ready.then(function(registration) {
-      return registration.pushManager.subscribe({userVisible: true});
+      return registration.pushManager.subscribe({userVisibleOnly: true});
     }).then(function(subscription) {
       if (subscription && subscription.endpoint) {
         // See https://groups.google.com/a/chromium.org/d/msg/blink-dev/CK13omVO5ds/fR6sdPxsaasJ
