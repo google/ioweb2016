@@ -38,7 +38,7 @@ class IOFirebase {
 
     /**
      * Stores references to SimpleDB wrappers around IndexedDB.
-     * @type {object}
+     * @type {Object}
      */
     this.simpleDbInstance = null;
 
@@ -334,7 +334,7 @@ class IOFirebase {
    *
    * @private
    * @param {string} attribute
-   * @param {object} value
+   * @param {Object} value
    * @return {Promise} Promise that fulfills once IDB is updated.
    */
   _queueOperation(attribute, value) {
