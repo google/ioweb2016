@@ -25,6 +25,11 @@ IOWA.Elements = (function() {
       var dest = document.querySelector('[iologodestination]');
       dest.classList.add('active');
 
+      // Load auth after logo transition is done. This helps timing with
+      // fetching user's schedule and makes sure the worker has returned
+      // the main schedule data.
+      IOWA.Elements.GoogleSignIn.load = true;
+
       // Deep link into a subpage.
       var selectedPageEl = IOWA.Elements.LazyPages.selectedPage;
       var parsedUrl = IOWA.Router.parseUrl(window.location.href);
