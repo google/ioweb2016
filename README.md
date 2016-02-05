@@ -86,7 +86,7 @@ by providing the `--env` argument as with other `serve` tasks. For instance:
 To deploy complete application on App Engine:
 
 1. Run `gulp` which will build both frontend and backend in `dist` directory.
-2. Run `GAE_SDK/goapp deploy -application <app-id> -version <v>`.
+2. Run `GAE_SDK/goapp deploy -application <app-id> -version <v> dist/backend/`.
 
 ## Backend
 
