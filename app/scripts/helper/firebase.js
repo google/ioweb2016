@@ -36,6 +36,12 @@ class IOFirebase {
      */
     this.clockOffset = 0;
 
+    /**
+     * Stores references to SimpleDB wrappers around IndexedDB.
+     * @type {object}
+     */
+    this.simpleDbInstance = null;
+
     // Disconnect Firebase while the focus is off the page to save battery.
     if (typeof document.hidden !== 'undefined') {
       document.addEventListener('visibilitychange',
@@ -89,6 +95,7 @@ class IOFirebase {
 
     // Update the clock offset.
     this._updateClockOffset();
+    this._replayQueuedOperations();
   }
 
   /**
@@ -105,6 +112,59 @@ class IOFirebase {
       debugLog('Unauthorized Firebase');
       this.firebaseRef = null;
     }
+  }
+
+  /**
+   * Returns a SimpleDB wrapper around IndexedDB used for queueing Firebase
+   * write operations.
+   *
+   * @private
+   * @return {Promise} Fulfills with the SimpleDB instance.
+   */
+  _simpleDbInstance() {
+    if (window.simpleDB) {
+      if (this.simpleDbInstance) {
+        // Resolve immediately if we already have an open instance.
+        return Promise.resolve(this.simpleDbInstance);
+      }
+
+      return window.simpleDB.open('firebase-updates').then(db => {
+        // Stash the instance away for reuse next time.
+        this.simpleDbInstance = db;
+        return this.simpleDbInstance;
+      });
+    }
+
+    // window.simpleDB will be undefined if we detected that there was no
+    // IndexedDB support in the current browser.
+    return Promise.reject('SimpleDB is not supported.');
+  }
+
+  /**
+   * Retries all queued Firebase set() operations that were previously queued
+   * in IndexedDB.
+   *
+   * @private
+   * @return {Promise} Fulfills when all the queued operations are replayed.
+   */
+  _replayQueuedOperations() {
+    let queuedOperations = {};
+
+    this._simpleDbInstance().then(db => {
+      // Let's read in all the queued values before we do anything else, to
+      // make sure we're not confused by additional queued values that get
+      // added asynchronously.
+      return db.forEach((attribute, value) => {
+        queuedOperations[attribute] = value;
+      });
+    }).then(() => {
+      return Promise.all(Object.keys(queuedOperations).map(attribute => {
+        // _setFirebaseData() will take care of deleting the IDB entry.
+        return this._setFirebaseData(attribute, queuedOperations[attribute]);
+      }));
+    }).catch(error => {
+      debugLog('Error in _replayQueuedOperations: ' + error);
+    });
   }
 
   /**
@@ -131,9 +191,10 @@ class IOFirebase {
    */
   _bumpLastActivityTimestamp() {
     let userId = this.firebaseRef.getAuth().uid;
-    this.firebaseRef.child(`users/${userId}/last_activity_timestamp`).onDisconnect().set(
+    this.firebaseRef.child(`users/${userId}/last_activity_timestamp`)
+      .onDisconnect().set(Firebase.ServerValue.TIMESTAMP);
+    return this._setFirebaseUserData('last_activity_timestamp',
       Firebase.ServerValue.TIMESTAMP);
-    return this._setFirebaseUserData('last_activity_timestamp', Firebase.ServerValue.TIMESTAMP);
   }
 
   /**
@@ -212,47 +273,37 @@ class IOFirebase {
    *
    * @param {string} sessionUUID The session's UUID.
    * @param {boolean} bookmarked `true` if the user has bookmarked the session.
-   * @param {number=} timestamp The timestamp when the session was added to the schedule. Use this to
-   *     replay offline changes. If not provided the current timestamp will be used.
    * @return {Promise} Promise to track completion.
    */
-  toggleSession(sessionUUID, bookmarked, timestamp) {
-    let value = {};
-    value[sessionUUID] = {
-      timestamp: timestamp ? timestamp + this.clockOffset : Firebase.ServerValue.TIMESTAMP,
+  toggleSession(sessionUUID, bookmarked) {
+    return this._setFirebaseUserData(`my_sessions/${sessionUUID}`, {
+      timestamp: Date.now() + this.clockOffset,
       bookmarked: bookmarked
-    };
-    return this._updateFirebaseUserData('my_sessions', value);
+    });
   }
 
   /**
    * Mark that user has provided feedback for a session.
    *
    * @param {string} sessionUUID The session's UUID.
-   * @param {number=} timestamp The timestamp when the feedback was provided. Use this to replay
-   *     offline changes. If not provided the current timestamp will be used.
    * @return {Promise} Promise to track completion.
    */
-  markSessionRated(sessionUUID, timestamp) {
-    let value = {};
-    value[sessionUUID] = {
-      timestamp: timestamp ? timestamp + this.clockOffset : Firebase.ServerValue.TIMESTAMP
-    };
-    return this._updateFirebaseUserData('feedback', value);
+  markSessionRated(sessionUUID) {
+    return this._setFirebaseUserData(`feedback/${sessionUUID}`, {
+      timestamp: Date.now() + this.clockOffset
+    });
   }
 
   /**
    * Mark the given video as viewed by the user.
    *
    * @param {string} videoId The Youtube Video ID.
-   * @param {number=} timestamp The timestamp when the video was viewed. Use this to replay offline
-   *     changes. If not provided the current timestamp will be used.
    * @return {Promise} Promise to track completion.
    */
-  markVideoAsViewed(videoId, timestamp) {
-    let value = {};
-    value[videoId] = timestamp ? timestamp + this.clockOffset : Firebase.ServerValue.TIMESTAMP;
-    return this._updateFirebaseUserData('viewed_videos', value);
+  markVideoAsViewed(videoId) {
+    return this._setFirebaseUserData(`viewed_videos/${videoId}`, {
+      timestamp: Date.now() + this.clockOffset
+    });
   }
 
   /**
@@ -277,51 +328,87 @@ class IOFirebase {
   }
 
   /**
-   * Update the given attribute of Firebase User data to the given value.
+   * Queues a write operation to IndexedDB (via the SimpleDB wrapper).
+   * This ensures that if the Firebase connection is unavailable, the write
+   * operation will be eventually performed.
    *
    * @private
-   * @param {string} attribute The attribute to update in the user's data.
-   * @param {Object} value The value to give to the attribute.
-   * @return {Promise} Promise to track completion.
+   * @param {string} attribute
+   * @param {object} value
+   * @return {Promise} Promise that fulfills once IDB is updated.
    */
-  _updateFirebaseUserData(attribute, value) {
-    if (this.isAuthed()) {
-      let userId = this.firebaseRef.getAuth().uid;
-      let ref = this.firebaseRef.child(`users/${userId}/${attribute}`);
-      return ref.update(value, error => {
-        if (error) {
-          debugLog(`Error writing to Firebase data "${userId}/${attribute}":`, value, error);
-        } else {
-          debugLog(`Successfully updated Firebase data "${userId}/${attribute}":`, value);
-        }
-      });
-    }
+  _queueOperation(attribute, value) {
+    return this._simpleDbInstance().then(db => {
+      return db.set(attribute, value);
+    }).catch(error => {
+      // This might have rejected if IndexedDB is unavailable in the current
+      // browser, or if writing to IndexedDB failed for some reason. That should
+      // not prevent the Firebase write from being attempted, though, so just
+      // catch() the error here.
+      window.debugLog('Error in IOFirebase._queueOperation()', error);
+    });
+  }
 
-    debugLog('Trying to write to Firebase while not authorized.');
+  /**
+   * Dequeues a previously queued write operation to IndexedDB (via the SimpleDB
+   * wrapper).
+   * This should be called after the Firebase operation completed successfully.
+   *
+   * @private
+   * @param {string} attribute
+   * @return {Promise} Promise that fulfills once IDB is updated.
+   */
+  _dequeueOperation(attribute) {
+    return this._simpleDbInstance().then(db => {
+      return db.delete(attribute);
+    }).catch(error => {
+      // This might have rejected if IndexedDB is unavailable in the current
+      // browser, or if writing to IndexedDB failed for some reason.
+      window.debugLog('Error in IOFirebase._dequeueOperation()', error);
+    });
   }
 
   /**
    * Sets the given attribute of Firebase user data to the given value.
    *
    * @private
-   * @param {string} attribute The attribute to set in the user's data.
-   * @param {string|number|Object} value The value to give to the attribute.
-   * @return {Promise} Promise to track completion.
+   * @param {string} attribute The attribute to update in the user's data.
+   * @param {Object} value The value to give to the attribute.
+   * @return {Promise} Promise to track set() success or failure.
    */
   _setFirebaseUserData(attribute, value) {
     if (this.isAuthed()) {
       let userId = this.firebaseRef.getAuth().uid;
-      let ref = this.firebaseRef.child(`users/${userId}/${attribute}`);
-      return ref.set(value, error => {
-        if (error) {
-          debugLog(`Error writing to Firebase data "${userId}/${attribute}":`, value, error);
-        } else {
-          debugLog(`Successfully updated Firebase data "${userId}/${attribute}":`, value);
-        }
-      });
+      return this._setFirebaseData(`users/${userId}/${attribute}`, value);
     }
 
-    debugLog('Trying to write to Firebase while not authorized.');
+    return Promise.reject('Not currently authorized with Firebase.');
+  }
+
+  /**
+   * Sets the given attribute of Firebase data to the given value.
+   *
+   * @private
+   * @param {string} attribute The attribute to update.
+   * @param {Object} value The value to give to the attribute.
+   * @return {Promise} Promise to track set() success or failure.
+   */
+  _setFirebaseData(attribute, value) {
+    let ref = this.firebaseRef.child(attribute);
+
+    return this._queueOperation(attribute, value).then(() => {
+      return ref.set(value);
+    }).then(() => {
+      debugLog(`Success: Firebase.set(${ref}) with value ` +
+        JSON.stringify(value));
+      return this._dequeueOperation(attribute);
+    }, error => {
+      debugLog(`Failure: Firebase.set(${ref}) with value ` +
+        `${JSON.stringify(value)} failed due to ${error}`);
+      // Even if Firebase returned an error, we still want to remove the
+      // queued operation from IDB, since it's not going to help to retry it.
+      return this._dequeueOperation(attribute).then(() => Promise.reject(error));
+    });
   }
 
   /**
