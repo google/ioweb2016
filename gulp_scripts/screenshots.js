@@ -27,7 +27,7 @@ var fs = require('fs');
 var glob = require('glob');
 var path = require('path');
 var spawn = require('child_process').spawn;
-var sprintf = require("sprintf-js").sprintf;
+var sprintf = require('sprintf-js').sprintf;
 var util = require('gulp-util');
 var webdriver = require('selenium-webdriver');
 
@@ -53,8 +53,8 @@ function seleniumInstall() {
 function git(args) {
   var commandLine = 'git ' + args.join(' ');
   util.log('Running', commandLine);
-  return new Promise(function(resolve, reject) {
-    var gitCommand = exec(commandLine, function(error, output) {
+  return new Promise(function(resolve) {
+    exec(commandLine, function(error, output) {
       if (error) {
         util.log(error);
         // git exits with an error status when, e.g., there's nothing to restore with git stash pop
@@ -166,7 +166,7 @@ function compareScreenshots() {
   var diffPromises = Object.keys(fileNameToPaths).map(function(fileName) {
     return new Promise(function(resolve, reject) {
       var paths = fileNameToPaths[fileName];
-      if (paths.length == 2) {
+      if (paths.length === 2) {
         var diff = new BlinkDiff({
           imageAPath: paths[0],
           imageBPath: paths[1],
@@ -207,8 +207,12 @@ module.exports = function(branchOrCommit, serverRoot, url, pages, widths, height
   var parsedUrl = new URL(url);
   // Return a no-op promise that will be run if an exception is thrown before the server
   // needs to be stopped or before the git state needs to be restored.
-  var restorePromise = function() { return Promise.resolve() };
-  var stopServerPromise = function() { return Promise.resolve() };
+  var restorePromise = function() {
+    return Promise.resolve();
+  };
+  var stopServerPromise = function() {
+    return Promise.resolve();
+  };
   var cleanup = function(error) {
     return stopServerPromise()
       .then(restorePromise)
@@ -250,7 +254,9 @@ module.exports = function(branchOrCommit, serverRoot, url, pages, widths, height
       // Restore the git state then set restorePromise back to a function returning a no-op promise,
       // since it is run as part of the cleanup().
       return restorePromise().then(function() {
-        restorePromise = function() { return Promise.resolve() };
+        restorePromise = function() {
+          return Promise.resolve();
+        };
       });
     })
     .then(function() {
