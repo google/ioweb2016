@@ -5,5 +5,5 @@ module.exports = {
     local: {
       browsers: ['chrome']
     }
-  },
+  }
 };

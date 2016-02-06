@@ -105,7 +105,7 @@ function serve(opts, callback) {
   var proc;
   var spawnBackend = function() {
     var env = process.env;
-    env['RUN_WITH_DEVAPPSERVER'] = '1';
+    env.RUN_WITH_DEVAPPSERVER = '1';
     proc = spawn('bin/server', ['-addr', serverAddr],
                  {cwd: opts.dir, stdio: 'inherit', env: env});
   };
@@ -195,7 +195,8 @@ function generateServerConfig(dest, appenv) {
     IOWA.backendDir + '/server.config.template'
   ];
   var src;
-  for (var i = 0, f; f = files[i]; i++) {
+  for (var i = 0; i < files.length; i++) {
+    var f = files[i];
     if (fs.existsSync(f)) {
       src = f;
       break;
@@ -268,8 +269,8 @@ function decrypt(passphrase, callback) {
       callback(code);
       return;
     }
-    spawn('tar', ['-x', '-f', tarFile, '-C', IOWA.backendDir], {stdio: 'inherit'}).
-    on('exit', fs.unlink.bind(fs, tarFile, callback));
+    spawn('tar', ['-x', '-f', tarFile, '-C', IOWA.backendDir], {stdio: 'inherit'})
+      .on('exit', fs.unlink.bind(fs, tarFile, callback));
   });
 }
 
@@ -296,11 +297,10 @@ function encrypt(passphrase, callback) {
     if (passphrase) {
       args.push('-pass', 'pass:' + passphrase);
     }
-    spawn('openssl', args, {stdio: 'inherit'}).
-    on('exit', fs.unlink.bind(fs, tarFile, callback));
+    spawn('openssl', args, {stdio: 'inherit'})
+      .on('exit', fs.unlink.bind(fs, tarFile, callback));
   });
 }
-
 
 module.exports = {
   test: test,
@@ -313,4 +313,4 @@ module.exports = {
   installDeps: installDeps,
   generateServerConfig: generateServerConfig,
   generateGAEConfig: generateGAEConfig
-}
+};

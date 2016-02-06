@@ -12,6 +12,11 @@
     "no-warning-comments": 0,
     "require-jsdoc": 0,
     "valid-jsdoc": 0,
+    "no-implicit-coercion": [2, {
+      "boolean": false,
+      "number": true,
+      "string": true
+    }],
     "no-unused-vars": [2, {
       "vars": "all",
       "args": "after-used",
