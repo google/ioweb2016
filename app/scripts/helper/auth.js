@@ -19,11 +19,6 @@ window.IOWA = window.IOWA || {};
 IOWA.Auth = IOWA.Auth || (function() {
   'use strict';
 
-  // TODO: Find a place to store constants that are shared between the controlled page and SW.
-  var DB_KEY = 'token';
-  var DB_NAME = 'push-notification-updates';
-  var UPDATES_ENDPOINT = 'api/v1/user/updates';
-
   var pendingResolutions = [];
 
   function getTokenResponse_() {
@@ -52,48 +47,9 @@ IOWA.Auth = IOWA.Auth || (function() {
     signInButton.removeAttribute('disabled');
   }
 
-  /**
-   * Ensures that we have a valid token in IndexedDB used by the service worker to fetch updates.
-   * @return {Promise}
-   */
-  function ensureSWToken_() {
-    // Check to see if we already have a SW token in IDB.
-    return simpleDB.open(DB_NAME).then(function(db) {
-      return db.get(DB_KEY).then(function(token) {
-        return token;
-      });
-    }).then(function(token) {
-      // If there is no token (either because the user previously logged out, or because this is
-      // our first time logging in), then get one from the server and store it in IDB.
-      if (!token) {
-        return IOWA.Request.xhrPromise('GET', UPDATES_ENDPOINT, true).then(function(response) {
-          return simpleDB.open(DB_NAME).then(function(db) {
-            return db.set(DB_KEY, response.token);
-          });
-        });
-      }
-    }).catch(IOWA.Util.reportError);
-  }
-
-  /**
-   * Removes the token in IndexedDB used by the service worker to fetch updates.
-   * This should be called whenever the user logs out, since the SW token is associated with
-   * the currently logged in user.
-   * @return {Promise}
-   */
-  function clearSWToken_() {
-    return simpleDB.open(DB_NAME).then(function(db) {
-      return db.delete(DB_KEY);
-    }).catch(IOWA.Util.reportError);
-  }
-
   document.addEventListener('signin-change', function(e) {
     if (e.detail.user) {
       setUserUI(e.detail.user);
-      if (IOWA.Notifications.isSupported) {
-        // This kicks off an async network request, wrapped in a promise.
-        ensureSWToken_();
-      }
 
       // Call the resolve() function for each of the promises that are waiting on being signed in,
       // and remove each from the queue.
@@ -105,9 +61,9 @@ IOWA.Auth = IOWA.Auth || (function() {
       clearUserUI();
       if (IOWA.Notifications.isSupported) {
         // This kicks off an async network request, wrapped in a promise.
-        // If the user has signed out, then we want to unsubscribe from the browser's push manager
-        // and also clear the SW token. (We don't want to turn off notifications globally, though.)
-        IOWA.Notifications.unsubscribeFromPushManagerPromise().then(clearSWToken_);
+        // If the user has signed out, then we want to unsubscribe from the
+        // browser's push manager
+        IOWA.Notifications.unsubscribeFromPushManagerPromise();
       }
 
       // Clear any requests in the SW cache that might have user-specific data.

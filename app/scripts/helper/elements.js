@@ -373,7 +373,7 @@ IOWA.Elements = (function() {
       // Both these functions are asynchronous and return promises. Since there's no specific
       // callback or follow-up that needs to be performed once they complete, the returned promise
       // is ignored.
-      var target = Polymer.dom(e).rootTarget;
+      var target = Polymer.dom(e).localTarget;
       if (target.checked) {
         // subscribePromise() handles registering a subscription with the browser's push manager
         // and toggling the notify state to true in the backend via an API call.

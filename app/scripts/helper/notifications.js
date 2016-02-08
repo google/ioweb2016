@@ -19,27 +19,23 @@ window.IOWA = window.IOWA || {};
 IOWA.Notifications = IOWA.Notifications || (function() {
   'use strict';
 
-  const NOTIFY_ENDPOINT = 'api/v2/user/notify';
-
   /**
-   * Globally enables push notifications for the current user, and passes along the browser's push
-   * subscription id and endpoint value to the backend.
-   * @param {string} endpoint The endpoint value.
+   * Globally enables push notifications for the current user, and stores the browser's push
+   * subscription details in Firebase.
+   * @param {PushSubscription} subscription The subscription object
    * @return {Promise} Resolves with response body, or rejects with an error on HTTP failure.
    */
-  var enableNotificationsPromise_ = function(endpoint) {
-    return IOWA.Request.xhrPromise('PUT', NOTIFY_ENDPOINT, true, {
-      notify: true,
-      endpoint: endpoint
-    });
+  var enableNotificationsPromise_ = function(subscription) {
+    return IOWA.IOFirebase.addPushSubscription(subscription);
   };
 
   /**
    * Disables push notifications globally for the current user.
-   * @return {Promise} Resolves with response body, or rejects with an error on HTTP failure.
+   * @return {Promise} Resolves when complete, or rejects if there was an error
+   * writing to Firebase.
    */
   var disableNotificationsPromise = function() {
-    return IOWA.Request.xhrPromise('PUT', NOTIFY_ENDPOINT, true, {notify: false});
+    return IOWA.IOFirebase.removePushSubscriptions();
   };
 
   /**
@@ -55,9 +51,7 @@ IOWA.Notifications = IOWA.Notifications || (function() {
    * @return {Promise} Resolves with the boolean value of the user's backend notification state.
    */
   var isNotifyEnabledPromise = function() {
-    return IOWA.Request.xhrPromise('GET', NOTIFY_ENDPOINT, true).then(function(response) {
-      return response.notify;
-    }).catch(IOWA.Util.reportError);
+    return IOWA.IOFirebase.hasPushSubscriptions().catch(IOWA.Util.reportError);
   };
 
   /**
@@ -77,7 +71,7 @@ IOWA.Notifications = IOWA.Notifications || (function() {
 
   /**
    * Ensures that there's a push subscription active for the current browser, and then passes along
-   * the info to backend server, while also setting the global notification state to true.
+   * the info to Firebase.
    * @param {boolean} rejectImmediately Whether this function should return a rejected promise right
    *                                    away. Useful for when we want to keep the same promise-based
    *                                    flow but to bail out early.
@@ -99,10 +93,10 @@ IOWA.Notifications = IOWA.Notifications || (function() {
         // See https://groups.google.com/a/chromium.org/d/msg/blink-dev/CK13omVO5ds/fR6sdPxsaasJ
         var endpoint = subscription.endpoint;
         if (subscription.subscriptionId && !endpoint.includes(subscription.subscriptionId)) {
-          endpoint += '/' + subscription.subscriptionId;
+          subscription.endpoint += '/' + subscription.subscriptionId;
         }
         // If subscribing succeeds, send the subscription to the server. Return a resolved promise.
-        return enableNotificationsPromise_(endpoint);
+        return enableNotificationsPromise_(subscription);
       }
       throw Error('Unable to subscribe due to an unknown error.');
     });

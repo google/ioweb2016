@@ -308,15 +308,36 @@ class IOFirebase {
   }
 
   /**
-   * Adds the GCM subscription ID provided by the browser.
+   * Adds the push subscription ID provided by the browser.
    *
-   * @param {string} gcmId The GCM Subscription ID.
+   * @param {PushSubscription} subscription The subscription data.
    * @return {Promise} Promise to track completion.
    */
-  addGcmId(gcmId) {
-    let value = {};
-    value[gcmId] = true;
-    return this._updateFirebaseUserData('gcm_ids', value);
+  addPushSubscription(subscription) {
+    if (!(subscription instanceof PushSubscription)) {
+      throw new Error('Tried to add invalid subscription details to Firebase');
+    }
+    return this._updateFirebaseUserData('push_subscriptions', [subscription]);
+  }
+
+  /**
+   * Removes all push subscriptions for the user
+   *
+   * @return {Promise} A promise that resolves when the update completes
+   */
+  removePushSubscriptions() {
+    return this._setFirebaseUserData('push_subscriptions', [])
+  }
+
+  /**
+   * Checks if the user has any push subscriptions saved
+   *
+   * @return {boolean}
+   */
+  hasPushSubscriptions() {
+    let userId = this.firebaseRef.getAuth().uid;
+    let ref = this.firebaseRef.child(`users/${userId}/push_subscriptions`);
+    return ref.once('value').then(data => data.exists() && data.hasChildren());
   }
 
   /**
