@@ -345,7 +345,7 @@ class IOFirebase {
       // browser, or if writing to IndexedDB failed for some reason. That should
       // not prevent the Firebase write from being attempted, though, so just
       // catch() the error here.
-      window.debugLog('Error in IOFirebase._queueOperation()', error);
+      debugLog('Error in IOFirebase._queueOperation()', error);
     });
   }
 
@@ -364,7 +364,7 @@ class IOFirebase {
     }).catch(error => {
       // This might have rejected if IndexedDB is unavailable in the current
       // browser, or if writing to IndexedDB failed for some reason.
-      window.debugLog('Error in IOFirebase._dequeueOperation()', error);
+      debugLog('Error in IOFirebase._dequeueOperation()', error);
     });
   }
 
