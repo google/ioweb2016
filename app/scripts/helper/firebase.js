@@ -310,7 +310,7 @@ class IOFirebase {
   /**
    * Adds the push subscription ID provided by the browser.
    *
-   * @param {PushSubscription} subscription The subscription data.
+   * @param {PushSubscription} sub The subscription data.
    * @return {Promise} Promise to track completion.
    */
   addPushSubscription(subscription) {
@@ -318,29 +318,31 @@ class IOFirebase {
       throw new Error('Tried to add invalid subscription details to Firebase');
     }
     let key = btoa(subscription.endpoint);
-    let value = {};
-    value[key] = subscription;
-    return this._updateFirebaseUserData('push_subscriptions', value);
+    // We need to turn the PushSubscription into a simple, clonable object
+    let clone = JSON.parse(JSON.stringify(subscription));
+    return this._setFirebaseUserData(`web_push_subscriptions/${key}`, clone);
   }
 
   /**
-   * Removes all push subscriptions for the user
+   * Set the flag that determines if notifications are enabled for this user
    *
+   * @param {boolean} value What to set the flag to
    * @return {Promise} A promise that resolves when the update completes
    */
-  removePushSubscriptions() {
-    return this._setFirebaseUserData('push_subscriptions', {});
+  setNotificationsEnabled(value) {
+    return this._setFirebaseUserData('web_notifications_enabled', !!value);
   }
 
   /**
-   * Checks if the user has any push subscriptions saved
+   * Checks if the user has enabled notifications on any device
    *
    * @return {boolean}
    */
-  hasPushSubscriptions() {
+  hasNotificationsEnabled() {
     let userId = this.firebaseRef.getAuth().uid;
-    let ref = this.firebaseRef.child(`users/${userId}/push_subscriptions`);
-    return ref.once('value').then(data => data.exists() && data.hasChildren());
+    let location = `users/${userId}/web_notifications_enabled`;
+    let ref = this.firebaseRef.child(location);
+    return ref.once('value');
   }
 
   /**

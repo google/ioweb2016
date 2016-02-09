@@ -20,22 +20,12 @@ IOWA.Notifications = IOWA.Notifications || (function() {
   'use strict';
 
   /**
-   * Globally enables push notifications for the current user, and stores the browser's push
-   * subscription details in Firebase.
-   * @param {PushSubscription} subscription The subscription object
-   * @return {Promise} Resolves with response body, or rejects with an error on HTTP failure.
-   */
-  var enableNotificationsPromise_ = function(subscription) {
-    return IOWA.IOFirebase.addPushSubscription(subscription);
-  };
-
-  /**
    * Disables push notifications globally for the current user.
    * @return {Promise} Resolves when complete, or rejects if there was an error
    * writing to Firebase.
    */
   var disableNotificationsPromise = function() {
-    return IOWA.IOFirebase.removePushSubscriptions();
+    return IOWA.IOFirebase.setNotificationsEnabled(false);
   };
 
   /**
@@ -51,7 +41,7 @@ IOWA.Notifications = IOWA.Notifications || (function() {
    * @return {Promise} Resolves with the boolean value of the user's backend notification state.
    */
   var isNotifyEnabledPromise = function() {
-    return IOWA.IOFirebase.hasPushSubscriptions().catch(IOWA.Util.reportError);
+    return IOWA.IOFirebase.hasNotificationsEnabled().catch(IOWA.Util.reportError);
   };
 
   /**
@@ -96,7 +86,10 @@ IOWA.Notifications = IOWA.Notifications || (function() {
           subscription.endpoint += '/' + subscription.subscriptionId;
         }
         // If subscribing succeeds, send the subscription to the server. Return a resolved promise.
-        return enableNotificationsPromise_(subscription);
+        return Promise.all(
+          IOWA.IOFirebase.setNotificationsEnabled(true),
+          IOWA.IOFirebase.addPushSubscription(subscription)
+        );
       }
       throw Error('Unable to subscribe due to an unknown error.');
     });
