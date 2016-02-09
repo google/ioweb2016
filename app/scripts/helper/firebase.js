@@ -317,7 +317,10 @@ class IOFirebase {
     if (!(subscription instanceof PushSubscription)) {
       throw new Error('Tried to add invalid subscription details to Firebase');
     }
-    return this._updateFirebaseUserData('push_subscriptions', [subscription]);
+    let key = btoa(subscription.endpoint);
+    let value = {};
+    value[key] = subscription;
+    return this._updateFirebaseUserData('push_subscriptions', value);
   }
 
   /**
@@ -326,7 +329,7 @@ class IOFirebase {
    * @return {Promise} A promise that resolves when the update completes
    */
   removePushSubscriptions() {
-    return this._setFirebaseUserData('push_subscriptions', [])
+    return this._setFirebaseUserData('push_subscriptions', {});
   }
 
   /**
