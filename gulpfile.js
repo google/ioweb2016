@@ -140,7 +140,9 @@ gulp.task('copy-assets', false, function() {
   }
 
   var templateStream = gulp.src(templates, {base: './'})
-    .pipe($.useref());
+    // Remove individual page scripts and replace with minified versions.
+    .pipe($.replace(/^<!-- build:site-scripts -->[^]*<!-- endbuild -->$/m,
+      '<script src="scripts/site-libs.js"></script>\n<script src="scripts/site-scripts.js"></script>'));
 
   var otherAssetStream = gulp.src([
     IOWA.appDir + '/*.{html,txt,ico}',
@@ -161,20 +163,27 @@ gulp.task('copy-assets', false, function() {
 });
 
 gulp.task('concat-and-uglify-js', 'Crush JS', ['eslint', 'generate-page-metadata'], function() {
+  var siteLibs = [
+    'bower_components/moment/min/moment.min.js',
+    'bower_components/moment-timezone/builds/moment-timezone-with-data.min.js',
+    'bower_components/es6-promise/dist/es6-promise.min.js',
+    'bower_components/firebase/firebase.js',
+    'bower_components/js-crc/src/crc.js'
+  ].map(script => `${IOWA.appDir}/${script}`);
+
+  var siteLibStream = gulp.src(siteLibs)
+    .pipe(reload({stream: true, once: true}))
+    .pipe($.concat('site-libs.js'));
+
   // The ordering of the scripts in the gulp.src() array matter!
   // This order needs to match the order in templates/layout_full.html
   var siteScripts = [
     'main.js',
     'pages.js',
-    '../bower_components/moment/min/moment.min.js',
-    '../bower_components/moment-timezone/builds/moment-timezone-with-data.min.js',
     'helper/util.js',
-    '../bower_components/es6-promise/dist/es6-promise.min.js',
     'helper/auth.js',
     'helper/page-animation.js',
     'helper/elements.js',
-    '../bower_components/firebase/firebase.js',
-    '../bower_components/js-crc/src/crc.js',
     'helper/firebase.js',
     'helper/a11y.js',
     'helper/service-worker-registration.js',
@@ -185,23 +194,14 @@ gulp.task('concat-and-uglify-js', 'Crush JS', ['eslint', 'generate-page-metadata
     'helper/notifications.js',
     'helper/schedule.js',
     'bootstrap.js'
-  ].map(function(script) {
-    return IOWA.appDir + '/scripts/' + script;
-  });
-
-  // Only run our own scripts through babel.
-  var ownScriptsFilter = $.filter(
-      file => new RegExp(`${IOWA.appDir}/scripts/`).test(file.path),
-      {restore: true});
+  ].map(script => `${IOWA.appDir}/scripts/${script}`);
 
   var siteScriptStream = gulp.src(siteScripts)
     .pipe(reload({stream: true, once: true}))
-    .pipe(ownScriptsFilter)
     .pipe($.babel({
       presets: ['es2015'],
       compact: false
     }))
-    .pipe(ownScriptsFilter.restore)
     .pipe($.concat('site-scripts.js'));
 
   // analytics.js is loaded separately and shouldn't be concatenated.
@@ -215,7 +215,7 @@ gulp.task('concat-and-uglify-js', 'Crush JS', ['eslint', 'generate-page-metadata
     .pipe(reload({stream: true, once: true}))
     .pipe($.concat('sw-toolbox-scripts.js'));
 
-  return merge(siteScriptStream, analyticsScriptStream).add(serviceWorkerScriptStream)
+  return merge(siteScriptStream, siteLibStream).add(analyticsScriptStream).add(serviceWorkerScriptStream)
     .pipe($.uglify({preserveComments: 'some'}).on('error', function() {}))
     .pipe(gulp.dest(IOWA.distDir + '/' + IOWA.appDir + '/scripts'))
     .pipe($.size({title: 'concat-and-uglify-js'}));
