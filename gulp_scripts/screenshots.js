@@ -19,7 +19,6 @@
 'use strict';
 
 var BlinkDiff = require('blink-diff');
-var Promise = require('es6-promise').Promise;
 var URL = require('dom-urls');
 var del = require('del');
 var exec = require('child_process').exec;
