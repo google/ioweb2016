@@ -222,6 +222,7 @@ IOWA.Elements = (function() {
     //       this.currentCard.getAttribute('data-videoid'));
 
     //   IOWA.Analytics.trackEvent('video', 'watch', videoId);
+    //   IOWA.IOFirebase.markVideoAsViewed(videoId);
 
     //   var videoContainer = document.querySelector('.fullvideo__container');
     //   var video = videoContainer.querySelector('google-youtube');

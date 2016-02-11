@@ -711,9 +711,9 @@ limitations under the License.
 
       var target = Polymer.dom(e).rootTarget;
       if (target.hasAttribute(this.app.ANALYTICS_LINK_ATTR)) {
-        IOWA.Analytics.trackEvent(
-            'schedule', 'video play',
-            target.getAttribute(this.app.ANALYTICS_LINK_ATTR));
+        var videoUrl = target.getAttribute(this.app.ANALYTICS_LINK_ATTR);
+        IOWA.Analytics.trackEvent('schedule', 'video play', videoUrl);
+        IOWA.IOFirebase.markVideoAsViewed(videoUrl);
       }
     },
 
