@@ -20,14 +20,11 @@ IOWA.Elements = (function() {
   const ANALYTICS_LINK_ATTR = 'data-track-link';
 
   function updateElements() {
-    var ioLogo = document.querySelector('io-logo');
-    ioLogo.addEventListener('io-logo-animation-done', function() {
-      var dest = document.querySelector('[iologodestination]');
-      dest.classList.add('active');
+    var onPageSelect = function() {
+      document.body.removeEventListener('page-select', onPageSelect);
 
-      // Load auth after logo transition is done. This helps timing with
-      // fetching user's schedule and makes sure the worker has returned
-      // the main schedule data.
+      // Load auth after initial page is setup. This helps do less upfront work
+      // until the main schedule data is returned by the worker.
       IOWA.Elements.GoogleSignIn.load = true;
 
       // Deep link into a subpage.
@@ -46,7 +43,9 @@ IOWA.Elements = (function() {
           IOWA.ServiceWorkerRegistration.register();
         }
       );
-    });
+    };
+
+    document.body.addEventListener('page-select', onPageSelect);
 
     var main = document.querySelector('.io-main');
 

@@ -205,18 +205,12 @@ limitations under the License.
       };
       --paper-drawer-panel-scrim: {
         z-index: 5; /* TODO: stick in _zindex.scss */
+        display: none;
       };
     }
   </style>
 </head>
 <body id="page-{% .Slug %}" class="bg-white">
-
-<!-- Intro animation background is outside of Polymer to reduce perceived latency in polyfilled browsers. -->
-<div class="io-logo-container">
-  <io-logo width="312" height="165" page="{% .Slug %}"
-           class="bg-white" hide-masthead></io-logo>
-  <div class="bg-white" iologobackground></div>
-</div>
 
 <template is="dom-bind" id="t">
 
@@ -224,7 +218,7 @@ limitations under the License.
                user="{{currentUser}}"></google-signin>
 
 <!-- Responsive handlers -->
-<iron-media-query id="mq-phone" full query="(min-width:320px) and (max-width:767px)"
+<iron-media-query id="mq-phone" full query="(min-width:320px) and (max-width:768px)"
                   query-matches="{{app.isPhoneSize}}"></iron-media-query>
 <iron-media-query id="mq-tablet" full query="(min-width:768px) and (max-width:959px)"
                   query-matches="{{app.isTabletSize}}"></iron-media-query>
@@ -277,7 +271,7 @@ limitations under the License.
               on-click="setSelectedPageToHome"
               data-track-link="nav-home" data-ajax-link
               data-transition="page-slide-transition">
-            <div class="io-logo" iologodestination></div>
+            <div class="io-logo"></div>
           </a>
         </div>
         <paper-tabs attr-for-selected="label"
