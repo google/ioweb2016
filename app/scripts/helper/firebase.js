@@ -301,7 +301,7 @@ class IOFirebase {
    * @return {Promise} Promise to track completion.
    */
   markVideoAsViewed(videoIdOrUrl) {
-    // Making sure we save the ID of the Video and not the full Youtube URL.
+    // Making sure we save the ID of the video and not the full Youtube URL.
     let match = videoIdOrUrl.match(/.*(?:youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/);
     videoIdOrUrl = match ? videoIdOrUrl : match[1];
     return this._setFirebaseUserData(`viewed_videos/${videoIdOrUrl}`, {
