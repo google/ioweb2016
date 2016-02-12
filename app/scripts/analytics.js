@@ -19,7 +19,7 @@ window.IOWA = window.IOWA || {};
 IOWA.Analytics = IOWA.Analytics || (function(exports) {
   'use strict';
 
-  var GA_TRACKING_CODE = exports.ENV === 'prod' ? 'UA-58124138-1' : 'UA-58124138-2';
+  var GA_TRACKING_CODE = exports.ENV === 'prod' ? 'UA-58124138-3' : 'UA-58124138-2';
 
   /**
    * Analytics for the I/O Web App.
