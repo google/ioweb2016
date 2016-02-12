@@ -19,8 +19,6 @@ $tabletKeyline: 24px;
 $desktopKeyline: 32px;
 $largeKeyline: 72px;
 
-$container-max-width: 960px;
-
 @mixin keyline-72l() {
 	padding-left: $largeKeyline;
 }

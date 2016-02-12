@@ -27,9 +27,6 @@ $name: 'page-home';
 
 .masthead-container {
   max-width: 100% !important;
-  // height: 50vh;
-  // max-height: 544px;
-  margin-bottom: 40px;
 }
 
 // .play__button__container {
@@ -46,6 +43,10 @@ $name: 'page-home';
 //     min-height: 310px;
 //   }
 // }
+
+h3 a {
+  font-weight: inherit;
+}
 
 .photo__people {
   background-image: url(../images/home/people_card.jpg);
