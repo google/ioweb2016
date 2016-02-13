@@ -255,6 +255,11 @@ IOWA.Router_ = function(window) {
 
     // Navigate to a new page.
     if (this.state.start.page !== this.state.end.page) {
+      // Imperatively update selectedPage to new page. Necessary when the link
+      // navigation isn't coming from an app drawer or top nav item click.
+      // In those cases, the selectedPage binding is not updated. Note: reassign
+      // selectedPage to the same value is a noop in Polymer's data system.
+      this.t.selectedPage = this.state.end.page;
       this.runPageTransition(e, source);
     } else if (this.state.start.subpage !== this.state.end.subpage) {
       this.runSubpageTransition();

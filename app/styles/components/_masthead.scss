@@ -45,13 +45,13 @@
     }
   }
 
-  [iologodestination] {
-    visibility: hidden;
+  // [iologodestination] {
+  //   visibility: hidden;
 
-    &.active {
-      visibility: visible
-    }
-  }
+  //   &.active {
+  //     visibility: visible
+  //   }
+  // }
 }
 
 .masthead-meta {
@@ -171,13 +171,15 @@ paper-drawer-panel {
 }
 
 .masthead-container {
-  // min-height: 268px;
-  height: 268px;
+  min-height: 268px;
+  height: 480px;
+  // height: 800px;
   width: 100%;
-  max-width: $container-max-width;
+  // max-width: $container-max-width;
   margin: 0 auto;
   position: relative;
   padding: 0 0 40px 0;
+  margin-top: -$navbarHeightMobile;
 
   paper-tabs {
     text-transform: uppercase;
@@ -235,7 +237,8 @@ paper-drawer-panel {
 
 @media (min-width: $tablet-breakpoint-min) {
   .masthead-container {
-    height: 350px;
+    // height: 350px;
+    margin-top: -$navbarHeight;
   }
 
   #navbar {
@@ -246,5 +249,51 @@ paper-drawer-panel {
     [paper-drawer-toggle] {
       display: none;
     }
+  }
+}
+
+// 2016 breakpoint adjustments.
+@media (max-width: 1304px) {
+  $container-max-width: 960px;
+
+  .masthead-container {
+    max-width: $container-max-width;
+    height: 480px;
+  }
+}
+
+@media (min-width: 1304px + 1) and (max-width: 1500px) {
+  $container-max-width: 1160px;
+
+  .masthead-container {
+    max-width: $container-max-width;
+    height: 580px;
+  }
+}
+
+@media (min-width: 1500px + 1) and (max-width: 1600px) {
+  $container-max-width: 1280px;
+
+  .masthead-container {
+    max-width: $container-max-width;
+    height: 640px;
+  }
+}
+
+@media (min-width: 1600px + 1) and (max-width: 1800px) {
+  $container-max-width: 1440px;
+
+  .masthead-container {
+    max-width: $container-max-width;
+    height: 720px;
+  }
+}
+
+@media (min-width: 1600px + 1) {
+  $container-max-width: 1600px;
+
+  .masthead-container {
+    max-width: $container-max-width;
+    height: 800px;
   }
 }

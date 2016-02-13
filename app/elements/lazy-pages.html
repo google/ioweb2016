@@ -13,6 +13,11 @@ limitations under the License.
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
+<!--
+Fired when a new page is selected.
+
+@event page-select
+-->
 <script>
 (function() {
   "use strict";
@@ -78,9 +83,10 @@ limitations under the License.
       if (name && (this._selected = this._ifMap[name])) {
         this._selected.if = true;
         // Wait 1 tick for template to stamp.
-        this.async(function(){
+        this.async(function() {
           this._setSelectedPage(
               [].filter.call(this.children, this._noTemplatesFilter)[0]);
+          this.fire('page-select', {page: this.selectedPage});
         });
       }
     }

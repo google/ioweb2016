@@ -18,13 +18,14 @@
 @import '../base/typography';
 
 html, body {
-  font-family: 'Arial', 'sans-serif';
+  background: $color-body;
+  color: $color-text;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
   @include typo-body();
-}
-
-body {
-  color: $color-bluegrey-600;
-  background-color: $color-body;
 }
 
 .noscroll {
@@ -124,25 +125,25 @@ paper-progress {
   }
 }
 
-.bg-grey {
-  background-color: $color-body;
+.bg-white {
+  background-color: #fff;;
 }
 
-.bg-light-grey1 {
-  background-color: $color-grey1;
+.bg-grey-50 {
+  background-color: $color-grey-50;
 }
 
-.bg-light-grey2 {
-  background-color: $color-grey2;
+.bg-grey-100 {
+  background-color: $color-grey-100;
 }
 
-.bg-medium-grey {
-  background-color: $color-grey3;
-}
+// .bg-medium-grey {
+//   background-color: $color-grey3;
+// }
 
-.bg-dark-grey {
-  background-color: $color-grey4;
-}
+// .bg-dark-grey {
+//   background-color: $color-grey4;
+// }
 
 .bg-google-blue {
   background-color: $color-google-blue-500;
@@ -194,10 +195,10 @@ paper-progress {
 
 .io__hash {
   display: inline-block;
-  background: url(../images/hash.png) no-repeat 50% 50%;
+  background-image: url(../images/hash.png);
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
   background-size: contain;
-  height: 116px;
-  width: 280px;
 }
 
 .io-main {
@@ -215,29 +216,29 @@ paper-progress {
   }
 }
 
-.io-logo-container {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  top: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+// .io-logo-container {
+//   position: absolute;
+//   left: 0;
+//   right: 0;
+//   bottom: 0;
+//   top: 0;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
 
-  io-logo {
-    will-change: transform; // https://github.com/GoogleChrome/ioweb2015/issues/254
-  }
+//   io-logo {
+//     will-change: transform; // https://github.com/GoogleChrome/ioweb2015/issues/254
+//   }
 
-  [iologobackground] {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    top: 0;
-    will-change: transform; // https://github.com/GoogleChrome/ioweb2015/issues/254
-  }
-}
+//   [iologobackground] {
+//     position: absolute;
+//     left: 0;
+//     right: 0;
+//     bottom: 0;
+//     top: 0;
+//     will-change: transform; // https://github.com/GoogleChrome/ioweb2015/issues/254
+//   }
+// }
 
 .fullvideo__container {
   transform-origin: 0 0;
@@ -314,10 +315,6 @@ paper-progress {
     transform: scale(0);
     pointer-events: all;
   }
-
-  .card__container {
-    max-width: $container-max-width + 56px * 3;
-  }
 }
 
 // TODO: relies on shady. Remove when
@@ -352,6 +349,19 @@ paper-checkbox {
     font-weight: 300;
     line-height: 56px;
   }
+  // Rest of heading are same as mobile.
+}
+
+@media (min-width: $desktop-breakpoint-mid) {
+  .page__section {
+    @include keyline-72();
+    padding-top: $largeKeyline;
+    padding-bottom: $largeKeyline;
+  }
+}
+
+@media (min-width: $desktop-breakpoint-mid + 1) {
+  // h1 same as tablet.
   h2 {
     @include typo-heading-2();
     font-size: 32px;
@@ -378,13 +388,5 @@ paper-checkbox {
     font-size: 16px;
     line-height: 24px;
     font-weight: 500;
-  }
-}
-
-@media (min-width: $desktop-breakpoint-mid) {
-  .page__section {
-    @include keyline-72();
-    padding-top: $largeKeyline;
-    padding-bottom: $largeKeyline;
   }
 }

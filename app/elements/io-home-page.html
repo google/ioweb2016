@@ -40,7 +40,7 @@ limitations under the License.
       <div id="countdown-container" fit>
         <countdown-timer id="ctimer"
             auto-start
-            bg-color="#F5F5F5"
+            bg-color="#fff"
             date="[[date]]"
             ease-in-time="490"
             wait-time="100"
@@ -93,7 +93,7 @@ limitations under the License.
           </a>
         </div> -->
         <div class="card-content box card--top-left-clip bg-google-blue typo-white" layout vertical>
-          <h3 class="card__title">May 18-20</h3>
+          <h3 class="card__title"><p>May 18-20</p></h3>
           <h3>
             <a href="https://goo.gl/maps/7hs1NJR3ErG2" target="_blank"
                data-track-link="nav-shoreline-maps-link">
@@ -102,7 +102,7 @@ limitations under the License.
           </h3>
           <div layout flex end>
             <div>
-              <h4 class="typo-black">Registration opens March 2.</h4>
+              <h4 class="typo-black"><p>Registration opens March 2.</p></h4>
               <h4>Google I/O is for developers - the creative coders who are building what's next. Each year, we explore the latest in tech, mobile &amp; beyond.</h4>
             </div>
           </div>
@@ -119,9 +119,9 @@ limitations under the License.
           </div>
         </div>
 
-        <div class="card-content box card--bottom-left-clip io__hash"
+        <div class="card-content box card--bottom-left-clip io__hash bg-grey-100"
              aria-label="I/O hash tag"></div>
-        <div class="card-content box card--bottom-right-clip bg-light-grey1">
+        <div class="card-content box card--bottom-right-clip bg-grey-50">
 
           <social-poller url="[[resolveUrl('../api/v1/social')]]" posts="{{socialPosts}}"
                          interval="30000"></social-poller>

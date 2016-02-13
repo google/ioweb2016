@@ -148,14 +148,14 @@ google-youtube {
       position: absolute;
       right: $mobileKeyline / 2;
       top: $mobileKeyline / 2;
-      color: $color-grey1;
+      color: $color-grey-50;
     }
   }
 }
 
 .marker-card--closest {
   font-size: 12px;
-  color: $color-grey1;
+  color: $color-grey-50;
   margin-top: $mobileKeyline / 2;
   display: none;
 

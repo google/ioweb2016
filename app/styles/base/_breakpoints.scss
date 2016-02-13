@@ -15,7 +15,7 @@
  */
 
 $phone-breakpoint-min: 320px;
-$phone-breakpoint-max: 767px;
+$phone-breakpoint-max: 768px;
 
 $tablet-breakpoint-min: $phone-breakpoint-max + 1;
 $tablet-breakpoint-mid: 884px;
@@ -24,3 +24,85 @@ $tablet-breakpoint-max: 944px;
 $desktop-breakpoint-min: $tablet-breakpoint-max + 1;
 $desktop-breakpoint-mid: 1136px;
 $desktop-breakpoint-max: 1264px;
+
+
+// // 2016 breakpoint adjustments.
+// @media (max-width: 1304px) {
+//   $container-max-width: 960px;
+
+//   .card__container, .masthead-container {
+//     max-width: $container-max-width;
+//   }
+//   .masthead-container, .card-content.box {
+//     height: 480px;
+//   }
+//   #fab {
+//     .card__container {
+//       max-width: $container-max-width + 56px * 3;
+//     }
+//   }
+// }
+
+// @media (min-width: 1304px + 1) and (max-width: 1500px) {
+//   $container-max-width: 1160px;
+
+//   .card__container, .masthead-container {
+//     max-width: $container-max-width;
+//   }
+//   .masthead-container, .card-content.box {
+//     height: 580px;
+//   }
+//   #fab {
+//     .card__container {
+//       max-width: $container-max-width + 56px * 3;
+//     }
+//   }
+// }
+
+// @media (min-width: 1500px + 1) and (max-width: 1600px) {
+//   $container-max-width: 1280px;
+
+//   .card__container, .masthead-container {
+//     max-width: $container-max-width;
+//   }
+//   .masthead-container, .card-content.box {
+//     height: 640px;
+//   }
+//   #fab {
+//     .card__container {
+//       max-width: $container-max-width + 56px * 3;
+//     }
+//   }
+// }
+
+// @media (min-width: 1600px + 1) and (max-width: 1800px) {
+//   $container-max-width: 1440px;
+
+//   .card__container, .masthead-container {
+//     max-width: $container-max-width;
+//   }
+//   .masthead-container, .card-content.box  {
+//     height: 720px;
+//   }
+//   #fab {
+//     .card__container {
+//       max-width: $container-max-width + 56px * 3;
+//     }
+//   }
+// }
+
+// @media (min-width: 1600px + 1) {
+//   $container-max-width: 1600px;
+
+//   .card__container, .masthead-container {
+//     max-width: $container-max-width;
+//   }
+//   .masthead-container, .card-content.box {
+//     height: 800px;
+//   }
+//   #fab {
+//     .card__container {
+//       max-width: $container-max-width + 56px * 3;
+//     }
+//   }
+// }
