@@ -62,13 +62,22 @@ paper-drawer-panel {
   [drawer] {
     font-size: 14px;
     font-weight: 500;
-  }
-  paper-toolbar .bottom {
-    font-size: 14px;
-    line-height: 20px;
+
+    paper-toolbar {
+      background-color: $color-cyan-400;
+
+      .bottom {
+        font-size: 14px;
+        line-height: 20px;
+      }
+
+      .io-logo {
+        background-image: url('../images/io-logo-white.png');
+      }
+    }
   }
   #drawer-menu .iron-selected {
-    background-color: #eaeaea;
+    background-color: $color-bluegrey-50;
   }
   .drawer-panel-content {
     overflow: auto;
