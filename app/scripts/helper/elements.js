@@ -442,6 +442,11 @@ IOWA.Elements = (function() {
       }
     };
 
+    template.initDrawer = function() {
+      this.$.appdrawer.classList.toggle('mobile', this.app.isPhoneSize);
+      this.$.appdrawer.updateStyles(); // Show app drawer scrim on on mobile.
+    };
+
     template.initFabScroll = function() {
       var scroller = IOWA.Elements.ScrollContainer;
       var footerMargin = parseInt(
@@ -500,6 +505,7 @@ IOWA.Elements = (function() {
       IOWA.Elements.NavPaperTabs.style.pointerEvents = '';
 
       this.initFabScroll(); // init FAB scrolling behavior.
+      this.initDrawer();
     });
 
     template.addEventListener('page-transition-start', function() {

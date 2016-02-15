@@ -205,7 +205,13 @@ limitations under the License.
       };
       --paper-drawer-panel-scrim: {
         z-index: 5; /* TODO: stick in _zindex.scss */
-        display: none;
+        display: none; /* Prevent scrim FOUC before */
+      };
+    }
+
+    paper-drawer-panel.mobile {
+      --paper-drawer-panel-scrim: {
+        display: block;
       };
     }
   </style>
