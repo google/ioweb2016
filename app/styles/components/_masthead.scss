@@ -17,7 +17,7 @@
 @import '../base/layout';
 
 .io-logo:not(.style-scope) {
-  background: url('../images/io-logo-grey.png') no-repeat;
+  background: url('../images/io.png') no-repeat;
   background-size: contain;
   height: 40px;
   width: 60px;
@@ -173,9 +173,7 @@ paper-drawer-panel {
 .masthead-container {
   min-height: 268px;
   height: 480px;
-  // height: 800px;
   width: 100%;
-  // max-width: $container-max-width;
   margin: 0 auto;
   position: relative;
   padding: 0 0 40px 0;
@@ -237,7 +235,6 @@ paper-drawer-panel {
 
 @media (min-width: $tablet-breakpoint-min) {
   .masthead-container {
-    // height: 350px;
     margin-top: -$navbarHeight;
   }
 
@@ -280,6 +277,15 @@ paper-drawer-panel {
   }
 }
 
+@media (min-width: 1600px + 1) {
+  $container-max-width: 1600px;
+
+  .masthead-container {
+    max-width: $container-max-width;
+    height: 800px;
+  }
+}
+
 @media (min-width: 1600px + 1) and (max-width: 1800px) {
   $container-max-width: 1440px;
 
@@ -289,11 +295,3 @@ paper-drawer-panel {
   }
 }
 
-@media (min-width: 1600px + 1) {
-  $container-max-width: 1600px;
-
-  .masthead-container {
-    max-width: $container-max-width;
-    height: 800px;
-  }
-}

@@ -49,18 +49,19 @@ h3 a {
 }
 
 .photo__people {
-  background-image: url(../images/home/people_card.jpg);
+  background-image: url(../images/home/cardboard.jpg);
 }
 
 .photo__recap {
-  background-image: url(../images/home/keynote_audience@2x.jpg);
+  background-image: url(../images/home/recap.jpg);
   background-position: 0 50%;
 
   &.card__play-button {
-    background-image: url(../images/play-video-button.png),
-                      url(../images/home/keynote_audience@2x.jpg);
-    background-position: 50% 50%, 0 50%;
-    background-size: 72px, cover;
+    background-image: linear-gradient(to top, transparent 70%, #000),
+                      url(../images/play-video-button.png),
+                      url(../images/home/recap.jpg);
+    background-position: 50% 50%, 50% 50%, 0 50%;
+    background-size: cover, 74px, cover;
     cursor: pointer;
   }
 }

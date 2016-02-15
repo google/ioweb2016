@@ -29,7 +29,7 @@
   display: block;
 
   .card-content {
-    padding: 0 $mobileKeyline;
+    padding: 24px 16px;
 
     &.box {
       min-height: 375px;
@@ -76,29 +76,18 @@
   border-bottom-right-radius: inherit;
 }
 
-@media (max-width: $phone-breakpoint-max) {
-  .card {
-    .card-content {
-      padding: $tabletKeyline $mobileKeyline;
-    }
-  }
-}
-
 @media (min-width: $tablet-breakpoint-min) {
   .card {
-    border-radius: 3px;
-    @include shadow-z2();
-
     .card-content {
-      padding: 32px;
+      padding: 24px;
 
       &.box {
         width: 50%;
+        transition: box-shadow 120ms ease-out;
 
         &:hover {
           box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.25),
                       0px 2px 3px 0px rgba(0, 0, 0, 0.25);
-          transition: box-shadow .12s ease-out;
         }
 
       }
@@ -107,10 +96,20 @@
   }
 }
 
+// In between desktops
+@media (min-width: 760px) and (max-width: 960px) {
+  .card-content.box {
+    height: 50vw !important;
+  }
+}
+
 @media (min-width: $desktop-breakpoint-min) {
   .card {
+    border-radius: 3px;
+    @include shadow-z2();
+
     .card-content {
-      padding: 32px 40px;
+      padding: 32px;
     }
   }
 }
@@ -142,9 +141,22 @@
   .card-content.box {
     height: 580px;
   }
+  .card {
+    .card-content {
+      padding: 40px;
+    }
+  }
   #fab {
     .card__container {
       max-width: $container-max-width + 56px * 3;
+    }
+  }
+}
+
+@media (min-width: 1500px + 1) {
+  .card {
+    .card-content {
+      padding: 48px;
     }
   }
 }
@@ -165,22 +177,6 @@
   }
 }
 
-@media (min-width: 1600px + 1) and (max-width: 1800px) {
-  $container-max-width: 1440px;
-
-  .card__container {
-    max-width: $container-max-width;
-  }
-  .card-content.box  {
-    height: 720px;
-  }
-  #fab {
-    .card__container {
-      max-width: $container-max-width + 56px * 3;
-    }
-  }
-}
-
 @media (min-width: 1600px + 1) {
   $container-max-width: 1600px;
 
@@ -189,6 +185,22 @@
   }
   .card-content.box {
     height: 800px;
+  }
+  #fab {
+    .card__container {
+      max-width: $container-max-width + 56px * 3;
+    }
+  }
+}
+
+@media (min-width: 1600px + 1) and (max-width: 1800px) {
+  $container-max-width: 1440px;
+
+  .card__container {
+    max-width: $container-max-width;
+  }
+  .card-content.box  {
+    height: 720px;
   }
   #fab {
     .card__container {

@@ -23,13 +23,25 @@ $name: 'page-faq';
 
 ##{$name} {
 
+io-faq-page {
+  a {
+    color: $color-cyan-400;
+  }
+}
+
+.faq-answers {
+  a {
+    text-transform: uppercase;
+  }
+}
+
 .card-content {
   h3 {
     margin-bottom: $tabletKeyline;
   }
 
   h5 {
-    margin: $tabletKeyline 0 $mobileKeyline 0;
+    margin: $desktopKeyline 0 $mobileKeyline 0;
   }
 }
 

@@ -19,7 +19,7 @@
 
 html, body {
   background: $color-body;
-  color: $color-text;
+  color: $color-bluegrey-800;
   margin: 0;
   padding: 0;
   height: 100%;
@@ -104,6 +104,14 @@ paper-progress {
   color: #000;
 }
 
+.typo-cyan-400 {
+  color: $color-cyan-400;
+}
+
+.typo-cyan-700 {
+  color: $color-cyan-700;
+}
+
 .hide-on-mobile {
   display: none;
 }
@@ -129,6 +137,10 @@ paper-progress {
   background-color: #fff;;
 }
 
+.bg-cyan-400 {
+  background-color: $color-cyan-400;
+}
+
 .bg-grey-50 {
   background-color: $color-grey-50;
 }
@@ -137,29 +149,29 @@ paper-progress {
   background-color: $color-grey-100;
 }
 
-// .bg-medium-grey {
-//   background-color: $color-grey3;
+.bg-bluegrey-50-20 {
+  background-color: rgba($color-bluegrey-50, 0.2);
+}
+
+.bg-bluegrey-50-40 {
+  background-color: rgba($color-bluegrey-50, 0.4);
+}
+
+// .bg-google-blue {
+//   background-color: $color-google-blue-500;
 // }
 
-// .bg-dark-grey {
-//   background-color: $color-grey4;
+// .bg-google-red {
+//   background-color: $color-google-red-500;
 // }
 
-.bg-google-blue {
-  background-color: $color-google-blue-500;
-}
+// .bg-google-green {
+//   background-color: $color-google-green-500;
+// }
 
-.bg-google-red {
-  background-color: $color-google-red-500;
-}
-
-.bg-google-green {
-  background-color: $color-google-green-500;
-}
-
-.bg-google-yellow {
-  background-color: $color-google-yellow-500;
-}
+// .bg-google-yellow {
+//   background-color: $color-google-yellow-500;
+// }
 
 .navbar__overlay {
   position: fixed !important;  // iOS
@@ -291,13 +303,14 @@ paper-progress {
   bottom: 40px;
   pointer-events: none;
 
-  &::before {
-    position: absolute;
-    content: '';
-    border-bottom: 1px solid #ddd;
-    width: 100%;
-    height: calc(56px / 2);
-  }
+  // Line through card background.
+  // &::before {
+  //   position: absolute;
+  //   content: '';
+  //   border-bottom: 1px solid #ddd;
+  //   width: 100%;
+  //   height: calc(56px / 2);
+  // }
 
   &.active paper-fab {
     transform: scale(1);
@@ -328,6 +341,22 @@ paper-checkbox {
 @media (max-width: $phone-breakpoint-max) {
   .navbar__overlay {
     font-size: 16px;
+  }
+}
+
+// In between desktops
+@media (min-width: 760px) and (max-width: 960px) {
+  #fab {
+    position: fixed;
+    bottom: 40px;
+    right: 32px;
+    top: initial !important;
+    z-index: 1;
+
+    paper-fab {
+      height: 40px;
+      width: 40px;
+    }
   }
 }
 
