@@ -122,6 +122,10 @@ IOWA.Util = IOWA.Util || (function() {
     return (/Trident/gi).test(userAgent);
   }
 
+  function isEdge() {
+    return /Edge/i.test(navigator.userAgent);
+  }
+
   function isFF() {
     var userAgent = navigator.userAgent;
     return (/Firefox/gi).test(userAgent);
@@ -303,6 +307,7 @@ IOWA.Util = IOWA.Util || (function() {
     createDeferred,
     isFF,
     isIE,
+    isEdge,
     isIOS,
     isSafari,
     isTouchScreen,
