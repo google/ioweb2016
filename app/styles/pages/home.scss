@@ -29,21 +29,6 @@ $name: 'page-home';
   max-width: 100% !important;
 }
 
-// .play__button__container {
-//   cursor: pointer;
-//   background-size: 40px;
-//   height: 60px;
-// }
-
-// .pics__section {
-//   height: 310px;
-//   padding: 0;
-
-//   > div {
-//     min-height: 310px;
-//   }
-// }
-
 h3 a {
   font-weight: inherit;
 }
@@ -88,30 +73,6 @@ h3 a {
     opacity: 1;
     pointer-events: auto;
   }
-}
-
-// @media (max-width: $phone-breakpoint-max) {
-//   .io__hash {
-//     display: block;
-//     margin: 0 auto;
-//     min-height: 375px;
-//   }
-// }
-
-// @media (min-width: $tablet-breakpoint-min) {
-//   .io__hash {
-//     margin: $desktopKeyline + 8 0;
-//     height: 250px;
-//     background-position: 0 0;
-//   }
-// }
-
-@media (min-width: $tablet-breakpoint-min) and (max-width: $tablet-breakpoint-mid) {
-
-}
-
-@media (min-width: $desktop-breakpoint-mid) {
-
 }
 
 // @media (min-resolution: 2.0dppx), (-webkit-min-device-pixel-ratio: 2), (min-width: $tablet-breakpoint-min) {

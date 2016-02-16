@@ -91,6 +91,11 @@ paper-drawer-panel {
 #navbar {
   background-color: transparent;
   color: inherit;
+  transition: background-color 500ms;
+
+  &.scrolled {
+    background-color: $color-grey-50;
+  }
 
   paper-tabs {
     display: none;

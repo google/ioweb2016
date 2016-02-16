@@ -466,6 +466,9 @@ IOWA.Elements = (function() {
     template._onContentScroll = function(e, detail) {
       var scrollTop = detail.target.scrollTop;
 
+      var atTop = Polymer.dom(e).rootTarget.atTop;
+      this.$.navbar.classList.toggle('scrolled', !atTop);
+
       // Hide back to top FAB if user is at the top.
       var MIN_SCROLL_BEFORE_SHOW = 100;
       if (scrollTop <= MIN_SCROLL_BEFORE_SHOW) {
@@ -474,6 +477,7 @@ IOWA.Elements = (function() {
       }
 
       this.$.fab.classList.add('active'); // Reveal FAB.
+      this.$.navbar.classList.add('scrolled');
 
       var scrollDiff = this._fabPinTopAt - scrollTop;
       if (scrollDiff <= this._scrollerHeight) {

@@ -330,14 +330,6 @@ paper-progress {
   }
 }
 
-// TODO: relies on shady. Remove when
-// https://github.com/PolymerElements/paper-checkbox/issues/104 is fixed.
-paper-checkbox {
-  #checkmark {
-    box-sizing: content-box;
-  }
-}
-
 @media (max-width: $phone-breakpoint-max) {
   .navbar__overlay {
     font-size: 16px;
@@ -389,8 +381,9 @@ paper-checkbox {
   }
 }
 
-@media (min-width: $desktop-breakpoint-mid + 1) {
-  // h1 same as tablet.
+// @media (min-width: $desktop-breakpoint-mid + 1) {
+@media (min-width: 961px) {
+  // h1 same as previous.
   h2 {
     @include typo-heading-2();
     font-size: 32px;
