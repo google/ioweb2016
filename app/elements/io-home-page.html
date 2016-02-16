@@ -83,16 +83,7 @@ limitations under the License.
 
       <div class="card" layout horizontal wrap  vertical$="{{app.isPhoneSize}}">
 
-        <!-- <div class="card-content card--top-left-clip box" layout vertical>
-          <p>To celebrate our 10th anniversary of developer gatherings, we'll be hosting I/O in our backyard at the Shoreline Amphitheatre in Mountain View, CA.</p>
-          <p>Registration opens March 2.</p>
-          <a href="https://goo.gl/maps/7hs1NJR3ErG2" target="_blank"
-             data-track-link="card-shoreline-maps-link"
-             layout horizontal justified flex end>Map the venue
-            <iron-icon icon="io:keyboard-arrow-right"></iron-icon>
-          </a>
-        </div> -->
-        <div class="card-content box card--top-left-clip bg-google-blue typo-white" layout vertical>
+        <div class="card-content box card--top-left-clip bg-cyan-400" layout vertical>
           <h3 class="card__title"><p>May 18-20</p></h3>
           <h3>
             <a href="https://goo.gl/maps/7hs1NJR3ErG2" target="_blank"
@@ -102,8 +93,8 @@ limitations under the License.
           </h3>
           <div layout flex end>
             <div>
-              <h4 class="typo-black"><p>Registration opens March 2.</p></h4>
-              <h4>Google I/O is for developers - the creative coders who are building what's next. Each year, we explore the latest in tech, mobile &amp; beyond.</h4>
+              <h5><p>Registration opens March 2.</p></h5>
+              <h5 style="font-weight:normal">Google I/O is for developers - the creative coders who are building what's next. Each year, we explore the latest in tech, mobile &amp; beyond.</h5>
             </div>
           </div>
         </div>
@@ -115,13 +106,11 @@ limitations under the License.
                on-tap="openDialogVideo"
                data-track-link="home-watch-recap-video"
                flex>
-            <h4>Watch the I/O 2015 recap</h4>
+            <h5 style="font-weight:normal">Watch the I/O 2015 recap</h5>
           </div>
         </div>
 
-        <div class="card-content box card--bottom-left-clip io__hash bg-grey-100"
-             aria-label="I/O hash tag"></div>
-        <div class="card-content box card--bottom-right-clip bg-grey-50">
+        <div class="card-content box card--bottom-right-clip typo-cyan-700 bg-bluegrey-50-20">
 
           <social-poller url="[[resolveUrl('../api/v1/social')]]" posts="{{socialPosts}}"
                          interval="30000"></social-poller>
@@ -140,6 +129,9 @@ limitations under the License.
           </iron-pages>
 
         </div>
+        <div class="card-content box card--bottom-left-clip io__hash bg-bluegrey-50-40"
+             aria-label="I/O hash tag"></div>
+
       </div>
     </div>
 

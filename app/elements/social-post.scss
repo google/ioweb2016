@@ -27,10 +27,12 @@ a {
     line-height: 42px;
   }
   iron-icon {
-    margin-right: $mobileKeyline / 2;
+    position: relative;
+    margin-right: $mobileKeyline / 4;
+    top: 3px;
   }
   .timestamp {
-    opacity: 0.5;
+    color: $color-bluegrey-200;
   }
 }
 

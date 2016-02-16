@@ -93,6 +93,7 @@
       this.closeDrawer();
       // remove fab sticky scrolling behavior for mobile. Add for desktop.
       this.initFabScroll();
+      this.initDrawer();
     }, 400);
   });
 

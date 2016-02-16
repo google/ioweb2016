@@ -442,6 +442,11 @@ IOWA.Elements = (function() {
       }
     };
 
+    template.initDrawer = function() {
+      this.$.appdrawer.classList.toggle('mobile', this.app.isPhoneSize);
+      this.$.appdrawer.updateStyles(); // Show app drawer scrim on on mobile.
+    };
+
     template.initFabScroll = function() {
       var scroller = IOWA.Elements.ScrollContainer;
       var footerMargin = parseInt(
@@ -461,6 +466,9 @@ IOWA.Elements = (function() {
     template._onContentScroll = function(e, detail) {
       var scrollTop = detail.target.scrollTop;
 
+      var atTop = Polymer.dom(e).rootTarget.atTop;
+      this.$.navbar.classList.toggle('scrolled', !atTop);
+
       // Hide back to top FAB if user is at the top.
       var MIN_SCROLL_BEFORE_SHOW = 100;
       if (scrollTop <= MIN_SCROLL_BEFORE_SHOW) {
@@ -469,6 +477,7 @@ IOWA.Elements = (function() {
       }
 
       this.$.fab.classList.add('active'); // Reveal FAB.
+      this.$.navbar.classList.add('scrolled');
 
       var scrollDiff = this._fabPinTopAt - scrollTop;
       if (scrollDiff <= this._scrollerHeight) {
@@ -500,6 +509,7 @@ IOWA.Elements = (function() {
       IOWA.Elements.NavPaperTabs.style.pointerEvents = '';
 
       this.initFabScroll(); // init FAB scrolling behavior.
+      this.initDrawer();
     });
 
     template.addEventListener('page-transition-start', function() {

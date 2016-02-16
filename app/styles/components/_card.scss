@@ -29,10 +29,11 @@
   display: block;
 
   .card-content {
-    padding: 0 $mobileKeyline;
+    padding: 24px 16px;
 
     &.box {
-      min-height: 375px;
+      height: 100vw;
+      width: 100%;
 
       &.box-full {
         width: 100%;
@@ -76,15 +77,38 @@
   border-bottom-right-radius: inherit;
 }
 
-@media (max-width: $phone-breakpoint-max) {
+@media (min-width: 769px) {
   .card {
     .card-content {
-      padding: $tabletKeyline $mobileKeyline;
+      padding: 24px;
+
+      &.box {
+        width: 50%;
+        height: 50vw;
+        transition: box-shadow 120ms ease-out;
+
+        &:hover {
+          box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.25),
+                      0px 2px 3px 0px rgba(0, 0, 0, 0.25);
+        }
+      }
     }
+
   }
 }
 
-@media (min-width: $tablet-breakpoint-min) {
+@media (min-width: 961px) {
+  $container-max-width: 960px;
+
+  .card__container {
+    max-width: $container-max-width;
+  }
+  #fab {
+    .card__container {
+      max-width: $container-max-width + 56px * 3;
+    }
+  }
+
   .card {
     border-radius: 3px;
     @include shadow-z2();
@@ -93,107 +117,94 @@
       padding: 32px;
 
       &.box {
-        width: 50%;
-
-        &:hover {
-          box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.25),
-                      0px 2px 3px 0px rgba(0, 0, 0, 0.25);
-          transition: box-shadow .12s ease-out;
-        }
-
+        height: 480px;
       }
     }
-
   }
 }
 
-@media (min-width: $desktop-breakpoint-min) {
-  .card {
-    .card-content {
-      padding: 32px 40px;
-    }
-  }
-}
-
-
-// 2016 breakpoint adjustments.
-@media (max-width: 1304px) {
-  $container-max-width: 960px;
-
-  .card__container {
-    max-width: $container-max-width;
-  }
-  .card-content.box {
-    height: 480px;
-  }
-  #fab {
-    .card__container {
-      max-width: $container-max-width + 56px * 3;
-    }
-  }
-}
-
-@media (min-width: 1304px + 1) and (max-width: 1500px) {
+@media (min-width: 1305px) {
   $container-max-width: 1160px;
 
   .card__container {
     max-width: $container-max-width;
   }
-  .card-content.box {
-    height: 580px;
-  }
   #fab {
     .card__container {
       max-width: $container-max-width + 56px * 3;
     }
   }
+
+  .card {
+    .card-content {
+      padding: 40px;
+      &.box {
+        height: 580px;
+      }
+    }
+  }
 }
 
-@media (min-width: 1500px + 1) and (max-width: 1600px) {
+@media (min-width: 1501px) {
   $container-max-width: 1280px;
 
   .card__container {
     max-width: $container-max-width;
   }
-  .card-content.box {
-    height: 640px;
-  }
   #fab {
     .card__container {
       max-width: $container-max-width + 56px * 3;
     }
   }
+
+  .card {
+    .card-content {
+      padding: 48px;
+      &.box {
+        height: 640px;
+      }
+    }
+  }
 }
 
-@media (min-width: 1600px + 1) and (max-width: 1800px) {
+@media (min-width: 1601px) {
   $container-max-width: 1440px;
 
   .card__container {
     max-width: $container-max-width;
   }
-  .card-content.box  {
-    height: 720px;
-  }
   #fab {
     .card__container {
       max-width: $container-max-width + 56px * 3;
     }
   }
+
+  .card {
+    .card-content {
+      &.box {
+        height: 720px;
+      }
+    }
+  }
 }
 
-@media (min-width: 1600px + 1) {
+@media (min-width: 1801px) {
   $container-max-width: 1600px;
 
   .card__container {
     max-width: $container-max-width;
   }
-  .card-content.box {
-    height: 800px;
-  }
   #fab {
     .card__container {
       max-width: $container-max-width + 56px * 3;
     }
   }
-}
 
+  .card {
+    .card-content {
+      &.box {
+        height: 800px;
+      }
+    }
+  }
+}

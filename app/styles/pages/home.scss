@@ -29,38 +29,24 @@ $name: 'page-home';
   max-width: 100% !important;
 }
 
-// .play__button__container {
-//   cursor: pointer;
-//   background-size: 40px;
-//   height: 60px;
-// }
-
-// .pics__section {
-//   height: 310px;
-//   padding: 0;
-
-//   > div {
-//     min-height: 310px;
-//   }
-// }
-
 h3 a {
   font-weight: inherit;
 }
 
 .photo__people {
-  background-image: url(../images/home/people_card.jpg);
+  background-image: url(../images/home/cardboard.jpg);
 }
 
 .photo__recap {
-  background-image: url(../images/home/keynote_audience@2x.jpg);
+  background-image: url(../images/home/recap.jpg);
   background-position: 0 50%;
 
   &.card__play-button {
-    background-image: url(../images/play-video-button.png),
-                      url(../images/home/keynote_audience@2x.jpg);
-    background-position: 50% 50%, 0 50%;
-    background-size: 72px, cover;
+    background-image: linear-gradient(to top, transparent 70%, #000),
+                      url(../images/play-video-button.png),
+                      url(../images/home/recap.jpg);
+    background-position: 50% 50%, 50% 50%, 0 50%;
+    background-size: cover, 74px, cover;
     cursor: pointer;
   }
 }
@@ -87,30 +73,6 @@ h3 a {
     opacity: 1;
     pointer-events: auto;
   }
-}
-
-// @media (max-width: $phone-breakpoint-max) {
-//   .io__hash {
-//     display: block;
-//     margin: 0 auto;
-//     min-height: 375px;
-//   }
-// }
-
-// @media (min-width: $tablet-breakpoint-min) {
-//   .io__hash {
-//     margin: $desktopKeyline + 8 0;
-//     height: 250px;
-//     background-position: 0 0;
-//   }
-// }
-
-@media (min-width: $tablet-breakpoint-min) and (max-width: $tablet-breakpoint-mid) {
-
-}
-
-@media (min-width: $desktop-breakpoint-mid) {
-
 }
 
 // @media (min-resolution: 2.0dppx), (-webkit-min-device-pixel-ratio: 2), (min-width: $tablet-breakpoint-min) {

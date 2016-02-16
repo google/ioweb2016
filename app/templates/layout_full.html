@@ -205,7 +205,13 @@ limitations under the License.
       };
       --paper-drawer-panel-scrim: {
         z-index: 5; /* TODO: stick in _zindex.scss */
-        display: none;
+        display: none; /* Prevent scrim FOUC before */
+      };
+    }
+
+    paper-drawer-panel.mobile {
+      --paper-drawer-panel-scrim: {
+        display: block;
       };
     }
   </style>
@@ -257,6 +263,10 @@ limitations under the License.
         <paper-item label="offsite">
           <a href="offsite" data-ajax-link data-anim-drawer
              data-track-link="nav-drawer-offsite">I/O Extended</a>
+        </paper-item>
+        <paper-item label="faq">
+          <a href="faq" data-ajax-link data-anim-drawer
+             data-track-link="nav-drawer-faq">FAQ</a>
         </paper-item>
       </paper-menu>
     </div>
@@ -379,12 +389,12 @@ limitations under the License.
     <div id="fab" class="fixed" hidden$="[[app.isPhoneSize]]">
       <div class="card__container" layout end-justified>
         <a href="#" on-click="backToTop" data-track-link="link-backtotop">
-          <paper-fab icon="io:expand-less" noink></paper-fab>
+          <paper-fab icon="io:expand-less" noink mini="[[app.isPhoneSize]]"></paper-fab>
         </a>
       </div>
     </div>
 
-    <footer class="bg-grey-50" layout horizontal center>
+    <footer layout horizontal center>
 
       <div class="card__container" flex>
 
