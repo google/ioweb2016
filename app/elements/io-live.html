@@ -578,7 +578,7 @@ Fired when the mode changes.
       this.$.livewidget.classList.add('transitioning');
 
       // Make sure FAB closes in browsers that don't support the new CSS clip-path.
-      if (IOWA.Util.isFF() || IOWA.Util.isIE()) {
+      if (IOWA.Util.isFF() || IOWA.Util.isIE() || IOWA.Util.isEdge()) {
         this.onFabTransition();
       }
     },
