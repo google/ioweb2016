@@ -27,7 +27,7 @@ limitations under the License.
 <link rel="import" href="PageBehavior.html">
 
 
-<dom-module id="io-home-page">
+<dom-module id="io-home-page" assetpath="../">
 <template>
   <style include="shared-app-styles">
     :host {
@@ -112,7 +112,7 @@ limitations under the License.
 
         <div class="card-content box card--bottom-right-clip typo-cyan-700 bg-bluegrey-50-20">
 
-          <social-poller url="[[resolveUrl('../api/v1/social')]]" posts="{{socialPosts}}"
+          <social-poller url="[[resolveUrl('api/v1/social')]]" posts="{{socialPosts}}"
                          interval="30000"></social-poller>
 
           <iron-pages id="social_list" selected="0" style="height:100%" layout vertical>
