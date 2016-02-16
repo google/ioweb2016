@@ -186,12 +186,13 @@ paper-drawer-panel {
 
 .masthead-container {
   min-height: 268px;
-  height: 480px;
+  height: 325px;
   width: 100%;
   margin: 0 auto;
   position: relative;
   padding: 0 0 40px 0;
   margin-top: -$navbarHeightMobile;
+  @include keyline-16l();
 
   paper-tabs {
     text-transform: uppercase;
@@ -230,10 +231,6 @@ paper-drawer-panel {
 }
 
 @media (max-width: $phone-breakpoint-max) {
-  .masthead-container {
-    @include keyline-16l();
-  }
-
   #navbar {
     > .profilepic {
       display: none;
@@ -263,49 +260,52 @@ paper-drawer-panel {
   }
 }
 
-// 2016 breakpoint adjustments.
-@media (max-width: 1304px) {
+
+@media (min-width: 769px) {
+  .masthead-container {
+    @include keyline-24l();
+  }
+}
+
+@media (min-width: 961px) {
   $container-max-width: 960px;
 
   .masthead-container {
     max-width: $container-max-width;
-    height: 480px;
+    @include keyline-32l();
   }
 }
 
-@media (min-width: 1304px + 1) and (max-width: 1500px) {
+@media (min-width: 1305px) {
   $container-max-width: 1160px;
 
   .masthead-container {
     max-width: $container-max-width;
-    height: 580px;
+    @include keyline-40l();
   }
 }
 
-@media (min-width: 1500px + 1) and (max-width: 1600px) {
+@media (min-width: 1501px) {
   $container-max-width: 1280px;
 
   .masthead-container {
     max-width: $container-max-width;
-    height: 640px;
+    @include keyline-48l();
   }
 }
 
-@media (min-width: 1600px + 1) {
-  $container-max-width: 1600px;
-
-  .masthead-container {
-    max-width: $container-max-width;
-    height: 800px;
-  }
-}
-
-@media (min-width: 1600px + 1) and (max-width: 1800px) {
+@media (min-width: 1601px) {
   $container-max-width: 1440px;
 
   .masthead-container {
     max-width: $container-max-width;
-    height: 720px;
   }
 }
 
+@media (min-width: 1801px) {
+  $container-max-width: 1600px;
+
+  .masthead-container {
+    max-width: $container-max-width;
+  }
+}
