@@ -98,8 +98,9 @@ IOWA.Elements = (function() {
     template.currentUser = null;
 
     // FAB scrolling effect caches.
+    template._fabCrossFooterThreshold = null; // Scroll limit when FAB sticks.
+    template._fabPinTop = null; // Top to pin FAB at.
     template._scrollerHeight = null;
-    template._fabPinTopAt = null;
 
     IOWA.Util.setMetaThemeColor('#CFD8DC'); // bg-medium-grey in colors.scss.
 
@@ -257,66 +258,66 @@ IOWA.Elements = (function() {
     //   });
     // };
 
-    template.openShareWindow = function(e) {
-      e.preventDefault();
+//     template.openShareWindow = function(e) {
+//       e.preventDefault();
 
-      var type = Polymer.dom(e).rootTarget.getAttribute('data-share-type');
-      var url = null;
-      var width = 600;
-      var height = 600;
-      var winOptions = 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=' +
-                       height + ',width=' + width;
+//       var type = Polymer.dom(e).rootTarget.getAttribute('data-share-type');
+//       var url = null;
+//       var width = 600;
+//       var height = 600;
+//       var winOptions = 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=' +
+//                        height + ',width=' + width;
 
-      var title = document.title;
+//       var title = document.title;
 
-// TODO: update for polymer 1.0 port
-      var selectedSession = Polymer.dom(e).rootTarget.templateInstance.model.selectedSession;
-      if (selectedSession) {
-        title = selectedSession.title;
-      }
+// // TODO: update for polymer 1.0 port
+//       var selectedSession = Polymer.dom(e).rootTarget.templateInstance.model.selectedSession;
+//       if (selectedSession) {
+//         title = selectedSession.title;
+//       }
 
-      // Shorten current URL so it's ready to go.
-      IOWA.Util.shortenURL(location.href).then(function(shortURL) {
-        switch (type) {
-          case 'fb':
-            height = 229;
-            url = 'https://www.facebook.com/sharer.php?u=' +
-                  encodeURIComponent(shortURL) +
-                  '&t=' + encodeURIComponent(title);
+//       // Shorten current URL so it's ready to go.
+//       IOWA.Util.shortenURL(location.href).then(function(shortURL) {
+//         switch (type) {
+//           case 'fb':
+//             height = 229;
+//             url = 'https://www.facebook.com/sharer.php?u=' +
+//                   encodeURIComponent(shortURL) +
+//                   '&t=' + encodeURIComponent(title);
 
-            break;
+//             break;
 
-          case 'gplus':
-            height = 348;
-            width = 512;
-            url = 'https://plus.google.com/share?url=' +
-                  encodeURIComponent(shortURL) +
-                  '&hl=' + encodeURIComponent(document.documentElement.lang);
-            break;
+//           case 'gplus':
+//             height = 348;
+//             width = 512;
+//             url = 'https://plus.google.com/share?url=' +
+//                   encodeURIComponent(shortURL) +
+//                   '&hl=' + encodeURIComponent(document.documentElement.lang);
+//             break;
 
-          case 'twitter':
-            height = 253;
+//           case 'twitter':
+//             height = 253;
 
-            var el = document.getElementById('share-text');
-            var text = el.textContent || 'Google I/O 2016';
+//             var el = document.getElementById('share-text');
+//             var text = el.textContent || 'Google I/O 2016';
 
-            if (selectedSession) {
-              text = 'Check out "' + title + '" at #io16: ' + shortURL;
-            }
+//             if (selectedSession) {
+//               text = 'Check out "' + title + '" at #io16: ' + shortURL;
+//             }
 
-            url = 'https://twitter.com/intent/tweet?text=' +
-                   encodeURIComponent(text);
+//             url = 'https://twitter.com/intent/tweet?text=' +
+//                    encodeURIComponent(text);
 
-            break;
+//             break;
 
-          default:
+//           default:
 
-            return;
-        }
+//             return;
+//         }
 
-        window.open(url, 'share', winOptions);
-      });
-    };
+//         window.open(url, 'share', winOptions);
+//       });
+//     };
 
     template.openSettings = function(e) {
       var attr = Polymer.dom(e).rootTarget.getAttribute(ANALYTICS_LINK_ATTR);
@@ -340,11 +341,11 @@ IOWA.Elements = (function() {
       this.$.headerpanel.updateStyles(); // force css shim update.
     };
 
-    template.onCountdownTimerThreshold = function(e, detail) {
-      if (detail.label === 'Ended') {
-        this.countdownEnded = true;
-      }
-    };
+    // template.onCountdownTimerThreshold = function(e, detail) {
+    //   if (detail.label === 'Ended') {
+    //     this.countdownEnded = true;
+    //   }
+    // };
 
     template.signIn = function(e) {
       if (e) {
@@ -444,17 +445,29 @@ IOWA.Elements = (function() {
 
     template.initDrawer = function() {
       this.$.appdrawer.classList.toggle('mobile', this.app.isPhoneSize);
-      this.$.appdrawer.updateStyles(); // Show app drawer scrim on on mobile.
+      this.$.appdrawer.updateStyles(); // Show app drawer scrim on mobile.
     };
 
     template.initFabScroll = function() {
+      this.$.fab.style.top = ''; // clear out old styles.
+
       var scroller = IOWA.Elements.ScrollContainer;
-      var footerMargin = parseInt(
-          getComputedStyle(IOWA.Elements.Footer).marginTop, 10);
+      var fabMetrics = this.$.fab.getBoundingClientRect();
 
       this._scrollerHeight = scroller.clientHeight;
-      this._fabPinTopAt = scroller.scrollHeight -
-                          IOWA.Elements.Footer.clientHeight - footerMargin;
+
+      // FAB stops when 1/2 of it crosses the footer.
+      this._fabPinTop = scroller.scrollHeight -
+                        IOWA.Elements.Footer.clientHeight -
+                        fabMetrics.height / 2;
+
+      // FAB stops when 1/2 of it crosses the footer.
+      var footerMargin = parseInt(
+          getComputedStyle(IOWA.Elements.Footer).marginTop, 10);
+      this._fabCrossFooterThreshold = this._fabPinTop + footerMargin;
+
+      // Make sure FAB is in correct location when window is resized.
+      this._setFabPosition(IOWA.Elements.ScrollContainer.scrollTop);
 
       this.unlisten(this.$.headerpanel, 'content-scroll', '_onContentScroll');
 
@@ -463,14 +476,9 @@ IOWA.Elements = (function() {
       }
     };
 
-    template._onContentScroll = function(e, detail) {
-      var scrollTop = detail.target.scrollTop;
-
-      var atTop = Polymer.dom(e).rootTarget.atTop;
-      this.$.navbar.classList.toggle('scrolled', !atTop);
-
+    template._setFabPosition = function(scrollTop) {
       // Hide back to top FAB if user is at the top.
-      var MIN_SCROLL_BEFORE_SHOW = 100;
+      var MIN_SCROLL_BEFORE_SHOW = 10;
       if (scrollTop <= MIN_SCROLL_BEFORE_SHOW) {
         this.$.fab.classList.remove('active');
         this.$.fabAnchor.setAttribute('tabindex', -1);
@@ -483,15 +491,23 @@ IOWA.Elements = (function() {
       this.$.fabAnchor.setAttribute('aria-hidden', false);
       this.$.navbar.classList.add('scrolled');
 
-      var scrollDiff = this._fabPinTopAt - scrollTop;
+      var scrollDiff = this._fabCrossFooterThreshold - scrollTop;
       if (scrollDiff <= this._scrollerHeight) {
         this.$.fab.classList.remove('fixed');
-        var OFFSET_TO_PIN_AT = 100; // FAB sticks 100px from bottom of the card.
-        this.$.fab.style.top = (this._fabPinTopAt - OFFSET_TO_PIN_AT) + 'px';
+        this.$.fab.style.top = (this._fabPinTop) + 'px';
       } else {
         this.$.fab.style.top = '';
         this.$.fab.classList.add('fixed');
       }
+    };
+
+    template._onContentScroll = function(e, detail) {
+      var scrollTop = detail.target.scrollTop;
+
+      var atTop = Polymer.dom(e).rootTarget.atTop;
+      this.$.navbar.classList.toggle('scrolled', !atTop);
+
+      this._setFabPosition(scrollTop);
     };
 
     template._isPage = function(page, selectedPage) {
