@@ -21,7 +21,7 @@ limitations under the License.
 <link rel="import" href="shared-app-styles.html">
 <link rel="import" href="PageBehavior.html">
 
-<dom-module id="io-about-page" assetpath="../">
+<dom-module id="io-about-page">
 <template>
   <style include="shared-app-styles">
     :host {
@@ -124,7 +124,7 @@ limitations under the License.
              on-tap="playVideo" data-track-link="about-watch-keynote-video">
           <div flex class="card__photo card__photo--recap"></div>
           <div class="card-content">
-            <img src$="{{resolveUrl('images/play-video-button-grey.png')}}"
+            <img src="/io2016/images/play-video-button-grey.png"
                  class="play__button play__button--card" alt="Play video">
             <span class="anchor-like" role="link" tabindex="0">Watch the keynote</span>
           </div>
@@ -140,7 +140,7 @@ limitations under the License.
 
   <template is="dom-if" if="[[app.fullscreenVideoActive]]" restamp>
     <div class="fullvideo__container" fit hidden>
-      <img src$="{{resolveUrl('images/home/keynote2015.jpg')}}"
+      <img src="/io2016/images/home/keynote2015.jpg"
            class="fullvideo_thumbnail"
            alt="Watch the I/O 2015 keynote" fit>
       <google-youtube video-id="7V-fIGMDsmE" height="100%" width="100%" fit
