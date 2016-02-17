@@ -14,40 +14,37 @@
  * limitations under the License.
  */
 
-var glob = require('glob');
 var swPrecache = require('sw-precache');
 var util = require('gulp-util');
 
 module.exports = function(rootDir, handleFetch, importScripts, callback) {
-  var regex = /([^\/]+)\.html$/;
   var templateDir = rootDir + '/templates/';
   var dynamicUrlToDependencies = {
-    './': [templateDir + 'layout_full.html', templateDir + 'home.html'],
-    './?partial': [templateDir + 'layout_partial.html', templateDir + 'home.html']
+    './': [templateDir + 'layout_full.html']
   };
 
-  // This isn't pretty, but it works for our dynamic URL mapping.
-  glob.sync(templateDir + '!(layout_*).html').forEach(function(template) {
-    var matches = template.match(regex);
-    if (matches) {
-      var path = matches[1];
-      var partialPath = path + '?partial';
-      dynamicUrlToDependencies[path] = [templateDir + 'layout_full.html', template];
-      dynamicUrlToDependencies[partialPath] = [templateDir + 'layout_partial.html', template];
-    }
+  // This should be kept in sync with the named <lazy-pages> at
+  // https://github.com/GoogleChrome/ioweb2016/blob/master/app/templates/layout_full.html
+  var routes = ['home', 'about', 'onsite', 'offsite', 'schedule', 'faq'];
+  var navigateFallbackWhitelist = routes.map(function(route) {
+    return new RegExp('/' + route + '$');
   });
 
   var config = {
-    cacheId: 'iowebapp',
+    cacheId: 'iowebapp2016',
     dynamicUrlToDependencies: dynamicUrlToDependencies,
     handleFetch: handleFetch,
     importScripts: importScripts,
     logger: util.log,
+    navigateFallback: './',
+    navigateFallbackWhitelist: navigateFallbackWhitelist,
     staticFileGlobs: [
       rootDir + '/bower_components/**/*.{html,js,css}',
       rootDir + '/elements/**',
       rootDir + '/fonts/**',
-      rootDir + '/images/**',
+      // Add in additional subdirectories as more phases launch.
+      rootDir + '/images/{home,touch}/**/*',
+      rootDir + '/images/*',
       rootDir + '/scripts/**',
       rootDir + '/styles/**/*.css',
       rootDir + '/manifest.json',
@@ -55,7 +52,8 @@ module.exports = function(rootDir, handleFetch, importScripts, callback) {
       rootDir + '/favicon.ico',
       rootDir + '/data-worker-scripts.js'
     ],
-    stripPrefix: rootDir + '/'
+    stripPrefix: rootDir + '/',
+    verbose: true
   };
 
   swPrecache.generate(config, callback);
