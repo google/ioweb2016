@@ -229,13 +229,14 @@ limitations under the License.
         <div>Mountain View, CA</div>
       </div>
     </paper-toolbar>
+
     <iron-selector class="drawer-menu" selected="{{selectedPage}}" attr-for-selected="label"
                    on-iron-activate="closeDrawer" activate-event="click" flex>
       <a href="./" label="home" data-ajax-link data-anim-drawer
          data-track-link="nav-drawer-home" tabindex="-1">
         <paper-item>Home</paper-item>
       </a>
-      <a href="schedule#day1" label="schedule" data-ajax-link data-anim-drawer
+      <!-- <a href="schedule#day1" label="schedule" data-ajax-link data-anim-drawer
          data-track-link="nav-drawer-schedule" tabindex="-1">
         <paper-item>Schedule</paper-item>
       </a>
@@ -246,12 +247,13 @@ limitations under the License.
       <a href="extended" label="extended" data-ajax-link data-anim-drawer
          data-track-link="nav-drawer-extended" tabindex="-1">
         <paper-item>I/O Extended</paper-item>
-      </a>
+      </a> -->
       <a href="faq" label="faq" data-ajax-link data-anim-drawer
          data-track-link="nav-drawer-faq" tabindex="-1">
         <paper-item>FAQ</paper-item>
       </a>
     </iron-selector>
+
   </div>
 </app-drawer>
 
@@ -270,7 +272,7 @@ limitations under the License.
         </a>
       </div>
       <paper-tabs attr-for-selected="label"
-                  selected="{{selectedPage}}">
+                  selected="{{selectedPage}}" tabindex="-1" hidden>
         <paper-tab label="schedule" role="">
           <a href="schedule#day1" data-ajax-link data-track-link="nav-schedule"
              data-transition="page-slide-transition"
@@ -292,7 +294,7 @@ limitations under the License.
              layout horizontal center>I/O Extended</a>
         </paper-tab>
       </paper-tabs>
-      <span id="signin-nav-elements" layout horizontal center>
+      <span id="signin-nav-elements" layout horizontal center hidden>
         <!-- Note: Use on-click instead of on-tap so oauth popup is not
              blocked. Needs user gesture. -->
         <span class="anchor-like button-link" data-track-link="nav-signin"
@@ -427,26 +429,26 @@ limitations under the License.
 <div id="live-status" role="status" aria-live="polite" aria-atomic="true"></div>
 
 <!-- build:site-scripts -->
-<script src="bower_components/moment/min/moment.min.js"></script>
-<script src="bower_components/moment-timezone/builds/moment-timezone-with-data.min.js"></script>
+<!-- <script src="bower_components/moment/min/moment.min.js"></script> -->
+<!-- <script src="bower_components/moment-timezone/builds/moment-timezone-with-data.min.js"></script> -->
 <script src="bower_components/es6-promise/dist/es6-promise.min.js"></script>
-<script src="bower_components/firebase/firebase.js"></script>
-<script src="bower_components/js-crc/src/crc.js"></script>
+<!-- <script src="bower_components/firebase/firebase.js"></script> -->
+<!-- <script src="bower_components/js-crc/src/crc.js"></script> -->
 <script src="scripts/main.js"></script>
 <script src="scripts/pages.js"></script>
 <script src="scripts/helper/util.js"></script>
-<script src="scripts/helper/auth.js"></script>
+<!-- <script src="scripts/helper/auth.js"></script> -->
 <script src="scripts/helper/page-animation.js"></script>
 <script src="scripts/helper/elements.js"></script>
-<script src="scripts/helper/firebase.js"></script>
+<!-- <script src="scripts/helper/firebase.js"></script> -->
 <script src="scripts/helper/a11y.js"></script>
 <script src="scripts/helper/service-worker-registration.js"></script>
 <script src="scripts/helper/router.js"></script>
 <script src="scripts/helper/request.js"></script>
-<script src="scripts/helper/picasa.js"></script>
+<!-- <script src="scripts/helper/picasa.js"></script> -->
 <script src="scripts/helper/simple-db.js"></script>
-<script src="scripts/helper/notifications.js"></script>
-<script src="scripts/helper/schedule.js"></script>
+<!-- <script src="scripts/helper/notifications.js"></script> -->
+<!-- <script src="scripts/helper/schedule.js"></script> -->
 <script src="scripts/bootstrap.js"></script>
 <!-- endbuild -->
 
