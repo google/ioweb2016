@@ -21,10 +21,11 @@ html, body {
   height: 100%;
   width: 100%;
   overflow: auto;
+  background: $color-bluegrey-50;
 }
 
 a {
-  color: $color-link-grey;
+  color: $color-bluegrey-600;
 }
 
 .iologo {
