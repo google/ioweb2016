@@ -12,15 +12,16 @@ limitations under the License.
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<!-- <link rel="import" href="../bower_components/iron-pages/iron-pages.html"> -->
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/google-youtube/google-youtube.html">
 
 <link rel="import" href="../bower_components/neon-animation/animations/scale-up-animation.html">
 <link rel="import" href="../bower_components/neon-animation/animations/fade-out-animation.html">
 
-<link rel="import" href="social-poller.html">
-<link rel="import" href="social-post.html">
+<!-- TODO: put back for phase 2-3 when there are tweets -->
+<!-- <link rel="import" href="social-poller.html"> -->
+<!-- <link rel="import" href="social-post.html"> -->
 <link rel="import" href="countdown-timer/countdown-timer.html">
 
 <link rel="import" href="shared-app-styles.html">
@@ -84,7 +85,7 @@ limitations under the License.
       <div class="card" layout horizontal wrap  vertical$="{{app.isPhoneSize}}">
 
         <div class="card-content box card--top-left-clip bg-cyan-400" layout vertical>
-          <h3 class="card__title"><p>May 18-20</p></h3>
+          <h3 class="card__title"><p>May 18-20, 2016</p></h3>
           <h3>
             <a href="https://goo.gl/maps/7hs1NJR3ErG2" target="_blank"
                data-track-link="nav-shoreline-maps-link">
@@ -105,14 +106,16 @@ limitations under the License.
                style="height:100%"
                on-tap="openDialogVideo"
                data-track-link="home-watch-recap-video"
+               role="button"
+               tabindex="0"
                flex>
             <h5 style="font-weight:normal">Watch the I/O 2015 recap</h5>
           </div>
         </div>
 
-        <div class="card-content box card--bottom-right-clip typo-cyan-700 bg-bluegrey-50-20">
+        <div class="card-content box card--bottom-right-clip typo-indigo-400 bg-bluegrey-50-20">
 
-          <social-poller url="/io2016/api/v1/social" posts="{{socialPosts}}"
+          <!-- <social-poller url="[[resolveUrl('../api/v1/social')]]" posts="{{socialPosts}}"
                          interval="30000"></social-poller>
 
           <iron-pages id="social_list" selected="0" style="height:100%" layout vertical>
@@ -126,7 +129,17 @@ limitations under the License.
                            layout vertical flex>
               </social-post>
             </template>
-          </iron-pages>
+          </iron-pages> -->
+
+          <div class="social-card" layout vertical style="height:100%">
+            <h3>I/O coming to the neighborhood where it all started: I/O'16 at Shoreline Amphitheatre in Mountain View, May 18-20. More details soon. #io16</h3>
+            <div layout flex end>
+              <span>
+                <iron-icon icon="io:post-twitter"></iron-icon>
+                <a target="_blank" href="https://twitter.com/sundarpichai">Sundar Pichai</a>
+              </span>
+            </div>
+          </div>
 
         </div>
         <div class="card-content box card--bottom-left-clip io__hash bg-bluegrey-50-40"
@@ -176,7 +189,7 @@ limitations under the License.
 
     onPageTransitionDone: function() {
       this.$.ctimer.show();
-      this._cycleSocialPosts();
+      //this._cycleSocialPosts(); TODO: add back after phase 1.
     },
 
     _onSetReminder: function(e, detail) {

@@ -43,6 +43,12 @@
     &.fullbleed {
       padding: 0;
     }
+
+    &.bg-cyan-400 {
+      a {
+        outline-color: #fff;
+      }
+    }
   }
 
   a {

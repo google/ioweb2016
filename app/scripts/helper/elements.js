@@ -473,10 +473,14 @@ IOWA.Elements = (function() {
       var MIN_SCROLL_BEFORE_SHOW = 100;
       if (scrollTop <= MIN_SCROLL_BEFORE_SHOW) {
         this.$.fab.classList.remove('active');
+        this.$.fabAnchor.setAttribute('tabindex', -1);
+        this.$.fabAnchor.setAttribute('aria-hidden', true);
         return; // cut out early.
       }
 
       this.$.fab.classList.add('active'); // Reveal FAB.
+      this.$.fabAnchor.setAttribute('tabindex', 0);
+      this.$.fabAnchor.setAttribute('aria-hidden', false);
       this.$.navbar.classList.add('scrolled');
 
       var scrollDiff = this._fabPinTopAt - scrollTop;

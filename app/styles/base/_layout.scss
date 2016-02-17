@@ -19,8 +19,40 @@ $tabletKeyline: 24px;
 $desktopKeyline: 32px;
 $largeKeyline: 72px;
 
+@mixin keyline-72() {
+  padding: 0 $largeKeyline 0 $largeKeyline;
+}
+
 @mixin keyline-72l() {
 	padding-left: $largeKeyline;
+}
+
+@mixin keyline-48() {
+  padding: 0 48px 0 48px;
+}
+
+@mixin keyline-48l() {
+  padding-left: 48px;
+}
+
+@mixin keyline-40() {
+  padding: 0 40px 0 40px;
+}
+
+@mixin keyline-40l() {
+  padding-left: 40px;
+}
+
+@mixin keyline-32() {
+  padding: 0 $desktopKeyline 0 $desktopKeyline;
+}
+
+@mixin keyline-32l() {
+  padding-left: $desktopKeyline;
+}
+
+@mixin keyline-24() {
+  padding: 0 $tabletKeyline 0 $tabletKeyline;
 }
 
 @mixin keyline-24l() {
@@ -31,18 +63,6 @@ $largeKeyline: 72px;
 	padding-left: $mobileKeyline;
 }
 
-@mixin keyline-72() {
-	padding: 0 $largeKeyline 0 $largeKeyline;
-}
-
-@mixin keyline-32() {
-  padding: 0 $desktopKeyline 0 $desktopKeyline;
-}
-
-@mixin keyline-24() {
-	padding: 0 $tabletKeyline 0 $tabletKeyline;
-}
-
 @mixin keyline-16() {
-	padding: 0 $mobileKeyline 0 $mobileKeyline;
+  padding: 0 $mobileKeyline 0 $mobileKeyline;
 }

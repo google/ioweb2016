@@ -157,7 +157,7 @@ limitations under the License.
 
     if (!supported) {
       // Note: pageview is recorded when IOWA.Analytics is setup.
-      IOWA.Analytics.trackEvent('Polymer', 'unsupported-browser', null, null, function() {
+      IOWA.Analytics.trackEvent('Polymer', 'unsupported-browser', navigator.userAgent, null, function() {
         window.location = {% url "upgrade" %};
       });
     }
@@ -388,7 +388,9 @@ limitations under the License.
 
     <div id="fab" class="fixed" hidden$="[[app.isPhoneSize]]">
       <div class="card__container" layout end-justified>
-        <a href="#" on-click="backToTop" data-track-link="link-backtotop">
+        <!-- _onContentScroll handler in elements.js will
+        flip the tabindex and aria-hidden -->
+        <a id="fabAnchor" href="#" on-click="backToTop" data-track-link="link-backtotop" tabindex="-1" aria-hidden="true" aria-label="back to top">
           <paper-fab icon="io:expand-less" noink mini="[[app.isPhoneSize]]"></paper-fab>
         </a>
       </div>

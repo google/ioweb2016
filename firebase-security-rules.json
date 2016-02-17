@@ -9,7 +9,7 @@
         },
         "viewed_videos": {
           "$viewed_video_id": {
-            ".validate": "!data.exists() || newData.val() > data.val()"
+            ".validate": "newData.val() === true"
           }
         },
         "my_sessions": {

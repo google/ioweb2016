@@ -75,6 +75,36 @@ h3 a {
   }
 }
 
+@media (min-width: 961px) {
+  .masthead-container {
+    height: 480px;
+  }
+}
+
+@media (min-width: 1305px) {
+  .masthead-container {
+    height: 580px;
+  }
+}
+
+@media (min-width: 1501px) {
+  .masthead-container {
+    height: 640px;
+  }
+}
+
+@media (min-width: 1601px) {
+  .masthead-container {
+    height: 720px;
+  }
+}
+
+@media (min-width: 1801px) {
+  .masthead-container {
+    height: 800px;
+  }
+}
+
 // @media (min-resolution: 2.0dppx), (-webkit-min-device-pixel-ratio: 2), (min-width: $tablet-breakpoint-min) {
 //   .photo__masthead {
 //     background-image: url(../images/home/keynote2015@2x.jpg);
