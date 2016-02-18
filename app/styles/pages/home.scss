@@ -60,9 +60,9 @@ h3 a {
   position: relative;
 
   social-post {
-    display: flex !important;
+    display: flex !important; // override iron-pages styling.
     opacity: 0;
-    transition: opacity 800ms cubic-bezier(0,0,0.2,1);
+    transition: opacity 800ms ease-in-out;
     will-change: opacity;
     position: absolute;
     top: 0;
@@ -76,6 +76,24 @@ h3 a {
   }
 }
 
+#photo_list {
+  overflow: hidden;
+
+  img {
+    display: block !important; // override iron-pages styling.
+    opacity: 0;
+    transition: opacity 500ms ease-in-out;
+    will-change: opacity;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+  }
+  .iron-selected {
+    opacity: 1;
+  }
+}
 
 @media (max-width: 960px) {
   .io__hash {

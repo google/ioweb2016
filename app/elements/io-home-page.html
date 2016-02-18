@@ -12,7 +12,7 @@ limitations under the License.
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<!-- <link rel="import" href="../bower_components/iron-pages/iron-pages.html"> -->
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/google-youtube/google-youtube.html">
 
@@ -99,7 +99,15 @@ limitations under the License.
             </div>
           </div>
         </div>
-        <div class="card-content box card--top-right-clip card__photo photo__people"></div>
+        <div class="card-content box card__photo card--top-right-clip" relative>
+          <iron-pages id="photo_list" class="card--top-right-clip" selected="0" fit>
+            <img src="/io2016/images/home/cardboard.jpg" class="card--top-right-clip">
+            <img src="/io2016/images/home/keynote.jpg" class="card--top-right-clip">
+            <img src="/io2016/images/home/design.jpg" class="card--top-right-clip">
+            <img src="/io2016/images/home/hand.jpg" class="card--top-right-clip">
+            <img src="/io2016/images/home/dj.jpg" class="card--top-right-clip">
+          </iron-pages>
+        </div>
 
         <div class="card-content box card__video box-full fullbleed typo-white" layout vertical>
           <div class="card-content card__play-button card__photo photo__recap"
@@ -155,8 +163,10 @@ limitations under the License.
 (function () {
   'use strict';
 
-  var _cycleInterval = null;
+  var _cycleSocialPostsInterval = null;
+  var _cyclePhotosInterval = null;
   var SOCIAL_CYCLE = 5000;
+  var PHOTOS_CYCLE = 4000;
 
   Polymer({
     is: 'io-home-page',
@@ -166,11 +176,11 @@ limitations under the License.
     properties: {
       /**
        * The target date for I/O to start. Should be specified in ISO 8601
-       * format, e.g. `May 10 2016 09:00:00 GMT-0700 (PDT)`.
+       * format, e.g. `May 18 2016 09:00:00 GMT-0700 (PDT)`.
        */
       date: {
         type: String,
-        value: 'May 10 2016 09:00:00 GMT-0700 (PDT)'
+        value: 'May 18 2016 09:00:00 GMT-0700 (PDT)'
       }
     },
 
@@ -183,13 +193,16 @@ limitations under the License.
     },
 
     detached: function() {
-      window.clearInterval(_cycleInterval);
-      _cycleInterval = null;
+      window.clearInterval(_cycleSocialPostsInterval);
+      window.clearInterval(_cyclePhotosInterval);
+      _cycleSocialPostsInterval = null;
+      _cyclePhotosInterval = null;
     },
 
     onPageTransitionDone: function() {
       this.$.ctimer.show();
       //this._cycleSocialPosts(); TODO: add back after phase 1.
+      this._cyclePhotos();
     },
 
     _onSetReminder: function(e, detail) {
@@ -206,11 +219,16 @@ limitations under the License.
       }.bind(this));
     },
 
+    _cyclePhotos: function() {
+      _cycleSocialPostsInterval = window.setInterval(function() {
+        this.$.photo_list.selectNext();
+      }.bind(this), PHOTOS_CYCLE);
+    },
+
     _cycleSocialPosts: function() {
-      _cycleInterval = window.setInterval(function() {
-        var pages = Polymer.dom(this.root).node.querySelector('#social_list');
-        pages.selectNext();
-      }, SOCIAL_CYCLE);
+      _cycleSocialPostsInterval = window.setInterval(function() {
+        this.$.social_list.selectNext();
+      }.bind(this), SOCIAL_CYCLE);
     }
 
   });
