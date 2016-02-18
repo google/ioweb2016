@@ -26,26 +26,25 @@ $name: 'page-schedule';
 
 ##{$name} {
 
+.masthead-container {
+  padding-left: 0;
+  padding-bottom: 0;
+}
+
 .masthead-meta {
-  margin-bottom: -$subnavTabsPadding;
   h1 {
-    margin-bottom: 9px;
+    margin-bottom: $desktopKeyline;
   }
+}
 
-  paper-tabs {
-    max-width: 450px;
-    width: 100%;
-  }
-
-  paper-tab {
-    flex: none;
-  }
+.meta-filter {
+  @include keyline-16();
 }
 
 .page__filters {
   paper-dropdown-menu {
     @include typo-button();
-    margin: $tabletKeyline;;
+    margin: $tabletKeyline;
     padding: 0;
     border: none;
     iron-menu {
@@ -114,10 +113,6 @@ iron-icon[icon="schedule"] {
     font-size: 14px;
     margin-bottom: 0;
   }
-}
-
-.card {
-  margin-bottom: $tabletKeyline;
 }
 
 .schedule-time {
@@ -389,9 +384,6 @@ iron-icon[icon="schedule"] {
     width: 100%;
     height: 100%;
   }
-  .masthead-container {
-    padding-bottom: $subnavTabsPadding;
-  }
   .card__container {
     @include shadow-z1();
   }
@@ -402,10 +394,6 @@ iron-icon[icon="schedule"] {
     }
   }
 
-  .card {
-    margin-bottom: $mobileKeyline;
-    @include shadow-z1();
-  }
   .card-content:first-child {
     padding: 16px;
     border-bottom: 1px solid $color-light-grey-border;
@@ -429,6 +417,62 @@ iron-icon[icon="schedule"] {
     .speaker__card {
       width: 50%;
     }
+  }
+}
+
+@media (max-width: 768px) {
+  .masthead-meta {
+    h1 {
+      padding-left: 12px;
+    }
+  }
+}
+
+@media (min-width: 769px) {
+  .masthead-meta {
+    paper-tabs, h1 {
+      @include keyline-24l();
+    }
+    paper-tabs {
+      // Justify tab text with title by counterattacking paper-tab padding.
+      margin-left: -12px;
+    }
+  }
+  .meta-filter {
+    @include keyline-24();
+  }
+}
+
+@media (min-width: 961px) {
+  .masthead-meta {
+    paper-tabs, h1 {
+      @include keyline-32l();
+    }
+  }
+  .meta-filter {
+    @include keyline-32();
+  }
+}
+
+@media (min-width: 1305px) {
+  .masthead-meta {
+    paper-tabs, h1 {
+      @include keyline-40l();
+    }
+  }
+  .meta-filter {
+    @include keyline-40();
+  }
+}
+
+@media (min-width: 1501px) {
+  .masthead-meta {
+    paper-tabs, h1 {
+      @include keyline-48l();
+    }
+  }
+  .meta-filter {
+    @include keyline-48();
   }
 }
 

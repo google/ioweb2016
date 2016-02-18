@@ -24,7 +24,6 @@ $name: 'page-onsite';
 ##{$name} {
 
 .masthead-meta {
-  margin-bottom: -$subnavTabsPadding;
   h1 {
     margin-bottom: 9px;
   }
@@ -153,9 +152,6 @@ $name: 'page-onsite';
 }
 
 @media (max-width: $phone-breakpoint-max) {
-  .masthead-container {
-    padding-bottom: $subnavTabsPadding;
-  }
   .sandbox__details {
     margin-top: $tabletKeyline;
   }
