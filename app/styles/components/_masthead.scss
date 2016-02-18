@@ -88,6 +88,10 @@ paper-drawer-panel {
   }
 }
 
+paper-tabs {
+  height: $navbarHeight;
+}
+
 #navbar {
   background-color: transparent;
   color: inherit;
@@ -191,7 +195,6 @@ paper-drawer-panel {
   margin: 0 auto;
   position: relative;
   padding: 0 0 40px 0;
-  margin-top: -$navbarHeightMobile;
   @include keyline-16l();
 
   paper-tabs {
@@ -245,14 +248,9 @@ paper-drawer-panel {
 }
 
 @media (min-width: $tablet-breakpoint-min) {
-  .masthead-container {
-    margin-top: -$navbarHeight;
-  }
-
   #navbar {
     paper-tabs {
       display: inline-block;
-      margin: 0;
     }
     [paper-drawer-toggle] {
       display: none;

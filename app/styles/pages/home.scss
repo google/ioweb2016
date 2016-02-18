@@ -27,6 +27,7 @@ $name: 'page-home';
 
 .masthead-container {
   max-width: 100% !important;
+  margin-top: -$navbarHeightMobile;
 }
 
 h3 a {
@@ -79,6 +80,12 @@ h3 a {
 @media (max-width: 960px) {
   .io__hash {
     background-color: #fff;
+  }
+}
+
+@media (min-width: $tablet-breakpoint-min) {
+  .masthead-container {
+    margin-top: -$navbarHeight;
   }
 }
 

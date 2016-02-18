@@ -42,7 +42,8 @@ limitations under the License.
 <div class="masthead-container" layout vertical end-justified>
   <div class="masthead-meta">
     <h1>Schedule</h1>
-    <div layout horizontal justified>
+    <div class="bg-cyan-400 card card--top-left-clip card--top-right-clip"
+        layout horizontal justified>
       <paper-tabs id="subpage-tabs" class="white"
                   attr-for-selected="label"
                   selected="{{selectedSubpage}}">
@@ -52,17 +53,25 @@ limitations under the License.
         </paper-tab>
         <paper-tab label="day1" role="">
           <a href="#day1" data-track-link="schedule-day1" data-ajax-link
-                          layout horizontal center-center>Day 1</a>
+                          layout horizontal center-center>May 18</a>
         </paper-tab>
         <paper-tab label="day2" role="">
           <a href="#day2" data-track-link="schedule-day2" data-ajax-link
-                          layout horizontal center-center>Day 2</a>
+                          layout horizontal center-center>May 19</a>
+        </paper-tab>
+        <paper-tab label="day3" role="">
+          <a href="#day3" data-track-link="schedule-day3" data-ajax-link
+                          layout horizontal center-center>May 20</a>
         </paper-tab>
         <paper-tab label="myschedule" role="">
           <a href="#myschedule" data-track-link="schedule-mysched" data-ajax-link
                                 layout horizontal center-center>My Schedule</a>
         </paper-tab>
       </paper-tabs>
+
+      <div class="meta-filter" layout horizontal center>
+        Filter sessions <paper-icon-button icon="io:filter-list" aria-label="Filter list"></paper-icon-button>
+      </div>
 
     </div>
   </div>
