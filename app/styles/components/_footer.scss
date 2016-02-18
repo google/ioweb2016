@@ -15,8 +15,8 @@
  */
 
 footer {
-  color: $color-bluegrey-200;
-  min-height: 139px;
+  color: $color-bluegrey-600;
+  min-height: 128px;
   font-size: 14px;
   @include keyline-16();
   padding-top: $mobileKeyline;
@@ -35,9 +35,7 @@ footer {
 
 @media (min-width: $tablet-breakpoint-min) {
   footer {
-    @include keyline-24();
-    padding-top: $tabletKeyline;
-    padding-bottom: $tabletKeyline;
+    @include keyline-32();
 
     nav > span {
       margin-left: $mobileKeyline * 2;
@@ -47,6 +45,6 @@ footer {
 
 @media (min-width: $desktop-breakpoint-min) {
   footer {
-    padding: $desktopKeyline 0;
+    @include keyline-40();
   }
 }

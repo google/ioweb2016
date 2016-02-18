@@ -75,6 +75,13 @@ h3 a {
   }
 }
 
+
+@media (max-width: 960px) {
+  .io__hash {
+    background-color: #fff;
+  }
+}
+
 @media (min-width: 961px) {
   .masthead-container {
     height: 480px;

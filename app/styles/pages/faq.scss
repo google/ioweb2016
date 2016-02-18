@@ -25,14 +25,14 @@ $name: 'page-faq';
 
 io-faq-page {
   a {
-    color: $color-cyan-400;
+    color: $color-cyan-800;
+    text-transform: uppercase;
+    font-size: 14px;
   }
 }
 
-.faq-answers {
-  a {
-    text-transform: uppercase;
-  }
+footer {
+  margin-top: 0;
 }
 
 .card-content {
@@ -46,6 +46,9 @@ io-faq-page {
 }
 
 .card-content--top {
+  h3 {
+    margin-bottom: $mobileKeyline / 2;
+  }
   ul {
     padding: 0;
     margin: 0;
@@ -56,8 +59,15 @@ io-faq-page {
     }
   }
   a {
-    font-size: 16px;
+    text-transform: none;
+    font-size: initial;
   }
+}
+
+.io__hash {
+  height: 400px;
+  width: 100%;
+  background-size: 297px 115px;
 }
 
 @media (max-width: $phone-breakpoint-max) {
@@ -67,6 +77,10 @@ io-faq-page {
     &:last-child {
       margin-bottom: 0;
     }
+  }
+  .io__hash {
+    background-size: 80%;
+    height: 300px;
   }
 }
 

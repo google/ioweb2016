@@ -390,28 +390,30 @@ limitations under the License.
 
     <div id="fab" class="fixed" hidden$="[[app.isPhoneSize]]">
       <div class="card__container" layout end-justified>
-        <!-- _onContentScroll handler in elements.js will
-        flip the tabindex and aria-hidden -->
-        <a id="fabAnchor" href="#" on-click="backToTop" data-track-link="link-backtotop" tabindex="-1" aria-hidden="true" aria-label="back to top">
+        <!-- _onContentScroll handler in elements.js will flip the tabindex
+             and aria-hidden -->
+        <a id="fabAnchor" href="#" on-click="backToTop"
+           data-track-link="link-backtotop" tabindex="-1"
+           aria-hidden="true" aria-label="back to top">
           <paper-fab icon="io:expand-less" noink mini="[[app.isPhoneSize]]"></paper-fab>
         </a>
       </div>
     </div>
 
-    <footer layout horizontal center>
+    <footer class="bg-bluegrey-50-40" layout horizontal center>
 
-      <div class="card__container" flex>
+      <div flex>
 
         <div layout horizontal justified>
           <div layout horizontal end>
             <div><img src="images/google-logo.svg" alt="Google Logo"></div>
           </div>
           <nav layout horizontal vertical$="{{app.isPhoneSize}}" justified end>
-            <span><a href="faq" data-ajax-link data-track-link="footer-faq">FAQ</a></span>
-            <span>
+          <span>
               <a href="https://events.google.com/io2015/" target="_blank"
                  data-track-link="footer-2015-site">I/O 2015</a>
             </span>
+            <span><a href="faq" data-ajax-link data-track-link="footer-faq">FAQ</a></span>
             <span>
               <a href="https://developers.google.com" target="_blank"
                  data-track-link="footer-link-devsite">Google Developers</a>
