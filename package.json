@@ -52,7 +52,7 @@
     "selenium-standalone": "^4.7.1",
     "selenium-webdriver": "^2.44.0",
     "sprintf-js": "1.0.3",
-    "sw-precache": "^2.3.0",
+    "sw-precache": "^3.1.0",
     "yargs": "^3.30.0"
   }
 }
