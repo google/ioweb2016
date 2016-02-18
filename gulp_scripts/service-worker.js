@@ -25,10 +25,12 @@ module.exports = function(rootDir, handleFetch, importScripts, callback) {
 
   // This should be kept in sync with the named <lazy-pages> at
   // https://github.com/GoogleChrome/ioweb2016/blob/master/app/templates/layout_full.html
-  var routes = ['home', 'about', 'onsite', 'offsite', 'schedule', 'faq'];
+  var routes = ['home', 'faq'];
   var navigateFallbackWhitelist = routes.map(function(route) {
     return new RegExp('/' + route + '$');
   });
+
+  var imageSubdirectories = routes.concat('touch');
 
   var config = {
     cacheId: 'iowebapp2016',
@@ -43,7 +45,7 @@ module.exports = function(rootDir, handleFetch, importScripts, callback) {
       rootDir + '/elements/**',
       rootDir + '/fonts/**',
       // Add in additional subdirectories as more phases launch.
-      rootDir + '/images/{home,touch}/**/*',
+      rootDir + '/images/{' + imageSubdirectories.join(',') + '}/**/*',
       rootDir + '/images/*',
       rootDir + '/scripts/**',
       rootDir + '/styles/**/*.css',
@@ -52,8 +54,7 @@ module.exports = function(rootDir, handleFetch, importScripts, callback) {
       rootDir + '/favicon.ico',
       rootDir + '/data-worker-scripts.js'
     ],
-    stripPrefix: rootDir + '/',
-    verbose: true
+    stripPrefix: rootDir + '/'
   };
 
   swPrecache.generate(config, callback);
