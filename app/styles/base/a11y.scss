@@ -41,13 +41,8 @@
   margin-top: -14px;
 }
 
-.bg-dark-grey .io-logo::after {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.bg-cyan .io-logo::after,
-.bg-ligh-grey .io-logo::after {
-  background: rgba(255, 255, 255, 0.3);
+.bg-white .io-logo::after {
+  background: rgba($color-bluegrey-100, 0.25);
 }
 
 /* Focus states for tabs */
