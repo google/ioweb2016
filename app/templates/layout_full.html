@@ -368,25 +368,29 @@ limitations under the License.
            https://github.com/GoogleChrome/ioweb2016/blob/master/gulp_scripts/service-worker.js -->
       <lazy-pages>
         <template is="dom-if" name="home" restamp>
-          <io-home-page app="[[app]]" date="{% .StartDateStr %}"></io-home-page>
+          <io-home-page
+              app="[[app]]"
+              date="{% .StartDateStr %}"
+              tabindex="-1"></io-home-page>
         </template>
         <template is="dom-if" name="about" restamp>
-          <io-about-page app="[[app]]"></io-about-page>
+          <io-about-page app="[[app]]" tabindex="-1"></io-about-page>
         </template>
         <template is="dom-if" name="onsite" restamp>
-          <io-onsite-page app="[[app]]"></io-onsite-page>
+          <io-onsite-page app="[[app]]" tabindex="-1"></io-onsite-page>
         </template>
         <template is="dom-if" name="offsite" restamp>
-          <io-extended-page app="[[app]]"></io-extended-page>
+          <io-extended-page app="[[app]]" tabindex="-1"></io-extended-page>
         </template>
         <template is="dom-if" name="schedule" restamp>
           <io-schedule-page
               app="[[app]]"
               user="[[currentUser]]"
-              date="{% .StartDateStr %}"></io-schedule-page>
+              date="{% .StartDateStr %}"
+              tabindex="-1"></io-schedule-page>
         </template>
         <template is="dom-if" name="faq" restamp>
-          <io-faq-page app="[[app]]"></io-faq-page>
+          <io-faq-page app="[[app]]" tabindex="-1"></io-faq-page>
         </template>
       </lazy-pages>
 

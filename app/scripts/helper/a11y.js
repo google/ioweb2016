@@ -19,11 +19,17 @@ window.IOWA = window.IOWA || {};
 IOWA.A11y = IOWA.A11y || (function() {
   'use strict';
 
+  // Used by focuseNewPage. Instructs the app to only manage focus if
+  // this is not the first page the user is seeing. IOW, only manage
+  // focus in response to a user action, not their intial visit to the URL.
+  var isInitialPage = true;
+
   function init() {
     // Differentiate focus coming from mouse and keyboard.
     addFocusStates('.io-logo-link');
     addFocusStates('#navbar paper-tabs a');
     document.addEventListener('toast-message', announceLiveChange);
+    document.addEventListener('page-transition-done', focusNewPage);
   }
 
   // Handlers managed by the addFocusStates and removeFocusStates methods.
@@ -88,11 +94,22 @@ IOWA.A11y = IOWA.A11y || (function() {
     }, 1000);
   }
 
+  // Move focus to new page content after it has been lazy loaded in
+  function focusNewPage() {
+    if (isInitialPage) {
+      isInitialPage = false;
+      return;
+    }
+
+    IOWA.Elements.LazyPages.selectedPage.focus();
+  }
+
   return {
     init: init,
     addFocusStates: addFocusStates,
     removeFocusStates: removeFocusStates,
     focusNavigation: focusNavigation,
-    announceLiveChange: announceLiveChange
+    announceLiveChange: announceLiveChange,
+    focusNewPage: focusNewPage
   };
 })();
