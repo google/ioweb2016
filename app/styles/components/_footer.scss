@@ -16,8 +16,9 @@
 
 footer {
   color: $color-bluegrey-600;
+  font-size: 12px;
+  margin-top: 128px;
   min-height: 128px;
-  font-size: 14px;
   @include keyline-16();
   padding-top: $mobileKeyline;
   padding-bottom: $mobileKeyline;
@@ -27,9 +28,13 @@ footer {
   }
 }
 
-@media (min-width: 960px + 1) {
+@media (max-width: $phone-breakpoint-max) {
   footer {
-    margin-top: 100px;
+    padding-top: 40px;
+
+    nav > span {
+      line-height: 40px;
+    }
   }
 }
 
