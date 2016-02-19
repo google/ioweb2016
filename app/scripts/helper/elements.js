@@ -333,7 +333,6 @@ IOWA.Elements = (function() {
 
     template.backToTop = function(e) {
       e.preventDefault();
-
       this.$.headerpanel.classList.add('smoothscroll');
       this.$.headerpanel.updateStyles(); // force css shim update.
       IOWA.Elements.ScrollContainer.scrollTop = 0;
@@ -501,8 +500,15 @@ IOWA.Elements = (function() {
     template._onContentScroll = function(e, detail) {
       var scrollTop = detail.target.scrollTop;
 
-      var atTop = Polymer.dom(e).rootTarget.atTop;
-      this.$.navbar.classList.toggle('scrolled', !atTop);
+      if (scrollTop === 0) {
+        this.$.navbar.classList.remove('scrolled');
+      } else {
+        this.$.navbar.classList.add('scrolled');
+      }
+
+      // Note, we should not call this on every scroll event, but scoping
+      // the update to the nav is very cheap (< 1ms).
+      IOWA.Elements.NavPaperTabs.updateStyles();
 
       this._setFabPosition(scrollTop);
     };

@@ -21,12 +21,12 @@
   background-size: contain;
   height: 40px;
   width: 60px;
+  transition: transform 180ms;
 }
 
 .masthead {
   paper-toolbar {
-    // need :not(.style-scope) as to not collide with shady dom scoping for <io-logo> element.
-    .io-logo:not(.style-scope) {
+    .io-logo {
       margin-top: $mobileKeyline / 2;
       margin-left: $mobileKeyline / 2;
       display: inline-block;
@@ -77,7 +77,6 @@ paper-drawer-panel {
 }
 
 paper-tabs {
-  height: $navbarHeight;
   paper-tab {
     border-bottom: 2px solid transparent;
   }
@@ -86,23 +85,29 @@ paper-tabs {
 #navbar {
   background-color: transparent;
   color: $color-bluegrey-600;
-  transition: background-color 500ms;
+  transition: background-color 180ms, height 180ms;
+  @include keyline-16();
+  height: $navbarHeight + 20;
 
   &.scrolled {
+    height: $navbarHeightMobile;
     background-color: $color-grey-50;
+
+    .io-logo {
+      transform: scale(0.6);
+    }
   }
 
   paper-tabs {
     display: none;
     text-transform: uppercase;
+    height: 100%;
   }
 
   paper-tab {
     &:hover {
       border-bottom: 2px solid $color-bluegrey-100;
     }
-
-    flex: none !important;
 
     a {
       flex: inherit; // Needed for IE11, in order to ensure that the <a> gets assigned a width.
@@ -228,8 +233,18 @@ paper-tabs {
   line-height: 20px;
 }
 
+#subpage-tabs {
+  height: $navbarHeight;
+
+  paper-tab:hover {
+    border-bottom: 2px solid currentcolor;
+  }
+}
+
 @media (max-width: $phone-breakpoint-max) {
   #navbar {
+    height: $navbarHeightMobile;
+
     > .profilepic {
       display: none;
     }
