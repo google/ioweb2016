@@ -43,16 +43,43 @@ h3 a {
 
   &.card__play-button {
     background-image: linear-gradient(to top, transparent 70%, #000),
-                      url(../images/play-video-button.png),
                       url(../images/home/recap.jpg);
-    background-position: 50% 50%, 50% 50%, 0 50%;
-    background-size: cover, 74px, cover;
+    background-position: 50% 50%, 0 50%;
+    background-size: cover, cover;
     cursor: pointer;
+    position: relative;
+
+    &:after {
+      background: transparent url(../images/play-video-button.png) 50% 50% no-repeat;
+      background-size: 74px 74px;
+      bottom: 0;
+      content: '';
+      display: block;
+      left: 0;
+      opacity: .75;
+      position: absolute;
+      right: 0;
+      top: 0;
+      transition: opacity 300ms ease-in-out;
+      will-change: opacity;
+    }
+
+    &:hover:after {
+      opacity: .9;
+    }
   }
 }
 
 .io__hash {
   background-size: 60%;
+  position: relative;
+
+  a {
+    display: block;
+    height: 100%;
+    text-indent: -999em;
+    width: 100%;
+  }
 }
 
 #social_list {
@@ -73,6 +100,16 @@ h3 a {
     opacity: 1;
     pointer-events: auto;
   }
+}
+
+.social-link {
+  display: block;
+  height: 100%;
+}
+
+.social-author {
+  font-size: 14px;
+  font-weight: 500;
 }
 
 #photo_list {

@@ -46,7 +46,13 @@
     &.bg-cyan-300,
     &.bg-cyan-400 {
       a {
+        color: $color-cyan-card-link;
         outline-color: #fff;
+
+        &:hover,
+        &:focus {
+          color: $color-bluegrey-800;
+        }
       }
     }
   }
@@ -63,6 +69,10 @@
     background-repeat: no-repeat;
     background-size: cover;
     background-position: 50% 50%;
+  }
+
+  .card__sub-title {
+    line-height: 30px;
   }
 }
 
@@ -81,6 +91,10 @@
 }
 .card--bottom-right-clip {
   border-bottom-right-radius: inherit;
+}
+
+.card--allow-a-wrap a {
+  white-space: normal;
 }
 
 @media (min-width: 769px) {

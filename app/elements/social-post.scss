@@ -46,6 +46,16 @@ a {
   height: 100%;
 }
 
+.social-link {
+  display: block;
+  height: 100%;
+}
+
+.social-author {
+  font-size: 14px;
+  font-weight: 500;
+}
+
 @media (min-width: $tablet-breakpoint-min) {
   header {
     margin-bottom: $tabletKeyline;

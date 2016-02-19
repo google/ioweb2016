@@ -79,7 +79,7 @@ limitations under the License.
 
         <div class="card-content box card--top-left-clip bg-cyan-300" layout vertical>
           <h3 class="card__title"><p>May 18-20, 2016</p></h3>
-          <h3>
+          <h3 class="card__sub-title">
             <a href="https://goo.gl/maps/7hs1NJR3ErG2" target="_blank"
                data-track-link="nav-shoreline-maps-link">
                <span>Shoreline Amphitheatre<br>Mountain View, California</span>
@@ -87,8 +87,8 @@ limitations under the License.
           </h3>
           <div layout flex end>
             <div>
-              <h5><p>Registration opens March 8.</p></h5>
-              <h5 style="font-weight:normal">Google I/O is for developers - the creative coders who are building what's next. Each year, we explore the latest in tech, mobile &amp; beyond.</h5>
+              <h5><p>Registration begins March 8. <a href="/io2016/faq">Learn More</a></p></h5>
+              <h5 style="font-weight:normal">Google I/O is for developers &#8211; the creative coders who are building what&#8217;s next. Together we&#8217;ll explore the latest in tech, mobile, and beyond.</h5>
             </div>
           </div>
         </div>
@@ -110,11 +110,11 @@ limitations under the License.
                role="button"
                tabindex="0"
                flex>
-            <h5 style="font-weight:normal">Watch the I/O 2015 recap</h5>
+            <h5>Watch the I/O 2015 recap</h5>
           </div>
         </div>
 
-        <div class="card-content box card--bottom-left-clip typo-indigo-400 bg-bluegrey-50-20">
+        <div class="card-content box card--bottom-left-clip card--allow-a-wrap fullbleed typo-indigo-400 bg-bluegrey-50-20">
 
           <!-- <social-poller url="[[resolveUrl('../api/v1/social')]]" posts="{{socialPosts}}"
                          interval="30000"></social-poller>
@@ -132,19 +132,22 @@ limitations under the License.
             </template>
           </iron-pages> -->
 
-          <div class="social-card" layout vertical style="height:100%">
-            <h2 style="font-weight:normal">I/O coming to the neighborhood where it all started: I/O'16 at Shoreline Amphitheatre in Mountain View, May 18-20. More details soon. #io16</h2>
-            <div layout flex end>
-              <span>
-                <iron-icon icon="io:post-twitter"></iron-icon>
-                <a target="_blank" href="https://twitter.com/sundarpichai">Sundar Pichai</a>
-              </span>
+          <a class="social-link card-content" href="https://twitter.com/sundarpichai/status/686963501219233792" target="_blank">
+            <div class="social-card" layout vertical style="height:100%">
+              <h2 style="font-weight:normal">I/O coming to the neighborhood where it all started: I/O'16 at Shoreline Amphitheatre in Mountain View, May 18-20. More details soon. #io16</h2>
+              <div layout flex end>
+                <span>
+                  <iron-icon icon="io:post-twitter"></iron-icon>
+                  <span class="social-author">Sundar Pichai</span>
+                </span>
+              </div>
             </div>
-          </div>
+          </a>
 
         </div>
-        <div class="card-content box card--bottom-right-clip io__hash bg-bluegrey-50-40"
-             aria-label="I/O hash tag"></div>
+        <div class="card-content box card--bottom-right-clip fullbleed io__hash bg-bluegrey-50-40">
+          <a href="https://twitter.com/search?q=%23io16" target="_blank">Search #io2016 on Twitter</a>
+        </div>
 
       </div>
     </div>
