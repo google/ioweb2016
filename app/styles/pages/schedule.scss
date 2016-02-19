@@ -366,6 +366,12 @@ iron-icon[icon="schedule"] {
   }
 }
 
+#subpage-tabs {
+  paper-tab:hover {
+    border-bottom: 2px solid currentcolor;
+  }
+}
+
 @media (max-width: $phone-breakpoint-max) {
   .schedule-title {
     order: -1;
