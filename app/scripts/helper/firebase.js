@@ -308,15 +308,52 @@ class IOFirebase {
   }
 
   /**
-   * Adds the GCM subscription ID provided by the browser.
+   * Adds the push subscription ID provided by the browser.
    *
-   * @param {string} gcmId The GCM Subscription ID.
+   * @param {PushSubscription} sub The subscription data.
    * @return {Promise} Promise to track completion.
    */
-  addGcmId(gcmId) {
-    let value = {};
-    value[gcmId] = true;
-    return this._updateFirebaseUserData('gcm_ids', value);
+  addPushSubscription(subscription) {
+    if (!(subscription instanceof PushSubscription)) {
+      return Promise.reject('Tried to add invalid subscription details to Firebase');
+    }
+    const key = crc32(subscription.endpoint);
+    // We need to turn the PushSubscription into a simple object
+    const clone = subscription.toJSON();
+    const value = {
+      endpoint: clone.endpoint,
+      keys: {
+        p256dh: clone.keys.p256dh,
+        auth: clone.keys.auth
+      }
+    };
+    return this._setFirebaseUserData(`web_push_subscriptions/${key}`, value);
+  }
+
+  /**
+   * Set the flag that determines if notifications are enabled for this user
+   *
+   * @param {boolean} value What to set the flag to
+   * @return {Promise} A promise that resolves when the update completes
+   */
+  setNotificationsEnabled(value) {
+    return this._setFirebaseUserData('web_notifications_enabled', !!value);
+  }
+
+  /**
+   * Checks if the user has enabled notifications on any device
+   *
+   * @return {boolean}
+   */
+  hasNotificationsEnabled() {
+    if (this.isAuthed()) {
+      let userId = this.firebaseRef.getAuth().uid;
+      let location = `users/${userId}/web_notifications_enabled`;
+      let ref = this.firebaseRef.child(location);
+      return ref.once('value');
+    }
+
+    return Promise.reject('Not currently authorized with Firebase.');
   }
 
   /**
