@@ -175,14 +175,16 @@ limitations under the License.
 
   <style is="custom-style" include="shared-app-styles">
     #headerpanel {
+      /* Needed for mobile drawer scrim to show over toolbar. */
       --paper-header-panel-shadow: {
         box-shadow: inset 0px 5px 6px -3px rgba(0, 0, 0, 0.4);
         z-index: 1;
       };
     }
-    /* Smooth scroll!
-       https://developers.google.com/web/updates/2016/02/smooth-scrolling-in-chrome-49 */
+
     #headerpanel.smoothscroll {
+      /* Smooth scroll!
+         https://developers.google.com/web/updates/2016/02/smooth-scrolling-in-chrome-49 */
       --paper-header-panel-waterfall-container: {
         scroll-behavior: smooth;
       };
@@ -195,7 +197,7 @@ limitations under the License.
       };
       --paper-input-container: {
         padding: 0;
-      }
+      };
     }
 
     paper-drawer-panel {
@@ -216,6 +218,9 @@ limitations under the License.
 
     #navbar paper-tabs {
       --paper-tabs-selection-bar-color: var(--paper-blue-grey-100);
+    }
+    #navbar.scrolled paper-tabs {
+      --paper-tabs-selection-bar-color: var(--paper-blue-grey-600);
     }
   </style>
 </head>
@@ -274,10 +279,11 @@ limitations under the License.
       </paper-menu>
     </div>
   </div>
+ <!--  <paper-scroll-header-panel id="headerpanel" main fixed
+      condensed-header-height="64" condenses keep-condensed-header> -->
   <paper-header-panel id="headerpanel" mode="waterfall" main>
-
     <div class="masthead paper-header" layout vertical>
-      <paper-toolbar id="navbar" role="navigation">
+      <div id="navbar" role="navigation" layout horizontal center>
         <paper-icon-button icon="io:menu" paper-drawer-toggle></paper-icon-button>
         <div flex disabled$="{{_isPage('home', selectedPage)}}">
           <a href="./" class="io-logo-link"
@@ -357,7 +363,7 @@ limitations under the License.
             </paper-menu-button>
           </template>
         </span>
-      </paper-toolbar>
+      </div>
 
     </div>
 
