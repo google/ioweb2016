@@ -16,23 +16,11 @@
 
 @import '../base/layout';
 
-.io-logo:not(.style-scope) {
+.io-logo {
   background: url('../images/io.png') no-repeat;
   background-size: contain;
   height: 40px;
   width: 60px;
-
-  /* Adds a white circle behind the I/O logo as a focus state */
-  &::after {
-    content: '';
-    display: none;
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    position: absolute;
-    margin-left: -10px;
-    margin-top: -14px;
-  }
 }
 
 .masthead {
