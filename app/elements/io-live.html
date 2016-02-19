@@ -305,16 +305,6 @@ Fired when the mode changes.
         </div>
       </template>
 
-      <template if="{{mode === _MODES.BEFORE}}">
-        <countdown-timer role="timer" bgcolor="#00BCD4" date="{{date}}"
-            easeintime="490" waittime="100" easeouttime="400"
-            value="{{countdownValue}}" autoStart fit
-            aria-label="{{countdownValue.days}} days, {{countdownValue.hours}} hours, {{countdownValue.minutes}} minutes, {{countdownValue.seconds}} seconds, until Google I/O"
-            on-timerthreshold="{{onCountdownTimerThreshold}}"
-            on-transitionend="{{onCountdownFaded}}">
-        </countdown-timer>
-      </template>
-
     </div>
 
   </template>
