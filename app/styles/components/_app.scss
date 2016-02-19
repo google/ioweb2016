@@ -310,15 +310,7 @@ paper-progress {
   right: 0;
   bottom: 40px;
   pointer-events: none;
-
-  // Line through card background.
-  // &::before {
-  //   position: absolute;
-  //   content: '';
-  //   border-bottom: 1px solid #ddd;
-  //   width: 100%;
-  //   height: calc(56px / 2);
-  // }
+  @include keyline-16();
 
   &.active paper-fab {
     transform: scale(1);
@@ -331,26 +323,23 @@ paper-progress {
   paper-fab {
     background: #fff;
     color: inherit;
-    transition: transform 300ms cubic-bezier(0,0,0.2,1);
+    transition: transform 200ms cubic-bezier(0,0,0.2,1);
     will-change: transform;
     transform: scale(0);
     pointer-events: all;
+    box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.12),
+                0px 8px 8px 0px rgba(0,0,0,0.24);
+
+    &:hover {
+      box-shadow: 0px 0px 14px 0px rgba(0,0,0,0.12),
+                  0px 14px 14px 0px rgba(0,0,0,0.24);
+    }
   }
 }
 
 @media (max-width: $phone-breakpoint-max) {
   .navbar__overlay {
     font-size: 16px;
-  }
-}
-
-// In between desktops
-@media (min-width: 760px) and (max-width: 960px) {
-  #fab {
-    position: fixed;
-    bottom: 40px;
-    right: 32px;
-    top: initial !important;
   }
 }
 
@@ -373,6 +362,9 @@ paper-progress {
     line-height: 56px;
   }
   // Rest of heading are same as mobile.
+  #fab {
+    @include keyline-24();
+  }
 }
 
 @media (min-width: $desktop-breakpoint-mid) {
@@ -380,6 +372,9 @@ paper-progress {
     @include keyline-72();
     padding-top: $largeKeyline;
     padding-bottom: $largeKeyline;
+  }
+  #fab {
+    @include keyline-32();
   }
 }
 
