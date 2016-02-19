@@ -390,9 +390,6 @@ IOWA.Elements = (function() {
         // The steps to turn off notifications are broken down into two separate promises, the first
         // which unsubscribes from the browser's push manager and the second which sets the notify
         // state to false in the backend via an API call.
-        // Note that we are deliberately not clearing the SW token stored in IDB, since that is tied
-        // to the user's logged in state and will remain valid if notifications are re-enabled
-        // later on.
         this.set('app.dontAutoSubscribe', true);
         IOWA.Notifications.unsubscribeFromPushManagerPromise()
           .then(IOWA.Notifications.disableNotificationsPromise)

@@ -315,12 +315,19 @@ class IOFirebase {
    */
   addPushSubscription(subscription) {
     if (!(subscription instanceof PushSubscription)) {
-      throw new Error('Tried to add invalid subscription details to Firebase');
+      return Promise.reject('Tried to add invalid subscription details to Firebase');
     }
-    let key = btoa(subscription.endpoint);
-    // We need to turn the PushSubscription into a simple, clonable object
-    let clone = JSON.parse(JSON.stringify(subscription));
-    return this._setFirebaseUserData(`web_push_subscriptions/${key}`, clone);
+    const key = crc32(subscription.endpoint);
+    // We need to turn the PushSubscription into a simple object
+    const clone = subscription.toJSON();
+    const value = {
+      endpoint: clone.endpoint,
+      keys: {
+        p256dh: clone.keys.p256dh,
+        auth: clone.keys.auth
+      }
+    };
+    return this._setFirebaseUserData(`web_push_subscriptions/${key}`, value);
   }
 
   /**
@@ -339,10 +346,14 @@ class IOFirebase {
    * @return {boolean}
    */
   hasNotificationsEnabled() {
-    let userId = this.firebaseRef.getAuth().uid;
-    let location = `users/${userId}/web_notifications_enabled`;
-    let ref = this.firebaseRef.child(location);
-    return ref.once('value');
+    if (this.isAuthed()) {
+      let userId = this.firebaseRef.getAuth().uid;
+      let location = `users/${userId}/web_notifications_enabled`;
+      let ref = this.firebaseRef.child(location);
+      return ref.once('value');
+    }
+
+    return Promise.reject('Not currently authorized with Firebase.');
   }
 
   /**
