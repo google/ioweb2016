@@ -94,7 +94,7 @@ paper-tabs {
 
 #navbar {
   background-color: transparent;
-  color: inherit;
+  color: $color-bluegrey-600;
   transition: background-color 500ms;
 
   &.scrolled {
