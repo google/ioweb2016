@@ -78,6 +78,9 @@ paper-drawer-panel {
 
 paper-tabs {
   height: $navbarHeight;
+  paper-tab {
+    border-bottom: 2px solid transparent;
+  }
 }
 
 #navbar {
@@ -95,6 +98,10 @@ paper-tabs {
   }
 
   paper-tab {
+    &:hover {
+      border-bottom: 2px solid $color-bluegrey-100;
+    }
+
     flex: none !important;
 
     a {
