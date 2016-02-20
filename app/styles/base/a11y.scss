@@ -45,6 +45,15 @@
   background: rgba($color-bluegrey-100, 0.25);
 }
 
+/**
+ * Suppress outline on page elements. When the page changes focus
+ * will be moved to these elements but we don't want a glaring
+ * ring as it will be distracting for mouse users
+ */
+lazy-pages > * {
+  outline: none;
+}
+
 /* Focus states for tabs */
 paper-tab:focus,
 paper-tab a:focus {
