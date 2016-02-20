@@ -25,6 +25,11 @@ $name: 'page-widget';
 
 $rightMargin: 12px;
 
+.cyan-link {
+  color: $color-cyan-800;
+  text-transform: uppercase;
+}
+
 .heading-info {
   font-size: 12px;
   color: $color-grey2;
@@ -49,17 +54,8 @@ iron-label {
   margin-right: $rightMargin;
 }
 
-paper-dialog {
-  .card__title {
-    margin-bottom: $tabletKeyline;
- }
-  section {
-    padding: 0 $tabletKeyline/2;
-
-    h4 {
-      margin: $desktopKeyline 0 $tabletKeyline 0;
-    }
-  }
+#gadgetfaq {
+  overflow: auto;
 }
 
 .footer__text {
@@ -73,19 +69,19 @@ paper-dialog {
 }
 
 @media (min-width: $tablet-breakpoint-min) {
-  .page__section--gadgetpreview {
+  .gadgetpreview {
     margin-top: -103px;
     padding-top: 144px;
     padding-bottom: 90px;
   }
-  .page__section--customizer {
+  .gadgetcustomizer {
     margin-top: -50px;
     padding-bottom: $desktopKeyline;
   }
 }
 
 @media (min-width: $tablet-breakpoint-mid) {
-  .page__section--gadgetpreview {
+  .gadgetpreview {
     $margin: 103px;
     margin-top: -$margin;
     padding-top: $margin + 40;
@@ -93,7 +89,7 @@ paper-dialog {
 }
 
 @media (min-width: $desktop-breakpoint-mid) {
-  .page__section--gadgetpreview {
+  .gadgetpreview {
     $marginTop: 111px;
     $marginBottom: 50px;
     margin-top: -$marginTop;
