@@ -27,6 +27,8 @@ $name: 'page-home';
 
 .masthead-container {
   max-width: 100% !important;
+  padding-bottom: (1 / 2) * 100%;
+  height: 0;
 }
 
 footer {
@@ -141,10 +143,9 @@ h3 a {
   }
 }
 
-
-@media (max-width: $phone-breakpoint-max) {
+@media (max-width: 500px) {
   .masthead-container {
-    min-height: 268px;
+    padding-bottom: (1 / 1) * 100%;
   }
 }
 
@@ -155,36 +156,6 @@ h3 a {
 
   .masthead-container {
     margin-top: -$navbarHeight;
-  }
-}
-
-@media (min-width: 961px) {
-  .masthead-container {
-    height: 480px;
-  }
-}
-
-@media (min-width: 1305px) {
-  .masthead-container {
-    height: 580px;
-  }
-}
-
-@media (min-width: 1501px) {
-  .masthead-container {
-    height: 640px;
-  }
-}
-
-@media (min-width: 1601px) {
-  .masthead-container {
-    height: 720px;
-  }
-}
-
-@media (min-width: 1801px) {
-  .masthead-container {
-    height: 800px;
   }
 }
 

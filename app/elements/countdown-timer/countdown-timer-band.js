@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-IOWA.CountdownTimer.Band = function(canvasContext, radius, center, quality, parent, id, defaultDigit) {
+IOWA.CountdownTimer.Band = function(canvasElement, radius, center, quality, parent, id, defaultDigit) {
+  this.canvasElement = canvasElement;
   this.parent = parent;
   this.id = id;
 
@@ -41,9 +42,6 @@ IOWA.CountdownTimer.Band = function(canvasContext, radius, center, quality, pare
   this.inc = 0;
 
   this.isPlaying = true;
-
-  this.canvas = canvasContext;
-
   this.colors = [
     {hex: '#ffffff', ratio: 1, size: 1, oldSize: 1, active: false, tween: null},
     {hex: '#EF5350', ratio: 0, size: 0, oldSize: 0, active: false, tween: null},
@@ -123,7 +121,17 @@ IOWA.CountdownTimer.Band.prototype.update = function() {
     return;
   }
 
-  this.canvas.clearRect(this.center.x - this.radius, this.center.y - this.radius, this.radius * 2, this.radius * 2);
+  var ctx = this.canvasElement.getContext('2d');
+  ctx.save();
+  ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+
+  var overClear = window.devicePixelRatio * 2;
+  ctx.clearRect(
+    (this.center.x - this.radius) - overClear,
+    (this.center.y - this.radius) - overClear,
+    (this.radius * 2) + (overClear * 2),
+    (this.radius * 2) + (overClear * 2)
+  );
 
   for (var i = 0; i < this.quality; i++) {
     var inc = i;
@@ -141,9 +149,9 @@ IOWA.CountdownTimer.Band.prototype.update = function() {
     var x2 = this.radius * (this.oldShape.points[next_inc].x + (this.currentShape.points[next_inc].x - this.oldShape.points[next_inc].x) * this.posShift) + this.center.x;
     var y2 = this.radius * (this.oldShape.points[next_inc].y + (this.currentShape.points[next_inc].y - this.oldShape.points[next_inc].y) * this.posShift) + this.center.y;
 
-    this.canvas.beginPath();
-    this.canvas.moveTo(x, y);
-    this.canvas.lineTo(x2, y2);
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x2, y2);
     var ratio;
 
     ratio = (i + this.strokeOffset) / this.quality;
@@ -151,11 +159,11 @@ IOWA.CountdownTimer.Band.prototype.update = function() {
       ratio = (i + this.strokeOffset - this.quality) / this.quality;
     }
 
-    this.canvas.strokeStyle = this.getColor(ratio);
+    ctx.strokeStyle = this.getColor(ratio);
 
-    this.canvas.lineWidth = this.parent.strokeWeight;
-    this.canvas.lineCap = 'round';
-    this.canvas.stroke();
+    ctx.lineWidth = this.parent.strokeWeight;
+    ctx.lineCap = 'round';
+    ctx.stroke();
   }
 
   this.strokeOffset -= this.aShift;
@@ -164,6 +172,8 @@ IOWA.CountdownTimer.Band.prototype.update = function() {
   } else if (this.strokeOffset < 0) {
     this.strokeOffset = this.quality - 1;
   }
+
+  ctx.restore();
 };
 
 IOWA.CountdownTimer.Band.prototype.shudder = function(state) {
