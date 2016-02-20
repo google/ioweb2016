@@ -342,7 +342,11 @@ gulp.task('eslint', 'Lint main site JS', function() {
   return gulp.src([
     '*.js',
     'gulp_scripts/**/*.js',
-    IOWA.appDir + '/scripts/**/*.js'
+    IOWA.appDir + '/scripts/**/*.js',
+    IOWA.appDir + '/elements/**/*.js',
+
+    // Exclude any third-party code.
+    '!/**/third-party/**/*.js'
   ])
     .pipe($.eslint())
     .pipe($.eslint.format())
