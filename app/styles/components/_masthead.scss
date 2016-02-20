@@ -22,6 +22,7 @@
   height: 40px;
   width: 60px;
   transition: transform 180ms;
+  transform-origin: 0 50%;
 }
 
 .masthead {
@@ -110,6 +111,7 @@ paper-tabs {
     }
 
     a {
+      height: 100%; // make sure entire tab is a link
       flex: inherit; // Needed for IE11, in order to ensure that the <a> gets assigned a width.
     }
 
@@ -121,17 +123,19 @@ paper-tabs {
   paper-menu-button {
     padding: 0;
   }
-
-  .button-link {
-    text-transform: uppercase;
-    color: inherit;
-    margin-right: $mobileKeyline / 2;
-  }
 }
 
 #signin-nav-elements {
+  height: 100%;
+
   & > .button-link {
+    height: 100%;
     padding: 16px 12px;
+    border-bottom: 2px solid transparent;
+
+    &:hover {
+      border-bottom: 2px solid $color-bluegrey-100;
+    }
   }
 
   & > .profilepic {
@@ -259,12 +263,21 @@ paper-tabs {
 
 @media (min-width: $tablet-breakpoint-min) {
   #navbar {
+    @include keyline-32();
+    margin-right: -12px; // adjust for padding.
+
     paper-tabs {
       display: inline-block;
     }
     [paper-drawer-toggle] {
       display: none;
     }
+  }
+}
+
+@media (min-width: $desktop-breakpoint-min) {
+  #navbar {
+    @include keyline-40();
   }
 }
 

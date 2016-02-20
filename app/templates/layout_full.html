@@ -320,7 +320,7 @@ limitations under the License.
           <!-- Note: Use on-click instead of on-tap so oauth popup is not
                blocked. Needs user gesture. -->
           <span class="anchor-like button-link" data-track-link="nav-signin"
-                on-click="signIn" hidden$="[[currentUser]]">Sign in</span>
+                on-click="signIn" hidden$="[[currentUser]]" layout center>Sign in</span>
           <template is="dom-if" if="{{currentUser}}" restamp>
             <img src$="{{currentUser.picture}}" class="profilepic">
             <paper-menu-button horizontal-align="right" vertical-align="top">

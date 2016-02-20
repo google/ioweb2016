@@ -363,7 +363,7 @@ paper-progress {
   }
   // Rest of heading are same as mobile.
   #fab {
-    @include keyline-24();
+    @include keyline-32();
   }
 }
 
@@ -374,7 +374,7 @@ paper-progress {
     padding-bottom: $largeKeyline;
   }
   #fab {
-    @include keyline-32();
+    @include keyline-40();
   }
 }
 
