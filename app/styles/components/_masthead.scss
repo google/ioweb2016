@@ -17,6 +17,7 @@
 @import '../base/layout';
 
 .io-logo {
+  display: inline-block;
   background: url('../images/io.png') no-repeat;
   background-size: contain;
   height: 40px;
