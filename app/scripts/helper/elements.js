@@ -100,7 +100,6 @@ IOWA.Elements = (function() {
     // FAB scrolling effect caches.
     template._fabCrossFooterThreshold = null; // Scroll limit when FAB sticks.
     template._fabPinTop = null; // Top to pin FAB at.
-    template._scrollerHeight = null;
 
     IOWA.Util.setMetaThemeColor('#CFD8DC'); // bg-medium-grey in colors.scss.
 
@@ -450,17 +449,15 @@ IOWA.Elements = (function() {
       var scroller = IOWA.Elements.ScrollContainer;
       var fabMetrics = this.$.fab.getBoundingClientRect();
 
-      this._scrollerHeight = scroller.clientHeight;
-
       // FAB stops when 1/2 of it crosses the footer.
       this._fabPinTop = scroller.scrollHeight -
                         IOWA.Elements.Footer.clientHeight -
                         fabMetrics.height / 2;
 
-      // FAB stops when 1/2 of it crosses the footer.
-      var footerMargin = parseInt(
-          getComputedStyle(IOWA.Elements.Footer).marginTop, 10);
-      this._fabCrossFooterThreshold = this._fabPinTop + footerMargin;
+      this._fabCrossFooterThreshold = scroller.scrollHeight -
+                                      scroller.clientHeight -
+                                      fabMetrics.height / 2 -
+                                      fabMetrics.height;
 
       // Make sure FAB is in correct location when window is resized.
       this._setFabPosition(IOWA.Elements.ScrollContainer.scrollTop);
@@ -487,8 +484,7 @@ IOWA.Elements = (function() {
       this.$.fabAnchor.setAttribute('aria-hidden', false);
       this.$.navbar.classList.add('scrolled');
 
-      var scrollDiff = this._fabCrossFooterThreshold - scrollTop;
-      if (scrollDiff <= this._scrollerHeight) {
+      if (this._fabCrossFooterThreshold <= scrollTop) {
         this.$.fab.classList.remove('fixed');
         this.$.fab.style.top = (this._fabPinTop) + 'px';
       } else {
