@@ -15,29 +15,4 @@
   </div>
 </div>
 
-<script>
-(function() {
-
-  function addDays(date, days) {
-    var result = new Date(date);
-    // The +1 is b/c the timer renders fractions of days based on an end date.
-    // Not adding it produces 403.95 days. We need 404.95 to render correctly.
-    result.setDate(date.getDate() + 1 + days);
-    return result;
-  }
-
-  // Page-specific JS that runs when this page is loaded for the first time.
-  function initPage() {
-    var today = new Date();
-    var daysInFuture404 = addDays(today, 500);
-
-    var countdown = document.querySelector('countdown-timer');
-    countdown.date = daysInFuture404;
-  }
-
-  initPage();
-
-})();
-</script>
-
 {% end %}
