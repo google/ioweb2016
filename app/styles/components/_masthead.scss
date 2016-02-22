@@ -22,7 +22,6 @@
   background-size: contain;
   height: 40px;
   width: 60px;
-  transition: transform 180ms;
   transform-origin: 0 50%;
   will-change: transform;
 }
@@ -100,6 +99,7 @@ paper-tabs {
 
     .io-logo {
       transform: scale(0.6);
+      transition: transform 300ms; // should match masthead height/bg color transition.
     }
   }
 
