@@ -131,7 +131,7 @@ The `<io-gadget>` element renders a youtube video + social feed.
           </div>
           <div id="post-container" class="card-content" flex>
             <div layout vertical>
-              <social-poller url="[[resolveUrl('../api/v1/social')]]"
+              <social-poller url="/io2016/api/v1/social"
                              posts="{{socialPosts}}" interval="30000"></social-poller>
               <template is="dom-repeat" items="[[socialPosts]]" as="post">
                 <social-post kind="{{post.kind}}" author="{{post.author}}"
