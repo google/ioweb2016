@@ -64,8 +64,8 @@ The `<io-gadget>` element renders a youtube video + social feed.
           <div class="preroll" layout vertical center-center flex two>
             <div layout vertical self-start>
               <h1>I/O Live</h1>
-              <h3>Tune in here again on May 18, starting at 9AM PDT.<br>
-              Meanwhile, watch the 2016 keynote and sessions at <a href="/io2016/videos" target="_blank">events.google.com/io2016/videos</a>.</h3>
+              <h3>Tune in here again on May 19, starting at 9AM PDT.<br>
+              Meanwhile, watch the 2016 keynote and sessions at <a href="/io2016/" target="_blank">events.google.com/io2016</a>.</h3>
               <h4>#io15</h4>
             </div>
           </div>
@@ -76,7 +76,7 @@ The `<io-gadget>` element renders a youtube video + social feed.
             <div layout vertical self-start>
               <h1>I/O Live</h1>
               <h3>Thanks for another great Google I/O.<br>
-              Watch the 2016 keynote and sessions at <a href="/io2016/videos" target="_blank">events.google.com/io2016/videos</a>.</h3>
+              Watch the 2016 keynote and sessions at <a href="/io2016/" target="_blank">events.google.com/io2016</a>.</h3>
               <h4>#io16</h4>
             </div>
           </div>
@@ -87,7 +87,6 @@ The `<io-gadget>` element renders a youtube video + social feed.
           <div class="card card--livestream" layout vertical flex two>
             <div flex class="card__photo" relative>
               <img src="../images/play-video-button.png"
-                   class="play__gbutton play__button--card"
                    title="Start watching" alt="Start watching">
 
               <google-youtube id="video" height="100%" width="100%" fit
@@ -184,6 +183,13 @@ The `<io-gadget>` element renders a youtube video + social feed.
           },
 
           /**
+           * The selected YouTube video id to play.
+           */
+          videoIds: {
+            value: function() { return []; }
+          },
+
+          /**
            * If true, shows the social feed.
            */
           noFeed: {
@@ -235,13 +241,6 @@ The `<io-gadget>` element renders a youtube video + social feed.
           videoAuthor: {
             type: String,
             value: ''
-          },
-
-          /**
-           * The selected YouTube video id to play.
-           */
-          videoIds: {
-            value: function() { return []; }
           },
 
           /**
