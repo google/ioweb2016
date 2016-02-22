@@ -24,6 +24,7 @@
   width: 60px;
   transition: transform 180ms;
   transform-origin: 0 50%;
+  will-change: transform;
 }
 
 .masthead {
@@ -87,13 +88,15 @@ paper-tabs {
 #navbar {
   background-color: transparent;
   color: $color-bluegrey-600;
-  transition: background-color 180ms, height 180ms;
+
   @include keyline-16();
   height: $navbarHeight + 20;
+  will-change: background-color, height;
 
   &.scrolled {
     height: $navbarHeightMobile;
     background-color: $color-grey-50;
+    transition: background-color 300ms, height 300ms;
 
     .io-logo {
       transform: scale(0.6);
