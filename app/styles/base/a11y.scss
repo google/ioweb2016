@@ -54,6 +54,13 @@ lazy-pages > * {
   outline: none;
 }
 
+/**
+ * Prevent tabbing into the offscreen navigation menu on desktop
+ */
+#appdrawer:not(.mobile) [drawer] {
+  visibility: hidden;
+}
+
 /* Focus states for tabs */
 paper-tab:focus,
 paper-tab a:focus {
