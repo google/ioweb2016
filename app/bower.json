@@ -67,6 +67,7 @@
     "paper-radio-group": "PolymerElements/paper-radio-group#^1.0.0",
     "paper-radio-button": "PolymerElements/paper-radio-button#^1.0.0",
     "paper-slider": "PolymerElements/paper-slider#^1.0.9",
+    "paper-styles": "PolymerElements/paper-styles#^1.0.0",
     "paper-tabs": "PolymerElements/paper-tabs#^1.0.0",
     "paper-toast": "PolymerElements/paper-toast#^1.0.0",
     "polymer": "Polymer/polymer#^1.2.3",

@@ -19,6 +19,7 @@ limitations under the License.
 <link rel="import" href="../bower_components/paper-slider/paper-slider.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 
+<link rel="import" href="../bower_components/paper-styles/color.html">
 <link rel="import" href="shared-app-styles.html">
 <link rel="import" href="PageBehavior.html">
 
@@ -28,6 +29,19 @@ limitations under the License.
   <style include="shared-app-styles">
     :host {
       display: block;
+      --paper-input-container-focus-color: var(--paper-cyan-600);
+    }
+    paper-radio-button {
+      --paper-radio-button-checked-color: var(--paper-cyan-600);
+      --paper-radio-button-checked-ink-color: var(--paper-cyan-600);
+    }
+    paper-slider {
+      --paper-slider-pin-color: var(--paper-cyan-600);
+      --paper-slider-knob-color: var(--paper-cyan-600);
+      --paper-slider-active-color: var(--paper-cyan-600);
+      --paper-slider-input: {
+        width: 100px;
+      };
     }
   </style>
 
@@ -109,39 +123,38 @@ limitations under the License.
 
         <div class="card-content bg-bluegrey-50-40">
          <h4>Personalize the I/O Live stream for your website and share the #io16 conversation directly  with your audience. To customize the widget, just select the content and size, confirm the preview matches what you intended, and embed the code into your site.</h4>
-        </div>
-        <div class="card-content bg-bluegrey-50-40">
+         <div class="card-links">
           <a href="#" class="cyan-link"
              data-ajax-link
              data-track-link="widget-faq"
              on-tap="toggleGadgetFaq">Read I/O Live Embed Widget FAQ </a>
+         </div>
         </div>
 
         <div class="card-content bg-bluegrey-50-20">
 
           <section class="gadgetcustomizer">
             <div class="card__container">
-              <div class="card js-experiment-visualizer" on-iron-change="updateIframeCode">
-                <div class="card-content">
+              <div class="card" on-change="updateIframeCode">
+                <div>
                   <h3 class="card__title">Customize your widget</h3>
                   <div>To customize the widget, just select the content and size, confirm the preview matches what you intended, and embed the code into your site.</div>
                 </div>
 
-                <div class="card-content">
+                <div class="customize__container">
                   <h4 class="card__title">1. Select widget content</h4>
                   <div class="customize__area">
-                    <paper-radio-group selected="{{selectedGadgetLayout}}">
-                      <paper-radio-button name="both" label="Live video stream + Google Developers social feed"></paper-radio-button>
-                      <paper-radio-button name="video" label="Live video stream only"></paper-radio-button>
-                      <paper-radio-button name="feed" label="Google Developers social feed only"></paper-radio-button>
+                    <paper-radio-group layout vertical selected="{{selectedGadgetLayout}}">
+                      <paper-radio-button name="both">Live video stream + Google Developers social feed</paper-radio-button>
+                      <paper-radio-button name="video">Live video stream only</paper-radio-button>
+                      <paper-radio-button name="feed">Google Developers social feed only</paper-radio-button>
                     </paper-radio-group>
                   </div>
 
                   <div class="card__title" layout horizontal end wrap>
                     <h4>2. Select widget size</h4>
-                    <!-- <span class="heading-info">Minimum 320px and maximum 1000px</span> -->
                   </div>
-                  <div class="customize__area">
+                  <div class="customize__area" layout horziontal wrap>
                     <iron-label layout inline horizontal center>
                       Width (px)
                       <paper-slider min="320" max="1000" value="875"
@@ -154,22 +167,17 @@ limitations under the License.
                     </iron-label>
                   </div>
 
+                  <div id="gadgetpreview" class="customize__area" layout horizontal>
+                    <!-- dynamically populated with embed iframe preview -->
+                  </div>
+
                   <h4>3. Embed this code into your site</h4>
                   <div class="customize__area">
-                    <!-- <paper-input-decorator label="Embed code snippet"> -->
-                      <paper-textarea rows="2">
-                        <textarea readonly on-focus="selectGadgetCodeSnippet">{{embedIframeCode}}</textarea>
-                      </paper-textarea>
-                    <!-- </paper-input-decorator> -->
+                      <paper-textarea rows="2" readonly no-label-float
+                          value="[[embedIframeCode]]"></paper-textarea>
                   </div>
                 </div>
               </div>
-            </div>
-          </section>
-
-          <section id="gadgetpreview" class="gadgetpreview">
-            <div layout horizontal center-center>
-              <!-- dynamically populated with embed iframe preview -->
             </div>
           </section>
 
@@ -178,6 +186,8 @@ limitations under the License.
       </div> <!-- .card -->
 
     </div> <!-- .card__container -->
+
+    <div class="io__hash io__hash-bottom" aria-label="I/O hash tag"></div>
 
   </div> <!-- .active -->
 
@@ -193,14 +203,6 @@ limitations under the License.
 
     properties: {
       /**
-       * Size of the gadget's video section.
-       */
-      selectedGadgetVideoSize: {
-        type: String,
-        value: 'small'
-      },
-
-      /**
        * Layout format of the gadget. One of "video", "feed", "both".
        */
       selectedGadgetLayout: {
@@ -214,16 +216,9 @@ limitations under the License.
 
     attached: function() {
       // Reset template variables for when revisiting the page.
-      this.selectedGadgetVideoSize = 'small';
       this.selectedGadgetLayout = 'both';
-    },
 
-    detached: function() {
-
-    },
-
-    onPageTransitionDone: function() {
-
+      this.updateIframeCode(); // Set initial iframe code snippet.
     },
 
     updateIframeCode: function(e) {
@@ -240,12 +235,8 @@ limitations under the License.
                                this.gadgetWidth + 'px;height:' +
                                this.gadgetHeight +'px"' +
                                ' frameborder="0" allowfullscreen></iframe>';
-        this.$.gadgetpreview.firstElementChild.innerHTML = this.embedIframeCode;
+        this.$.gadgetpreview.innerHTML = this.embedIframeCode;
       }, 50);
-    },
-
-    selectGadgetCodeSnippet: function(e) {
-      Polymer.dom(e).rootTarget.select();
     },
 
     toggleGadgetFaq: function(e) {

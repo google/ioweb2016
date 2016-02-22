@@ -25,33 +25,39 @@ $name: 'page-widget';
 
 $rightMargin: 12px;
 
+footer {
+  margin-top: 0;
+}
+
+.card-links {
+  padding-top: $desktopKeyline;
+}
+
 .cyan-link {
   color: $color-cyan-800;
   text-transform: uppercase;
 }
 
-.heading-info {
-  font-size: 12px;
-  color: $color-grey2;
-  margin-left: $mobileKeyline;
+.customize__container {
+  margin-top: 24px;
 }
 
 .customize__area {
   margin-bottom: 24px;
 }
 
-io-slider {
-  line-height: 1;
+paper-radio-group {
+  margin-top: $mobileKeyline;
 }
 
-io-radio-button {
+paper-radio-button {
   padding: 0;
   margin-right: $rightMargin;
   margin-bottom: $mobileKeyline;
 }
 
 iron-label {
-  margin-right: $rightMargin;
+  margin-right: $rightMargin * 2;
 }
 
 #gadgetfaq {
@@ -68,34 +74,5 @@ iron-label {
   }
 }
 
-@media (min-width: $tablet-breakpoint-min) {
-  .gadgetpreview {
-    margin-top: -103px;
-    padding-top: 144px;
-    padding-bottom: 90px;
-  }
-  .gadgetcustomizer {
-    margin-top: -50px;
-    padding-bottom: $desktopKeyline;
-  }
-}
-
-@media (min-width: $tablet-breakpoint-mid) {
-  .gadgetpreview {
-    $margin: 103px;
-    margin-top: -$margin;
-    padding-top: $margin + 40;
-  }
-}
-
-@media (min-width: $desktop-breakpoint-mid) {
-  .gadgetpreview {
-    $marginTop: 111px;
-    $marginBottom: 50px;
-    margin-top: -$marginTop;
-    padding-top: $marginTop + $largeKeyline;
-    padding-bottom: $marginBottom + $largeKeyline;
-  }
-}
 
 }

@@ -42,15 +42,11 @@
   color: #666666;
 }
 
+#social-feed {
+  background: #fff;
+}
+
 .card {
-  box-shadow: none;
-  border-radius: 0;
-
-  a {
-    font-size: inherit;
-    text-transform: none;
-  }
-
   .card__photo {
     background: url(../images/io-logo-grey.png) no-repeat 50% 50%;
     background-size: contain;
@@ -87,10 +83,6 @@ social-post {
   padding: $tabletKeyline 0;
   border-bottom: 1px solid $color-light-grey-border;
   margin-bottom: 0 !important;
-
-  // &::shadow header {
-  //   margin-bottom: $mobileKeyline / 2;
-  // }
 }
 
 paper-dropdown-menu {
