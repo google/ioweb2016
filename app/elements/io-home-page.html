@@ -93,12 +93,12 @@ limitations under the License.
           </div>
         </div>
         <div class="card-content box card__photo card--top-right-clip" relative>
-          <iron-pages id="photo_list" class="card--top-right-clip" selected="0" fit>
-            <img src="/io2016/images/home/cardboard.jpg" class="card--top-right-clip">
-            <img src="/io2016/images/home/keynote.jpg" class="card--top-right-clip">
-            <img src="/io2016/images/home/design.jpg" class="card--top-right-clip">
-            <img src="/io2016/images/home/hand.jpg" class="card--top-right-clip">
-            <img src="/io2016/images/home/dj.jpg" class="card--top-right-clip">
+          <iron-pages id="photo_list" class="card--top-right-clip" on-transitionend="onTransitionEnd" selected="0" fit>
+            <img src="/io2016/images/home/cardboard.jpg" class="card--top-right-clip" alt="A man wearing headphones looks through a Google cardboard device" aria-hidden="true">
+            <img src="/io2016/images/home/keynote.jpg" class="card--top-right-clip" alt="A woman presents a keynote address on stage at Google I/O" aria-hidden="true">
+            <img src="/io2016/images/home/design.jpg" class="card--top-right-clip" alt="An audience sits on bean bag chairs watching a presentation on design" aria-hidden="true">
+            <img src="/io2016/images/home/hand.jpg" class="card--top-right-clip" alt="A woman is shown a demonstration of a robotic arm" aria-hidden="true">
+            <img src="/io2016/images/home/dj.jpg" class="card--top-right-clip" alt="A D.J. plays turntables in a booth with a large I/O logo" aria-hidden="true">
           </iron-pages>
         </div>
 
@@ -200,6 +200,20 @@ limitations under the License.
 
       //this._cycleSocialPosts(); TODO: add back after phase 1.
       this._cyclePhotos();
+    },
+
+    // Manage screen reader accessibility for offscreen carousel
+    // images
+    onTransitionEnd: function(e) {
+      e.stopPropagation();
+      var photo = Polymer.dom(e).rootTarget;
+      if (photo.classList.contains('iron-selected')) {
+        photo.setAttribute('aria-hidden', false);
+        return;
+      }
+
+      photo.setAttribute('aria-hidden', true);
+      return;
     },
 
     _onSetReminder: function(e, detail) {
