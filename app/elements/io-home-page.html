@@ -23,6 +23,7 @@ limitations under the License.
 <!-- <link rel="import" href="social-poller.html"> -->
 <!-- <link rel="import" href="social-post.html"> -->
 <link rel="import" href="countdown-timer/countdown-timer.html">
+<link rel="import" href="card-video.html">
 
 <link rel="import" href="shared-app-styles.html">
 <link rel="import" href="PageBehavior.html">
@@ -146,9 +147,12 @@ limitations under the License.
 
         </div>
         <div class="card-content box card--bottom-right-clip fullbleed io__hash bg-bluegrey-50-40">
-          <a href="https://twitter.com/search?q=%23io16" target="_blank">Search #io2016 on Twitter</a>
+          <template is="dom-if" if="[[app.isDesktopSize]]">
+            <card-video id="card-video"
+                href="https://twitter.com/search?q=io2016"
+                text="Search #io2016 on Twitter"></card-video>
+          </template>
         </div>
-
       </div>
     </div>
 
@@ -200,6 +204,12 @@ limitations under the License.
 
       //this._cycleSocialPosts(); TODO: add back after phase 1.
       this._cyclePhotos();
+
+      var video = Polymer.dom(this.root).querySelector('card-video');
+      if (video) {
+        video.src = '/io2016/videos/hashtag-800.mp4'
+      }
+
     },
 
     // Manage screen reader accessibility for offscreen carousel

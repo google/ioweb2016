@@ -1,0 +1,102 @@
+<!--
+Copyright 2016 Google Inc. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+
+<link rel="import" href="shared-app-styles.html">
+
+
+<dom-module id="card-video">
+  <style include="shared-app-styles">
+    :host {
+      background-size: 60%;
+      display: block;
+      height: 100%;
+      position: relative;
+    }
+    a {
+      display: block;
+      height: 100%;
+      overflow: hidden;
+      width: 100%;
+    }
+    video {
+      height: 101%;
+      margin: -1px 0 0 -1px;
+      width: 101%;
+    }
+  </style>
+
+  <template>
+    <a href$="{{href}}" target="_blank">
+      <span class="-off-screen">{{text}}</span>
+      <video id="card-video" src$="{{src}}" on-canplaythrough="play" on-mouseover="play"></video>
+    </a>
+  </template>
+
+  <script>
+    (function () {
+      'use strict';
+
+      Polymer({
+        is: 'card-video',
+
+        properties: {
+
+          /**
+           * URL for video.
+           */
+          src: {
+            type: String,
+            value: null
+          },
+
+          /**
+           * URL to link video to.
+           */
+          href: {
+            type: String,
+            value: 'https://twitter.com/search?q=io2016'
+          },
+
+          /**
+           * Text for link. Not displayed to visual users --
+           * for screen readers only.
+           */
+          text: {
+            type: String,
+            value: 'Search #io2016 on Twitter'
+          },
+
+          /**
+           * True if on mobile.
+           */
+          mobile: {
+            type: Boolean,
+            value: false
+          },
+        },
+
+        play: function() {
+          var video = this.$['card-video'];
+
+          if (video.paused) {
+            video.play();
+          }
+        }
+      });
+
+    }());
+  </script>
+</dom-module>
