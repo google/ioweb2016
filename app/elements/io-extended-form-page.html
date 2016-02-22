@@ -1,0 +1,90 @@
+<!--
+Copyright 2016 Google Inc. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link rel="import" href="io-extended-form.html">
+<link rel="import" href="shared-app-styles.html">
+<link rel="import" href="PageBehavior.html">
+
+
+<dom-module id="io-extended-form-page">
+<template>
+  <style include="shared-app-styles">
+    :host {
+      display: block;
+    }
+  </style>
+
+  <div class="masthead-container" layout horizontal end>
+    <div class="masthead-meta">
+      <h1>Register your 2016 I/O Extended event</h1>
+    </div>
+  </div>
+
+  <div class="active">
+
+    <div class="card__container slide-up">
+
+      <div class="card">
+
+        <div class="card-content card-content--top bg-bluegrey-50-40">
+          <h3 class="card__title">How it works</h3>
+          <div>This page will help you fill out the I/O Extended registration form by pre-populating it with your event information.</div>
+        </div>
+
+        <div class="bg-bluegrey-50-20">
+          <div class="card-content">
+            <h3>Steps to register your Extended event</h3>
+            <ol>
+              <li>Create a Google+ Event for your 2016 I/O Extended event. To do so, go to <a href="https://plus.google.com/events" target="_blank">https://plus.google.com/events</a> and click "Create Event".</li>
+              <li>In the form below, search for the address of your event and select the result that best matches your location from the dropdown.</li>
+              <li>Visually confirm the pin is at your event location. If it's not correct, adjust the marker by dragging it to the correct location on the map. If Google Maps cannot find your location, double click the map and move the pin to the correct location.</li>
+              <li>Once you are done, click "Go to the registration form". We'll open the I/O Extended registration form with your location information pre-populated.</li>
+              <li>Finish filling out the I/O Extended registration form. Agree to the Terms &amp; Conditions at the bottom and click "Submit".</li>
+            </ol>
+            <p>You're all done! Your event will be featured on the 2016 I/O Extended map on the I/O Website soon.</p>
+          </div>
+
+          <div class="card-content">
+            <h3 class="card__title">First, tell us where you event is</h3>
+            <div>
+              <template is="dom-if" if="[[app.pageTransitionDone]]">
+                <io-extended-form></io-extended-form>
+              </template>
+            </div>
+          </div>
+        </div> <!-- .bg-bluegrey-50-20 -->
+
+      </div> <!-- .card -->
+    </div>  <!-- .card__container -->
+  </div>
+
+</template>
+<script>
+(function () {
+  'use strict';
+
+  Polymer({
+    is: 'io-extended-form-page',
+
+    behaviors: [IOBehaviors.PageBehavior],
+
+    title: '2016 I/O Extended event',
+    name: 'form'
+
+  });
+
+}());
+</script>
+</dom-module>
