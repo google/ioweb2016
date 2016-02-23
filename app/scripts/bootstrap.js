@@ -175,8 +175,8 @@
       // choiceResult.outcome will be 'accepted' or 'dismissed'.
       // choiceResult.platform will be 'web' or 'android' if the prompt was
       // accepted, or '' if the prompt was dismissed.
-      IOWA.Analytics.trackEvent('installprompt', 'userChoice',
-        choiceResult.outcome, choiceResult.platform);
+      IOWA.Analytics.trackEvent('installprompt', choiceResult.outcome,
+        choiceResult.platform);
     });
   });
 })();
