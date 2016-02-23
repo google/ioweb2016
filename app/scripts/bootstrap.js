@@ -21,7 +21,7 @@
 
   function logRejectedPromises() {
     for (var reason of unhandledRejections.values()) {
-      IOWA.Analytics.trackError('unhandledrejection', reason);
+      IOWA.Analytics.trackError('UnhandledPromiseRejection', reason);
     }
 
     unhandledRejections.clear();
