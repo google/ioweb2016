@@ -332,11 +332,17 @@ IOWA.Elements = (function() {
 
     template.backToTop = function(e) {
       e.preventDefault();
-      this.$.headerpanel.classList.add('smoothscroll');
-      this.$.headerpanel.updateStyles(); // force css shim update.
-      IOWA.Elements.ScrollContainer.scrollTop = 0;
-      this.$.headerpanel.classList.remove('smoothscroll');
-      this.$.headerpanel.updateStyles(); // force css shim update.
+      // Only smooth scroll when FAB is clicked. Otherwise we get transitions
+      // if you navigate to a new page. Note, FF has scroll-behavior: smooth,
+      // but it's not playing nicely with updateStyles();
+      if (IOWA.Util.isFF()) {
+        IOWA.Elements.ScrollContainer.scrollTop = 0;
+      } else {
+        this.$.headerpanel.classList.add('smoothscroll');
+        this.$.headerpanel.updateStyles(); // force css shim update.
+        IOWA.Elements.ScrollContainer.scrollTop = 0;
+        this.$.headerpanel.updateStyles(); // force css shim update.
+      }
     };
 
     // template.onCountdownTimerThreshold = function(e, detail) {
