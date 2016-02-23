@@ -166,4 +166,17 @@
   } else {
     document.addEventListener('HTMLImportsLoaded', afterImports);
   }
+
+  // See https://developers.google.com/web/fundamentals/engage-and-retain/app-install-banners/advanced
+  window.addEventListener('beforeinstallprompt', function(event) {
+    IOWA.Analytics.trackEvent('installprompt', 'fired');
+
+    event.userChoice.then(function(choiceResult) {
+      // choiceResult.outcome will be 'accepted' or 'dismissed'.
+      // choiceResult.platform will be 'web' or 'android' if the prompt was
+      // accepted, or '' if the prompt was dismissed.
+      IOWA.Analytics.trackEvent('installprompt', choiceResult.outcome,
+        choiceResult.platform);
+    });
+  });
 })();
