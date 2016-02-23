@@ -124,7 +124,7 @@
     IOWA.Router.init(IOWA.Elements.Template);
     // IOWA.Notifications.init();
 
-    //initWorker();
+    // initWorker();
   }
 
   // TODO: fix when new page elements have these hooks.
