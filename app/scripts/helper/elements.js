@@ -70,9 +70,7 @@ IOWA.Elements = (function() {
     IOWA.Elements.Footer = footer;
     IOWA.Elements.GoogleSignIn = signin;
     IOWA.Elements.LazyPages = lazyPages;
-
-    var headerPanel = IOWA.Elements.Template.$.headerpanel;
-    IOWA.Elements.ScrollContainer = headerPanel.scroller;
+    IOWA.Elements.ScrollContainer = IOWA.Elements.Template.$.header.scroller;
 
     // Kickoff a11y helpers for elements
     IOWA.A11y.init();
@@ -470,9 +468,7 @@ IOWA.Elements = (function() {
 
       // Note: there's no harm in re-adding existing listeners with
       // the same params.
-      this.listen(this.$.headerpanel, 'content-scroll', '_onContentScroll');
-      this.listen(this.$.headerpanel, 'paper-header-transform',
-                  '_headerTransform');
+      this.listen(IOWA.Elements.ScrollContainer, 'scroll', '_onContentScroll');
     };
 
     template._setFabPosition = function(scrollTop) {
@@ -503,17 +499,8 @@ IOWA.Elements = (function() {
       }
     };
 
-    template._headerTransform = function(e, detail) {
-      // Remove shadow when top nav is completely transformed off-screen.
-      if (detail.y === detail.height) {
-        IOWA.Elements.Nav.classList.remove('shadow');
-      } else {
-        IOWA.Elements.Nav.classList.add('shadow');
-      }
-    };
-
-    template._onContentScroll = function(e, detail) {
-      var scrollTop = detail.target.scrollTop;
+    template._onContentScroll = function() {
+      var scrollTop = IOWA.Elements.ScrollContainer.scrollTop;
 
       if (scrollTop === 0) {
         this.$.navbar.classList.remove('scrolled');
