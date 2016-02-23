@@ -108,6 +108,10 @@ paper-progress {
   color: $color-cyan-400;
 }
 
+.typo-cyan-800 {
+  color: $color-cyan-800;
+}
+
 .typo-cyan-700 {
   color: $color-cyan-700;
 }
@@ -337,9 +341,23 @@ paper-progress {
   }
 }
 
+paper-slider {
+  line-height: initial; // fixes slider nob text placement.
+}
+
+.io__hash-bottom {
+  height: 400px;
+  width: 100%;
+  background-size: 297px 115px;
+}
+
 @media (max-width: $phone-breakpoint-max) {
   .navbar__overlay {
     font-size: 16px;
+  }
+  .io__hash-bottom {
+    background-size: 80%;
+    height: 300px;
   }
 }
 

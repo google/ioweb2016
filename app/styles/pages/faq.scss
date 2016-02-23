@@ -64,12 +64,6 @@ footer {
   }
 }
 
-.io__hash {
-  height: 400px;
-  width: 100%;
-  background-size: 297px 115px;
-}
-
 @media (max-width: $phone-breakpoint-max) {
   .card-content--top > div {
     margin-bottom: 24px;
@@ -77,10 +71,6 @@ footer {
     &:last-child {
       margin-bottom: 0;
     }
-  }
-  .io__hash {
-    background-size: 80%;
-    height: 300px;
   }
 }
 
