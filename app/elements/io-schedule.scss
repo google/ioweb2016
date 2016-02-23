@@ -35,23 +35,7 @@
   background-color: #B2EBF2;
 }
 
-.schedule-row,
-.filter-rows > paper-label {
-  margin-bottom: $tabletKeyline;
-}
-
-.filter-rows {
-  paper-checkbox {
-    margin: 0 0 0 $tabletKeyline;
-  }
-}
-
-.filter-rows > paper-label {
-  cursor: pointer;
-}
-
-.filter-section {
-  border-bottom: 1px solid $color-light-grey-border;
+.schedule-row {
   margin-bottom: $tabletKeyline;
 }
 
@@ -73,7 +57,6 @@
 
 .schedule-time {
   font-size: 14px;
-  color: $color-link-grey;
   margin-right: 80px;
   max-width: 80px;
   white-space: nowrap;
@@ -90,13 +73,10 @@ paper-checkbox {
   margin-right: $tabletKeyline;
 }
 
-paper-radio-group {
-  width: 100%;
-}
 
 paper-radio-button {
   display: block;
-  padding: 12px 0 !important;
+  padding: $mobileKeyline/2 0;
 }
 
 paper-progress {
