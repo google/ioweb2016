@@ -456,17 +456,16 @@ IOWA.Elements = (function() {
 
       this._fabCrossFooterThreshold = scroller.scrollHeight -
                                       scroller.clientHeight -
-                                      fabMetrics.height / 2 -
                                       fabMetrics.height;
 
       // Make sure FAB is in correct location when window is resized.
       this._setFabPosition(IOWA.Elements.ScrollContainer.scrollTop);
 
-      this.unlisten(this.$.headerpanel, 'content-scroll', '_onContentScroll');
-
-      if (!this.app.isPhoneSize) {
-        this.listen(this.$.headerpanel, 'content-scroll', '_onContentScroll');
-      }
+      // Note: there's no harm in re-adding existing listeners with
+      // the same params.
+      this.listen(this.$.headerpanel, 'content-scroll', '_onContentScroll');
+      this.listen(this.$.headerpanel, 'paper-header-transform',
+                  '_headerTransform');
     };
 
     template._setFabPosition = function(scrollTop) {
@@ -497,11 +496,21 @@ IOWA.Elements = (function() {
       }
     };
 
+    template._headerTransform = function(e, detail) {
+      // Remove shadow when top nav is completely transformed off-screen.
+      if (detail.y === detail.height) {
+        IOWA.Elements.Nav.classList.remove('shadow');
+      } else {
+        IOWA.Elements.Nav.classList.add('shadow');
+      }
+    };
+
     template._onContentScroll = function(e, detail) {
       var scrollTop = detail.target.scrollTop;
 
       if (scrollTop === 0) {
         this.$.navbar.classList.remove('scrolled');
+        this.$.navbar.classList.remove('shadow');
       } else {
         this.$.navbar.classList.add('scrolled');
       }

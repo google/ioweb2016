@@ -22,15 +22,6 @@
   z-index: 2;
 }
 
-#page-schedule .masthead-meta,
-.card__signin-intro {
-  z-index: 4;
-}
-
-#navbar {
-  z-index: 5;
-}
-
 .fullvideo_thumbnail {
   z-index: 6;
 }
@@ -45,8 +36,4 @@ io-gallery {
 
 .navbar__overlay {
   z-index: 10;
-}
-
-.io-logo-container {
-  z-index: 12; // highest
 }
