@@ -218,11 +218,11 @@ paper-tabs {
 }
 
 .masthead-container {
-  height: 136px;
+  height: 168px;
   width: 100%;
   margin: 0 auto;
   position: relative;
-  padding: 0 0 40px 0;
+  padding: 0 0 48px 0;
   @include keyline-16l();
 
   paper-tabs {
@@ -274,9 +274,6 @@ paper-tabs {
 }
 
 @media (max-width: $phone-breakpoint-max) {
-  .masthead-container {
-    min-height: 268px;
-  }
   #navbar {
     height: $navbarHeightMobile;
 
