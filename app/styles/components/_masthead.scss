@@ -98,18 +98,26 @@ paper-tabs {
   color: $color-bluegrey-600;
 
   @include keyline-16();
-  height: $navbarHeight + 20;
+  // height: $navbarHeight + 20;
+
+  height: $navbarHeight;
+  transition: box-shadow 200ms;
+
+  &.shadow {
+    box-shadow: 0px 5px 6px -3px rgba(0, 0, 0, 0.4);
+  }
+
   will-change: background-color, height;
 
   &.scrolled {
-    height: $navbarHeightMobile;
+    // height: $navbarHeightMobile;
     background-color: $color-grey-50;
-    transition: background-color 300ms, height 300ms;
+    // transition: background-color 300ms, height 300ms;
 
-    .io-logo {
-      transform: scale(0.6);
-      transition: transform 300ms; // should match masthead height/bg color transition.
-    }
+    // .io-logo {
+    //   transform: scale(0.6);
+    //   transition: transform 300ms; // should match masthead height/bg color transition.
+    // }
   }
 
   paper-tabs {
