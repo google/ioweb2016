@@ -46,6 +46,10 @@
 
 .masthead-meta {
   opacity: 0;  // Initial opacity, fades in on load.
+
+  h1 {
+    color: $color-bluegrey-600;
+  }
 }
 
 paper-drawer-panel {
@@ -97,7 +101,7 @@ paper-tabs {
   background-color: transparent;
   color: $color-bluegrey-600;
 
-  @include keyline-16();
+  padding: 0 8px;
   // height: $navbarHeight + 20;
 
   height: $navbarHeight;
@@ -214,12 +218,11 @@ paper-tabs {
 }
 
 .masthead-container {
-  min-height: 268px;
-  height: 325px;
+  height: 168px;
   width: 100%;
   margin: 0 auto;
   position: relative;
-  padding: 0 0 40px 0;
+  padding: 0 0 48px 0;
   @include keyline-16l();
 
   paper-tabs {
@@ -261,8 +264,12 @@ paper-tabs {
 #subpage-tabs {
   height: $navbarHeight;
 
-  paper-tab:hover {
-    border-bottom: 2px solid currentcolor;
+  paper-tab {
+    text-transform: uppercase;
+
+    &:hover {
+      border-bottom: 2px solid currentcolor;
+    }
   }
 }
 
@@ -283,6 +290,10 @@ paper-tabs {
 }
 
 @media (min-width: $tablet-breakpoint-min) {
+  .masthead-container {
+    height: 236px;
+  }
+
   #navbar {
     @include keyline-32();
     margin-right: -12px; // adjust for padding.

@@ -18,8 +18,7 @@
 @import '../base/typography';
 
 html, body {
-  background: $color-body;
-  color: $color-bluegrey-800;
+  color:  $color-text;
   margin: 0;
   padding: 0;
   height: 100%;
@@ -376,7 +375,7 @@ paper-slider {
   h1 {
     @include typo-heading-1();
     font-size: 48px;
-    font-weight: 300;
+    font-weight: 400;
     line-height: 56px;
   }
   // Rest of heading are same as mobile.

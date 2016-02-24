@@ -141,6 +141,13 @@ h3 a {
   }
 }
 
+
+@media (max-width: $phone-breakpoint-max) {
+  .masthead-container {
+    min-height: 268px;
+  }
+}
+
 @media (min-width: $tablet-breakpoint-min) {
   footer {
     margin-top: 128px;
