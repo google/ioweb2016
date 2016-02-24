@@ -29,8 +29,6 @@ footer {
 
 @media (max-width: $phone-breakpoint-max) {
   footer {
-    padding-top: 40px;
-
     nav > span {
       line-height: 40px;
     }
@@ -39,6 +37,8 @@ footer {
 
 @media (min-width: $tablet-breakpoint-min) {
   footer {
+    height: 128px; // IE11 flexbox needs a height. min-height doesn't work.
+
     @include keyline-32();
 
     nav > span {
