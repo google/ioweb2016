@@ -174,11 +174,19 @@ limitations under the License.
   {% end %}
 
   <style is="custom-style" include="shared-app-styles">
+
     #headerpanel.smoothscroll {
-      /* Smooth scroll!
-         https://developers.google.com/web/updates/2016/02/smooth-scrolling-in-chrome-49 */
-      --paper-scroll-header-container: {
+      --app-header-layout-content: {
         scroll-behavior: smooth;
+      };
+    }
+
+    .masthead {
+      --app-header-shadow: {
+        box-shadow: inset 0px 5px 2px -3px rgba(0, 0, 0, 0.2);
+      };
+      --app-header-background-rear-layer: {
+        background-color: var(--paper-grey-50);
       };
     }
 
@@ -267,9 +275,11 @@ limitations under the License.
       </paper-menu>
     </div>
   </div>
-  <paper-scroll-header-panel id="headerpanel" main>
-    <div class="masthead paper-header" layout vertical>
-      <div id="navbar" role="navigation" layout horizontal center>
+
+
+  <app-header-layout id="headerpanel" fit has-scrolling-region main>
+    <app-header reveals effects="fade-background waterfall" id="header" class="masthead">
+      <app-toolbar id="navbar" role="navigation">
         <paper-icon-button icon="io:menu" paper-drawer-toggle></paper-icon-button>
         <div flex disabled$="{{_isPage('home', selectedPage)}}">
           <a href="./" class="io-logo-link"
@@ -350,9 +360,8 @@ limitations under the License.
             </paper-menu-button>
           </template>
         </span>
-      </div>
-
-    </div>
+      </app-toolbar>
+    </app-header>
 
     <main class$="io-main {{_addClass('transitionIn', pageTransitioningIn)}} {{_addClass('transitionOut', pageTransitioningOut)}}">
 
@@ -430,7 +439,7 @@ limitations under the License.
       </div>
     </footer>
 
-  </paper-header-panel>
+  </app-header-layout>
 </paper-drawer-panel>
 
 </template>
