@@ -66,8 +66,13 @@ paper-drawer-panel {
       }
     }
   }
-  #drawer-menu .iron-selected {
-    background-color: $color-bluegrey-50;
+  #drawer-menu {
+    a {
+      display: block;
+    }
+    .iron-selected {
+      background-color: $color-bluegrey-50;
+    }
   }
   .drawer-panel-content {
     overflow: auto;
