@@ -310,7 +310,7 @@ class IOFirebase {
   /**
    * Adds the push subscription ID provided by the browser.
    *
-   * @param {PushSubscription} sub The subscription data.
+   * @param {PushSubscription} subscription The subscription data.
    * @return {Promise} Promise to track completion.
    */
   addPushSubscription(subscription) {
