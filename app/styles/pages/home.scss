@@ -29,6 +29,10 @@ $name: 'page-home';
   max-width: 100% !important;
 }
 
+footer {
+  margin-top: 40px;
+}
+
 h3 a {
   font-weight: inherit;
 }
@@ -138,6 +142,10 @@ h3 a {
 }
 
 @media (min-width: $tablet-breakpoint-min) {
+  footer {
+    margin-top: 128px;
+  }
+
   .masthead-container {
     margin-top: -$navbarHeight;
   }

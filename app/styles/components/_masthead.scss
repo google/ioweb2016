@@ -54,11 +54,12 @@ paper-drawer-panel {
     font-weight: 500;
 
     paper-toolbar {
-      background-color: $color-cyan-400;
+      background-color: $color-cyan-300;
 
       .bottom {
         font-size: 14px;
         line-height: 20px;
+        color: #1E535A;
       }
 
       .io-logo {
@@ -66,8 +67,16 @@ paper-drawer-panel {
       }
     }
   }
-  #drawer-menu .iron-selected {
-    background-color: $color-bluegrey-50;
+  #drawer-menu {
+    padding: 0;
+    color: $color-bluegrey-600;
+
+    a {
+      display: block;
+    }
+    .iron-selected {
+      background-color: $color-bluegrey-50;
+    }
   }
   .drawer-panel-content {
     overflow: auto;
