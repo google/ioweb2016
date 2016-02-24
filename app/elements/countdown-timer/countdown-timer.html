@@ -80,10 +80,6 @@ Creates a countdown timer to a specific date.
         attached: function() {
           this.countdownController = new IOWA.CountdownTimer.Core(new Date(this.date), Polymer.dom(this).node);
           this.countdownController.attachEvents();
-
-          this.async(function() {
-            this.countdownController.start()
-          }, 400);
         },
 
         detached: function() {
@@ -102,7 +98,7 @@ Creates a countdown timer to a specific date.
          * Starts the timer.
          */
         start: function() {
-          this.countdownController.play();
+          this.countdownController.start();
         }
       });
     }());

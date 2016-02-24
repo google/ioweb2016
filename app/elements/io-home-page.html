@@ -196,6 +196,8 @@ limitations under the License.
     },
 
     onPageTransitionDone: function() {
+      this.$.ctimer.start(); // Start countdown.
+
       //this._cycleSocialPosts(); TODO: add back after phase 1.
       this._cyclePhotos();
     },
