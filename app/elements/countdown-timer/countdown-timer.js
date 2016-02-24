@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-IOWA.CountdownTimer.MOBILE_BREAKPOINT = 768;
+IOWA.CountdownTimer.MOBILE_BREAKPOINT = 501;
 IOWA.CountdownTimer.TABLET_BREAKPOINT = 960;
 IOWA.CountdownTimer.DESKTOP_BREAKPOINT = 1400;
 IOWA.CountdownTimer.XLARGE_BREAKPOINT = 4000;
@@ -26,26 +26,23 @@ IOWA.CountdownTimer.Core = function(targetDate, elem) {
   this.quality = 240;
   this.isPlaying = false;
   this.firstRun = true;
+  this.introRunning = false;
   this.maxWidth = IOWA.CountdownTimer.TABLET_BREAKPOINT;
 
   this.canvasElement = document.createElement('canvas');
-  this.setCanvasSize();
 
   this.countdownMargin = 100;
   this.bandGutter = 40;
   this.bandPadding = 8;
   this.strokeWeight = 3;
 
-  this.pixelRatio = 2;
-
-  this.canvas = this.canvasElement.getContext('2d');
-  this.canvas.scale(this.pixelRatio, this.pixelRatio);
-  this.canvas.save();
+  this.pixelRatio = window.devicePixelRatio;
 
   this.unitsAdded = false;
   this.drawAll = false;
 
   this.posShift = 0;
+  this.setCanvasSize();
 
   this.onVisibilityChange = this.onVisibilityChange.bind(this);
   this.onResize = this.onResize.bind(this);
@@ -62,22 +59,6 @@ IOWA.CountdownTimer.Core.prototype.onVisibilityChange = function() {
 };
 
 IOWA.CountdownTimer.Core.prototype.attachEvents = function() {
-  var w = this.containerDomElement.clientWidth;
-  var h = this.containerDomElement.clientHeight;
-
-  // var originalW = w;
-  // var originalH = h;
-  // if (window.devicePixelRatio > 0) {
-  //   w *= window.devicePixelRatio;
-  //   h *= window.devicePixelRatio;
-  //   this.canvas.scale(window.devicePixelRatio, window.devicePixelRatio);
-  // }
-
-  this.canvasElement.width = w;
-  this.canvasElement.height = h;
-  // this.canvasElement.style.width = originalW + 'px';
-  // this.canvasElement.style.height = originalH + 'px';
-
   this.containerDomElement.appendChild(this.canvasElement);
 
   document.addEventListener('visibilitychange', this.onVisibilityChange, false);
@@ -102,6 +83,7 @@ IOWA.CountdownTimer.Core.prototype.start = function() {
 
   this.getSeparators();
 
+  this.launchIntro();
   this.play();
 };
 
@@ -153,16 +135,31 @@ IOWA.CountdownTimer.Core.prototype.onFrame = function() {
     return;
   }
 
+  var ctx = this.canvasElement.getContext('2d');
+
+  if (this.introRunning) {
+    ctx.save();
+    ctx.scale(this.pixelRatio, this.pixelRatio);
+    ctx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
+    ctx.restore();
+    this.intro.update();
+    requestAnimationFrame(this.onFrame);
+    return;
+  }
+
   this.checkTime();
 
   var i;
   // clear relevant canvas area
+  ctx.save();
+  ctx.scale(this.pixelRatio, this.pixelRatio);
+
   if (this.drawAll) {
-    this.canvas.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
+    ctx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
   } else {
     for (i = 0; i <= 3; i++) {
       if (this.bands[i * 2].isPlaying && this.bands[i * 2 + 1].isPlaying) {
-        this.canvas.clearRect(
+        ctx.clearRect(
           this.bands[i * 2].center.x - this.layout.radius - this.bandGutter / 2,
           this.bands[i * 2].center.y - this.layout.radius - this.bandGutter,
           this.layout.radius * 4 + this.bandGutter + this.bandPadding * 2,
@@ -170,6 +167,8 @@ IOWA.CountdownTimer.Core.prototype.onFrame = function() {
       }
     }
   }
+
+  ctx.restore();
 
   // add units
   if (!this.unitsAdded || this.drawAll) {
@@ -254,6 +253,25 @@ IOWA.CountdownTimer.Core.prototype.getFormat = function() {
   this.format = (this.containerDomElement.offsetWidth < IOWA.CountdownTimer.MOBILE_BREAKPOINT) ? 'stacked' : 'horizontal';
 };
 
+IOWA.CountdownTimer.Core.prototype.launchIntro = function() {
+  this.introRunning = true;
+  var center;
+  if (this.format === 'horizontal') {
+    center = this.getBandCenter(1);
+  } else {
+    center = this.getBandCenter(5);
+  }
+
+  this.intro = new IOWA.CountdownTimer.Intro(this.canvasElement, this.layout.radius, center, this.quality, this);
+};
+
+IOWA.CountdownTimer.Core.prototype.closeIntro = function() {
+  this.introRunning = false;
+
+  var ctx = this.canvasElement.getContext('2d');
+  ctx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
+};
+
 IOWA.CountdownTimer.Core.prototype.drawBands = function() {
   var n = 8;
   var bands = [];
@@ -274,7 +292,7 @@ IOWA.CountdownTimer.Core.prototype.drawBands = function() {
   for (var i = 0; i < n; i++) {
     var bandCenter = this.getBandCenter(i);
     var defaultDigit = time['digit_' + i];
-    bands.push(new IOWA.CountdownTimer.Band(this.canvas, this.layout.radius, bandCenter, this.quality, this, i, defaultDigit));
+    bands.push(new IOWA.CountdownTimer.Band(this.canvasElement, this.layout.radius, bandCenter, this.quality, this, i, defaultDigit));
   }
 
   return bands;
@@ -304,28 +322,39 @@ IOWA.CountdownTimer.Core.prototype.getBandCenter = function(n) {
 };
 
 IOWA.CountdownTimer.Core.prototype.addUnits = function() {
-  this.canvas.font = '12px Roboto';
-  this.canvas.fillStyle = '#BFCBD1';
-  this.canvas.textAlign = 'center';
   var offset = 40;
-  this.canvas.fillText('Days', this.bands[0].center.x + this.layout.radius + this.bandPadding / 2, this.bands[0].center.y + this.layout.radius + offset);
-  this.canvas.fillText('Hours', this.bands[2].center.x + this.layout.radius + this.bandPadding / 2, this.bands[2].center.y + this.layout.radius + offset);
-  this.canvas.fillText('Minutes', this.bands[4].center.x + this.layout.radius + this.bandPadding / 2, this.bands[4].center.y + this.layout.radius + offset);
-  this.canvas.fillText('Seconds', this.bands[6].center.x + this.layout.radius + this.bandPadding / 2, this.bands[6].center.y + this.layout.radius + offset);
+  var ctx = this.canvasElement.getContext('2d');
+  ctx.save();
+  ctx.scale(this.pixelRatio, this.pixelRatio);
+  ctx.font = '12px Roboto';
+  ctx.fillStyle = '#BFCBD1';
+  ctx.textAlign = 'center';
+
+  ctx.fillText('Days', this.bands[0].center.x + this.layout.radius + this.bandPadding / 2, this.bands[0].center.y + this.layout.radius + offset);
+  ctx.fillText('Hours', this.bands[2].center.x + this.layout.radius + this.bandPadding / 2, this.bands[2].center.y + this.layout.radius + offset);
+  ctx.fillText('Minutes', this.bands[4].center.x + this.layout.radius + this.bandPadding / 2, this.bands[4].center.y + this.layout.radius + offset);
+  ctx.fillText('Seconds', this.bands[6].center.x + this.layout.radius + this.bandPadding / 2, this.bands[6].center.y + this.layout.radius + offset);
+  ctx.restore();
 };
 
 IOWA.CountdownTimer.Core.prototype.addSeparators = function() {
+  var ctx = this.canvasElement.getContext('2d');
+
+  ctx.save();
+  ctx.scale(this.pixelRatio, this.pixelRatio);
+
   for (var i = 0; i < this.separators.length; i++) {
-    this.canvas.clearRect(this.separators[i].x - 2, this.separators[i].y - 2, this.separators[i].w + 4, this.separators[i].h + 4);
-    //
-    this.canvas.beginPath();
-    this.canvas.moveTo(this.separators[i].x, this.separators[i].y);
-    this.canvas.lineTo(this.separators[i].x + this.separators[i].w, this.separators[i].y + this.separators[i].h);
-    this.canvas.lineWidth = this.strokeWeight;
-    this.canvas.strokeStyle = '#CFD8DC';
-    this.canvas.lineCap = 'round';
-    this.canvas.stroke();
+    ctx.clearRect(this.separators[i].x - 2, this.separators[i].y - 2, this.separators[i].w + 4, this.separators[i].h + 4);
+    ctx.beginPath();
+    ctx.moveTo(this.separators[i].x, this.separators[i].y);
+    ctx.lineTo(this.separators[i].x + this.separators[i].w, this.separators[i].y + this.separators[i].h);
+    ctx.lineWidth = this.strokeWeight;
+    ctx.strokeStyle = '#CFD8DC';
+    ctx.lineCap = 'round';
+    ctx.stroke();
   }
+
+  ctx.restore();
 };
 
 IOWA.CountdownTimer.Core.prototype.getSeparators = function() {
@@ -421,14 +450,12 @@ IOWA.CountdownTimer.Core.prototype.getLayout = function() {
   }
 
   // set stroke weight
-  if (canvasW < 500) {
+  if (canvasW < IOWA.CountdownTimer.MOBILE_BREAKPOINT) {
     this.strokeWeight = 2.5;
-  } else if (canvasW < IOWA.CountdownTimer.MOBILE_BREAKPOINT) {
-    this.strokeWeight = 3;
   } else if (canvasW < IOWA.CountdownTimer.TABLET_BREAKPOINT) {
-    this.strokeWeight = 2.5;
+    this.strokeWeight = 2.0;
   } else if (canvasW < IOWA.CountdownTimer.DESKTOP_BREAKPOINT) {
-    this.strokeWeight = 3;
+    this.strokeWeight = 3.0;
   } else if (canvasW < IOWA.CountdownTimer.XLARGE_BREAKPOINT) {
     this.strokeWeight = 3.5;
   }
@@ -452,7 +479,8 @@ IOWA.CountdownTimer.Core.prototype.getLayout = function() {
 
 IOWA.CountdownTimer.Core.prototype.onResize = function() {
   if (!this.drawAll) {
-    this.canvas.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
+    var ctx = this.canvasElement.getContext('2d');
+    ctx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
   }
 
   this.setCanvasSize();
@@ -467,17 +495,24 @@ IOWA.CountdownTimer.Core.prototype.onResize = function() {
     this.bands[i].resize();
   }
 
+  var center;
+  if (this.format === 'horizontal') {
+    center = this.getBandCenter(1);
+  } else {
+    center = this.getBandCenter(5);
+  }
+
+  if (this.intro) {
+    this.intro.center = center;
+  }
+
   this.getSeparators();
 };
 
 IOWA.CountdownTimer.Core.prototype.setCanvasSize = function() {
-  // var h = (this.containerDomElement.offsetWidth>767) ? this.containerDomElement.offsetWidth / 2 : this.containerDomElement.offsetWidth;;
-  // this.containerDomElement.style.height = h + 'px';
-  // this.canvasElement.height = h;
-
   this.canvasElement.width = this.containerDomElement.offsetWidth * this.pixelRatio;
   this.canvasElement.height = this.containerDomElement.offsetHeight * this.pixelRatio;
 
-  this.canvasElement.style.width = this.containerDomElement.offsetWidth;
-  this.canvasElement.style.height = this.containerDomElement.offsetHeight;
+  this.canvasElement.style.width = this.containerDomElement.offsetWidth + 'px';
+  this.canvasElement.style.height = this.containerDomElement.offsetHeight + 'px';
 };
