@@ -101,7 +101,7 @@ paper-tabs {
   background-color: transparent;
   color: $color-bluegrey-600;
 
-  @include keyline-16();
+  padding: 0 8px;
   // height: $navbarHeight + 20;
 
   height: $navbarHeight;

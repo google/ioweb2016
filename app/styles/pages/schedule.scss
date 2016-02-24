@@ -409,14 +409,6 @@ iron-icon[icon="schedule"] {
   }
 }
 
-@media (max-width: 768px) {
-  .masthead-meta {
-    h1 {
-      padding-left: 12px;
-    }
-  }
-}
-
 @media (min-width: 769px) {
   #subpage-tabs {
     @include keyline-24l();
