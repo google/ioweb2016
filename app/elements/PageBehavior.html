@@ -53,15 +53,6 @@ IOBehaviors.PageBehavior = {
     this.unlisten(document.body, 'page-transition-done', 'onPageTransitionDone');
   },
 
-  /**
-   * Prevents main page scrolling.
-   *
-   * @param {boolean} enable Disabled scrolling when truthy.
-   */
-  scrollLock: function(enable) {
-    document.body.classList.toggle('noscroll', enable);
-  },
-
   closeDialogVideo: function(e) {
     this.set('app.fullscreenVideoActive', false);
   },

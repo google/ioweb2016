@@ -200,18 +200,6 @@ limitations under the License.
       };
     }
 
-    paper-drawer-panel {
-      --paper-drawer-panel-scrim: {
-        display: none; /* Prevent scrim FOUC before */
-      };
-    }
-
-    paper-drawer-panel.mobile {
-      --paper-drawer-panel-scrim: {
-        display: block;
-      };
-    }
-
     #navbar paper-tabs {
       --paper-tabs-selection-bar-color: var(--paper-blue-grey-100);
     }
@@ -235,8 +223,7 @@ limitations under the License.
 <iron-media-query id="mq-desktop" query="(min-width:960px)"
                   query-matches="{{app.isDesktopSize}}"></iron-media-query>
 
-<paper-drawer-panel id="appdrawer" force-narrow disable-swipe="{{!app.isPhoneSize}}">
-  <div drawer layout vertical>
+  <app-drawer id="appdrawer" swipe-open="[[app.isPhoneSize]]">
     <paper-toolbar class="tall">
       <div class="top io-logo" flex></div>
       <div class="top">
@@ -274,13 +261,14 @@ limitations under the License.
         </a>
       </paper-menu>
     </div>
-  </div>
-
+  </app-drawer>
 
   <app-header-layout id="headerpanel" fit has-scrolling-region main>
     <app-header reveals effects="fade-background waterfall" id="header" class="masthead">
       <app-toolbar id="navbar" role="navigation">
-        <paper-icon-button icon="io:menu" paper-drawer-toggle></paper-icon-button>
+        <paper-icon-button icon="io:menu"
+                           on-tap="toggleDrawer"
+                           hidden$="[[!app.isPhoneSize]]"></paper-icon-button>
         <div flex disabled$="{{_isPage('home', selectedPage)}}">
           <a href="./" class="io-logo-link"
               on-click="setSelectedPageToHome"
@@ -438,9 +426,7 @@ limitations under the License.
         </div>
       </div>
     </footer>
-
   </app-header-layout>
-</paper-drawer-panel>
 
 </template>
 
