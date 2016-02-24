@@ -46,6 +46,10 @@
 
 .masthead-meta {
   opacity: 0;  // Initial opacity, fades in on load.
+
+  h1 {
+    color: $color-bluegrey-600;
+  }
 }
 
 paper-drawer-panel {
@@ -214,8 +218,7 @@ paper-tabs {
 }
 
 .masthead-container {
-  min-height: 268px;
-  height: 325px;
+  height: 136px;
   width: 100%;
   margin: 0 auto;
   position: relative;
@@ -283,6 +286,10 @@ paper-tabs {
 }
 
 @media (min-width: $tablet-breakpoint-min) {
+  .masthead-container {
+    height: 236px;
+  }
+
   #navbar {
     @include keyline-32();
     margin-right: -12px; // adjust for padding.
