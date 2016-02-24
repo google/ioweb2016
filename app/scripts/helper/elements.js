@@ -341,6 +341,7 @@ IOWA.Elements = (function() {
         this.$.headerpanel.classList.add('smoothscroll');
         this.$.headerpanel.updateStyles(); // force css shim update.
         IOWA.Elements.ScrollContainer.scrollTop = 0;
+        this.$.headerpanel.classList.remove('smoothscroll');
         this.$.headerpanel.updateStyles(); // force css shim update.
       }
     };
