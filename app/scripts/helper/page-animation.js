@@ -116,9 +116,11 @@ IOWA.PageAnimation = (function() {
    */
   function contentSlideOut() {
     var mastheadMeta = IOWA.Elements.Main.querySelector('.masthead-meta');
+    var subnav = IOWA.Elements.Main.querySelector('.subpage__nav');
     return new GroupEffect([
       sectionSlideOut(IOWA.Elements.Main),
       elementFadeOut(mastheadMeta, CONTENT_SLIDE_OPTIONS),
+      elementFadeOut(subnav, CONTENT_SLIDE_OPTIONS),
       elementFadeOut(IOWA.Elements.Footer, {duration: 0}) // Hide instantly.
     ]);
   }
@@ -207,9 +209,11 @@ IOWA.PageAnimation = (function() {
     }
     var slideInAnimation = section ? sectionSlideIn(section) : contentSlideIn();
     var mastheadMeta = IOWA.Elements.Main.querySelector('.masthead-meta');
+    var subnav = IOWA.Elements.Main.querySelector('.subpage__nav');
     return new GroupEffect([
       slideInAnimation,
-      elementFadeIn(mastheadMeta, CONTENT_SLIDE_OPTIONS)
+      elementFadeIn(mastheadMeta, CONTENT_SLIDE_OPTIONS),
+      elementFadeIn(subnav, CONTENT_SLIDE_OPTIONS)
     ], CONTENT_SLIDE_OPTIONS);
   }
 
@@ -220,9 +224,11 @@ IOWA.PageAnimation = (function() {
    */
   function pageSlideIn() {
     var mastheadMeta = IOWA.Elements.Main.querySelector('.masthead-meta');
+    var subnav = IOWA.Elements.Main.querySelector('.subpage__nav');
     return new GroupEffect([
       contentSlideIn(),
-      elementFadeIn(mastheadMeta, CONTENT_SLIDE_OPTIONS)
+      elementFadeIn(mastheadMeta, CONTENT_SLIDE_OPTIONS),
+      elementFadeIn(subnav, CONTENT_SLIDE_OPTIONS)
     ], CONTENT_SLIDE_OPTIONS);
   }
 
