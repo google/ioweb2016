@@ -344,6 +344,10 @@ IOWA.Elements = (function() {
       }
     };
 
+    template.toggleDrawer = function() {
+      this.$.appdrawer.toggle();
+    };
+
     // template.onCountdownTimerThreshold = function(e, detail) {
     //   if (detail.label === 'Ended') {
     //     this.countdownEnded = true;
@@ -443,11 +447,6 @@ IOWA.Elements = (function() {
       }
     };
 
-    template.initDrawer = function() {
-      this.$.appdrawer.classList.toggle('mobile', this.app.isPhoneSize);
-      this.$.appdrawer.updateStyles(); // Show app drawer scrim on mobile.
-    };
-
     template.initFabScroll = function() {
       this.$.fab.style.top = ''; // clear out old styles.
 
@@ -525,7 +524,7 @@ IOWA.Elements = (function() {
     };
 
     template.closeDrawer = function() {
-      this.$.appdrawer.closeDrawer();
+      this.$.appdrawer.close();
     };
 
     template.addEventListener('dom-change', updateElements);
@@ -535,7 +534,6 @@ IOWA.Elements = (function() {
       IOWA.Elements.NavPaperTabs.style.pointerEvents = '';
 
       this.initFabScroll(); // init FAB scrolling behavior.
-      this.initDrawer();
     });
 
     template.addEventListener('page-transition-start', function() {

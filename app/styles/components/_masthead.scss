@@ -52,23 +52,21 @@
   }
 }
 
-paper-drawer-panel {
-  [drawer] {
-    font-size: 14px;
-    font-weight: 500;
+#appdrawer {
+  font-size: 14px;
+  font-weight: 500;
 
-    paper-toolbar {
-      background-color: $color-cyan-300;
+  paper-toolbar {
+    background-color: $color-cyan-300;
 
-      .bottom {
-        font-size: 14px;
-        line-height: 20px;
-        color: #1E535A;
-      }
+    .bottom {
+      font-size: 14px;
+      line-height: 20px;
+      color: #1E535A;
+    }
 
-      .io-logo {
-        background-image: url('../images/io-logo-white.png');
-      }
+    .io-logo {
+      background-image: url('../images/io-logo-white.png');
     }
   }
   #drawer-menu {
