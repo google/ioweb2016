@@ -26,17 +26,6 @@ $name: 'page-schedule';
 
 ##{$name} {
 
-.masthead-container {
-  padding-left: 0;
-  padding-bottom: 0;
-}
-
-.masthead-meta {
-  h1 {
-    margin-bottom: $desktopKeyline;
-  }
-}
-
 .meta-filter {
   @include keyline-16();
 }
@@ -429,14 +418,10 @@ iron-icon[icon="schedule"] {
 }
 
 @media (min-width: 769px) {
-  .masthead-meta {
-    paper-tabs, h1 {
-      @include keyline-24l();
-    }
-    paper-tabs {
-      // Justify tab text with title by counterattacking paper-tab padding.
-      margin-left: -12px;
-    }
+  #subpage-tabs {
+    @include keyline-24l();
+    // Justify tab text with title by counterattacking paper-tab padding.
+    margin-left: -12px;
   }
   .meta-filter {
     @include keyline-24();
@@ -444,10 +429,8 @@ iron-icon[icon="schedule"] {
 }
 
 @media (min-width: 961px) {
-  .masthead-meta {
-    paper-tabs, h1 {
-      @include keyline-32l();
-    }
+  #subpage-tabs {
+    @include keyline-32l();
   }
   .meta-filter {
     @include keyline-32();
@@ -455,10 +438,8 @@ iron-icon[icon="schedule"] {
 }
 
 @media (min-width: 1305px) {
-  .masthead-meta {
-    paper-tabs, h1 {
-      @include keyline-40l();
-    }
+  #subpage-tabs {
+    @include keyline-40l();
   }
   .meta-filter {
     @include keyline-40();
@@ -466,10 +447,8 @@ iron-icon[icon="schedule"] {
 }
 
 @media (min-width: 1501px) {
-  .masthead-meta {
-    paper-tabs, h1 {
-      @include keyline-48l();
-    }
+  #subpage-tabs {
+    @include keyline-48l();
   }
   .meta-filter {
     @include keyline-48();

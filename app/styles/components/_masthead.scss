@@ -264,12 +264,19 @@ paper-tabs {
 #subpage-tabs {
   height: $navbarHeight;
 
-  paper-tab:hover {
-    border-bottom: 2px solid currentcolor;
+  paper-tab {
+    text-transform: uppercase;
+
+    &:hover {
+      border-bottom: 2px solid currentcolor;
+    }
   }
 }
 
 @media (max-width: $phone-breakpoint-max) {
+  .masthead-container {
+    min-height: 268px;
+  }
   #navbar {
     height: $navbarHeightMobile;
 
