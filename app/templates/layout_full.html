@@ -224,42 +224,44 @@ limitations under the License.
                   query-matches="{{app.isDesktopSize}}"></iron-media-query>
 
 <app-drawer id="appdrawer" swipe-open="[[app.isPhoneSize]]">
-  <paper-toolbar class="tall">
-    <div class="top io-logo" flex></div>
-    <div class="top">
-      <img class="profilepic" hidden>
+  <div layout vertical class="drawer-container">
+    <paper-toolbar class="tall">
+      <div class="top io-logo" flex></div>
+      <div class="top">
+        <img class="profilepic" hidden>
+      </div>
+      <div class="bottom">
+        <div>May 18 - 20, 2016</div>
+        <div>Mountain View, CA</div>
+      </div>
+    </paper-toolbar>
+    <div class="drawer-panel-content" flex>
+      <!-- TODO: move to paper-listbox and remove import -->
+      <paper-menu id="drawer-menu" selected="{{selectedPage}}"
+                  attr-for-selected="label"
+                  on-iron-activate="closeDrawer">
+        <a href="./" label="home" data-ajax-link data-anim-drawer
+           data-track-link="nav-drawer-home">
+          <paper-item>Home</paper-item>
+        </a>
+        <a href="schedule#day1" label="schedule" data-ajax-link
+           data-anim-drawer data-track-link="nav-drawer-schedule">
+          <paper-item>Schedule</paper-item>
+        </a>
+        <a href="onsite" label="onsite" data-ajax-link data-anim-drawer
+           data-track-link="nav-drawer-onsite">
+          <paper-item>Attending</paper-item>
+        </a>
+        <a href="offsite" label="offsite" data-ajax-link data-anim-drawer
+           data-track-link="nav-drawer-offsite">
+          <paper-item>I/O Extended</paper-item>
+        </a>
+        <a href="faq" label="faq" data-ajax-link data-anim-drawer
+           data-track-link="nav-drawer-faq">
+          <paper-item>FAQ</paper-item>
+        </a>
+      </paper-menu>
     </div>
-    <div class="bottom">
-      <div>May 18 - 20, 2016</div>
-      <div>Mountain View, CA</div>
-    </div>
-  </paper-toolbar>
-  <div class="drawer-panel-content" flex>
-    <!-- TODO: move to paper-listbox and remove import -->
-    <paper-menu id="drawer-menu" selected="{{selectedPage}}"
-                attr-for-selected="label"
-                on-iron-activate="closeDrawer">
-      <a href="./" label="home" data-ajax-link data-anim-drawer
-         data-track-link="nav-drawer-home">
-        <paper-item>Home</paper-item>
-      </a>
-      <a href="schedule#day1" label="schedule" data-ajax-link
-         data-anim-drawer data-track-link="nav-drawer-schedule">
-        <paper-item>Schedule</paper-item>
-      </a>
-      <a href="onsite" label="onsite" data-ajax-link data-anim-drawer
-         data-track-link="nav-drawer-onsite">
-        <paper-item>Attending</paper-item>
-      </a>
-      <a href="offsite" label="offsite" data-ajax-link data-anim-drawer
-         data-track-link="nav-drawer-offsite">
-        <paper-item>I/O Extended</paper-item>
-      </a>
-      <a href="faq" label="faq" data-ajax-link data-anim-drawer
-         data-track-link="nav-drawer-faq">
-        <paper-item>FAQ</paper-item>
-      </a>
-    </paper-menu>
   </div>
 </app-drawer>
 
