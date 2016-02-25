@@ -15,6 +15,7 @@
  */
 
 IOWA.CountdownTimer.MOBILE_BREAKPOINT = 501;
+IOWA.CountdownTimer.MOBILE_MAX_BREAKPOINT = 768;
 IOWA.CountdownTimer.TABLET_BREAKPOINT = 960;
 IOWA.CountdownTimer.DESKTOP_BREAKPOINT = 1400;
 IOWA.CountdownTimer.XLARGE_BREAKPOINT = 4000;
@@ -23,10 +24,11 @@ IOWA.CountdownTimer.Core = function(targetDate, elem) {
   this.targetDate = targetDate;
   this.containerDomElement = elem;
 
-  this.quality = 240;
   this.isPlaying = false;
+  this.isMobile = (this.containerDomElement.offsetWidth <= IOWA.CountdownTimer.MOBILE_MAX_BREAKPOINT);
   this.firstRun = true;
   this.introRunning = false;
+  this.quality = this.isMobile ? 140 : 240;
   this.maxWidth = IOWA.CountdownTimer.TABLET_BREAKPOINT;
 
   this.canvasElement = document.createElement('canvas');
@@ -99,6 +101,18 @@ IOWA.CountdownTimer.Core.prototype.pad = function(num) {
 
 IOWA.CountdownTimer.Core.prototype.checkTime = function() {
   var distance = this.unitDistance(this.targetDate, new Date());
+
+  if (this.isMobile && this.firstRun) {
+    this.bands[0].renderFlat();
+    this.bands[1].renderFlat();
+    this.bands[2].renderFlat();
+    this.bands[3].renderFlat();
+    this.bands[4].renderFlat();
+    this.bands[5].renderFlat();
+    this.bands[6].renderFlat();
+    this.bands[7].renderFlat();
+    this.firstRun = false;
+  }
 
   if (this.firstRun || this.lastNumbers.days !== distance.days) {
     this.bands[0].changeShape(this.digits[Math.floor(distance.days / 10)]);
@@ -322,7 +336,7 @@ IOWA.CountdownTimer.Core.prototype.getBandCenter = function(n) {
 };
 
 IOWA.CountdownTimer.Core.prototype.addUnits = function() {
-  var offset = 40;
+  var offset = 42;
   var ctx = this.canvasElement.getContext('2d');
   ctx.save();
   ctx.scale(this.pixelRatio, this.pixelRatio);

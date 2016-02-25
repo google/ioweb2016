@@ -149,13 +149,15 @@ h3 a {
   }
 }
 
+@media (max-width: $phone-breakpoint-max) {
+  .masthead-container {
+    margin-top: -$navbarHeight;
+  }
+}
+
 @media (min-width: $tablet-breakpoint-min) {
   footer {
     margin-top: 128px;
-  }
-
-  .masthead-container {
-    margin-top: -$navbarHeight;
   }
 }
 
