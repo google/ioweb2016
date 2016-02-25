@@ -327,7 +327,7 @@ IOWA.CountdownTimer.Core.prototype.addUnits = function() {
   ctx.save();
   ctx.scale(this.pixelRatio, this.pixelRatio);
   ctx.font = '12px Roboto';
-  ctx.fillStyle = '#BFCBD1';
+  ctx.fillStyle = '#546E7A'; // blue grey 600
   ctx.textAlign = 'center';
 
   ctx.fillText('Days', this.bands[0].center.x + this.layout.radius + this.bandPadding / 2, this.bands[0].center.y + this.layout.radius + offset);
