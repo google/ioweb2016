@@ -1,6 +1,6 @@
 {
-  "name": "Google I/O 2015",
-  "short_name": "I/O 2015",
+  "name": "Google I/O 2016",
+  "short_name": "I/O 2016",
   "start_url": "./?utm_source=web_app_manifest",
   "display": "standalone",
   "icons": [{
@@ -28,11 +28,10 @@
     "sizes": "192x192",
     "type": "image/png"
   }],
-  "chrome_related_applications": [{
-    "platform": "web"
-  }, {
-    "platform": "android",
-    "location": "https://play.google.com/store/apps/details?id=com.google.samples.apps.iosched"
+  "prefer_related_applications": false,
+  "related_applications": [{
+    "platform": "play",
+    "id": "com.google.samples.apps.iosched"
   }],
   "gcm_sender_id": "{{.GCMSenderID}}",
   "gcm_user_visible_only": true
