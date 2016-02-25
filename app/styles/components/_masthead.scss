@@ -56,6 +56,9 @@
   font-size: 14px;
   font-weight: 500;
 
+  .drawer-container {
+    height: 100%;
+  }
   paper-toolbar {
     background-color: $color-cyan-300;
 
@@ -87,6 +90,15 @@
       font-size: inherit;
     }
   }
+}
+
+/**
+ * We need to set `position: absolute` here because <app-header-layout>'s [fit] attribute
+ * has lower specificity than its `:host[has-scrolling-region] { position: relative }`
+ * styling.
+ */
+#headerpanel {
+  position: absolute;
 }
 
 paper-tabs {
