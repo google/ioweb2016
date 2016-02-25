@@ -245,7 +245,7 @@ IOWA.Analytics = IOWA.Analytics || (function(exports) {
     if ('serviceWorker' in navigator) {
       this.trackEvent('serviceworker', 'supported', true);
       this.trackEvent('serviceworker', 'controlled',
-        Boolean(navigator.serviceWorker.controller));
+          Boolean(navigator.serviceWorker.controller));
     } else {
       this.trackEvent('serviceworker', 'supported', false);
     }
