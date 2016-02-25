@@ -92,6 +92,11 @@
   }
 }
 
+/**
+ * We need to set `position: absolute` here because <app-header-layout>'s [fit] attribute
+ * has lower specificity than its `:host[has-scrolling-region] { position: relative }`
+ * styling.
+ */
 #headerpanel {
   position: absolute;
 }
