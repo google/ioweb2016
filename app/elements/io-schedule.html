@@ -78,9 +78,45 @@ Fired when the user toggles bookmarking/removing a session.
     <iron-media-query query="(min-width:1136px)"
         query-matches="{{isDesktopSize}}"></iron-media-query>
 
-    <div class$="card__container {{_computeSideBySideClass(isPhoneSize)}}"
-         layout vertical$="[[isPhoneSize]]" horizontal$="[[!isPhoneSize]]">
-      <div layout vertical flex$="[[!isPhoneSize}}">
+    <!-- <div class$="card__container {{_computeSideBySideClass(isPhoneSize)}}"
+         layout vertical$="[[isPhoneSize]]" horizontal$="[[!isPhoneSize]]"> -->
+
+    <div id="filters" class="card-content bg-bluegrey-50-40" layout horizontal justified>
+      <div class="filter-section">
+        <h4>Tracks</h4>
+        <paper-radio-group allow-empty-selection
+                           on-paper-radio-group-changed="onApplyFilter"
+                           on-iron-deselect="onApplyFilter">
+          <template is="dom-repeat" items="[[sessionThemes]]" as="theme">
+            <paper-radio-button name="[[theme]]">[[theme]]</paper-radio-button>
+          </template>
+        </paper-radio-group>
+      </div>
+      <div class="filter-section">
+        <h4>Types</h4>
+        <paper-radio-group allow-empty-selection
+                           on-paper-radio-group-changed="onApplyFilter"
+                           on-iron-deselect="onApplyFilter">
+          <paper-radio-button name="Live streamed">Live streamed</paper-radio-button>
+          <template is="dom-repeat" items="[[sessionTypes]]" as="type">
+            <paper-radio-button name="[[type]]">[[type]]</paper-radio-button>
+          </template>
+        </paper-radio-group>
+      </div>
+      <div class="filter-section">
+        <h4>Topics</h4>
+        <paper-radio-group allow-empty-selection
+                           on-paper-radio-group-changed="onApplyFilter"
+                           on-iron-deselect="onApplyFilter">
+          <template is="dom-repeat" items="[[sessionTopics]]" as="topic">
+            <paper-radio-button name="[[topic]]">[[topic]]</paper-radio-button>
+          </template>
+        </paper-radio-group>
+      </div>
+    </div>
+
+    <div class="card__container">
+      <div>
 
         <template is="dom-if" if="{{_dayIs(day, 'myschedule')}}">
 
@@ -189,51 +225,6 @@ Fired when the user toggles bookmarking/removing a session.
 
       </div>
 
-      <div class="card__container" layout vertical>
-        <div class="card" hidden$="[[isPhoneSize]]">
-          <div class="card-content">
-            <h4 id="filters-header">Filters</h4>
-          </div>
-          <div class="card-content">
-            <div id="filters">
-              <div class="filter-rows filter-section">
-                <paper-radio-group allow-empty-selection
-                                   on-paper-radio-group-changed="onApplyFilter"
-                                   on-iron-deselect="onApplyFilter">
-                  <template is="dom-repeat" items="[[sessionThemes]]" as="theme">
-                    <paper-radio-button name="[[theme]]">[[theme]]</paper-radio-button>
-                  </template>
-                </paper-radio-group>
-              </div>
-              <div class="filter-rows filter-section">
-                <paper-radio-group allow-empty-selection
-                                   on-paper-radio-group-changed="onApplyFilter"
-                                   on-iron-deselect="onApplyFilter">
-                  <template is="dom-repeat" items="[[sessionTypes]]" as="type">
-                    <paper-radio-button name="[[type]]">[[type]]</paper-radio-button>
-                  </template>
-                </paper-radio-group>
-              </div>
-              <div class="filter-rows filter-section">
-                <paper-radio-group allow-empty-selection
-                                   on-paper-radio-group-changed="onApplyFilter"
-                                   on-iron-deselect="onApplyFilter">
-                  <template is="dom-repeat" items="[[sessionTopics]]" as="topic">
-                    <paper-radio-button name="[[topic]]">[[topic]]</paper-radio-button>
-                  </template>
-                </paper-radio-group>
-              </div>
-              <div class="filter-rows filter-section">
-                <paper-radio-group allow-empty-selection
-                                   on-paper-radio-group-changed="onApplyFilter"
-                                   on-iron-deselect="onApplyFilter">
-                  <paper-radio-button name="Live streamed">Live streamed</paper-radio-button>
-                </paper-radio-group>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </template>
   <script>

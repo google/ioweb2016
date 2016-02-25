@@ -106,7 +106,6 @@ iron-icon[icon="schedule"] {
 
 .schedule-time {
   font-size: 14px;
-  color: $color-link-grey;
   margin-right: 80px;
   width: 80px;
   white-space: nowrap;
@@ -406,44 +405,6 @@ iron-icon[icon="schedule"] {
     .speaker__card {
       width: 50%;
     }
-  }
-}
-
-@media (min-width: 769px) {
-  #subpage-tabs {
-    @include keyline-24l();
-    // Justify tab text with title by counterattacking paper-tab padding.
-    margin-left: -12px;
-  }
-  .meta-filter {
-    @include keyline-24();
-  }
-}
-
-@media (min-width: 961px) {
-  #subpage-tabs {
-    @include keyline-32l();
-  }
-  .meta-filter {
-    @include keyline-32();
-  }
-}
-
-@media (min-width: 1305px) {
-  #subpage-tabs {
-    @include keyline-40l();
-  }
-  .meta-filter {
-    @include keyline-40();
-  }
-}
-
-@media (min-width: 1501px) {
-  #subpage-tabs {
-    @include keyline-48l();
-  }
-  .meta-filter {
-    @include keyline-48();
   }
 }
 

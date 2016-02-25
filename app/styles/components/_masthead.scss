@@ -310,6 +310,11 @@ paper-tabs {
   .masthead-container {
     @include keyline-24l();
   }
+  #subpage-tabs {
+    @include keyline-24l();
+    // Justify tab text with title by counterattacking paper-tab padding.
+    margin-left: -12px;
+  }
 }
 
 @media (min-width: 961px) {
@@ -317,6 +322,10 @@ paper-tabs {
 
   .masthead-container {
     max-width: $container-max-width;
+    @include keyline-32l();
+  }
+
+  #subpage-tabs {
     @include keyline-32l();
   }
 }
@@ -328,6 +337,10 @@ paper-tabs {
     max-width: $container-max-width;
     @include keyline-40l();
   }
+
+  #subpage-tabs {
+    @include keyline-40l();
+  }
 }
 
 @media (min-width: 1501px) {
@@ -335,6 +348,10 @@ paper-tabs {
 
   .masthead-container {
     max-width: $container-max-width;
+    @include keyline-48l();
+  }
+
+  #subpage-tabs {
     @include keyline-48l();
   }
 }
