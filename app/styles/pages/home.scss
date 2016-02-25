@@ -76,6 +76,10 @@ h3 a {
   }
 }
 
+.card__video {
+  background-color: $color-bluegrey-700;
+}
+
 .io__hash {
   background-size: 60%;
   position: relative;
@@ -118,6 +122,13 @@ h3 a {
   font-weight: 500;
 }
 
+@media (min-width: $phone-breakpoint-min-mid) and (max-width: $phone-breakpoint-max) {
+  .social-card h2 {
+    font-size: 32px;
+    line-height: 44px;
+  }
+}
+
 #photo_list {
   overflow: hidden;
 
@@ -137,7 +148,7 @@ h3 a {
   }
 }
 
-@media (max-width: 960px) {
+@media (max-width: $phone-breakpoint-max) {
   .io__hash {
     background-color: #fff;
   }

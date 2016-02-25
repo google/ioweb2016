@@ -51,7 +51,7 @@
 
         &:hover,
         &:focus {
-          color: $color-bluegrey-800;
+          color: $color-cyan-card-link-hover;
         }
       }
     }
@@ -227,3 +227,34 @@
     }
   }
 }
+
+@media (max-width: $phone-breakpoint-max) {
+  .card {
+    h3,
+    .card__sub-title {
+      font-size: 34px;
+      line-height: 40px;
+    }
+    h5,
+    p {
+      font-size: 24px;
+      line-height: 32px;
+    }
+  }
+}
+
+@media (max-width: $phone-breakpoint-mid - 1) {
+  .card {
+    h3,
+    .card__sub-title {
+      font-size: 24px;
+      line-height: 32px;
+    }
+    h5,
+    p {
+      font-size: 16px;
+      line-height: 24px;
+    }
+  }
+}
+
