@@ -46,6 +46,7 @@ IOWA.Analytics = IOWA.Analytics || (function(exports) {
     this.trackPerfEvent('WebComponentsReady', 'Polymer');
 
     this.trackNotificationPermission();
+    this.trackServiceWorkerControlled();
 
     var matches = exports.location.search.match(/utm_error=([^&]+)/);
     if (matches) {
@@ -233,6 +234,20 @@ IOWA.Analytics = IOWA.Analytics || (function(exports) {
           thisAnalytics.trackEvent('notifications', 'change', this.status);
         };
       });
+    }
+  };
+
+  /**
+   * Tracks whether service workers are supported in the current browser,
+   * as well as whether the current page load is controlled by a service worker.
+   */
+  Analytics.prototype.trackServiceWorkerControlled = function() {
+    if ('serviceWorker' in navigator) {
+      this.trackEvent('serviceworker', 'supported', true);
+      this.trackEvent('serviceworker', 'controlled',
+          Boolean(navigator.serviceWorker.controller));
+    } else {
+      this.trackEvent('serviceworker', 'supported', false);
     }
   };
 
