@@ -289,9 +289,7 @@ class IOFirebase {
    * @return {Promise} Promise to track completion.
    */
   markSessionRated(sessionUUID) {
-    return this._setFirebaseUserData(`feedback/${sessionUUID}`, {
-      timestamp: Date.now() + this.clockOffset
-    });
+    return this._setFirebaseUserData(`feedback/${sessionUUID}`, true);
   }
 
   /**

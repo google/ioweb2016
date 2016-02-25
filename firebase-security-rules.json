@@ -19,7 +19,7 @@
         },
         "feedback": {
           "$session_id": {
-            ".validate": "!data.exists() || newData.child('timestamp').val() > data.child('timestamp').val()"
+            ".validate": "newData.val() === true"
           }
         }
       }
