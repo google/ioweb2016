@@ -289,11 +289,14 @@ paper-progress {
   margin: 0;
 
   paper-icon-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: absolute;
     z-index: 10;
     padding: 0;  // paper-dialog override.
-    margin: 0;  // paper-dialog override.
-    color: white;
+    margin: 0 !important;  // paper-dialog override.
+    color: #fff;
     top: $mobileKeyline;
     left: $mobileKeyline;
 
