@@ -70,7 +70,14 @@ IOWA.Elements = (function() {
     IOWA.Elements.Footer = footer;
     IOWA.Elements.GoogleSignIn = signin;
     IOWA.Elements.LazyPages = lazyPages;
-    IOWA.Elements.ScrollContainer = IOWA.Elements.Template.$.header.scroller;
+
+    Object.defineProperty(IOWA.Elements, 'ScrollContainer', {
+      get: function() {
+        var header = IOWA.Elements.Template.$.header;
+        return header.scroller || header.scrollTarget;
+      },
+      enumerable: true
+    });
 
     // Kickoff a11y helpers for elements
     IOWA.A11y.init();
