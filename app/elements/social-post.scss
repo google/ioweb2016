@@ -56,6 +56,13 @@ a {
   font-weight: 500;
 }
 
+@media (max-width: $phone-breakpoint-max) {
+  .social-card h2 {
+    font-size: 32px;
+    line-height: 44px;
+  }
+}
+
 @media (min-width: $tablet-breakpoint-min) {
   header {
     margin-bottom: $tabletKeyline;

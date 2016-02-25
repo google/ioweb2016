@@ -78,6 +78,8 @@ iron-list {
 }
 
 .card__video {
+  background: $color-bluegrey-700;
+
   iron-image {
     border-radius: inherit;
     width: 100%;

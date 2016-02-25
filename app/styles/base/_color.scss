@@ -51,9 +51,11 @@ $color-grey4: #414141;
 
 $color-light-grey-border: $color-grey-50;
 $color-link-grey: $color-grey-100;
-$color-cyan-card-link: #025761;
 
 $color-text: rgba(0,0,0,0.70);
 $color-body: $color-grey-50;
 $color-session-detail-light-grey: #BDBDBD;
+
+$color-cyan-card-link: $color-text;
+$color-cyan-card-link-hover: #297376;
 
