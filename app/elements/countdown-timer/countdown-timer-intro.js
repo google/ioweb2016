@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+IOWA.CountdownTimer.SHOW_FOR = 1500; // # ms for intro to stay visible.
+
 IOWA.CountdownTimer.Intro = function(canvas, radius, center, quality, parent) {
   this.parent = parent;
 
@@ -66,7 +68,7 @@ IOWA.CountdownTimer.Intro.prototype.drawShapes = function() {
       this.parent.bands[this.digit].isPlaying = true;
       this.parent.bands[this.digit].fade('in');
       this.firstRun = false;
-      setTimeout(this.outro.bind(this), 2000);
+      setTimeout(this.outro.bind(this), IOWA.CountdownTimer.SHOW_FOR);
     }
     this.parent.bands[this.digit].update();
   } else {
