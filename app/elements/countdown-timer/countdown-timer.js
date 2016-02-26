@@ -74,7 +74,7 @@ IOWA.CountdownTimer.Core.prototype.detachEvents = function() {
   this.containerDomElement.removeEventListener('mousemove', this.onMouseMove);
 };
 
-IOWA.CountdownTimer.Core.prototype.start = function(opt_withIntro) {
+IOWA.CountdownTimer.Core.prototype.start = function(opt_skipIntro) {
   this.lastNumbers = this.unitDistance(this.targetDate, new Date());
 
   this.getFormat();
@@ -85,8 +85,7 @@ IOWA.CountdownTimer.Core.prototype.start = function(opt_withIntro) {
 
   this.getSeparators();
 
-  var doIntro = typeof opt_withIntro === 'undefined' ? true : opt_withIntro;
-  if (doIntro) {
+  if (!opt_skipIntro) {
     this.launchIntro();
   }
   this.play();

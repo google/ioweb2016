@@ -65,7 +65,7 @@ Fired when the intro sequence starts or finishes.
   </template>
   <script>
     (function() {
-      var _runIntro = true; // Only run the "I/O" intro once.
+      var _skipIntro = false; // Only run the "I/O" intro once.
 
       Polymer({
         is: 'countdown-timer',
@@ -105,8 +105,8 @@ Fired when the intro sequence starts or finishes.
          * Starts the timer.
          */
         start: function() {
-          this.countdownController.start(_runIntro);
-          _runIntro = false;
+          this.countdownController.start(_skipIntro);
+          _skipIntro = true;
         }
       });
     }());
