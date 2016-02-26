@@ -48,7 +48,7 @@ IOWA.CountdownTimer.Band = function(canvasElement, radius, center, quality, pare
     {hex: '#5C6BC0', ratio: 0, size: 0, oldSize: 0, active: false, tween: null},
     {hex: '#26C6DA', ratio: 0, size: 0, oldSize: 0, active: false, tween: null},
     {hex: '#8cf2f2', ratio: 0, size: 0, oldSize: 0, active: false, tween: null},
-    {hex: '#CFD8DC', ratio: 0, size: 0, oldSize: 0, active: false, tween: null}
+    {hex: '#78909C', ratio: 0, size: 0, oldSize: 0, active: false, tween: null}
   ];
 };
 
