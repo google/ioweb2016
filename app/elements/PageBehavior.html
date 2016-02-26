@@ -53,6 +53,19 @@ IOBehaviors.PageBehavior = {
     this.unlisten(document.body, 'page-transition-done', 'onPageTransitionDone');
   },
 
+  checkOpenDialogVideo: function(e) {
+    e.stopPropagation();
+    switch (e.keyCode) {
+      case 13:
+      case 32:
+        Polymer.dom(e).rootTarget.click();
+        break;
+
+      default:
+        break;
+    }
+  },
+
   closeDialogVideo: function(e) {
     this.set('app.fullscreenVideoActive', false);
   },
