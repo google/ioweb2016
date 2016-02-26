@@ -40,9 +40,8 @@ limitations under the License.
   <div class="masthead-container" layout horizontal end>
     <div class="masthead-meta">
       <div id="countdown-container" fit>
-        <countdown-timer id="ctimer"
-            date="[[date]]"
-            role="timer"></countdown-timer>
+        <countdown-timer id="ctimer" date="[[date]]" role="timer"
+            on-countdown-intro="_onIntro"></countdown-timer>
       </div>
     </div>
   </div>
@@ -255,6 +254,16 @@ limitations under the License.
       _cycleSocialPostsInterval = window.setInterval(function() {
         this.$.social_list.selectNext();
       }.bind(this), SOCIAL_CYCLE);
+    },
+
+    _onIntro: function(e, detail) {
+      e.stopPropagation();
+      var logo = IOWA.Elements.Nav.querySelector('.io-logo');
+      if (detail.start) {
+        logo.classList.remove('active');
+      } else if (detail.done) {
+        logo.classList.add('active');
+      }
     }
 
   });

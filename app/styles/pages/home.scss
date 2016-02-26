@@ -25,6 +25,16 @@ $name: 'page-home';
 
 ##{$name} {
 
+#navbar {
+  .io-logo {
+    opacity: 0;
+
+    &.active {
+      opacity: 1;
+    }
+  }
+}
+
 .masthead-container {
   max-width: 100% !important;
   padding-bottom: (1 / 2) * 100%;
