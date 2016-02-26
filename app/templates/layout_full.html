@@ -252,9 +252,9 @@ limitations under the License.
           <a href="onsite" data-ajax-link data-anim-drawer
              data-track-link="nav-drawer-onsite">Attending</a>
         </paper-item>
-        <paper-item label="offsite" >
-          <a href="offsite" data-ajax-link data-anim-drawer
-             data-track-link="nav-drawer-offsite">I/O Extended</a>
+        <paper-item label="extended">
+          <a href="extended" data-ajax-link data-anim-drawer
+             data-track-link="nav-drawer-extended">I/O Extended</a>
         </paper-item>
         <paper-item label="faq">
           <a href="faq" data-ajax-link data-anim-drawer
@@ -297,8 +297,8 @@ limitations under the License.
              data-transition="page-slide-transition"
              layout horizontal center>Attending</a>
         </paper-tab>
-        <paper-tab label="offsite" role="">
-          <a href="offsite" data-ajax-link data-track-link="nav-offsite"
+        <paper-tab label="extended" role="">
+          <a href="extended" data-ajax-link data-track-link="nav-extended"
              data-transition="page-slide-transition"
              layout horizontal center>I/O Extended</a>
         </paper-tab>
@@ -371,7 +371,7 @@ limitations under the License.
       <template is="dom-if" name="onsite" restamp>
         <io-onsite-page app="[[app]]" tabindex="-1"></io-onsite-page>
       </template>
-      <template is="dom-if" name="offsite" restamp>
+      <template is="dom-if" name="extended" restamp>
         <io-extended-page app="[[app]]" tabindex="-1"></io-extended-page>
       </template>
       <template is="dom-if" name="form" restamp>
