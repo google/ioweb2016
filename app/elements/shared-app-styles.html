@@ -79,6 +79,17 @@ limitations under the License.
       .video_overlay-dialog paper-icon-button {
         --paper-icon-button-ink-color: #fff;
       }
+
+      /* Off screen text accessibilty to screen reader but not visible. */
+      .-off-screen {
+        clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
+        clip: rect(1px, 1px, 1px, 1px);
+        height: 1px;
+        margin: 0;
+        overflow: hidden;
+        position: absolute !important;
+        width: 1px;
+      }
     </style>
   </template>
 </dom-module>
