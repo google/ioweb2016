@@ -147,8 +147,9 @@ limitations under the License.
 
         </div>
         <div class="card-content box card--bottom-right-clip fullbleed io__hash bg-bluegrey-50-40">
-          <template is="dom-if" if="[[app.isDesktopSize]]">
+          <template is="dom-if" if="[[_loadVideo]]">
             <card-video id="card-video"
+                src="/io2016/videos/hashtag-800.mp4"
                 href="https://twitter.com/search?q=io2016"
                 text="Search #io2016 on Twitter"></card-video>
           </template>
@@ -181,6 +182,11 @@ limitations under the License.
       date: {
         type: String,
         value: 'May 18 2016 09:00:00 GMT-0700 (PDT)'
+      },
+
+      _loadVideo: {
+        type: Boolean,
+        computed: '_computeLoadVideo(app.isDesktopSize, app.pageTransitionDone)'
       }
     },
 
@@ -204,12 +210,6 @@ limitations under the License.
 
       //this._cycleSocialPosts(); TODO: add back after phase 1.
       this._cyclePhotos();
-
-      var video = Polymer.dom(this.root).querySelector('card-video');
-      if (video) {
-        video.src = '/io2016/videos/hashtag-800.mp4'
-      }
-
     },
 
     // Manage screen reader accessibility for offscreen carousel
@@ -224,6 +224,10 @@ limitations under the License.
 
       photo.setAttribute('aria-hidden', true);
       return;
+    },
+
+    _computeLoadVideo: function(isDesktopSize, pageTransitionDone) {
+      return isDesktopSize && pageTransitionDone;
     },
 
     _onSetReminder: function(e, detail) {
