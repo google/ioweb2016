@@ -60,7 +60,7 @@ IOWA.CountdownTimer.Intro.prototype.drawShapes = function() {
   if (this.count > ((this.radius - this.parent.strokeWeight) - 0.05)) {
     if (this.firstRun) {
       this.parent.bands[this.digit].aShift *= -1;
-      this.parent.bands[this.digit].colors[0].hex = '#CFD8DC';
+      this.parent.bands[this.digit].colors[0].hex = '#78909C';
       this.parent.bands[this.digit].oldShape = this.parent.bands[this.digit].digits[0];
       this.parent.bands[this.digit].currentShape = this.parent.bands[this.digit].digits[0];
       this.parent.bands[this.digit].isPlaying = true;
@@ -76,7 +76,7 @@ IOWA.CountdownTimer.Intro.prototype.drawShapes = function() {
     // draw circle1
     ctx.beginPath();
     ctx.arc(this.circle.x + this.center.x, this.circle.y + this.center.y, this.radius, 0, 2 * Math.PI, false);
-    ctx.fillStyle = '#CFD8DC';
+    ctx.fillStyle = '#78909C';
     ctx.fill();
 
     // draw circle2
@@ -100,7 +100,7 @@ IOWA.CountdownTimer.Intro.prototype.drawShapes = function() {
       ctx.lineTo(this.rectangles[i][k].x * this.radius + this.center.x, this.rectangles[i][k].y * this.radius + this.center.y);
     }
     ctx.lineTo(this.rectangles[i][0].x * this.radius + this.center.x, this.rectangles[i][0].y * this.radius + this.center.y);
-    ctx.fillStyle = '#CFD8DC';
+    ctx.fillStyle = '#78909C';
     ctx.fill();
   }
 

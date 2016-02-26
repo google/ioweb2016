@@ -341,7 +341,7 @@ IOWA.CountdownTimer.Core.prototype.addUnits = function() {
   ctx.save();
   ctx.scale(this.pixelRatio, this.pixelRatio);
   ctx.font = '12px Roboto';
-  ctx.fillStyle = '#546E7A'; // blue grey 600
+  ctx.fillStyle = '#78909C'; // blue grey 400
   ctx.textAlign = 'center';
 
   ctx.fillText('Days', this.bands[0].center.x + this.layout.radius + this.bandPadding / 2, this.bands[0].center.y + this.layout.radius + offset);
@@ -363,7 +363,7 @@ IOWA.CountdownTimer.Core.prototype.addSeparators = function() {
     ctx.moveTo(this.separators[i].x, this.separators[i].y);
     ctx.lineTo(this.separators[i].x + this.separators[i].w, this.separators[i].y + this.separators[i].h);
     ctx.lineWidth = this.strokeWeight;
-    ctx.strokeStyle = '#CFD8DC';
+    ctx.strokeStyle = '#78909C';
     ctx.lineCap = 'round';
     ctx.stroke();
   }
