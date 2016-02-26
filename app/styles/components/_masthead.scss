@@ -27,6 +27,11 @@
 }
 
 .masthead {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+
   paper-toolbar {
     .io-logo {
       margin-top: $mobileKeyline / 2;
@@ -49,6 +54,16 @@
 
   h1 {
     color: $color-bluegrey-600;
+  }
+}
+
+#mainScrollingRegion {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-top: $navbarHeight;
+
+  &.smoothscroll {
+    scroll-behavior: smooth;
   }
 }
 
@@ -92,14 +107,6 @@
   }
 }
 
-/**
- * We need to set `position: absolute` here because <app-header-layout>'s [fit] attribute
- * has lower specificity than its `:host[has-scrolling-region] { position: relative }`
- * styling.
- */
-#headerpanel {
-  position: absolute;
-}
 
 paper-tabs {
   paper-tab {
@@ -282,6 +289,10 @@ paper-tabs {
     paper-icon-button[focused] {
       background: transparent;
     }
+  }
+
+  #mainScrollingRegion {
+    padding-top: $navbarHeightMobile;
   }
 }
 
