@@ -16,35 +16,34 @@ limitations under the License.
 
 <link rel="import" href="shared-app-styles.html">
 
-
 <dom-module id="card-video">
-  <style include="shared-app-styles">
-    :host {
-      background-size: 60%;
-      display: block;
-      height: 100%;
-      position: relative;
-    }
-    a {
-      display: block;
-      height: 100%;
-      overflow: hidden;
-      width: 100%;
-    }
-    video {
-      height: 101%;
-      margin: -1px 0 0 -1px;
-      width: 101%;
-    }
-  </style>
-
   <template>
+    <style include="shared-app-styles">
+      :host {
+        background-size: 60%;
+        display: block;
+        height: 100%;
+        position: relative;
+      }
+      a {
+        display: block;
+        height: 100%;
+        overflow: hidden;
+        width: 100%;
+      }
+      video {
+        height: 101%;
+        margin: -1px 0 0 -1px;
+        width: 101%;
+      }
+    </style>
+
     <a href$="{{href}}" target="_blank">
       <span class="-off-screen">{{text}}</span>
-      <video id="card-video" src$="{{src}}" on-canplaythrough="play" on-mouseover="play"></video>
+      <video id="card-video" src$="{{src}}"
+             on-canplaythrough="play" on-mouseover="play"></video>
     </a>
   </template>
-
   <script>
     (function () {
       'use strict';
@@ -77,20 +76,11 @@ limitations under the License.
           text: {
             type: String,
             value: 'Search #io2016 on Twitter'
-          },
-
-          /**
-           * True if on mobile.
-           */
-          mobile: {
-            type: Boolean,
-            value: false
-          },
+          }
         },
 
         play: function() {
           var video = this.$['card-video'];
-
           if (video.paused) {
             video.play();
           }
