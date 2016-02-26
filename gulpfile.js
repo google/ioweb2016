@@ -125,9 +125,9 @@ gulp.task('clean', 'Remove built app', ['clear'], function() {
 // Frontend prod build tasks
 
 gulp.task('vulcanize', 'Vulcanize all polymer elements', [
-  'vulcanize-elements'
+  'vulcanize-elements',
   // 'vulcanize-extended-elements',
-  // 'vulcanize-gadget-elements'
+  'vulcanize-gadget-elements'
 ]);
 
 gulp.task('copy-assets', false, function() {
@@ -151,6 +151,7 @@ gulp.task('copy-assets', false, function() {
     IOWA.appDir + '/styles/pages/upgrade.css',
     IOWA.appDir + '/styles/pages/permissions.css',
     IOWA.appDir + '/styles/pages/error.css',
+    IOWA.appDir + '/videos/*',
     IOWA.appDir + '/elements/**/images/*',
     IOWA.appDir + '/bower_components/webcomponentsjs/webcomponents-lite.min.js',
     IOWA.appDir + '/bower_components/webcomponentsjs/webcomponents.min.js',
