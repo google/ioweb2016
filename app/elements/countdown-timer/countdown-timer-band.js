@@ -124,6 +124,8 @@ IOWA.CountdownTimer.Band.prototype.update = function() {
   var ctx = this.canvasElement.getContext('2d');
   ctx.save();
   ctx.scale(this.parent.pixelRatio, this.parent.pixelRatio);
+  ctx.lineWidth = this.parent.strokeWeight;
+  ctx.lineCap = 'round';
 
   var overClear = this.parent.pixelRatio * 2;
   ctx.clearRect(
@@ -133,14 +135,9 @@ IOWA.CountdownTimer.Band.prototype.update = function() {
     (this.radius * 2) + (overClear * 2)
   );
 
-  var byColorCommands = {};
-  var color;
+  var lastColor;
 
   for (var i = 0; i < this.quality; i++) {
-    var inc = i;
-
-    inc = Math.floor(inc);
-
     if (this.digits[0].points.length < i) {
       continue;
     }
@@ -152,42 +149,29 @@ IOWA.CountdownTimer.Band.prototype.update = function() {
     var x2 = this.radius * (this.oldShape.points[next_inc].x + (this.currentShape.points[next_inc].x - this.oldShape.points[next_inc].x) * this.posShift) + this.center.x;
     var y2 = this.radius * (this.oldShape.points[next_inc].y + (this.currentShape.points[next_inc].y - this.oldShape.points[next_inc].y) * this.posShift) + this.center.y;
 
-    var ratio;
-
-    ratio = (i + this.strokeOffset) / this.quality;
+    var ratio = (i + this.strokeOffset) / this.quality;
     if ((i + this.strokeOffset) > this.quality) {
       ratio = (i + this.strokeOffset - this.quality) / this.quality;
     }
+    var newColor = this.getColor(ratio);
 
-    color = this.getColor(ratio);
-    byColorCommands[color] = byColorCommands[color] || [];
-    byColorCommands[color].push({
-      x: x,
-      y: y,
-      x2: x2,
-      y2: y2
-    });
-  }
-
-  ctx.lineWidth = this.parent.strokeWeight;
-  ctx.lineCap = 'round';
-
-  var commands;
-  var command;
-  for (color in byColorCommands) {
-    if (byColorCommands.hasOwnProperty(color)) {
-      commands = byColorCommands[color];
-
-      ctx.strokeStyle = color;
-      for (var j = 0; j < commands.length; j++) {
-        command = commands[j];
-        ctx.beginPath();
-        ctx.moveTo(command.x, command.y);
-        ctx.lineTo(command.x2, command.y2);
+    if (newColor === lastColor) {
+      ctx.lineTo(x2, y2);
+    } else {
+      if (lastColor) {
+        ctx.strokeStyle = lastColor;
         ctx.stroke();
       }
+
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x2, y2);
+
+      lastColor = newColor;
     }
   }
+  ctx.strokeStyle = lastColor;
+  ctx.stroke();
 
   this.strokeOffset -= this.aShift;
   if (this.strokeOffset > this.quality) {
