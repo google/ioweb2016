@@ -75,10 +75,6 @@
   #drawer-menu {
     padding: 0;
     color: $color-bluegrey-600;
-
-    a {
-      display: block;
-    }
     .iron-selected {
       background-color: $color-bluegrey-50;
     }
@@ -88,6 +84,10 @@
 
     paper-item {
       font-size: inherit;
+
+      a {
+        line-height: 48px; // make a fill up paper-item
+      }
     }
   }
 }
