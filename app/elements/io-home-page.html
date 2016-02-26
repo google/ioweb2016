@@ -41,8 +41,7 @@ limitations under the License.
     <div class="masthead-meta">
       <div id="countdown-container" fit>
         <countdown-timer id="ctimer" date="[[date]]" role="timer"
-            on-countdown-intro-start="_onIntroStart"
-            on-countdown-intro-done="_onIntroDone"></countdown-timer>
+            on-countdown-intro="_onIntro"></countdown-timer>
       </div>
     </div>
   </div>
@@ -257,14 +256,14 @@ limitations under the License.
       }.bind(this), SOCIAL_CYCLE);
     },
 
-    _onIntroStart: function(e) {
+    _onIntro: function(e, detail) {
       e.stopPropagation();
-      IOWA.Elements.Nav.querySelector('.io-logo').classList.remove('active');
-    },
-
-    _onIntroDone: function(e) {
-      e.stopPropagation();
-      IOWA.Elements.Nav.querySelector('.io-logo').classList.add('active');
+      var logo = IOWA.Elements.Nav.querySelector('.io-logo');
+      if (detail.start) {
+        logo.classList.remove('active');
+      } else if (detail.done) {
+        logo.classList.add('active');
+      }
     }
 
   });
