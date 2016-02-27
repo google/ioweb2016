@@ -1,0 +1,146 @@
+/**
+ * Copyright 2014 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+$name: 'page-onsite';
+
+@import '../base/vars';
+@import '../base/layout';
+@import '../base/breakpoints';
+
+
+##{$name} {
+
+  h5, p {
+    font-size: 16px;
+  }
+
+  h4 {
+    font-size: 24px;
+  }
+
+  .masthead-meta {
+    h1 {
+      margin-bottom: 9px;
+      
+      @media (min-width: $desktop-breakpoint-max) {
+        font-size: 54px;
+      }
+    }
+  }
+  
+  .card-content {   
+    padding-right: 64px;
+    
+    @media (min-width: 1800px) {
+    h5 {
+        font-size: 35px;
+        line-height: 1.3;
+      }
+    }
+    
+    @media (max-width: $tablet-breakpoint-max) {
+      padding-right: 72px;
+    }
+  }
+ 
+  .card__photo {
+    background: transparent url(../images/onsite/io-attending-landscape-FPO.jpg) center center no-repeat;
+    background-size: 100%;
+    padding: 0;
+  }
+  
+  .details {   
+    padding: 40px 0;
+    
+    h5,
+    p {
+      max-width: 656px;
+    }
+  }
+  
+  .details--list-item {
+    display: flex;
+    flex-direction: row;
+    width: 760px;
+    margin: 0 auto;
+    padding: 40px 0;
+  }
+  
+  .detail__title {
+    margin-bottom: 18px;
+  }
+
+  .details--link--info-g {
+    margin-bottom: 24px;
+  }
+  
+  .detail__link {
+    color: #00838F;
+  }
+
+  .detail__heading {
+    font-size: 16px;
+  }
+  
+  .details--icon {
+    width: 72px;
+    height: 72px;
+    margin: 0 32px 0 0;
+  }
+  
+  .airports { 
+    .details--icon {
+      background: transparent url(../images/onsite/airplane-icon.svg) center center no-repeat;
+      background-size: 100%;
+    }
+  }
+  
+  .transit { 
+    .details--icon {
+      background: transparent url(../images/onsite/tram-icon.svg) center center no-repeat;
+      background-size: 100%;
+    }
+  }
+  
+  .hotels { 
+    .details--icon {
+      background: transparent url(../images/onsite/hotels-icon.svg) center center no-repeat;
+      background-size: 100%;
+    }
+  }
+  
+  iframe {
+    border: none;
+  }
+  
+  .io__hash {
+    margin: 0 auto;
+    background-size: 60%;
+    position: relative;
+
+    a {
+      display: block;
+      height: 100%;
+      text-indent: -999em;
+      width: 100%;
+    }
+    
+    &:hover {
+      box-shadow: none;
+    }
+  }
+ 
+}
