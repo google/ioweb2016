@@ -21,7 +21,7 @@ limitations under the License.
 <link rel="import" href="shared-app-styles.html">
 <link rel="import" href="PageBehavior.html">
 
-<dom-module id="io-onsite-page">
+<dom-module id="io-attend-page">
 <template>
   <style include="shared-app-styles">
     :host {
@@ -31,16 +31,16 @@ limitations under the License.
 
 <div class="masthead-container" layout horizontal end>
   <div class="masthead-meta">
-    <h1>Onsite</h1>
+    <h1>Attending</h1>
     <paper-tabs id="subpage-tabs" class="white"
                 selected="{{selectedSubpage}}"
                 attr-for-selected="label">
       <paper-tab label="event" role="">
-        <a href="#event" data-track-link="onsite-event" data-ajax-link
+        <a href="#event" data-track-link="attend-event" data-ajax-link
                          layout horizontal center-center>Event</a>
       </paper-tab>
       <paper-tab label="travel" role="">
-        <a href="#travel" data-track-link="onsite-travel"  data-ajax-link
+        <a href="#travel" data-track-link="attend-travel"  data-ajax-link
                           layout horizontal center-center>Travel</a>
       </paper-tab>
     </paper-tabs>
@@ -57,7 +57,7 @@ limitations under the License.
 
 <io-gallery
     id="gallery"
-    items='["images/onsite/map/io_floor1_label.jpg","images/onsite/map/io_floor2_label.jpg","images/onsite/map/io_floor3_label.jpg"]'
+    items='["images/attend/map/io_floor1_label.jpg","images/attend/map/io_floor2_label.jpg","images/attend/map/io_floor3_label.jpg"]'
     hidden$="{{!mapGalleryActive}}"
     active="{{mapGalleryActive}}"
     mobile="{{app.isPhoneSize}}"
@@ -74,14 +74,14 @@ limitations under the License.
           <div>Find your way around I/O and participate in sandbox talks, attend sessions, explore the codelab space, and more with our floor-by-floor venue map of Moscone West.</div>
         </div>
         <div class="card-content anchor-like">
-          <span role="link" tabindex="0" data-track-link="onsite-venue-map"
+          <span role="link" tabindex="0" data-track-link="attend-venue-map"
                 on-tap="toggleMapGallery">See venue map</span>
         </div>
       </div>
     </div>
 
     <div class="slide-up-delay">
-      <section class="page__section onsite__pic onsite__pic--reg"></section>
+      <section class="page__section attend__pic attend__pic--reg"></section>
 
       <section id="sandbox" class="page__section bg-light-grey">
         <h2>Sandbox</h2>
@@ -157,7 +157,7 @@ limitations under the License.
     </div>
 
     <div class="slide-up-delay">
-      <section class="page__section onsite__pic"></section>
+      <section class="page__section attend__pic"></section>
 
       <section id="traveldetails" class="page__section bg-light-grey">
         <h2>Travel details</h2>
@@ -173,7 +173,7 @@ limitations under the License.
               <li><a href="https://www.google.com/maps/dir/San+Jose+International+Airport-Sjc,+Airport+Boulevard,+San+Jose,+CA,+United+States/Moscone+Center+West,+800+Howard+Street,+San+Francisco,+CA+94103,+United+States/@37.5944754,-122.4295683,10z/data=!3m1!4b1!4m17!4m16!1m5!1m1!1s0x808fcbc3fab3c59b:0xbcfa443f6df67e3e!2m2!1d-121.928937!2d37.363947!1m5!1m1!1s0x80858087111726eb:0x635ab8069f6523c3!2m2!1d-122.404025!2d37.783083!2m2!7e2!8j1421306400!3e0?hl=en" target="_blank">San Jose International Airport (SJC)</a><br>
               ~46 miles</li>
             </ul>
-            <p>Find your flight to I/O on <a href="https://www.google.com/flights/" data-track-link="onsite-flights" target="_blank">flights.google.com</a>.</p>
+            <p>Find your flight to I/O on <a href="https://www.google.com/flights/" data-track-link="attend-flights" target="_blank">flights.google.com</a>.</p>
             <!-- <h5><i18n-msg msgid="airport-shuttle">Airport Shuttle</i18n-msg></h5>
             <p>Super Shuttle International is offering a discount to all Google I/O attendees. Reservations must be booked in advance either <a href="https://www.supershuttle.com/default.aspx?GC=G66Z7">online</a> or by calling 1-800-BLUE-VAN (1-800-258-3826). The discount code for Google I/O is G66Z7.</p> -->
           </div>
@@ -213,7 +213,7 @@ limitations under the License.
               <li><a href="http://www.caltrain.com/" target="_blank">Caltrain</a><br>
               Regional rail system</li>
             </ul>
-            <p><a href="http://get.lyft.com/lyftxgoogle/?code=GOOGLEIO" target="_blank"><iron-icon src="/io2016/images/onsite/lyft_pink.svg" aria-hidden="true" class="lyft-logo"></iron-icon></a> We've also partnered with Lyft to make sure your journey is as easy as possible. New users can download Lyft and apply the promo code <a href="http://get.lyft.com/lyftxgoogle/?code=GOOGLEIO" target="_blank">GOOGLEIO</a> to get $50 off their first 10 rides. Current Lyft users will receive promo codes shortly before I/O.</p>
+            <p><a href="http://get.lyft.com/lyftxgoogle/?code=GOOGLEIO" target="_blank"><iron-icon src="/io2016/images/attend/lyft_pink.svg" aria-hidden="true" class="lyft-logo"></iron-icon></a> We've also partnered with Lyft to make sure your journey is as easy as possible. New users can download Lyft and apply the promo code <a href="http://get.lyft.com/lyftxgoogle/?code=GOOGLEIO" target="_blank">GOOGLEIO</a> to get $50 off their first 10 rides. Current Lyft users will receive promo codes shortly before I/O.</p>
           </div>
         </div>
       </section>
@@ -231,7 +231,7 @@ limitations under the License.
   var SUBTAB_SELECTOR = '#subpage-tabs a';
 
   Polymer({
-    is: 'io-onsite-page',
+    is: 'io-attend-page',
 
     behaviors: [IOBehaviors.PageBehavior],
 
@@ -254,7 +254,7 @@ limitations under the License.
     },
 
     title: 'Attending',
-    name: 'onsite',
+    name: 'attend',
 
     attached: function() {
       // Reset state for when revisiting the page.
@@ -310,7 +310,7 @@ limitations under the License.
         IOWA.Analytics.trackEvent(
             'link', 'click', target.getAttribute(this.app.ANALYTICS_LINK_ATTR));
       } else {
-        IOWA.Analytics.trackEvent('link', 'click', 'onsite-venue-map-deeplink');
+        IOWA.Analytics.trackEvent('link', 'click', 'attend-venue-map-deeplink');
       }
 
       if (!this.mapGalleryActive) {

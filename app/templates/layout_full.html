@@ -248,9 +248,9 @@ limitations under the License.
            <a href="schedule#day1" data-ajax-link
            data-anim-drawer data-track-link="nav-drawer-schedule">Schedule</a>
         </paper-item>
-        <paper-item label="onsite">
-          <a href="onsite" data-ajax-link data-anim-drawer
-             data-track-link="nav-drawer-onsite">Attending</a>
+        <paper-item label="attend">
+          <a href="attend" data-ajax-link data-anim-drawer
+             data-track-link="nav-drawer-attend">Attending</a>
         </paper-item>
         <paper-item label="extended">
           <a href="extended" data-ajax-link data-anim-drawer
@@ -292,8 +292,8 @@ limitations under the License.
              data-transition="page-slide-transition"
              layout horizontal center>Videos</a>
         </paper-tab> -->
-        <paper-tab label="onsite" role="">
-          <a href="onsite" data-ajax-link data-track-link="nav-onsite"
+        <paper-tab label="attend" role="">
+          <a href="attend" data-ajax-link data-track-link="nav-attend"
              data-transition="page-slide-transition"
              layout horizontal center>Attending</a>
         </paper-tab>
@@ -368,8 +368,8 @@ limitations under the License.
       <template is="dom-if" name="about" restamp>
         <io-about-page app="[[app]]" tabindex="-1"></io-about-page>
       </template>
-      <template is="dom-if" name="onsite" restamp>
-        <io-onsite-page app="[[app]]" tabindex="-1"></io-onsite-page>
+      <template is="dom-if" name="attend" restamp>
+        <io-attend-page app="[[app]]" tabindex="-1"></io-attend-page>
       </template>
       <template is="dom-if" name="extended" restamp>
         <io-extended-page app="[[app]]" tabindex="-1"></io-extended-page>
