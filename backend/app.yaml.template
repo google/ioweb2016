@@ -57,6 +57,12 @@ handlers:
   http_headers:
     Access-Control-Allow-Origin: "*"
 
+- url: $PREFIX$/videos
+  static_dir: app/videos
+  secure: always
+  http_headers:
+    Access-Control-Allow-Origin: "*"
+
 - url: $PREFIX$/temporary_api
   static_dir: app/temporary_api
   # need access from the backend
