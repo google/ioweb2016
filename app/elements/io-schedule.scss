@@ -89,6 +89,15 @@
   }
 }
 
+.filter-section--clearall {
+  position: absolute;
+  right: 0;
+  top: $mobileKeyline / 2;
+  color: $color-cyan-800;
+  text-transform: uppercase;
+  font-size: 14px;
+}
+
 paper-radio-button {
   display: block;
   padding: $mobileKeyline/2 0;

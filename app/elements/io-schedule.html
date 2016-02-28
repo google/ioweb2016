@@ -105,8 +105,9 @@ Fired when the user toggles bookmarking/removing a session.
             </template>
           </paper-radio-group>
         </div>
-        <div class="filter-section filter-section--types">
+        <div class="filter-section filter-section--types" relative>
           <h4>Tracks</h4>
+          <a href="#" class="filter-section--clearall" on-tap="clearFilters">Clear all</a>
           <paper-radio-group allow-empty-selection
                              on-paper-radio-group-changed="onApplyFilter"
                              on-iron-deselect="onApplyFilter">
@@ -391,6 +392,20 @@ Fired when the user toggles bookmarking/removing a session.
             search,
             window.location.hash
           ].join(''));
+        },
+
+        clearFilters: function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          this.filters = [];
+
+          var radios = Polymer.dom(this.root).querySelectorAll('paper-radio-group');
+          Array.prototype.forEach.call(radios, function(radio) {
+            radio.selected = null;
+          });
+
+          var check = Polymer.dom(this.root).querySelector('#liveStreamFilter');
+          check.checked = false;
         },
 
         _showSession: function(session, day) {
