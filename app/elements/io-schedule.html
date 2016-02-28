@@ -81,39 +81,42 @@ Fired when the user toggles bookmarking/removing a session.
     <!-- <div class$="card__container {{_computeSideBySideClass(isPhoneSize)}}"
          layout vertical$="[[isPhoneSize]]" horizontal$="[[!isPhoneSize]]"> -->
 
-    <div id="filters" class="card-content bg-bluegrey-50-40" layout horizontal justified>
-      <div class="filter-section">
-        <h4>Tracks</h4>
-        <paper-radio-group allow-empty-selection
-                           on-paper-radio-group-changed="onApplyFilter"
-                           on-iron-deselect="onApplyFilter">
-          <template is="dom-repeat" items="[[sessionThemes]]" as="theme">
-            <paper-radio-button name="[[theme]]">[[theme]]</paper-radio-button>
-          </template>
-        </paper-radio-group>
+    <template is="dom-if" if="[[showFilters]]">
+      <div id="filters" class="card-content bg-bluegrey-50-40" layout horizontal justified>
+        <div class="filter-section">
+          <h4>Tracks</h4>
+          <paper-radio-group allow-empty-selection
+                             on-paper-radio-group-changed="onApplyFilter"
+                             on-iron-deselect="onApplyFilter">
+            <template is="dom-repeat" items="[[sessionThemes]]" as="theme">
+              <paper-radio-button name="[[theme]]">[[theme]]</paper-radio-button>
+            </template>
+          </paper-radio-group>
+        </div>
+        <div class="filter-section">
+          <h4>Types</h4>
+          <paper-checkbox id="liveStreamFilter" name="Live streamed"
+              on-tap="onLiveSessionsFilters">Live streamed</paper-checkbox>
+          <paper-radio-group allow-empty-selection
+                             on-paper-radio-group-changed="onApplyFilter"
+                             on-iron-deselect="onApplyFilter">
+            <template is="dom-repeat" items="[[sessionTypes]]" as="type">
+              <paper-radio-button name="[[type]]">[[type]]</paper-radio-button>
+            </template>
+          </paper-radio-group>
+        </div>
+        <div class="filter-section filter-section--types">
+          <h4>Tracks</h4>
+          <paper-radio-group allow-empty-selection
+                             on-paper-radio-group-changed="onApplyFilter"
+                             on-iron-deselect="onApplyFilter">
+            <template is="dom-repeat" items="[[sessionTopics]]" as="track">
+              <paper-radio-button name="[[track]]">[[track]]</paper-radio-button>
+            </template>
+          </paper-radio-group>
+        </div>
       </div>
-      <div class="filter-section">
-        <h4>Types</h4>
-        <paper-radio-group allow-empty-selection
-                           on-paper-radio-group-changed="onApplyFilter"
-                           on-iron-deselect="onApplyFilter">
-          <paper-radio-button name="Live streamed">Live streamed</paper-radio-button>
-          <template is="dom-repeat" items="[[sessionTypes]]" as="type">
-            <paper-radio-button name="[[type]]">[[type]]</paper-radio-button>
-          </template>
-        </paper-radio-group>
-      </div>
-      <div class="filter-section">
-        <h4>Topics</h4>
-        <paper-radio-group allow-empty-selection
-                           on-paper-radio-group-changed="onApplyFilter"
-                           on-iron-deselect="onApplyFilter">
-          <template is="dom-repeat" items="[[sessionTopics]]" as="topic">
-            <paper-radio-button name="[[topic]]">[[topic]]</paper-radio-button>
-          </template>
-        </paper-radio-group>
-      </div>
-    </div>
+    </template>
 
     <div class="card__container">
       <div>
@@ -295,6 +298,14 @@ Fired when the user toggles bookmarking/removing a session.
             type: Array,
             value: function() { return []; },
             observer: '_userSessionsChanged'
+          },
+
+          /**
+           * True to show the filter panel
+           */
+          showFilters: {
+            type: Boolean,
+            value: false
           }
         },
 
@@ -325,12 +336,22 @@ Fired when the user toggles bookmarking/removing a session.
           }
         },
 
+        onLiveSessionsFilters: function(e) {
+          var checkbox = Polymer.dom(e).localTarget;
+          var idx = this.filters.indexOf(checkbox.name);
+          if (idx !== -1) {
+            this.splice('filters', idx, 1);
+          } else if (checkbox.checked) {
+            this.push('filters', checkbox.name);
+          }
+        },
+
         _deepLinkRadioButtons: function() {
           if (!this.filters.length) {
             return;
           }
 
-          var radios = this.$.filters.querySelectorAll('paper-radio-group');
+          var radios = Polymer.dom(this.root).querySelectorAll('paper-radio-group');
           Array.prototype.forEach.call(radios, function(radio) {
             for (var i = 0, filter; filter = this.filters[i]; ++i) {
               radio.selected = filter;
@@ -339,6 +360,9 @@ Fired when the user toggles bookmarking/removing a session.
               }
             }
           }.bind(this));
+
+          var check = Polymer.dom(this.root).querySelector('#liveStreamFilter');
+          check.checked = this.filters.indexOf(check.name) > -1;
         },
 
         _filtersChanged: function(length) {

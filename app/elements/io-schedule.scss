@@ -69,18 +69,29 @@
   right: 0;
 }
 
-paper-checkbox {
-  margin-right: $tabletKeyline;
+.filter-section {
+  h4 {
+    border-bottom: 1px solid $color-bluegrey-100;
+    padding-bottom: $mobileKeyline / 2;
+    margin-bottom: $mobileKeyline;
+  }
+  paper-radio-group {
+    display: block;
+  }
+  paper-checkbox {
+    padding: $mobileKeyline/2 0;
+  }
 }
 
+.filter-section--types {
+  paper-radio-group {
+    column-count: 3;
+  }
+}
 
 paper-radio-button {
   display: block;
   padding: $mobileKeyline/2 0;
-}
-
-paper-progress {
-  display: block;
 }
 
 @media (max-width: $phone-breakpoint-max) {
