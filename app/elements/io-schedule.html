@@ -81,7 +81,7 @@ Fired when the user toggles bookmarking/removing a session.
     <!-- <div class$="card__container {{_computeSideBySideClass(isPhoneSize)}}"
          layout vertical$="[[isPhoneSize]]" horizontal$="[[!isPhoneSize]]"> -->
 
-    <template is="dom-if" if="[[showFilters]]">
+    <div hidden$="[[!showFilters]]">
       <div id="filters" class="card-content bg-bluegrey-50-40" layout horizontal justified>
         <div class="filter-section">
           <h4>Tracks</h4>
@@ -117,7 +117,7 @@ Fired when the user toggles bookmarking/removing a session.
           </paper-radio-group>
         </div>
       </div>
-    </template>
+    </div>
 
     <div class="card__container">
       <div>
@@ -352,7 +352,7 @@ Fired when the user toggles bookmarking/removing a session.
             return;
           }
 
-          var radios = Polymer.dom(this.root).querySelectorAll('paper-radio-group');
+          var radios = this.$.filters.querySelectorAll('paper-radio-group');
           Array.prototype.forEach.call(radios, function(radio) {
             for (var i = 0, filter; filter = this.filters[i]; ++i) {
               radio.selected = filter;
@@ -362,8 +362,8 @@ Fired when the user toggles bookmarking/removing a session.
             }
           }.bind(this));
 
-          var check = Polymer.dom(this.root).querySelector('#liveStreamFilter');
-          check.checked = this.filters.indexOf(check.name) > -1;
+          var checkbox = this.$.liveStreamFilter;
+          checkbox.checked = this.filters.indexOf(checkbox.name) > -1;
         },
 
         _filtersChanged: function(length) {
@@ -399,13 +399,12 @@ Fired when the user toggles bookmarking/removing a session.
           e.stopPropagation();
           this.filters = [];
 
-          var radios = Polymer.dom(this.root).querySelectorAll('paper-radio-group');
+          var radios = this.$.filters.querySelectorAll('paper-radio-group');
           Array.prototype.forEach.call(radios, function(radio) {
             radio.selected = null;
           });
 
-          var check = Polymer.dom(this.root).querySelector('#liveStreamFilter');
-          check.checked = false;
+          this.$.liveStreamFilter.checked = false;
         },
 
         _showSession: function(session, day) {
