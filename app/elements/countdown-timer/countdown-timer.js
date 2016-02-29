@@ -24,6 +24,7 @@ IOWA.CountdownTimer.Core = function(targetDate, elem) {
   this.targetDate = targetDate;
   this.containerDomElement = elem;
 
+  this.isReady = false;
   this.isPlaying = false;
   this.isMobile = (this.containerDomElement.offsetWidth <= IOWA.CountdownTimer.MOBILE_MAX_BREAKPOINT);
   this.firstRun = true;
@@ -75,6 +76,10 @@ IOWA.CountdownTimer.Core.prototype.detachEvents = function() {
 };
 
 IOWA.CountdownTimer.Core.prototype.start = function(opt_skipIntro) {
+  if (this.isReady) {
+    return;
+  }
+
   this.lastNumbers = this.unitDistance(this.targetDate, new Date());
 
   this.getFormat();
@@ -82,12 +87,14 @@ IOWA.CountdownTimer.Core.prototype.start = function(opt_skipIntro) {
   this.getLayout();
 
   this.bands = this.drawBands();
+  this.isReady = true;
 
   this.getSeparators();
 
   if (!opt_skipIntro) {
     this.launchIntro();
   }
+
   this.play();
 };
 
@@ -148,6 +155,11 @@ IOWA.CountdownTimer.Core.prototype.checkTime = function() {
 
 IOWA.CountdownTimer.Core.prototype.onFrame = function() {
   if (!this.isPlaying) {
+    return;
+  }
+
+  if (!this.isReady) {
+    requestAnimationFrame(this.onFrame);
     return;
   }
 
@@ -505,6 +517,10 @@ IOWA.CountdownTimer.Core.prototype.getLayout = function() {
 };
 
 IOWA.CountdownTimer.Core.prototype.onResize = function() {
+  if (!this.isReady) {
+    return;
+  }
+
   if (!this.drawAll) {
     var ctx = this.canvasElement.getContext('2d');
     ctx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
