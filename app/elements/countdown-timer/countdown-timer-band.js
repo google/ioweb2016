@@ -67,7 +67,7 @@ IOWA.CountdownTimer.Band.prototype.changeShape = function(newShape) {
     this.tween.kill();
   }
 
-  this.tween = TweenMax.to(this, 0.75, {posShift: 1, ease: Elastic.easeInOut.config(1, 1), delay: 0, onComplete: this.onChangeComplete, onCompleteParams: [this]});
+  this.tween = TweenMax.to(this, 0.65, {posShift: 1, ease: Elastic.easeInOut.config(1, 1), delay: 0, onComplete: this.onChangeComplete, onCompleteParams: [this]});
 
   this.play();
 };
@@ -125,7 +125,7 @@ IOWA.CountdownTimer.Band.prototype.update = function() {
   ctx.save();
   ctx.scale(this.parent.pixelRatio, this.parent.pixelRatio);
   ctx.lineWidth = this.parent.strokeWeight;
-  ctx.lineCap = 'round';
+  ctx.lineJoin = ctx.lineCap = 'round';
 
   var overClear = this.parent.pixelRatio * 2;
   ctx.clearRect(

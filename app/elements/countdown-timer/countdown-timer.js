@@ -19,6 +19,8 @@ IOWA.CountdownTimer.MOBILE_MAX_BREAKPOINT = 768;
 IOWA.CountdownTimer.TABLET_BREAKPOINT = 960;
 IOWA.CountdownTimer.DESKTOP_BREAKPOINT = 1400;
 IOWA.CountdownTimer.XLARGE_BREAKPOINT = 4000;
+IOWA.CountdownTimer.MAX_WIDTH = 1800;
+IOWA.CountdownTimer.CENTER_OFFSET = 32;
 
 IOWA.CountdownTimer.Core = function(targetDate, elem) {
   this.targetDate = targetDate;
@@ -30,7 +32,7 @@ IOWA.CountdownTimer.Core = function(targetDate, elem) {
   this.firstRun = true;
   this.introRunning = false;
   this.quality = this.isMobile ? 140 : 240;
-  this.maxWidth = IOWA.CountdownTimer.TABLET_BREAKPOINT;
+  this.maxWidth = IOWA.CountdownTimer.MAX_WIDTH;
 
   this.canvasElement = document.createElement('canvas');
 
@@ -75,7 +77,7 @@ IOWA.CountdownTimer.Core.prototype.detachEvents = function() {
   this.containerDomElement.removeEventListener('mousemove', this.onMouseMove);
 };
 
-IOWA.CountdownTimer.Core.prototype.start = function(opt_skipIntro) {
+IOWA.CountdownTimer.Core.prototype.setUp = function(opt_skipIntro) {
   if (this.isReady) {
     return;
   }
@@ -93,6 +95,16 @@ IOWA.CountdownTimer.Core.prototype.start = function(opt_skipIntro) {
 
   if (!opt_skipIntro) {
     this.launchIntro();
+  }
+};
+
+IOWA.CountdownTimer.Core.prototype.start = function(opt_skipIntro) {
+  if (!this.isReady) {
+    this.setUp(opt_skipIntro);
+  }
+
+  if (!opt_skipIntro) {
+    this.intro.start();
   }
 
   this.play();
@@ -350,10 +362,10 @@ IOWA.CountdownTimer.Core.prototype.getBandCenter = function(n) {
   } else {
     offset = Math.floor(n / 2);
     x = this.layout.x + this.layout.radius + this.layout.radius * 2 * n + (this.bandPadding * n) + offset * (this.bandGutter - this.bandPadding);
-    y = h / 2 - w / 4;
+    y = h / 2 - w / 4 + w / 24;
     offset = Math.floor(n / 4);
     if (offset > 0) {
-      y = h / 2 + w / 4;
+      y = h / 2 + w / 4 - w / 24;
       x -= w - this.countdownMargin * 2 + this.bandGutter;
     }
   }
@@ -361,11 +373,11 @@ IOWA.CountdownTimer.Core.prototype.getBandCenter = function(n) {
 };
 
 IOWA.CountdownTimer.Core.prototype.addUnits = function() {
-  var offset = 42;
+  var offset = (this.format === 'horizontal') ? 42 : 32;
   var ctx = this.canvasElement.getContext('2d');
   ctx.save();
   ctx.scale(this.pixelRatio, this.pixelRatio);
-  ctx.font = '12px Roboto';
+  ctx.font = '500 12px Roboto';
   ctx.fillStyle = '#78909C'; // blue grey 400
   ctx.textAlign = 'center';
 
@@ -492,7 +504,7 @@ IOWA.CountdownTimer.Core.prototype.getLayout = function() {
   if (canvasW < IOWA.CountdownTimer.MOBILE_BREAKPOINT) {
     this.strokeWeight = 2.5;
   } else if (canvasW < IOWA.CountdownTimer.TABLET_BREAKPOINT) {
-    this.strokeWeight = 2.0;
+    this.strokeWeight = 2.5;
   } else if (canvasW < IOWA.CountdownTimer.DESKTOP_BREAKPOINT) {
     this.strokeWeight = 3.0;
   } else if (canvasW < IOWA.CountdownTimer.XLARGE_BREAKPOINT) {
@@ -504,6 +516,10 @@ IOWA.CountdownTimer.Core.prototype.getLayout = function() {
   var r = (w - this.bandGutter * 3 - this.bandPadding * 4) / 8 / 2;
   var x = this.countdownMargin;
   var y = h / 2 - r;
+
+  if (this.format === 'horizontal') {
+    y -= IOWA.CountdownTimer.CENTER_OFFSET;
+  }
 
   if (canvasW < IOWA.CountdownTimer.MOBILE_BREAKPOINT) {
     r = (w - this.bandGutter - this.bandPadding * 2) / 4 / 2;
