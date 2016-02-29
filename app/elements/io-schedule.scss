@@ -19,24 +19,91 @@
 @import '../styles/components/_app';
 @import '../styles/components/_card';
 
-.card {
-  margin-bottom: $desktopKeyline;
+
+.card-content:not(#filters) {
+  padding-top: 0 !important;
+  padding-right: 0 !important;
 }
 
-.card-content  {
-  h4 {
-    font-size: 20px;
-    line-height: 32px;
-    font-weight: 400;
+$color-section-border: #eaeaea;
+
+.schedule-row {
+  padding: $tabletKeyline;
+  border-top: 1px solid $color-section-border;
+  width: 100%;
+
+  &:hover {
+    background-color: rgba($color-bluegrey-50, 0.4);
+  }
+
+  &:not(.saved):hover {
+    .schedule-add-button {
+      display: inline-block;
+    }
+  }
+
+  &.saved {
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      border-left: 4px solid #26C6DA;
+      top: 0;
+      height: 100%;
+      border-left: 4px solid $color-cyan-400;
+    }
+
+    &:hover {
+      .schedule-remove-button {
+        display: inline-block;
+      }
+    }
   }
 }
 
-.day-title {
-  background-color: #B2EBF2;
+.session-block {
+  border-top: 1px solid $color-section-border;
+
+  &:first-child {
+    border-top: 0;
+  }
+
+  .schedule-row {
+    border-top: 0 !important;
+  }
+
+  .schedule-block-title {
+    visibility: visible;
+  }
 }
 
-.schedule-row {
-  margin-bottom: $tabletKeyline;
+
+.schedule-block-title {
+  width: 25%;
+  visibility: hidden;
+  padding: $tabletKeyline 0;
+
+  .schedule-block-meridiem {
+    font-size: initial;
+    line-height: 34px;
+    margin-left: $mobileKeyline / 2;
+  }
+}
+
+.schedule-toggle-buttons {
+  cursor: pointer;
+}
+
+.schedule-add-button {
+  color: $color-cyan-600;
+  display: none;
+}
+
+.schedule-remove-button {
+  color: $color-red-A200;
+  display: none;
 }
 
 .schedule-title {
@@ -44,9 +111,7 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  position: relative;
-  padding-right: 24px; // icon width
-  order: -1;
+
   // overrides for link styling.
   text-transform: none !important;
   line-height: inherit !important;
@@ -57,16 +122,12 @@
 
 .schedule-time {
   font-size: 14px;
-  margin-right: 80px;
-  max-width: 80px;
   white-space: nowrap;
-  cursor: pointer;
+  color: $color-session-detail-light-grey;
 }
 
 .schedule-livestream {
   color: $color-session-detail-light-grey;
-  position: absolute;
-  right: 0;
 }
 
 .filter-section {
@@ -101,48 +162,4 @@
 paper-radio-button {
   display: block;
   padding: $mobileKeyline/2 0;
-}
-
-@media (max-width: $phone-breakpoint-max) {
-  .card__container {
-    margin-bottom: 0;
-  }
-
-  .card {
-    margin-bottom: $mobileKeyline;
-    @include shadow-z1();
-
-    &.day-title {
-      margin-bottom: 0;
-    }
-
-    .card-content:first-child {
-      padding: 16px !important;
-      border-bottom: 1px solid $color-light-grey-border;
-    }
-  }
-
-  .no-sessions {
-    margin-bottom: $mobileKeyline;
-  }
-}
-
-@media (min-width: $tablet-breakpoint-min) {
-  .page__section {
-    padding-bottom: $desktopKeyline;
-  }
-}
-
-@media (min-width: $desktop-breakpoint-min) {
-  .card {
-    .card-content {
-      padding: 32px;
-    }
-  }
-}
-
-@media (min-width: $desktop-breakpoint-mid) {
-  .schedule-title {
-    order: 0;
-  }
 }

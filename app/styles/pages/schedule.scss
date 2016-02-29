@@ -110,8 +110,6 @@ iron-icon[icon="schedule"] {
 
 .schedule-time {
   font-size: 14px;
-  margin-right: 80px;
-  width: 80px;
   white-space: nowrap;
 }
 
@@ -355,9 +353,6 @@ iron-icon[icon="schedule"] {
 }
 
 @media (max-width: $phone-breakpoint-max) {
-  .schedule-title {
-    order: -1;
-  }
   .session__detail {
     margin: 0;
     left: 0 !important;

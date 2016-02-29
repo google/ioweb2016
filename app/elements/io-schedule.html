@@ -19,6 +19,8 @@ limitations under the License.
 <link rel="import" href="../bower_components/paper-radio-button/paper-radio-button.html">
 <link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
 
+<link rel="import" href="shared-app-styles.html">
+
 <!--
 The `<io-schedule>` element renders a schedule for a given day(s).
 -->
@@ -40,34 +42,9 @@ Fired when the user toggles bookmarking/removing a session.
 <dom-module id="io-schedule">
   <link rel="import" type="css" href="io-schedule.css">
   <template>
-    <style>
+    <style include="shared-app-styles">
       :host {
         display: block;
-      }
-      [layout] {
-        @apply(--layout);
-      }
-      [layout][vertical] {
-        @apply(--layout-vertical);
-      }
-      [layout][justified] {
-        @apply(--layout-justified);
-      }
-      [layout][horizontal] {
-        @apply(--layout-horizontal);
-      }
-      [layout][flex] {
-        @apply(--layout-flex);
-        min-width: 0; /* chromestatus.com/features/5651186401148928 */
-      }
-      [two] {
-        @apply(--layout-flex-2);
-      }
-      [layout][center] {
-        @apply(--layout-center);
-      }
-      .sidebyside > :not(:last-child) {
-        margin-right: 32px;
       }
     </style>
 
@@ -77,9 +54,6 @@ Fired when the user toggles bookmarking/removing a session.
         query-matches="{{isTabletSize}}"></iron-media-query>
     <iron-media-query query="(min-width:1136px)"
         query-matches="{{isDesktopSize}}"></iron-media-query>
-
-    <!-- <div class$="card__container {{_computeSideBySideClass(isPhoneSize)}}"
-         layout vertical$="[[isPhoneSize]]" horizontal$="[[!isPhoneSize]]"> -->
 
     <div hidden$="[[!showFilters]]">
       <div id="filters" class="card-content bg-bluegrey-50-40" layout horizontal justified>
@@ -184,40 +158,46 @@ Fired when the user toggles bookmarking/removing a session.
               <template id="schedulelist" is="dom-repeat" items="[[sessions]]"
                         as="session" filter="matchesFilters" initial-count="10">
 
-                <template is="dom-if" if="[[session.firstOfBlock]]">
-                  <div class="schedule-row" hidden$="{{!_showSession(session, day)}}">
-                    <h4>May <span>{{session.day}}</span>, <span>{{session.block}}</span></h4>
-                  </div>
-                </template>
-
-                <div class="schedule-row"
-                     layout horizontal center$="{{isDesktopSize}}"
+                <div layout horizontal
+                     class$="[[_addClass('session-block', session.firstOfBlock)]]"
                      hidden$="{{!_showSession(session, day)}}">
-                  <paper-checkbox toggles
-                      on-change="onToggleSaveSession"
-                      aria-labelledby$="session-{{session.id}}-time session-{{session.id}}-title"
-                      checked="{{session.saved}}"></paper-checkbox>
-                  <div tabindex="0" style="min-width: 0;"
-                       on-click="onSessionSelect"
-                       on-keyup="onSessionKeyUp"
-                       layout flex vertical$="{{!isDesktopSize}}"
-                       horizontal$="{{isDesktopSize}}">
-                    <span id="session-{{session.id}}-time" class="schedule-time" flex auto-vertical>
-                      <span>{{session.start}}</span> <span hidden$="{{_sessionIs(session, '__keynote__')}}"> - <span>{{session.end}}</span></span>
-                    </span>
+                  <div class="schedule-block-title">
+                    <h1 layout horizontal end>
+                      <span>[[_getMeridiemPart(session.block, 0)]]</span>
+                      <span class="schedule-block-meridiem">[[_getMeridiemPart(session.block, 1)]]</span>
+                    </h1>
+                  </div>
+
+                  <div class$="schedule-row [[_addClass('saved', session.saved)]]"
+                       layout horizontal center
+                       on-keyup="onSessionKeyUp">
                     <a href$="schedule?sid={{session.id}}"
                        id="session-{{session.id}}-time"
                        class="schedule-title"
-                       auto-vertical two flex$="{{!isPhoneSize}}"
                        on-click="onSessionSelect"
-                       title$="{{session.title}}">
-                      <span>{{session.title}}</span>
-                      <iron-icon icon="io:videocam" class="schedule-livestream"
-                                 hidden$="{{!session.isLivestream}}"></iron-icon>
+                       title$="{{session.title}}" flex>
+                      <div>[[session.title]]</div>
+                      <div id="session-{{session.id}}-time" class="schedule-time">
+                        <span>[[session.start]]</span>
+                        <span hidden$="{{_sessionIs(session, '__keynote__')}}"> - [[session.end]]</span> /
+                        <span>[[session.room]]</span>
+                        <iron-icon icon="io:videocam" class="schedule-livestream"
+                                   hidden$="{{!session.isLivestream}}"></iron-icon>
+                      </div>
                     </a>
-                  </div>
-                </div>
 
+                    <div class="schedule-toggle-buttons">
+                      <iron-icon icon="io:add-circle"
+                                 class="schedule-add-button"
+                                 on-click="onAddSession"></iron-icon>
+                      <iron-icon icon="io:remove-circle"
+                                 class="schedule-remove-button"
+                                 on-click="onRemoveSession"></iron-icon>
+                    </div>
+
+                  </div>
+
+                </div>
 
               </template>
 
@@ -316,6 +296,10 @@ Fired when the user toggles bookmarking/removing a session.
 
         _userSessionsChanged: function() {
           // TODO: update session listing
+        },
+
+        _addClass: function(name, prop) {
+          return prop ? name : '';
         },
 
         isFilterSelected: function(filterName) {
@@ -464,8 +448,20 @@ Fired when the user toggles bookmarking/removing a session.
           });
         },
 
-        _computeSideBySideClass: function(isPhoneSize) {
-          return !isPhoneSize ? 'sidebyside' : '';
+        onAddSession: function(e) {
+          e.stopPropagation();
+          this.fire('session-bookmark', {
+            session: e.model.session,
+            saved: true
+          });
+        },
+
+        onRemoveSession: function(e) {
+          e.stopPropagation();
+          this.fire('session-bookmark', {
+            session: e.model.session,
+            saved: false
+          });
         },
 
         _dayIs: function(day, targetDay) {
@@ -474,6 +470,10 @@ Fired when the user toggles bookmarking/removing a session.
 
         _sessionIs: function(session, targetSession) {
           return session.id === targetSession;
+        },
+
+        _getMeridiemPart: function(str, part) {
+          return str.split(' ')[part];
         }
 
       });
