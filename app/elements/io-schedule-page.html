@@ -254,7 +254,8 @@ limitations under the License.
         <div class="subpage__nav bg-cyan-400" layout horizontal justified>
           <paper-tabs id="subpage-tabs" class="white"
                       attr-for-selected="label"
-                      selected="{{selectedSubpage}}">
+                      selected="{{selectedSubpage}}"
+                      on-iron-activate="onSubNavSelect">
             <paper-tab label="agenda" role="">
               <a href="#agenda" data-track-link="schedule-agenda" data-ajax-link
                                 layout horizontal center-center>Agenda</a>
@@ -497,6 +498,9 @@ limitations under the License.
     </div> <!-- .card -->
 
   </div> <!-- .card__container -->
+
+  <div class="io__hash io__hash-bottom" aria-label="I/O hash tag"></div>
+
 </div> <!-- .active -->
 
 </template>
@@ -562,13 +566,16 @@ limitations under the License.
     title: 'Schedule',
     name: 'schedule',
 
+    onSubNavSelect: function() {
+      // Reset FAB position after new DOM is set.
+      this.async(function() {
+        IOWA.Elements.Template.initFabScroll();
+      });
+    },
+
     attached: function() {
       // TODO: check that this is still needed in paper-tabs.
       IOWA.A11y.addFocusStates(SUBTAB_SELECTOR);
-
-// this.async(function() {
-//   IOWA.Elements.Template.initFabScroll();
-// }, 1000);
 
       this.listen(window, 'popstate', 'sessionDetailsPopstateHandler');
     },
@@ -594,6 +601,10 @@ limitations under the License.
       } else {
         pageIsDeepLinked_ = false;
       }
+
+      this.async(function() {
+        IOWA.Elements.Template.initFabScroll();
+      }, 200);
     },
 
     sessionDetailsPopstateHandler: function(e) {
