@@ -29,6 +29,8 @@ $name: 'page-onsite';
 
   h4 {
     font-size: 24px;
+    margin-top: 4px;
+    margin-bottom: 8px;
   }
 
   .masthead-meta {
@@ -68,23 +70,44 @@ $name: 'page-onsite';
     h5,
     p {
       max-width: 656px;
+     
+      @media (max-width: $tablet-breakpoint-mid) {
+        max-width: 600px;
+      }
     }
   }
   
-  .details--list-item {
+  .details--wrapper {
     display: flex;
     flex-direction: row;
-    width: 760px;
+    max-width: 760px;
     margin: 0 auto;
     padding: 40px 0;
+    border-bottom: 1px solid #e0e0e0;
+    
+    @media (max-width: $tablet-breakpoint-mid) {
+      padding: 40px 16px;
+    }
+    
+    @media (max-width: $phone-breakpoint-max) {
+      display: block;
+    }
+  }
+  
+  .details--info-block {
+    margin-bottom: 24px;
   }
   
   .detail__title {
     margin-bottom: 18px;
   }
-
-  .details--link--info-g {
-    margin-bottom: 24px;
+  
+  .detail__heading {
+    margin-top: 18px;
+  }
+  
+  .detail__text {
+    margin-bottom: 18px;
   }
   
   .detail__link {
@@ -99,6 +122,10 @@ $name: 'page-onsite';
     width: 72px;
     height: 72px;
     margin: 0 32px 0 0;
+    
+    @media (max-width: $phone-breakpoint-max) {
+      margin: 0 0 32px 0;
+    } 
   }
   
   .airports { 
@@ -116,9 +143,18 @@ $name: 'page-onsite';
   }
   
   .hotels { 
+    
+    &.details--wrapper {
+      border-bottom: none;
+    }
+    
     .details--icon {
       background: transparent url(../images/onsite/hotels-icon.svg) center center no-repeat;
       background-size: 100%;
+    }
+    
+    .detail__text {
+      margin-bottom: 0;
     }
   }
   
@@ -126,20 +162,18 @@ $name: 'page-onsite';
     border: none;
   }
   
-  .io__hash {
-    margin: 0 auto;
-    background-size: 60%;
-    position: relative;
-
-    a {
-      display: block;
-      height: 100%;
-      text-indent: -999em;
-      width: 100%;
+  .hashtag {
+    padding: 0;
+    
+    @media (max-width: $phone-breakpoint-max) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     
-    &:hover {
-      box-shadow: none;
+    img {
+      display: block;
+      margin: 128px auto 144px;
     }
   }
  
