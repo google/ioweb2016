@@ -54,7 +54,7 @@ $name: 'page-attend';
   }
  
   .card__photo {
-    background: transparent url(../images/onsite/io-attending-landscape-FPO.jpg) center center no-repeat;
+    background: transparent url(../images/attend/io-attending-landscape-FPO.jpg) center center no-repeat;
     background-size: 100%;
     padding: 0;
   }
@@ -125,14 +125,14 @@ $name: 'page-attend';
   
   .airports { 
     .details--icon {
-      background: transparent url(../images/onsite/airplane-icon.svg) center center no-repeat;
+      background: transparent url(../images/attend/airplane-icon.svg) center center no-repeat;
       background-size: 100%;
     }
   }
   
   .transit { 
     .details--icon {
-      background: transparent url(../images/onsite/tram-icon.svg) center center no-repeat;
+      background: transparent url(../images/attend/tram-icon.svg) center center no-repeat;
       background-size: 100%;
     }
   }
@@ -144,7 +144,7 @@ $name: 'page-attend';
     }
     
     .details--icon {
-      background: transparent url(../images/onsite/hotels-icon.svg) center center no-repeat;
+      background: transparent url(../images/attend/hotels-icon.svg) center center no-repeat;
       background-size: 100%;
     }
     
