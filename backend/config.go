@@ -17,14 +17,24 @@ package main
 import (
 	"encoding/json"
 	"os"
+	"path/filepath"
 	"sort"
 	"strings"
 	"time"
+
+	"github.com/google/http2preload"
 )
 
-// config is a global backend config,
-// usually obtained by reading a server config file in an init() func.
-var config appConfig
+var (
+	// config is a global backend config,
+	// usually obtained by reading a server config file in an init() func.
+	config appConfig
+
+	// h2config is HTTP/2 preload manifest.
+	// It is initialized alongside config but from a separate file
+	// because it doesn't need to be encrypted.
+	h2config http2preload.Manifest
+)
 
 // isDev returns true if current app environment is in a dev mode.
 func isDev() bool {
@@ -179,6 +189,17 @@ func initConfig(configPath, addr string) error {
 	if config.Survey.Smap == nil {
 		config.Survey.Smap = make(map[string]string)
 	}
+
+	// init http/2 preload manifest even if the file doesn't exist
+	p := filepath.Dir(configPath)
+	if p != "." {
+		p = filepath.Join(p, "..")
+	}
+	p = filepath.Join(p, "h2preload.json")
+	if h2config, err = http2preload.ReadManifest(p); err != nil {
+		h2config = http2preload.Manifest{}
+	}
+
 	return nil
 }
 
