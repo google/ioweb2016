@@ -80,7 +80,7 @@ class IOFirebase {
    */
   auth(userId, accessToken) {
     let firebaseShardUrl = IOFirebase._selectShard(userId);
-    console.log('Chose the following Firebase Database Shard:', firebaseShardUrl);
+    debugLog('Chose the following Firebase Database Shard:', firebaseShardUrl);
     this.firebaseRef = new Firebase(firebaseShardUrl);
     this.firebaseRef.authWithOAuthToken('google', accessToken, error => {
       if (error) {
