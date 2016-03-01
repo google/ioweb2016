@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+IOWA.CountdownTimer.INTRO_PAUSE = 500; // # ms for intro to stay visible.
 IOWA.CountdownTimer.INTRO_LENGTH = 1500; // # ms for intro to stay visible.
 
 IOWA.CountdownTimer.Intro = function(canvas, radius, center, quality, parent) {
@@ -27,6 +28,8 @@ IOWA.CountdownTimer.Intro = function(canvas, radius, center, quality, parent) {
   this.count = 0;
   this.duration = 0.99;
   this.speed = 4;
+
+  this.isStarted = false;
 
   this.digit = (this.parent.format === 'horizontal') ? 1 : 5;
 
@@ -48,14 +51,26 @@ IOWA.CountdownTimer.Intro = function(canvas, radius, center, quality, parent) {
   ];
 
   this.circle = {x: 0, y: 0};
+
+  this.update();
 };
 
 IOWA.CountdownTimer.Intro.prototype.update = function() {
   this.drawShapes();
 };
 
+IOWA.CountdownTimer.Intro.prototype.start = function() {
+  setTimeout(this.startTransition.bind(this), IOWA.CountdownTimer.INTRO_PAUSE);
+};
+
+IOWA.CountdownTimer.Intro.prototype.startTransition = function() {
+  this.isStarted = true;
+};
+
 IOWA.CountdownTimer.Intro.prototype.drawShapes = function() {
-  this.count += ((this.radius - this.parent.strokeWeight) - this.count) / this.speed;
+  if (this.isStarted) {
+    this.count += ((this.radius - this.parent.strokeWeight) - this.count) / this.speed;
+  }
 
   var ctx = this.canvasElement.getContext('2d');
 
