@@ -55,7 +55,7 @@ $name: 'page-attend';
  
   .card__photo {
     background: transparent url(../images/attend/io-attending-landscape-FPO.jpg) center center no-repeat;
-    background-size: 100%;
+    background-size: cover;
     padding: 0;
   }
   
