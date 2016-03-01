@@ -261,13 +261,6 @@ func serveIOExtEntries(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Cache-Control", "public, max-age=60")
 	w.Header().Set("Content-Type", "application/json;charset=utf-8")
 
-	// respond with stubbed JSON entries in dev mode
-	if isDev() {
-		f := filepath.Join(config.Dir, "temporary_api", "ioext_feed.json")
-		http.ServeFile(w, r, f)
-		return
-	}
-
 	entries, err := ioExtEntries(c, refresh)
 	if err != nil {
 		errorf(c, "ioExtEntries: %v", err)

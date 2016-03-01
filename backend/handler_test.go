@@ -33,21 +33,6 @@ import (
 	"github.com/google/http2preload"
 )
 
-func TestServeIOExtEntriesStub(t *testing.T) {
-	defer resetTestState(t)
-	r := newTestRequest(t, "GET", "/api/v1/extended", nil)
-	w := httptest.NewRecorder()
-	serveIOExtEntries(w, r)
-
-	if w.Code != http.StatusOK {
-		t.Errorf("GET %s: %d; want %d", r.URL.String(), w.Code, http.StatusOK)
-	}
-	ctype := "application/json;charset=utf-8"
-	if w.Header().Get("Content-Type") != ctype {
-		t.Errorf("Content-Type: %q; want %q", w.Header().Get("Content-Type"), ctype)
-	}
-}
-
 func TestServeSocialStub(t *testing.T) {
 	defer resetTestState(t)
 	r := newTestRequest(t, "GET", "/api/v1/social", nil)

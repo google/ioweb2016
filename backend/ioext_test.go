@@ -27,13 +27,13 @@ const testXmlFeed = `
 <feed xmlns='http://www.w3.org/2005/Atom' xmlns:gsx='http://schemas.google.com/spreadsheets/2006/extended'>
 	<entry>
 		<gsx:eventname>Google I/O extended Nyeri</gsx:eventname>
-		<gsx:googleeventlink>https://plus.google.com/events/event-1</gsx:googleeventlink>
+		<gsx:eventlink>https://plus.google.com/events/event-1</gsx:googleeventlink>
     <gsx:latitude>n/a</gsx:latitude>
 		<gsx:longitude></gsx:longitude>
 	</entry>
 	<entry>
 		<gsx:eventname>I/O Extended Madrid</gsx:eventname>
-		<gsx:googleeventlink>https://plus.google.com/events/event-2</gsx:googleeventlink>
+		<gsx:eventlink>https://plus.google.com/events/event-2</gsx:googleeventlink>
 		<gsx:latitude>40.401982</gsx:latitude>
 		<gsx:longitude>-3.608424</gsx:longitude>
 	</entry>
