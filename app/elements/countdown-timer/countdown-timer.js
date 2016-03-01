@@ -47,6 +47,7 @@ IOWA.CountdownTimer.Core = function(targetDate, elem) {
   this.drawAll = false;
 
   this.posShift = 0;
+  this.getFormat();
   this.setCanvasSize();
 
   this.onVisibilityChange = this.onVisibilityChange.bind(this);
@@ -297,7 +298,7 @@ IOWA.CountdownTimer.Core.prototype.onMouseMove = function(e) {
 };
 
 IOWA.CountdownTimer.Core.prototype.getFormat = function() {
-  var stacked = this.containerDomElement.offsetWidth < IOWA.CountdownTimer.MOBILE_BREAKPOINT;
+  var stacked = this.containerDomElement.offsetWidth < IOWA.CountdownTimer.MOBILE_MAX_BREAKPOINT;
   this.format = stacked ? 'stacked' : 'horizontal';
 };
 
@@ -357,7 +358,7 @@ IOWA.CountdownTimer.Core.prototype.getBandCenter = function(n) {
   var x;
   var y;
   var w = this.containerDomElement.offsetWidth;
-  var h = this.containerDomElement.offsetHeight;
+  var h = (this.format === 'horizontal') ? this.containerDomElement.offsetWidth / 2 : this.containerDomElement.offsetWidth;
   var offset;
   if (this.format === 'horizontal') {
     offset = Math.floor(n / 2);
@@ -483,12 +484,16 @@ IOWA.CountdownTimer.Core.prototype.getPath = function(svg) {
 
 IOWA.CountdownTimer.Core.prototype.getLayout = function() {
   var canvasW = this.containerDomElement.offsetWidth;
-  var canvasH = this.containerDomElement.offsetHeight;
+  var canvasH = (this.format === 'horizontal') ? this.containerDomElement.offsetWidth / 2 : this.containerDomElement.offsetWidth;
 
   // set spacing variables
   if (canvasW < IOWA.CountdownTimer.MOBILE_BREAKPOINT) {
     this.countdownMargin = 14;
     this.bandGutter = 16;
+    this.bandPadding = 4;
+  } else if (canvasW < IOWA.CountdownTimer.MOBILE_MAX_BREAKPOINT) {
+    this.countdownMargin = 14;
+    this.bandGutter = 24;
     this.bandPadding = 4;
   } else if (canvasW < IOWA.CountdownTimer.TABLET_BREAKPOINT) {
     this.countdownMargin = 40;
@@ -507,12 +512,14 @@ IOWA.CountdownTimer.Core.prototype.getLayout = function() {
   // set stroke weight
   if (canvasW < IOWA.CountdownTimer.MOBILE_BREAKPOINT) {
     this.strokeWeight = 2.5;
+  } else if (canvasW < IOWA.CountdownTimer.MOBILE_MAX_BREAKPOINT) {
+    this.strokeWeight = 3.0;
   } else if (canvasW < IOWA.CountdownTimer.TABLET_BREAKPOINT) {
     this.strokeWeight = 2.5;
   } else if (canvasW < IOWA.CountdownTimer.DESKTOP_BREAKPOINT) {
     this.strokeWeight = 3.0;
   } else if (canvasW < IOWA.CountdownTimer.XLARGE_BREAKPOINT) {
-    this.strokeWeight = 3.5;
+    this.strokeWeight = 4;
   }
 
   var w = canvasW - this.countdownMargin * 2;
@@ -525,7 +532,7 @@ IOWA.CountdownTimer.Core.prototype.getLayout = function() {
     y -= IOWA.CountdownTimer.CENTER_OFFSET;
   }
 
-  if (canvasW < IOWA.CountdownTimer.MOBILE_BREAKPOINT) {
+  if (this.format === 'stacked') {
     r = (w - this.bandGutter - this.bandPadding * 2) / 4 / 2;
   }
 
@@ -546,9 +553,10 @@ IOWA.CountdownTimer.Core.prototype.onResize = function() {
     ctx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
   }
 
+  this.getFormat();
+
   this.setCanvasSize();
 
-  this.getFormat();
   this.getLayout();
   this.unitsAdded = false;
 
@@ -574,8 +582,8 @@ IOWA.CountdownTimer.Core.prototype.onResize = function() {
 
 IOWA.CountdownTimer.Core.prototype.setCanvasSize = function() {
   this.canvasElement.width = this.containerDomElement.offsetWidth * this.pixelRatio;
-  this.canvasElement.height = this.containerDomElement.offsetHeight * this.pixelRatio;
+  this.canvasElement.height = (this.format === 'horizontal') ? this.containerDomElement.offsetWidth / 2 * this.pixelRatio : this.containerDomElement.offsetWidth * this.pixelRatio;
 
   this.canvasElement.style.width = this.containerDomElement.offsetWidth + 'px';
-  this.canvasElement.style.height = this.containerDomElement.offsetHeight + 'px';
+  this.canvasElement.style.height = (this.format === 'horizontal') ? this.containerDomElement.offsetWidth / 2 + 'px' : this.containerDomElement.offsetWidth + 'px';
 };
