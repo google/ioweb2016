@@ -3,7 +3,7 @@ Copyright 2016 Google Inc. All rights reserved.
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
-  http://www.apache.org/licenses/LICENSE-2.0
+    http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -11,11 +11,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-<!--
-Duplicates Polymer's `<template is="dom-bind">` element, but adds a `defer`
-attribute for delaying the template's render() call.
--->
 <script>
+
   Polymer({
 
     /**
@@ -31,19 +28,18 @@ attribute for delaying the template's render() call.
     _template: null,
 
     created: function() {
-      if (!this.hasAttribute('defer')) {
-        this.render();
-      }
-    },
-
-    render: function() {
       // Ensure dom-bind doesn't stamp until all possible dependencies
       // have resolved
-      // var self = this;
-      // Polymer.RenderStatus.whenReady(function() {
-      document.addEventListener('DOMContentLoaded', function() {
-        this._markImportsReady();
-      }.bind(this));
+      var self = this;
+      Polymer.RenderStatus.whenReady(function() {
+        if (document.readyState == 'loading') {
+          document.addEventListener('DOMContentLoaded', function() {
+            self._markImportsReady();
+          });
+        } else {
+          self._markImportsReady();
+        }
+      });
     },
 
     _ensureReady: function() {
@@ -104,7 +100,7 @@ attribute for delaying the template's render() call.
 
     attached: function() {
       if (this._importsReady) {
-        this._render();
+        this.render();
       }
     },
 
@@ -116,7 +112,7 @@ attribute for delaying the template's render() call.
      * Forces the element to render its content. This is typically only
      * necessary to call if HTMLImports with the async attribute are used.
      */
-    _render: function() {
+    render: function() {
       this._ensureReady();
       if (!this._children) {
         this._template = this;
@@ -134,4 +130,5 @@ attribute for delaying the template's render() call.
     }
 
   });
+
 </script>
