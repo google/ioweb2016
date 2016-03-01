@@ -38,3 +38,7 @@ sitemap.xml
 app/service-worker.js
 app/scripts/pages.js
 app/data-worker-scripts.js
+
+# Intellij
+*.iml
+.idea
