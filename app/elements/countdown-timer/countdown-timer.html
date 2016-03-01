@@ -78,6 +78,16 @@ Fired when the intro sequence starts or finishes.
           date: {
             type: String,
             value: 'May 18 2016 09:30:00 GMT-0700 (PDT)'
+          },
+
+          /**
+            * The current time till I/O in string format.
+            * Should be a textual representation of what the canvas is
+            * displaying
+            */
+          currentTime: {
+            type: String,
+            notify: true
           }
         },
 

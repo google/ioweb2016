@@ -127,11 +127,15 @@ IOWA.CountdownTimer.Core.prototype.checkTime = function() {
   // Only set aria-label once @ page load. Updating it every clock tick is
   // showing style recalcs in the timeline.
   if (this.firstRun) {
-    this.containerDomElement.setAttribute('aria-label',
-      distance.days + ' days, ' +
-      distance.hours + ' hours, ' +
-      distance.minutes + ' minutes, ' +
-      distance.seconds + ' seconds until Google I/O');
+    var computedDistance = distance.days + ' days, ' +
+                           distance.hours + ' hours, ' +
+                           distance.minutes + ' minutes, ' +
+                           distance.seconds + ' seconds until Google I/O';
+
+    this.containerDomElement.setAttribute('aria-label', computedDistance);
+    // Exposing distance as a bindable property. This is so we can bind it to
+    // a hidden div to work around a bug in Chrome and VoiceOver
+    this.containerDomElement.currentTime = computedDistance;
   }
 
   if (this.isMobile && this.firstRun) {
