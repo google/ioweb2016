@@ -33,17 +33,17 @@ import (
 
 const (
 	// defaultTitle is the site pages default title.
-	defaultTitle = "Google I/O 2015"
+	defaultTitle = "Google I/O 2016"
 	// descDefault is the default site description
-	descDefault = "Google I/O 2015 brings together developers for an immersive," +
-		" two-day experience focused on exploring the next generation of " +
-		"technology, mobile and beyond. Join us online or in person May 28-29, " +
-		"2015. #io15"
+	descDefault = "Google I/O 2016 brings together developers for an immersive," +
+		" three-day experience focused on exploring the next generation of " +
+		"technology, mobile and beyond. Join us online or in person May 18-20, " +
+		"2016. #io16"
 	// descExperiment is used when users share an experiment link on social.
 	descExperiment = "Make music with instruments inspired by material design " +
-		"for #io15. Play, record and share."
+		"for #io16. Play, record and share."
 	// images for og:image meta tag
-	ogImageDefault    = "images/io15-color.png"
+	ogImageDefault    = "images/io16-social.jpg"
 	ogImageExperiment = "images/io15-experiment.png"
 
 	// templatesDir is the templates directory path relative to config.Dir.
