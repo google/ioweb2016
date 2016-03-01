@@ -72,8 +72,15 @@
   }
 
   .card__sub-title {
-    line-height: 30px;
+    line-height: 28px;
   }
+
+  .-no-bottom-margin,
+  .-no-bottom-margin p {
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
 }
 
 .card--force-compositing {
@@ -112,6 +119,10 @@
                       0px 2px 3px 0px rgba(0, 0, 0, 0.25);
         }
       }
+    }
+
+    .card__title p {
+      margin-bottom: 12px;
     }
 
   }
@@ -230,15 +241,27 @@
 
 @media (max-width: $phone-breakpoint-max) {
   .card {
+    .card-content {
+      padding-bottom: $desktopKeyline;
+      padding-top: $desktopKeyline;
+      padding-right: $largeKeyline;
+    }
     h3,
+    .card__title p,
     .card__sub-title {
       font-size: 34px;
       line-height: 40px;
     }
     h5,
     p {
-      font-size: 24px;
-      line-height: 32px;
+      font-size: 20px;
+      line-height: 28px;
+    }
+    h5 p {
+      margin-bottom: 12px;
+    }
+    .card__title p {
+      margin-bottom: 24px;
     }
   }
 }
@@ -254,6 +277,43 @@
     p {
       font-size: 16px;
       line-height: 24px;
+    }
+  }
+}
+
+@media (max-width: $phone-breakpoint-mid - 1) and (min-width: $phone-breakpoint-min-mid-b + 1) {
+  .card {
+    h3,
+    .card__title,
+    .card__title p,
+    .card__sub-title {
+      font-size: 24px;
+    }
+    h5,
+    p {
+      font-size: 20px;
+      line-height: 28px;
+    }
+    .card__title p {
+      margin-bottom: 12px;
+    }
+  }
+}
+
+@media (max-width: $phone-breakpoint-min-mid-b) {
+  .card {
+    .card-content {
+      padding-right: 36px;
+    }
+    h3,
+    .card__title,
+    .card__title p,
+    .card__sub-title {
+      font-size: 24px;
+      line-height: 32px;
+    }
+    .card__title p {
+      margin-bottom: 14px;
     }
   }
 }
