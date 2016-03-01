@@ -125,7 +125,7 @@ h3 a {
   font-weight: 500;
 }
 
-@media (min-width: $phone-breakpoint-min-mid) and (max-width: $phone-breakpoint-max) {
+@media (min-width: $phone-breakpoint-min-mid-a) and (max-width: $phone-breakpoint-max) {
   .social-card h2 {
     font-size: 32px;
     line-height: 44px;
