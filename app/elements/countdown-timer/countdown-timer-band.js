@@ -42,6 +42,7 @@ IOWA.CountdownTimer.Band = function(canvasElement, radius, center, quality, pare
   this.inc = 0;
 
   this.isPlaying = true;
+
   this.colors = [
     {hex: '#ffffff', ratio: 1, size: 1, oldSize: 1, active: false, tween: null},
     {hex: '#EF5350', ratio: 0, size: 0, oldSize: 0, active: false, tween: null},
