@@ -68,10 +68,15 @@ IOBehaviors.PageBehavior = {
 
   closeDialogVideo: function(e) {
     this.set('app.fullscreenVideoActive', false);
+    // Restore focus to the previous element when closing the dialog
+    this._previousFocusedElement.focus();
+    this._previousFocusedElement = null;
   },
 
   openDialogVideo: function(e) {
     var target = Polymer.dom(e).rootTarget;
+    // Record previous focused element so we can restore focus later
+    this._previousFocusedElement = target;
 
     IOWA.Analytics.trackEvent(
         'link', 'click', target.getAttribute(this.app.ANALYTICS_LINK_ATTR));
