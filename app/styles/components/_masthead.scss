@@ -264,6 +264,11 @@ paper-tabs {
   line-height: 20px;
 }
 
+.subpage__nav {
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+}
+
 #subpage-tabs {
   height: $navbarHeight;
 
