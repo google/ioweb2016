@@ -146,16 +146,21 @@
   // });
 
   window.addEventListener('resize', function() {
-    IOWA.Elements.Template.debounce('resize', function() {
-      this.closeDrawer();
-      // remove fab sticky scrolling behavior for mobile. Add for desktop.
-      this.initFabScroll();
-    }, 400);
+    // FF mobile sends resize event on page load. Be careful!
+    if (IOWA.Elements && IOWA.Elements.Template) {
+      IOWA.Elements.Template.debounce('resize', function() {
+        this.closeDrawer();
+        // remove fab sticky scrolling behavior for mobile. Add for desktop.
+        this.initFabScroll();
+      }, 400);
+    }
   });
 
   window.addEventListener('offline', function() {
-    IOWA.Elements.Toast.showMessage(
+    if (IOWA.Elements && IOWA.Elements.Toast) {
+      IOWA.Elements.Toast.showMessage(
         'Offline. Changes you make to My Schedule will be saved for later.');
+    }
   });
 
   // Watch for sign-in changes to fetch user schedule, update UI, etc.
