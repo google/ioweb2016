@@ -41,7 +41,7 @@ type extFeed struct {
 // for I/O extended registration.
 type extEntry struct {
 	Name   string  `json:"name" xml:"http://schemas.google.com/spreadsheets/2006/extended eventname"`
-	Link   string  `json:"link" xml:"http://schemas.google.com/spreadsheets/2006/extended googleeventlink"`
+	Link   string  `json:"link" xml:"http://schemas.google.com/spreadsheets/2006/extended eventlink"`
 	City   string  `json:"city" xml:"http://schemas.google.com/spreadsheets/2006/extended city"`
 	Lat    float64 `json:"lat"`
 	Lng    float64 `json:"lng"`
