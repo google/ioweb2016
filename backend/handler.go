@@ -31,6 +31,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/google/http2preload"
+
 	"golang.org/x/net/context"
 )
 
@@ -190,6 +192,9 @@ func serveTemplate(w http.ResponseWriter, r *http.Request) {
 	b, err := renderTemplate(c, tplname, wantsPartial, data)
 	if err == nil {
 		w.Header().Set("Cache-Control", "public, max-age=300")
+		if !wantsPartial {
+			h2preload(w.Header(), r.Host, tplname)
+		}
 		w.Write(b)
 		return
 	}
@@ -1412,6 +1417,19 @@ func canonicalURL(r *http.Request, q url.Values) string {
 		u.RawQuery = q.Encode()
 	}
 	return u.String()
+}
+
+// h2preload adds HTTP/2 preload header configured in h2config.
+func h2preload(h http.Header, host, tplname string) {
+	a, ok := h2config[tplname]
+	if !ok {
+		return
+	}
+	s := "https"
+	if isDevServer() {
+		s = "http"
+	}
+	http2preload.AddHeader(h, s, path.Join(host, config.Prefix), a)
 }
 
 // ctxKey is a custom type for context.Context values.
