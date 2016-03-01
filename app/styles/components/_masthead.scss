@@ -73,35 +73,35 @@
 
   .drawer-container {
     height: 100%;
-  }
-  paper-toolbar {
-    background-color: $color-cyan-300;
 
-    .bottom {
-      font-size: 14px;
-      line-height: 20px;
-      color: #1E535A;
-    }
+    paper-toolbar {
+      background-color: $color-cyan-300;
 
-    .io-logo {
-      background-image: url('../images/io-logo-white.png');
-    }
-  }
-  #drawer-menu {
-    padding: 0;
-    color: $color-bluegrey-600;
-    .iron-selected {
-      background-color: $color-bluegrey-50;
-    }
-  }
-  .drawer-panel-content {
-    overflow: auto;
+      .io-logo {
+        background-image: url('../images/io-logo-white.png');
+      }
 
-    paper-item {
-      font-size: inherit;
+      .bottom {
+        font-size: 14px;
+        line-height: 20px;
+        color: #1E535A;
+      }
+    }
+    .drawer-menu {
+      color: $color-bluegrey-600;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
 
       a {
-        line-height: 48px; // make a fill up paper-item
+        display: block;
+
+        &.iron-selected {
+          background-color: $color-bluegrey-50;
+        }
+
+        paper-item {
+          font-size: inherit;
+        }
       }
     }
   }

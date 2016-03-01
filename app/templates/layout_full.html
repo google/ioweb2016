@@ -229,33 +229,29 @@ limitations under the License.
         <div>Mountain View, CA</div>
       </div>
     </paper-toolbar>
-    <div class="drawer-panel-content" flex>
-      <!-- TODO: move to paper-listbox and remove import -->
-      <paper-menu id="drawer-menu" selected="{{selectedPage}}"
-                  attr-for-selected="label"
-                  on-iron-activate="closeDrawer">
-        <paper-item label="home">
-          <a href="./" data-ajax-link data-anim-drawer
-             data-track-link="nav-drawer-home">Home</a>
-        </paper-item>
-        <paper-item label="schedule">
-           <a href="schedule#day1" data-ajax-link
-           data-anim-drawer data-track-link="nav-drawer-schedule">Schedule</a>
-        </paper-item>
-        <paper-item label="attend">
-          <a href="attend" data-ajax-link data-anim-drawer
-             data-track-link="nav-drawer-attend">Attending</a>
-        </paper-item>
-        <paper-item label="extended">
-          <a href="extended" data-ajax-link data-anim-drawer
-             data-track-link="nav-drawer-extended">I/O Extended</a>
-        </paper-item>
-        <paper-item label="faq">
-          <a href="faq" data-ajax-link data-anim-drawer
-             data-track-link="nav-drawer-faq">FAQ</a>
-        </paper-item>
-      </paper-menu>
-    </div>
+    <iron-selector class="drawer-menu" selected="{{selectedPage}}" attr-for-selected="label"
+                   on-iron-activate="closeDrawer" activate-event="click" flex>
+      <a href="./" label="home" data-ajax-link data-anim-drawer
+         data-track-link="nav-drawer-home" tabindex="-1">
+        <paper-item>Home</paper-item>
+      </a>
+      <a href="schedule#day1" label="schedule" data-ajax-link data-anim-drawer
+         data-track-link="nav-drawer-schedule" tabindex="-1">
+        <paper-item>Schedule</paper-item>
+      </a>
+      <a href="attend" label="attend" data-ajax-link data-anim-drawer
+         data-track-link="nav-drawer-attend" tabindex="-1">
+        <paper-item>Attending</paper-item>
+      </a>
+      <a href="extended" label="extended" data-ajax-link data-anim-drawer
+         data-track-link="nav-drawer-extended" tabindex="-1">
+        <paper-item>I/O Extended</paper-item>
+      </a>
+      <a href="faq" label="faq" data-ajax-link data-anim-drawer
+         data-track-link="nav-drawer-faq" tabindex="-1">
+        <paper-item>FAQ</paper-item>
+      </a>
+    </iron-selector>
   </div>
 </app-drawer>
 
