@@ -196,6 +196,10 @@ limitations under the License.
     attached: function() {
       // Reset template variables for when revisiting the page.
       this.set('app.fullscreenVideoActive', false);
+
+      if (this.app.isPhoneSize) {
+        this.listen(IOWA.Elements.ScrollContainer, 'scroll', '_onPageScroll');
+      }
     },
 
     detached: function() {
@@ -203,13 +207,19 @@ limitations under the License.
       window.clearInterval(_cyclePhotosInterval);
       _cycleSocialPostsInterval = null;
       _cyclePhotosInterval = null;
+
+      this.unlisten(IOWA.Elements.ScrollContainer, 'scroll', '_onPageScroll');
     },
 
     onPageTransitionDone: function() {
       this.$.ctimer.start(); // Start countdown.
 
       //this._cycleSocialPosts(); TODO: add back after phase 1.
-      this._cyclePhotos();
+
+      // Don't cycle photos on mobile.
+      if (!this.app.isPhoneSize) {
+        this._cyclePhotos();
+      }
     },
 
     // Manage screen reader accessibility for offscreen carousel
@@ -224,6 +234,15 @@ limitations under the License.
 
       photo.setAttribute('aria-hidden', true);
       return;
+    },
+
+    _onPageScroll: function() {
+      this.$.ctimer.stop();
+
+      this.debounce('enablecountdown', function() {
+        this.$.ctimer.start();
+      console.log('here')
+      }, 250);
     },
 
     _computeLoadVideo: function(isDesktopSize, pageTransitionDone) {

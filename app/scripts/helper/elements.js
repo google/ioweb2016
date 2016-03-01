@@ -450,6 +450,10 @@ IOWA.Elements = (function() {
     };
 
     template.initFabScroll = function() {
+      if (this.app.isPhoneSize) {
+        return;
+      }
+
       this.$.fab.style.top = ''; // clear out old styles.
 
       var scroller = IOWA.Elements.ScrollContainer;
@@ -505,7 +509,6 @@ IOWA.Elements = (function() {
 
       if (scrollTop === 0) {
         this.$.navbar.classList.remove('scrolled');
-        this.$.navbar.classList.remove('shadow');
       } else {
         this.$.navbar.classList.add('scrolled');
       }

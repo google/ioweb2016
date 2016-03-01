@@ -123,6 +123,16 @@ IOWA.CountdownTimer.Core.prototype.pad = function(num) {
 IOWA.CountdownTimer.Core.prototype.checkTime = function() {
   var distance = this.unitDistance(this.targetDate, new Date());
 
+  // Only set aria-label once @ page load. Updating it every clock tick is
+  // showing style recalcs in the timeline.
+  if (this.firstRun) {
+    this.containerDomElement.setAttribute('aria-label',
+      distance.days + ' days, ' +
+      distance.hours + ' hours, ' +
+      distance.minutes + ' minutes, ' +
+      distance.seconds + ' seconds until Google I/O');
+  }
+
   if (this.isMobile && this.firstRun) {
     this.bands[0].renderFlat();
     this.bands[1].renderFlat();
@@ -157,12 +167,6 @@ IOWA.CountdownTimer.Core.prototype.checkTime = function() {
 
   this.lastNumbers = distance;
   this.firstRun = false;
-
-  this.containerDomElement.setAttribute('aria-label',
-    distance.days + ' days, ' +
-    distance.hours + ' hours, ' +
-    distance.minutes + ' minutes, ' +
-    distance.seconds + ' seconds until Google I/O');
 };
 
 IOWA.CountdownTimer.Core.prototype.onFrame = function() {
