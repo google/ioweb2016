@@ -211,9 +211,18 @@ func TestServeTemplate(t *testing.T) {
 func TestH2Preload(t *testing.T) {
 	defer resetTestState(t)
 	defer preserveConfig()()
+	// verify we have a h2preload config file
 	var err error
 	if h2config, err = http2preload.ReadManifest("h2preload.json"); err != nil {
 		t.Fatalf("h2preload: %v", err)
+	}
+	// replace actual file content with test entries
+	h2config = http2preload.Manifest{
+		"home": {
+			"elements/elements.html": http2preload.AssetOpt{Type: "document"},
+			"elements/elements.js":   http2preload.AssetOpt{Type: "script"},
+			"styles/main.css":        http2preload.AssetOpt{Type: "style"},
+		},
 	}
 	config.Prefix = "/root"
 
