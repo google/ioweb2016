@@ -204,7 +204,7 @@ limitations under the License.
 </head>
 <body id="page-{% .Slug %}" class="bg-white">
 
-<template is="dom-bind" id="t">
+<template is="dom-bind-defer" id="t">
 
 <google-signin client-id="{% .ClientID %}" scopes="profile email"
                user="{{currentUser}}"></google-signin>
