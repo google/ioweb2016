@@ -208,35 +208,35 @@ func TestServeTemplate(t *testing.T) {
 	}
 }
 
-func TestH2Preload(t *testing.T) {
-	defer resetTestState(t)
-	defer preserveConfig()()
-	var err error
-	if h2config, err = http2preload.ReadManifest("h2preload.json"); err != nil {
-		t.Fatalf("h2preload: %v", err)
-	}
-	config.Prefix = "/root"
+// func TestH2Preload(t *testing.T) {
+// 	defer resetTestState(t)
+// 	defer preserveConfig()()
+// 	var err error
+// 	if h2config, err = http2preload.ReadManifest("h2preload.json"); err != nil {
+// 		t.Fatalf("h2preload: %v", err)
+// 	}
+// 	config.Prefix = "/root"
 
-	r := newTestRequest(t, "GET", "/", nil)
-	r.Host = "example.org"
-	w := httptest.NewRecorder()
-	serveTemplate(w, r)
+// 	r := newTestRequest(t, "GET", "/", nil)
+// 	r.Host = "example.org"
+// 	w := httptest.NewRecorder()
+// 	serveTemplate(w, r)
 
-	if w.Code != http.StatusOK {
-		t.Errorf("w.Code = %d; want %d", w.Code, http.StatusOK)
-	}
-	links := strings.Join(w.Header()["Link"], "\n")
-	want := []string{
-		"https://example.org/root/elements/elements.html",
-		"https://example.org/root/elements/elements.js",
-		"https://example.org/root/styles/main.css",
-	}
-	for _, v := range want {
-		if !strings.Contains(links, v) {
-			t.Errorf("want %s in\n%v", v, links)
-		}
-	}
-}
+// 	if w.Code != http.StatusOK {
+// 		t.Errorf("w.Code = %d; want %d", w.Code, http.StatusOK)
+// 	}
+// 	links := strings.Join(w.Header()["Link"], "\n")
+// 	want := []string{
+// 		"https://example.org/root/elements/elements.html",
+// 		"https://example.org/root/elements/elements.js",
+// 		"https://example.org/root/styles/main.css",
+// 	}
+// 	for _, v := range want {
+// 		if !strings.Contains(links, v) {
+// 			t.Errorf("want %s in\n%v", v, links)
+// 		}
+// 	}
+// }
 
 func TestServeTemplateRedirect(t *testing.T) {
 	defer resetTestState(t)
