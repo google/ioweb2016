@@ -99,10 +99,11 @@ paper-tab a:focus {
 }
 
 /**
- * Aria live region. Should be "hidden" without actually being
+ * Aria live region and countdown. Should be "hidden" without actually being
  * hidden, or else aria live polling won't work
  */
-#live-status {
+#live-status,
+#aria-countdown {
   border: 0;
   clip: rect(0 0 0 0);
   height: 1px;

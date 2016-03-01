@@ -40,9 +40,13 @@ limitations under the License.
   <div layout horizontal end>
     <div id="countdown-container" class="card__container">
       <countdown-timer id="ctimer" date="[[date]]" role="timer"
-          on-countdown-intro="_onIntro"></countdown-timer>
+          on-countdown-intro="_onIntro"
+          current-time="{{currentTime}}"></countdown-timer>
     </div>
   </div>
+
+  <div id="aria-countdown"
+  role="timer" aria-label$="[[currentTime]]">[[currentTime]]</div>
 
   <!-- <paper-toolbar class="navbar__overlay navbar__overlay--video"
                  aria-hidden$="{{!app.fullscreenVideoActive}}" fit>
