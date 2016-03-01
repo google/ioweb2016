@@ -82,7 +82,9 @@ IOWA.A11y = IOWA.A11y || (function() {
 
   // Shortcut to set the focus to the first item in the navigation menu
   function focusNavigation() {
-    IOWA.Elements.NavPaperTabs.items[0].firstElementChild.focus();
+    // Temporarily focus the home link until we add in navigation
+    IOWA.Elements.Nav.querySelector('.io-logo-link').focus();
+    // IOWA.Elements.NavPaperTabs.items[0].firstElementChild.focus();
   }
 
   // Pipe text to an aria-live region. This is automatically trigged

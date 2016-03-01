@@ -344,6 +344,8 @@ IOWA.Elements = (function() {
         IOWA.Elements.ScrollContainer.scrollTop = 0;
         this.$.mainScrollingRegion.classList.remove('smoothscroll');
       }
+      // Move focus to the top of the page
+      IOWA.A11y.focusNavigation();
     };
 
     template.toggleDrawer = function() {
