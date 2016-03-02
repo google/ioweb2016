@@ -23,13 +23,6 @@ each hour is 2 columns.  Each event is a label column and 3 columns of different
   <link rel="import" type="css" href="io-agenda.css">
 
   <template>
-    <iron-media-query query="(min-width:320px) and (max-width:768px)"
-                      query-matches="{{isPhoneSize}}"></iron-media-query>
-    <iron-media-query query="(min-width:769px) and (max-width:1135px)"
-                      query-matches="{{isTabletSize}}"></iron-media-query>
-    <iron-media-query query="(min-width:1136px)"
-                      query-matches="{{isDesktopSize}}"></iron-media-query>
-
     <div class="card__container">
       <div class="card">
         <div class="card-content">
@@ -37,17 +30,6 @@ each hour is 2 columns.  Each event is a label column and 3 columns of different
         </div>
         <div class="card-content">
           <table id="table_agenda">
-            <tfoot>
-            <tr>
-              <td></td>
-              <template is="dom-repeat" items="[[_calculateTime(start, end)]]" as="hour">
-                <td colspan="1" style$="width:[[_cellWidth]]" class="agenda_time">
-                  <span class="agenda_hour">[[hour]]</span>
-                </td>
-                <td colspan="1" style$="width:[[_cellWidth]]"></td>
-              </template>
-            </tr>
-            </tfoot>
             <tbody>
             <template is="dom-repeat" items="[[events]]" as="event">
               <tr>
@@ -68,13 +50,24 @@ each hour is 2 columns.  Each event is a label column and 3 columns of different
               </tr>
             </template>
             </tbody>
+            <tfoot>
+            <tr>
+              <td></td>
+              <template is="dom-repeat" items="[[_calculateTime(start, end)]]" as="hour">
+                <td colspan="1" style$="width:[[_cellWidth]]" class="agenda_time">
+                  <span class="agenda_hour">[[hour]]</span>
+                </td>
+                <td colspan="1" style$="width:[[_cellWidth]]"></td>
+              </template>
+            </tr>
+            </tfoot>
           </table>
         </div>
       </div>
     </div>
   </template>
   <script>
-    (function () {
+    (function() {
       Polymer({
         is: 'io-agenda',
         properties: {
@@ -97,13 +90,13 @@ each hour is 2 columns.  Each event is a label column and 3 columns of different
            * Array of event objects in the following format
            * {
            *   name: 'name of event',
-           *   timeStart: start time as a 24h number ie 8.5 for 8:30am 13.5 for 1:30pm
-           *   timeEnd: end time in the same format
+           *   start: start time as a 24h number ie 8.5 for 8:30am 13.5 for 1:30pm
+           *   end: end time in the same format
            * }
            */
           events: {
             type: Array,
-            value: function () {
+            value: function() {
               return [];
             }
           },
@@ -122,6 +115,10 @@ each hour is 2 columns.  Each event is a label column and 3 columns of different
             type: Number
           },
 
+          app: {
+            type: Object
+          },
+
           _cellWidth: {
             type: String
           }
@@ -129,8 +126,8 @@ each hour is 2 columns.  Each event is a label column and 3 columns of different
         /**
          * When ready calculate each cells width
          */
-        ready: function () {
-          this._cellWidth = 100 / (this.end - this.start) / 2 + "%";
+        ready: function() {
+          this._cellWidth = 100 / (this.end - this.start) / 2 + '%';
         },
 
         /**
@@ -140,8 +137,8 @@ each hour is 2 columns.  Each event is a label column and 3 columns of different
          * @returns {number} number of columns to span
          * @private
          */
-        _calculateLeftSpan: function (event) {
-          return (event.timeStart - this.start) * 2;
+        _calculateLeftSpan: function(event) {
+          return (event.start - this.start) * 2;
         },
 
         /**
@@ -150,8 +147,8 @@ each hour is 2 columns.  Each event is a label column and 3 columns of different
          * @returns {number}
          * @private
          */
-        _calculateEventSpan: function (event) {
-          return (event.timeEnd - event.timeStart) * 2;
+        _calculateEventSpan: function(event) {
+          return (event.end - event.start) * 2;
         },
 
         /**
@@ -161,8 +158,8 @@ each hour is 2 columns.  Each event is a label column and 3 columns of different
          * @returns {number}
          * @private
          */
-        _calculateRightSpan: function (event) {
-          return (this.end - event.timeEnd) * 2;
+        _calculateRightSpan: function(event) {
+          return (this.end - event.end) * 2;
         },
 
         /**
@@ -173,11 +170,11 @@ each hour is 2 columns.  Each event is a label column and 3 columns of different
          * @returns {Array} array of time labels
          * @private
          */
-        _calculateTime: function (start, end) {
+        _calculateTime: function(start, end) {
           var hours = [];
           for (var i = start; i <= end; i++) {
             if (i == 12) {
-              hours.push("12P");
+              hours.push('12P');
             } else {
               hours.push(i % 12);
             }
@@ -193,7 +190,7 @@ each hour is 2 columns.  Each event is a label column and 3 columns of different
          * @returns {boolean} true if colspan is > 0
          * @private
          */
-        _checkZero: function (side, event) {
+        _checkZero: function(side, event) {
           if (side === 'left') {
             return this._calculateLeftSpan(event) > 0;
           } else {

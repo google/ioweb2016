@@ -284,7 +284,7 @@ limitations under the License.
           </div>
         </div>
 
-        <section class$="subpage-agenda subpage__content {{_applyActiveClassWhenSubpage(selectedSubpage, 'agenda')}}">
+        <section class$="subpage-agenda subpage__content bg-bluegrey-50-20 {{_applyActiveClassWhenSubpage(selectedSubpage, 'agenda')}}">
           <section class="page__section page__section--top slide-up">
             <template is="dom-repeat" items="[[agenda]]" as="day">
               <section class="page__section">
@@ -471,89 +471,106 @@ limitations under the License.
         value: false
       },
 
+      /**
+       * Array of Objects representing the agenda to display.  Each Object represents a day's agenda
+       * in the following format:
+       *
+       * {
+       *   day: 'Wednesday, May 18', // Title describing day
+       *   start: 7, // Agenda start time
+       *   end: 22, // Agenda end time
+       *   color: '#ff8a80', // Highlight color for gant bars
+       *   events: [{ // Array of event objects
+       *     name: 'Badge pick-up', // name of event
+       *     start: 9, // Start time in 24h format 13.5 = 1:30 pm
+       *     end: 17, // End time in 24h format
+       *   }]
+       * }
+       */
       agenda: {
         type: Array,
+        readOnly: true,
         value: [{
-          day: "Wednesday, May 18",
+          day: 'Wednesday, May 18',
           start: 7,
           end: 22,
-          color: "#ff8a80",
+          color: '#ff8a80',
           events: [{
             name: 'Badge pick-up',
-            timeStart: 9,
-            timeEnd: 10
+            start: 9,
+            end: 10
           }]
         }, {
-          day: "Thursday, May 19",
+          day: 'Thursday, May 19',
           start: 7,
           end: 22,
-          color: "#80deea",
+          color: '#80deea',
           events: [{
             name: 'Breakfast',
-            timeStart: 7,
-            timeEnd: 8
+            start: 7,
+            end: 8
           }, {
             name: 'Badge pick-up',
-            timeStart: 7,
-            timeEnd: 17
+            start: 7,
+            end: 17
           }, {
             name: 'Pre-keynote show',
-            timeStart: 9,
-            timeEnd: 9.5
+            start: 9,
+            end: 9.5
           }, {
             name: 'Keynote',
-            timeStart: 9.5,
-            timeEnd: 10.5
+            start: 9.5,
+            end: 10.5
           }, {
             name: 'Lunch',
-            timeStart: 12,
-            timeEnd: 14
+            start: 12,
+            end: 14
           }, {
             name: 'Sessions',
-            timeStart: 12,
-            timeEnd: 17
+            start: 12,
+            end: 17
           }, {
             name: 'Code Labs',
-            timeStart: 12,
-            timeEnd: 17
+            start: 12,
+            end: 17
           }, {
             name: 'Sandbox',
-            timeStart: 12,
-            timeEnd: 17
+            start: 12,
+            end: 17
           }, {
             name: 'After Hours',
-            timeStart: 18.5,
-            timeEnd: 22
+            start: 18.5,
+            end: 22
           }]
         }, {
-          day: "Friday, May 20",
+          day: 'Friday, May 20',
           start: 7,
           end: 22,
-          color: "#7986cb",
+          color: '#7986cb',
           events: [{
             name: 'Breakfast',
-            timeStart: 7,
-            timeEnd: 9
+            start: 7,
+            end: 9
           }, {
             name: 'Badge pick-up',
-            timeStart: 8,
-            timeEnd: 15
+            start: 8,
+            end: 15
           }, {
             name: 'Sessions',
-            timeStart: 9,
-            timeEnd: 17
+            start: 9,
+            end: 17
           }, {
             name: 'Lunch',
-            timeStart: 12,
-            timeEnd: 14
+            start: 12,
+            end: 14
           }, {
             name: 'Code Labs',
-            timeStart: 9,
-            timeEnd: 17
+            start: 9,
+            end: 17
           }, {
             name: 'Sandbox',
-            timeStart: 9,
-            timeEnd: 17
+            start: 9,
+            end: 17
           }]
         }]
       }
