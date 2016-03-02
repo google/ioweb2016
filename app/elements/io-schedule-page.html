@@ -30,6 +30,7 @@ limitations under the License.
 <link rel="import" href="PageBehavior.html">
 
 <link rel="import" href="io-schedule.html">
+<link rel="import" href="io-agenda.html">
 
 <dom-module id="io-schedule-page">
 <template>
@@ -285,108 +286,16 @@ limitations under the License.
 
         <section class$="subpage-agenda subpage__content {{_applyActiveClassWhenSubpage(selectedSubpage, 'agenda')}}">
           <section class="page__section page__section--top slide-up">
-            <div class="card__container">
-              <div class="card">
-                <div class="card-content">
-                  <h4>May 27, 2015</h4>
-                </div>
-                <div class="card-content">
-                  <div layout horizontal>
-                    <iron-icon icon="io:schedule" aria-hidden="true"></iron-icon>
-                    <div class="schedule-rows" flex>
-                      <div class="schedule-row" layout vertical$="{{app.isPhoneSize}}"
-                           horizontal$="{{!app.isPhoneSize}}">
-                        <span class="schedule-time">9:00 AM - 8:00 PM</span>
-                        <span class="schedule-title" flex auto-vertical>Badge pick-up</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <template is="dom-repeat" items="[[agenda]]" as="day">
+              <section class="page__section">
+                <io-agenda day="[[day.day]]"
+                           start="[[day.start]]"
+                           end="[[day.end]]"
+                           color="[[day.color]]"
+                           events="[[day.events]]"></io-agenda>
+              </section>
+            </template>
           </section>
-          <div>
-            <section class="page__section">
-              <div class="card__container">
-                <div class="card">
-                  <div class="card-content">
-                    <h4>May 28, 2015</h4>
-                  </div>
-                  <div class="card-content">
-                    <div layout horizontal>
-                      <iron-icon icon="io:schedule" aria-hidden="true"></iron-icon>
-                      <div class="schedule-rows" flex>
-                        <div class="schedule-row" layout vertical$="{{app.isPhoneSize}}" horizontal$="{{!app.isPhoneSize}}">
-                          <span class="schedule-time">7:00 AM - 9:00 AM</span>
-                          <span class="schedule-title" flex auto-vertical>Breakfast</span>
-                        </div>
-                        <div class="schedule-row" layout vertical$="{{app.isPhoneSize}}" horizontal$="{{!app.isPhoneSize}}">
-                          <span class="schedule-time">7:00 AM - 5:00 PM</span>
-                          <span class="schedule-title" flex auto-vertical>Badge pick-up</span>
-                        </div>
-                        <div class="schedule-row" layout vertical$="{{app.isPhoneSize}}" horizontal$="{{!app.isPhoneSize}}">
-                          <span class="schedule-time">9:00 AM - 9:30 AM</span>
-                          <span class="schedule-title" flex auto-vertical>Pre-keynote show</span>
-                        </div>
-                        <div class="schedule-row" layout vertical$="{{app.isPhoneSize}}" horizontal$="{{!app.isPhoneSize}}">
-                          <span class="schedule-time">9:30 AM</span>
-                          <span class="schedule-title" flex auto-vertical>Keynote</span>
-                        </div>
-                        <div class="schedule-row" layout vertical$="{{app.isPhoneSize}}" horizontal$="{{!app.isPhoneSize}}">
-                          <span class="schedule-time">12:00 PM - 5:00 PM</span>
-                          <span class="schedule-title" flex auto-vertical>Code labs, Sessions &amp; Sandbox</span>
-                        </div>
-                        <div class="schedule-row" layout vertical$="{{app.isPhoneSize}}" horizontal$="{{!app.isPhoneSize}}">
-                          <span class="schedule-time">12:00 PM - 2:00 PM</span>
-                          <span class="schedule-title" flex auto-vertical>Lunch</span>
-                        </div>
-                        <div class="schedule-row" layout vertical$="{{app.isPhoneSize}}" horizontal$="{{!app.isPhoneSize}}">
-                          <span class="schedule-time">6:30 PM - 10:00 PM</span>
-                          <span class="schedule-title" flex auto-vertical>After Hours</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
-            <section class="page__section">
-              <div class="card__container">
-                <div class="card">
-                  <div class="card-content">
-                    <h4>May 29, 2015</h4>
-                  </div>
-                  <div class="card-content">
-                    <div layout horizontal>
-                      <iron-icon icon="io:schedule" aria-hidden="true"></iron-icon>
-                      <div class="schedule-rows" flex>
-                        <div class="schedule-row" layout vertical$="{{app.isPhoneSize}}" horizontal$="{{!app.isPhoneSize}}">
-                          <span class="schedule-time">7:00 AM - 9:00 AM</span>
-                          <span class="schedule-title" flex auto-vertical>Breakfast</span>
-                        </div>
-                        <div class="schedule-row" layout vertical$="{{app.isPhoneSize}}" horizontal$="{{!app.isPhoneSize}}">
-                          <span class="schedule-time">8:00 AM - 3:00 PM</span>
-                          <span class="schedule-title" flex auto-vertical>Badge pick-up</span>
-                        </div>
-                        <div class="schedule-row" layout vertical$="{{app.isPhoneSize}}" horizontal$="{{!app.isPhoneSize}}">
-                          <span class="schedule-time">9:00 AM - 5:00 PM</span>
-                          <span class="schedule-title" flex auto-vertical>Code labs, Sessions &amp; Sandbox</span>
-                        </div>
-                        <div class="schedule-row" layout vertical$="{{app.isPhoneSize}}" horizontal$="{{!app.isPhoneSize}}">
-                          <span class="schedule-time">12:00 PM - 2:00 PM</span>
-                          <span class="schedule-title" flex auto-vertical>Lunch</span>
-                        </div>
-                        <div class="schedule-row" layout vertical$="{{app.isPhoneSize}}" horizontal$="{{!app.isPhoneSize}}">
-                          <span class="schedule-time">5:00 PM</span>
-                          <span class="schedule-title" flex auto-vertical>End of event</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
-          </div>
         </section>
 
         <section class$="subpage-day1 subpage-day2 subpage-myschedule subpage__content {{_applyActiveClassWhenNotSubpage(selectedSubpage, 'agenda')}}">
