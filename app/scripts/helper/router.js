@@ -47,13 +47,7 @@ IOWA.Router_ = function(window) {
     window.addEventListener('popstate', function() {
       this.navigate(window.location.href, 'page-slide-transition');
     }.bind(this));
-
-    // On iOS, we don't have event bubbling to the document level.
-    // http://www.quirksmode.org/blog/archives/2010/09/click_event_del.html
-    var eventName = IOWA.Util.isIOS() || IOWA.Util.isTouchScreen() ?
-        'touchstart' : 'click';
-
-    document.addEventListener(eventName, this.onClick.bind(this));
+    document.addEventListener('click', this.onClick.bind(this));
   };
 
   /**

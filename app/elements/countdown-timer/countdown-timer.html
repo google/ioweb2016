@@ -86,6 +86,7 @@ Fired when the intro sequence starts or finishes.
          */
         attached: function() {
           this.countdownController = new IOWA.CountdownTimer.Core(new Date(this.date), Polymer.dom(this).node);
+          this.countdownController.setUp(_skipIntro);
           this.countdownController.attachEvents();
         },
 

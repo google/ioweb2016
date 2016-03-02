@@ -71,13 +71,10 @@ IOWA.Elements = (function() {
     IOWA.Elements.GoogleSignIn = signin;
     IOWA.Elements.LazyPages = lazyPages;
 
-    Object.defineProperty(IOWA.Elements, 'ScrollContainer', {
-      get: function() {
-        var header = IOWA.Elements.Template.$.header;
-        return header.scroller || header.scrollTarget;
-      },
-      enumerable: true
-    });
+    IOWA.Elements.ScrollContainer = document.querySelector('#mainScrollingRegion');
+
+    masthead.scroller = IOWA.Elements.ScrollContainer;
+    masthead.scrollTarget = IOWA.Elements.ScrollContainer;
 
     // Kickoff a11y helpers for elements
     IOWA.A11y.init();
@@ -343,11 +340,9 @@ IOWA.Elements = (function() {
       if (IOWA.Util.isFF()) {
         IOWA.Elements.ScrollContainer.scrollTop = 0;
       } else {
-        this.$.headerpanel.classList.add('smoothscroll');
-        this.$.headerpanel.updateStyles(); // force css shim update.
+        this.$.mainScrollingRegion.classList.add('smoothscroll');
         IOWA.Elements.ScrollContainer.scrollTop = 0;
-        this.$.headerpanel.classList.remove('smoothscroll');
-        this.$.headerpanel.updateStyles(); // force css shim update.
+        this.$.mainScrollingRegion.classList.remove('smoothscroll');
       }
     };
 

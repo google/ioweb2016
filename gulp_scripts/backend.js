@@ -32,7 +32,8 @@ function copy(appenv, callback) {
   gulp.src([
     IOWA.backendDir + '/**/*.go',
     IOWA.backendDir + '/*.yaml',
-    IOWA.backendDir + '/*.config'
+    IOWA.backendDir + '/*.config',
+    IOWA.backendDir + '/h2preload.json'
   ], {base: './'})
   .pipe(gulp.dest(IOWA.distDir))
   .on('end', function() {

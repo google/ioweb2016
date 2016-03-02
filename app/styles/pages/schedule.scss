@@ -26,6 +26,10 @@ $name: 'page-schedule';
 
 ##{$name} {
 
+io-schedule-page {
+  min-height: 800px; // Don't want to see the footer on page load.
+}
+
 .meta-filter {
   @include keyline-16();
 }
@@ -106,8 +110,6 @@ iron-icon[icon="schedule"] {
 
 .schedule-time {
   font-size: 14px;
-  margin-right: 80px;
-  width: 80px;
   white-space: nowrap;
 }
 
@@ -242,11 +244,7 @@ iron-icon[icon="schedule"] {
       color: $color-grey-50 !important;
     }
   }
-  paper-progress {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-  }
+
   paper-icon-button {
     z-index: 10;
     color: #000;
@@ -355,9 +353,6 @@ iron-icon[icon="schedule"] {
 }
 
 @media (max-width: $phone-breakpoint-max) {
-  .schedule-title {
-    order: -1;
-  }
   .session__detail {
     margin: 0;
     left: 0 !important;
