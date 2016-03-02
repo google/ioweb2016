@@ -3,6 +3,8 @@
   "short_name": "I/O 2016",
   "start_url": "./?utm_source=web_app_manifest",
   "display": "standalone",
+  "theme_color": "#546E7A",
+  "background_color": "#546E7A",
   "icons": [{
     "src": "images/touch/homescreen48.png",
     "sizes": "48x48",

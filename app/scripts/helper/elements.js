@@ -103,7 +103,7 @@ IOWA.Elements = (function() {
     template._fabCrossFooterThreshold = null; // Scroll limit when FAB sticks.
     template._fabPinTop = null; // Top to pin FAB at.
 
-    IOWA.Util.setMetaThemeColor('#CFD8DC'); // bg-medium-grey in colors.scss.
+    IOWA.Util.setMetaThemeColor('#546E7A');
 
     // template.closeVideoCard = function() {
     //   this.cardVideoTakeover(this.currentCard, true);
