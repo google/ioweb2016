@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="68px" height="68px" viewBox="0 0 68 68" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs></defs>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g transform="translate(-372.000000, -1198.000000)">
+            <g transform="translate(372.000000, 1198.000000)">
+                <circle fill="#FF8A80" cx="34" cy="34" r="34"></circle>
+                <path d="M34,32.9285714 C31.8314286,32.9285714 30.0714286,31.1685714 30.0714286,29 C30.0714286,26.8314286 31.8314286,25.0714286 34,25.0714286 C36.1685714,25.0714286 37.9285714,26.8314286 37.9285714,29 C37.9285714,31.1685714 36.1685714,32.9285714 34,32.9285714 M34,18 C27.9185714,18 23,22.9185714 23,29 C23,37.25 34,49.4285714 34,49.4285714 C34,49.4285714 45,37.25 45,29 C45,22.9185714 40.0814286,18 34,18" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -20,303 +20,196 @@ $name: 'page-extended';
 @import '../base/_layout';
 @import '../base/_color';
 @import '../base/_breakpoints';
+@import '../base/typography';
 
 ##{$name} {
 
-$icon-margin: 10px;
-
-.card__photo--stage {
-  height: 310px;
-  background: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)), url(../images/extended/stage-887@2x.jpg);
-  background-position: 50% 50%;
-  background-size: cover;
-  background-repeat: no-repeat;
-
-  h5 {
-    color: white;
-    text-shadow: .5px .5px 1px rgba(0, 0, 0, 0.25);
-    position: relative;
-    top: $mobileKeyline;
-  }
-}
-
-google-youtube {
-  opacity: 0;
-}
-
-.play__button__container {
-  opacity: 0.8;
-  cursor: pointer;
-}
-
-.page__section--attend {
-  position: relative;
-  color: #fff;
-
-  &.no-webgl {
-    @extend .bg-globe;
-    background-position: 50% 140px;
+  h5, p {
+    font-size: 16px;
   }
 
-  padding-left: 0;
-  padding-right: 0;
-  padding-bottom: 0;
-
-  h2 {
-    padding: 0 $mobileKeyline 0 $mobileKeyline;
+  h4 {
+    font-size: 24px;
+    margin-top: 4px;
+    margin-bottom: 8px;
   }
 
-  .action__links {
-    align-items: flex-start;
+  .masthead-meta {
+    h1 {
+      margin-bottom: 9px;
 
-    paper-button {
-      color: $color-google-green-500;
-    }
-
-    h4 {
-      position: absolute;
-      left: 0;
-    }
-
-    iron-icon {
-      margin-right: $icon-margin;
-    }
-  }
-
-  .attend__globe {
-    height: 150px;
-  }
-
-  .search__map {
-    position: absolute;
-    top: 0;
-    right: 0;
-    opacity: 0;
-    visibility: hidden;
-
-    iron-icon {
-      position: absolute;
-      right: 0;
-      bottom: calc(50% - 30px/2 + 2px); // 30px is height of input container.
-      margin: 0;
-    }
-    paper-input {
-      width: 95vw;
-    }
-  }
-
-  .marker-results {
-    position: absolute;
-    width: 350px;
-    margin-top: 12px;
-    pointer-events: none;
-    overflow: auto;
-    transition: all 300ms cubic-bezier(0,0,0.2,1);
-    will-change: opacity, transform;
-    transform: translateY(-25px);
-    opacity: 0;
-
-    &.active {
-      pointer-events: auto;
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .card-content {
-      padding: $mobileKeyline;
-      cursor: pointer;
-
-      &.active {
-        background-color: #eee;
+      @media (min-width: $desktop-breakpoint-max) {
+        font-size: 54px;
       }
+    }
+  }
 
-      .card__title {
-        padding-bottom: $mobileKeyline / 2;
-      }
+  .card-content {
+    padding-right: 64px;
 
-      h4 {
-        max-width: 92%;
+    @media (min-width: 1800px) {
+    h5 {
+        font-size: 35px;
+        line-height: 1.3;
       }
+    }
+
+    @media (max-width: $tablet-breakpoint-max) {
+      padding-right: $largeKeyline;
+    }
+  }
+
+  .extended-full-width {
+    width: 100%;
+  }
+
+  .card__photo {
+    background: transparent url(../images/extended/io-extended-group.jpg) center center no-repeat;
+    background-size: cover;
+    padding: 0;
+  }
+
+  .details {
+    padding: 40px 0;
+
+    h5,
+    p {
+      max-width: 650px;
+
+      @media (max-width: $tablet-breakpoint-mid) {
+        max-width: 600px;
+      }
+    }
+  }
+
+  .details--wrapper {
+    padding: 40px 0 40px 20%;
+
+    @media (max-width: $tablet-breakpoint-mid) {
+      padding: 20px 16px;
+    }
+
+    @media (max-width: $phone-breakpoint-max) {
+      display: block;
     }
 
     a {
-      color: $color-google-green-500;
-      text-transform: none;
-    }
-
-    .close-button {
-      position: absolute;
-      right: $mobileKeyline / 2;
-      top: $mobileKeyline / 2;
-      color: $color-grey-50;
+      @include typo-button();
+      color: #00838F;
     }
   }
-}
 
-.marker-card--closest {
-  font-size: 12px;
-  color: $color-grey-50;
-  margin-top: $mobileKeyline / 2;
-  display: none;
+  .details--text-container {
+    border-bottom: 1px solid $color-grey-300;
+    padding-bottom: 40px;
+    padding-right: 25%;
+    width: 100%;
 
-  &.show {
-    display: block;
-  }
-}
-
-// Smaller than n6
-@media (max-width: 400px) {
-  .search__map {
-    top: 42px !important;
-  }
-}
-
-@media (max-width: $phone-breakpoint-max) {
-  .marker-results {
-    width: 100% !important;
-    margin-top: $desktopKeyline !important;
-  }
-  .search__map {
-    left: $mobileKeyline;
-    right: $mobileKeyline !important;
-  }
-  .action__links {
-    h4 {
-      padding: $mobileKeyline;
-      top: 80px;
-      z-index: 1;
+    @media (max-width: $tablet-breakpoint-mid) {
+      padding-bottom: 10px;
     }
   }
-  .navbar__overlay--extended {
-    background-color: $color-bluegrey-700;
+
+  .details--info-block {
+    margin-bottom: $tabletKeyline;
   }
-}
 
-@media (min-width: 520px) {
-  .page__section--attend {
-    background-position: 50% 0;
+  .details--links {
+    a {
+      display: inline-block;
+    }
+
+    a:first-child {
+      margin-right: 40px;
+    }
   }
-}
 
+  .details--icon {
+    background-size: 100%;
+    height: 72px;
+    margin: 0 32px 0 0;
+    width: 72px;
 
-@media (min-width: $tablet-breakpoint-min) {
-  $marginTop: 140px;
+    @media (max-width: $phone-breakpoint-max) {
+      margin: 0 0 32px 0;
+    }
+  }
 
-  .card__photo--stage {
-    height: 900px;
+  .host {
+    // border-bottom: 1px solid #e0e0e0;
+
+    .details--icon {
+      background: transparent url(../images/extended/icon-host.svg) center center no-repeat;
+    }
+  }
+
+  .find {
+    .details--icon {
+      background: transparent url(../images/extended/icon-find.svg) center center no-repeat;
+    }
+  }
+
+  .embed {
+    .details--icon {
+      background: transparent url(../images/extended/icon-embed.svg) center center no-repeat;
+    }
+
+    .detail__text {
+      margin-bottom: 0;
+    }
+  }
+
+  #map-container {
+    background-color: #b3d1ff;
+    height: 0;
+    margin-bottom: 40px;
+    padding-bottom: (1 / 2) * 100%;
     position: relative;
-    margin-top: -190px;
-    margin-bottom: -226px;
-  }
-  .play__button__container {
-    margin-bottom: 130px;
-  }
-  .page__section--attend {
-    background-position: 50% 90px;
-    margin-top: -80px;
-    padding-top: $marginTop;
 
-    h2 {
-      max-width: 68%;
-      padding: 0 $desktopKeyline 0 $desktopKeyline;
+    @media (max-width: $tablet-breakpoint-min) {
+      padding-bottom: (2 / 3) * 100%;
     }
 
-    .action__links {
-      position: absolute;
-      top: $marginTop;
-      left: $desktopKeyline;
-      right: $desktopKeyline;
-      align-items: flex-end;
-
-      iron-icon {
-        order: 1;
-        margin-left: $icon-margin;
-      }
-
-      h4 {
-        max-width: 60%;
-      }
-
-      .view__events {
-        position: absolute;
-        right: 0;
-      }
-
-      .search__map {
-        paper-input {
-          width: 300px;
-        }
-      }
-    }
-
-    .attend__globe {
-      height: 500px;
-    }
-
-    .marker-results {
-      max-height: 50%;
-      left: $desktopKeyline;
+    @media (max-width: $phone-breakpoint-max) {
+      padding-bottom: (3 / 4) * 100%;
     }
   }
 
-  // Phase 3
-  .card__iorequest {
-    margin-top: -40px;
+  .map-marker h5,
+  .map-marker p {
+    font-size: 16px;
   }
-  // ----
 
-}
-
-
-@media (min-width: $tablet-breakpoint-min) and (max-width: $tablet-breakpoint-mid) {
-  .card__photo--stage {
-    margin-top: -246px;
+  .map-marker p {
+    margin-bottom: 0;
   }
-}
 
-@media (min-width: $desktop-breakpoint-mid) {
-   $marginTop: 100px;
-
-  .card__photo--stage {
-    margin-top: -170px;
+  .map-marker a {
+    color: #01828f;
   }
-  .page__section--attend {
-    margin-top: -36px;
-    padding-top: $marginTop;
-    background-size: cover;
-    background-position: 50% 140px;
 
-    h2 {
-      padding: 0 $largeKeyline 0 $largeKeyline;
-    }
+  #searchBox {
+    background: white;
+    border-radius: 2px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2), 0 -1px 0 rgba(0,0,0,0.02);
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    z-index: 1;
+  }
 
-    .action__links {
-      top: $marginTop;
-      left: $largeKeyline;
-      right: $largeKeyline;
-    }
-
-    .marker-results {
-      left: $largeKeyline;
+  #searchBox input {
+    border: 0;
+    padding: 12px 12px 12px 12px;
+    height: 48px;
+    font-size: 16px;
+    width: 392px;
+    @media (max-width: $tablet-breakpoint-min) {
+      width: 196px;
     }
   }
-}
 
-@media (min-width: $desktop-breakpoint-max) {
-  $marginTop: 180px;
-  .page__section--attend {
-    padding-top: $marginTop;
-    margin-top: -108px;
-
-    .action__links {
-      top: $marginTop;
-    }
+  #searchBox input:focus {
+    outline: 0;
   }
-  .card__photo--stage {
-    margin-top: -170px;
-    margin-bottom: -64px;
-  }
-}
-
-
 }
