@@ -14,6 +14,7 @@ $name: 'page-attend';
 @import '../base/vars';
 @import '../base/layout';
 @import '../base/breakpoints';
+@import '../base/color';
 
 
 ##{$name} {
@@ -57,6 +58,12 @@ $name: 'page-attend';
     background: transparent url(../images/attend/io-attending-landscape.jpg) center center no-repeat;
     background-size: cover;
     padding: 0;
+    
+    h5 {
+      position: absolute;
+      bottom: 10px;
+      left: 20px;
+    }
   }
   
   .details {   
@@ -64,7 +71,7 @@ $name: 'page-attend';
     
     h5,
     p {
-      max-width: 656px;
+      max-width: 650px;
      
       @media (max-width: $tablet-breakpoint-mid) {
         max-width: 600px;
@@ -75,17 +82,35 @@ $name: 'page-attend';
   .details--wrapper {
     display: flex;
     flex-direction: row;
-    max-width: 760px;
-    margin: 0 auto;
-    padding: 40px 0;
-    border-bottom: 1px solid #e0e0e0;
+    padding: 40px 0 40px 20%;
+    
+    @media (min-width: 1600px) {
+      padding-left: 26%;
+    }
     
     @media (max-width: $tablet-breakpoint-mid) {
-      padding: 40px 16px;
+      padding: 40px 20px 20px;
+      border-bottom: 1px solid $color-mdgrey-300;
     }
     
     @media (max-width: $phone-breakpoint-max) {
       display: block;
+    }
+  }
+  
+  .details--text-container {
+    padding-right: 25%;
+    padding-bottom: 40px;
+    border-bottom: 1px solid $color-mdgrey-300;
+    width: 100%;
+    
+    @media (min-width: 1600px) {
+      padding-right: 32.5%;
+    }
+       
+    @media (max-width: $tablet-breakpoint-mid) {
+      padding-bottom: 10px;
+      border-bottom: none;
     }
   }
   
@@ -103,9 +128,13 @@ $name: 'page-attend';
   
   .detail__text {
     margin-bottom: 18px;
+    
+    &.no-bottom-margin {
+      margin-bottom: 0;
+    }
   }
   
-  .detail__link {
+  .detail__link, a {
     color: #00838F;
   }
 
@@ -137,15 +166,27 @@ $name: 'page-attend';
     }
   }
   
-  .hotels { 
-    
-    &.details--wrapper {
-      border-bottom: none;
+  .parking { 
+    .details--icon {
+      background: transparent url(../images/attend/parking-icon.svg) center center no-repeat;
+      background-size: 100%;
     }
+  }
+  
+  .hotels { 
     
     .details--icon {
       background: transparent url(../images/attend/hotels-icon.svg) center center no-repeat;
       background-size: 100%;
+    }
+    
+    .details--text-container {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    
+    &.details--wrapper {
+      border-bottom: none;
     }
     
     .detail__text {
