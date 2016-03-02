@@ -17,9 +17,8 @@ limitations under the License.
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../bower_components/google-map/google-map.html">
+<link rel="import" href="../bower_components/google-map-markerclusterer/google-map-markerclusterer.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
-
-<!-- <link rel="import" href="io-extended-map.html"> -->
 
 <link rel="import" href="io-gallery.html">
 <link rel="import" href="shared-app-styles.html">
@@ -101,7 +100,9 @@ limitations under the License.
               <paper-icon-button icon="io:search"></paper-icon-button>
             </div>
 
+            <google-map-markerclusterer map="{{map}}" id="cluster"></google-map-markerclusterer>
             <google-map id="map"
+                        map="{{map}}"
                         client-id="google-io"
                         on-google-map-ready="mapReady"
                         fit
@@ -187,6 +188,12 @@ limitations under the License.
 
     onLoadExtendedLocations: function(e) {
       this.extendedLocations = e.detail.response;
+
+      this.async(function() {
+        this.$.cluster.markers = this.$.map.markers.map(function(m) {
+          return m.marker;
+        });
+      }, 1000);
     },
 
     mapReady: function() {
