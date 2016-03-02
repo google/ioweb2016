@@ -43,17 +43,9 @@
   window.addEventListener('rejectionhandled', function(event) {
     debugLog('rejectionhandled fired: ' + event.reason);
 
-    // If a previously rejected promise is handled, remove it from the list by
-    // replacing it with the last queued unhandled rejection (if one exists).
-    for (var i = 0; i < unhandledRejections.length; i++) {
-      if (unhandledRejections[i].promise === event.promise) {
-        var lastEntry = unhandledRejections.pop();
-        if (lastEntry.promise !== event.promise) {
-          unhandledRejections[i] = lastEntry;
-        }
-        return;
-      }
-    }
+    // If a previously rejected promise is handled, remove it from the list.
+    unhandledRejections = unhandledRejections.filter(rejection =>
+        rejection.promise !== event.promise);
   });
 
   function initWorker() {
