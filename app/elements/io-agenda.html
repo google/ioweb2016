@@ -1,0 +1,203 @@
+<!--
+Copyright 2016 Google Inc. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+
+<!--
+The `<io-agenda>` element renders the agenda for a given day.  It uses a table to render and
+each hour is 2 columns.  Each event is a label column and 3 columns of different spans.
+-->
+<dom-module id="io-agenda">
+  <link rel="import" type="css" href="io-agenda.css">
+
+  <template>
+    <div class="card__container">
+      <div class="card">
+        <div class="card-content">
+          <h4>[[day]]</h4>
+        </div>
+        <div class="card-content">
+          <table id="table_agenda">
+            <tbody>
+            <template is="dom-repeat" items="[[events]]" as="event">
+              <tr>
+                <td class="row_label">[[event.name]]</td>
+                <template is="dom-if" if="[[_checkZero('left', event)]]">
+                  <td colspan$="[[_calculateLeftSpan(event)]]">
+                    <div class="filler"></div>
+                  </td>
+                </template>
+                <td colspan$="[[_calculateEventSpan(event)]]">
+                  <div class="filler highlighted" style$="background:[[color]];"></div>
+                </td>
+                <template is="dom-if" if="[[_checkZero('left', event)]]">
+                  <td colspan$="[[_calculateRightSpan(event)]]">
+                    <div class="filler"></div>
+                  </td>
+                </template>
+              </tr>
+            </template>
+            </tbody>
+            <tfoot>
+            <tr>
+              <td></td>
+              <template is="dom-repeat" items="[[_calculateTime(start, end)]]" as="hour">
+                <td colspan="1" style$="width:[[_cellWidth]]" class="agenda_time">
+                  <span class="agenda_hour">[[hour]]</span>
+                </td>
+                <td colspan="1" style$="width:[[_cellWidth]]"></td>
+              </template>
+            </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+  </template>
+  <script>
+    (function() {
+      Polymer({
+        is: 'io-agenda',
+        properties: {
+          /**
+           * Label for the day e.g. Wednesday May 18
+           */
+          day: {
+            type: String
+          },
+
+          /**
+           * Highlight color in hex format
+           */
+          color: {
+            type: String,
+            value: "#03a9f4"
+          },
+
+          /**
+           * Array of event objects in the following format
+           * {
+           *   name: 'name of event',
+           *   start: start time as a 24h number ie 8.5 for 8:30am 13.5 for 1:30pm
+           *   end: end time in the same format
+           * }
+           */
+          events: {
+            type: Array,
+            value: function() {
+              return [];
+            }
+          },
+
+          /**
+           * Start time of agenda as a 24h number ie 8.5 for 8:30am 13.5 for 1:30pm
+           */
+          start: {
+            type: Number
+          },
+
+          /**
+           * End time of agenda as 24h number
+           */
+          end: {
+            type: Number
+          },
+
+          app: {
+            type: Object
+          },
+
+          _cellWidth: {
+            type: String
+          }
+        },
+        /**
+         * When ready calculate each cells width
+         */
+        ready: function() {
+          this._cellWidth = 100 / (this.end - this.start) / 2 + '%';
+        },
+
+        /**
+         * Calculate the colspan of the left buffer
+         *
+         * @param event event to render
+         * @returns {number} number of columns to span
+         * @private
+         */
+        _calculateLeftSpan: function(event) {
+          return (event.start - this.start) * 2;
+        },
+
+        /**
+         * Calculate the colspan of the event
+         * @param event
+         * @returns {number}
+         * @private
+         */
+        _calculateEventSpan: function(event) {
+          return (event.end - event.start) * 2;
+        },
+
+        /**
+         * Calculate the colspan of the right buffer
+         *
+         * @param event
+         * @returns {number}
+         * @private
+         */
+        _calculateRightSpan: function(event) {
+          return (this.end - event.end) * 2;
+        },
+
+        /**
+         * Creates the array of time labels
+         *
+         * @param start agenda start time
+         * @param end agenda end time
+         * @returns {Array} array of time labels
+         * @private
+         */
+        _calculateTime: function(start, end) {
+          var hours = [];
+          for (var i = start; i <= end; i++) {
+            if (i == 12) {
+              hours.push('12P');
+            } else {
+              hours.push(i % 12);
+            }
+          }
+          return hours;
+        },
+
+        /**
+         * Returns true if the colspan is > 0
+         *
+         * @param side left or right
+         * @param event event to render
+         * @returns {boolean} true if colspan is > 0
+         * @private
+         */
+        _checkZero: function(side, event) {
+          if (side === 'left') {
+            return this._calculateLeftSpan(event) > 0;
+          } else {
+            return this._calculateRightSpan(event) > 0;
+          }
+        }
+      })
+    })();
+  </script>
+</dom-module>
