@@ -17,21 +17,20 @@
 (function() {
   var PROMISE_REJECTION_LOGGING_DELAY = 10 * 1000; // 10s
   var logRejectionTimeoutId;
-  var unhandledRejections = new Map();
+  var unhandledRejections = [];
 
   function logRejectedPromises() {
-    for (var reason of unhandledRejections.values()) {
-      IOWA.Analytics.trackError('UnhandledPromiseRejection', reason);
-    }
+    unhandledRejections.forEach(({reason}) =>
+        IOWA.Analytics.trackError('UnhandledPromiseRejection', reason));
 
-    unhandledRejections.clear();
+    unhandledRejections = [];
     logRejectionTimeoutId = null;
   }
 
   window.addEventListener('unhandledrejection', function(event) {
     debugLog('unhandledrejection fired: ' + event.reason);
-    // Keep track of rejected promises by adding them to the Map.
-    unhandledRejections.set(event.promise, event.reason);
+    // Keep track of rejected promises by adding them to the list.
+    unhandledRejections.push({promise: event.promise, reason: event.reason});
 
     // We need to wait before we log this rejected promise, since there's a
     // chance it will be caught later on, in which case it's not an error.
@@ -43,8 +42,10 @@
 
   window.addEventListener('rejectionhandled', function(event) {
     debugLog('rejectionhandled fired: ' + event.reason);
-    // If a previously rejected promise is handled, remove it from the Map.
-    unhandledRejections.delete(event.promise);
+
+    // If a previously rejected promise is handled, remove it from the list.
+    unhandledRejections = unhandledRejections.filter(rejection =>
+        rejection.promise !== event.promise);
   });
 
   function initWorker() {
