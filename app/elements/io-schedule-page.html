@@ -33,12 +33,12 @@ limitations under the License.
 <link rel="import" href="io-agenda.html">
 
 <dom-module id="io-schedule-page">
+<link rel="import" type="css" href="io-schedule-page.css">
 <template>
-  <style include="shared-app-styles">
-    :host {
-      display: block;
-    }
-  </style>
+
+
+  <style include="shared-app-styles"></style>
+
 
 <div class="masthead-container" layout vertical end-justified>
   <div class="masthead-meta">
@@ -286,6 +286,19 @@ limitations under the License.
 
         <section class$="subpage-agenda subpage__content bg-bluegrey-50-20 {{_applyActiveClassWhenSubpage(selectedSubpage, 'agenda')}}">
           <section class="page__section page__section--top slide-up">
+            <div class="card__container bg-cyan-300">
+              <div class="card">
+                <div class="card-content max-width-800 text-justified">
+                  I/O'16 takes place over the course of 3 days in May, from the 18th-20th.  On-site
+                  badge
+                  pick-up is available Wednesday, May 18 from 9-10AM.  Below is an overview of the
+                  activites taking place over the course of the conference.
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="page__section slide-up-delay" id="agenda_content">
             <template is="dom-repeat" items="[[agenda]]" as="day">
               <section class="page__section">
                 <io-agenda day="[[day.day]]"
