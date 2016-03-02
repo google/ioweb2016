@@ -42,7 +42,7 @@ each hour is 2 columns.  Each event is a label column and 3 columns of different
                 <td colspan$="[[_calculateEventSpan(event)]]">
                   <div class="filler highlighted" style$="background:[[color]];"></div>
                 </td>
-                <template is="dom-if" if="[[_checkZero('left', event)]]">
+                <template is="dom-if" if="[[_checkZero('right', event)]]">
                   <td colspan$="[[_calculateRightSpan(event)]]">
                     <div class="filler"></div>
                   </td>
