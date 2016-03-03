@@ -48,50 +48,50 @@
         rejection.promise !== event.promise);
   });
 
-  function initWorker() {
-    var MAX_WORKER_TIMEOUT_ = 10 * 1000; // 10s
-    var worker;
+  // function initWorker() {
+  //   var MAX_WORKER_TIMEOUT_ = 10 * 1000; // 10s
+  //   var worker;
 
-    var doMetrics = window.performance && window.performance.now;
+  //   var doMetrics = window.performance && window.performance.now;
 
-    if (doMetrics) {
-      var workerStartTime = window.performance.now();
-      worker = new Worker('data-worker-scripts.js');
-      var total = window.performance.now() - workerStartTime;
+  //   if (doMetrics) {
+  //     var workerStartTime = window.performance.now();
+  //     worker = new Worker('data-worker-scripts.js');
+  //     var total = window.performance.now() - workerStartTime;
 
-      debugLog('worker startup:', total, 'ms');
-      IOWA.Analytics.trackPerf('worker', 'creation', Math.ceil(total),
-                               null, MAX_WORKER_TIMEOUT_);
-    } else {
-      worker = new Worker('data-worker-scripts.js');
-    }
+  //     debugLog('worker startup:', total, 'ms');
+  //     IOWA.Analytics.trackPerf('worker', 'creation', Math.ceil(total),
+  //                              null, MAX_WORKER_TIMEOUT_);
+  //   } else {
+  //     worker = new Worker('data-worker-scripts.js');
+  //   }
 
-    var workerFetchTime;
-    if (doMetrics) {
-      workerFetchTime = window.performance.now();
-    }
+  //   var workerFetchTime;
+  //   if (doMetrics) {
+  //     workerFetchTime = window.performance.now();
+  //   }
 
-    worker.addEventListener('message', function(e) {
-      if (!e.data) {
-        return;
-      }
+  //   worker.addEventListener('message', function(e) {
+  //     if (!e.data) {
+  //       return;
+  //     }
 
-      var data = e.data;
-      if (data.scheduleData) {
-        // Report how long the worker fetch took to GA.
-        if (doMetrics) {
-          var total = window.performance.now() - workerFetchTime;
-          debugLog('worker fetch:', total, 'ms');
-          IOWA.Analytics.trackPerf('worker', 'data fetch', Math.ceil(total),
-                                   null, MAX_WORKER_TIMEOUT_);
-        }
+  //     var data = e.data;
+  //     if (data.scheduleData) {
+  //       // Report how long the worker fetch took to GA.
+  //       if (doMetrics) {
+  //         var total = window.performance.now() - workerFetchTime;
+  //         debugLog('worker fetch:', total, 'ms');
+  //         IOWA.Analytics.trackPerf('worker', 'data fetch', Math.ceil(total),
+  //                                  null, MAX_WORKER_TIMEOUT_);
+  //       }
 
-        IOWA.Schedule.resolveSchedulePromise(data);
-      }
-    });
+  //       IOWA.Schedule.resolveSchedulePromise(data);
+  //     }
+  //   });
 
-    worker.postMessage({cmd: 'FETCH_SCHEDULE'});
-  }
+  //   worker.postMessage({cmd: 'FETCH_SCHEDULE'});
+  // }
 
   function lazyLoadWCPolyfillsIfNecessary() {
     var onload = function() {
@@ -122,9 +122,9 @@
     IOWA.Router = IOWA.Router_(window); // eslint-disable-line new-cap
     IOWA.Elements.init();
     IOWA.Router.init(IOWA.Elements.Template);
-    IOWA.Notifications.init();
+    // IOWA.Notifications.init();
 
-    initWorker();
+    // initWorker();
   }
 
   // TODO: fix when new page elements have these hooks.
