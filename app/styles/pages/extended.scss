@@ -95,7 +95,7 @@ $name: 'page-extended';
 
     a {
       @include typo-button();
-      color: #00838F;
+      color: $color-cyan-800;
     }
   }
 
@@ -136,8 +136,6 @@ $name: 'page-extended';
   }
 
   .host {
-    // border-bottom: 1px solid #e0e0e0;
-
     .details--icon {
       background: transparent url(../images/extended/icon-host.svg) center center no-repeat;
     }
