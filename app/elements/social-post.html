@@ -31,13 +31,13 @@ Displays information about a social post, and linkifies certain URLs in the text
     <style include="shared-app-styles"></style>
 
     <template is="dom-if" if="[[_viewIs(view, 'card')]]">
-      <a class="social-link card-content" href$="{{profileUrl}}" target="_blank">
+      <a class="social-link card-content" href$="[[url]]" target="_blank">
         <div class="social-card" layout vertical flex>
           <h2 id="postContent"></h2>
           <div layout end flex justified>
             <span>
               <iron-icon icon="io:post-twitter"></iron-icon>
-              <span class="social-author">{{author}}</span>
+              <span class="social-author">[[author]] &#8901; <span class="social-when">[[timeAgo]]</span></span>
             </span>
           </div>
         </div>

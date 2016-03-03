@@ -19,9 +19,8 @@ limitations under the License.
 <link rel="import" href="../bower_components/neon-animation/animations/scale-up-animation.html">
 <link rel="import" href="../bower_components/neon-animation/animations/fade-out-animation.html">
 
-<!-- TODO: put back for phase 2-3 when there are tweets -->
-<!-- <link rel="import" href="social-poller.html"> -->
-<!-- <link rel="import" href="social-post.html"> -->
+<link rel="import" href="social-poller.html">
+<link rel="import" href="social-post.html">
 <link rel="import" href="countdown-timer/countdown-timer.html">
 <link rel="import" href="card-video.html">
 
@@ -117,12 +116,14 @@ limitations under the License.
           </div>
         </div>
 
-        <div class="card-content box card--bottom-left-clip card--allow-a-wrap fullbleed typo-indigo-400 bg-bluegrey-50-20">
+        <div class="card-content box card--bottom-left-clip card--allow-a-wrap fullbleed typo-indigo-400 bg-bluegrey-50-20"
+             on-mouseenter="stopTweetCycler"
+             on-mouseleave="startTweetCycler">
 
-          <!-- <social-poller url="[[resolveUrl('../api/v1/social')]]" posts="{{socialPosts}}"
+          <social-poller url="/io2016/api/v1/social" posts="{{socialPosts}}"
                          interval="30000"></social-poller>
 
-          <iron-pages id="social_list" selected="0" style="height:100%" layout vertical>
+          <iron-pages id="social_list" selected="0" layout vertical>
             <template is="dom-repeat" items="[[_limit(socialPosts, 5)]]" as="post">
               <social-post view="card"
                            kind="[[post.kind]]"
@@ -133,19 +134,7 @@ limitations under the License.
                            layout vertical flex>
               </social-post>
             </template>
-          </iron-pages> -->
-
-          <a class="social-link card-content" href="https://twitter.com/sundarpichai/status/686963501219233792" target="_blank">
-            <div class="social-card" layout vertical style="height:100%">
-              <h2 style="font-weight:normal">I/O coming to the neighborhood where it all started: I/O'16 at Shoreline Amphitheatre in Mountain View, May 18-20. More details soon. #io16</h2>
-              <div layout flex end>
-                <span>
-                  <iron-icon icon="io:post-twitter"></iron-icon>
-                  <span class="social-author">Sundar Pichai</span>
-                </span>
-              </div>
-            </div>
-          </a>
+          </iron-pages>
 
         </div>
         <div class="card-content box card--bottom-right-clip fullbleed io__hash bg-bluegrey-50-40">
@@ -168,7 +157,7 @@ limitations under the License.
 
   var _cycleSocialPostsInterval = null;
   var _cyclePhotosInterval = null;
-  var SOCIAL_CYCLE = 5000;
+  var SOCIAL_CYCLE = 4000;
   var PHOTOS_CYCLE = 4000;
 
   Polymer({
@@ -205,9 +194,8 @@ limitations under the License.
     },
 
     detached: function() {
-      window.clearInterval(_cycleSocialPostsInterval);
+      this.stopTweetCycler();
       window.clearInterval(_cyclePhotosInterval);
-      _cycleSocialPostsInterval = null;
       _cyclePhotosInterval = null;
 
       this.unlisten(IOWA.Elements.ScrollContainer, 'scroll', '_onPageScroll');
@@ -216,7 +204,7 @@ limitations under the License.
     onPageTransitionDone: function() {
       this.$.ctimer.start(); // Start countdown.
 
-      //this._cycleSocialPosts(); TODO: add back after phase 1.
+      this.startTweetCycler();
 
       // Don't cycle photos on mobile.
       if (!this.app.isPhoneSize) {
@@ -236,6 +224,15 @@ limitations under the License.
 
       photo.setAttribute('aria-hidden', true);
       return;
+    },
+
+    startTweetCycler: function() {
+      this._cycleSocialPosts();
+    },
+
+    stopTweetCycler: function() {
+      window.clearInterval(_cycleSocialPostsInterval);
+      _cycleSocialPostsInterval = null;
     },
 
     _onPageScroll: function() {
@@ -265,12 +262,14 @@ limitations under the License.
     },
 
     _cyclePhotos: function() {
-      _cycleSocialPostsInterval = window.setInterval(function() {
+      window.clearInterval(_cyclePhotosInterval);
+      _cyclePhotosInterval = window.setInterval(function() {
         this.$.photo_list.selectNext();
       }.bind(this), PHOTOS_CYCLE);
     },
 
     _cycleSocialPosts: function() {
+      window.clearInterval(_cycleSocialPostsInterval);
       _cycleSocialPostsInterval = window.setInterval(function() {
         this.$.social_list.selectNext();
       }.bind(this), SOCIAL_CYCLE);

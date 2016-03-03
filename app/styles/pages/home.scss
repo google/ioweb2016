@@ -91,6 +91,7 @@ h3 a {
 
 #social_list {
   position: relative;
+  height: 100%;
 
   social-post {
     display: flex !important; // override iron-pages styling.
@@ -109,16 +110,6 @@ h3 a {
   }
 }
 
-.social-link {
-  display: block;
-  height: 100%;
-}
-
-.social-author {
-  font-size: 14px;
-  font-weight: 500;
-}
-
 #countdown-container {
   width: 100%;
   margin-top: 0;
@@ -133,13 +124,6 @@ h3 a {
 @media (max-width: $phone-breakpoint-min-mid-a) {
   #countdown-container {
     margin-top: -48px;
-  }
-}
-
-@media (min-width: $phone-breakpoint-min-mid-a) and (max-width: $phone-breakpoint-max) {
-  .social-card h2 {
-    font-size: 32px;
-    line-height: 44px;
   }
 }
 

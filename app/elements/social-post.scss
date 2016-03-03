@@ -44,6 +44,10 @@ a {
 
 .social-card {
   height: 100%;
+
+  h2 {
+    font-weight: normal;
+  }
 }
 
 .social-link {
@@ -56,7 +60,11 @@ a {
   font-weight: 500;
 }
 
-@media (max-width: $phone-breakpoint-max) {
+.social-when {
+  opacity: 0.6;
+}
+
+@media (min-width: $phone-breakpoint-min-mid-a) and (max-width: $phone-breakpoint-max) {
   .social-card h2 {
     font-size: 32px;
     line-height: 44px;
