@@ -25,7 +25,14 @@ module.exports = function(rootDir, handleFetch, importScripts, callback) {
 
   // This should be kept in sync with the named <lazy-pages> at
   // https://github.com/GoogleChrome/ioweb2016/blob/master/app/templates/layout_full.html
-  var routes = ['home', 'faq'];
+  var routes = [
+    'attend',
+    'extended',
+    'faq',
+    'form',
+    'home',
+    'widget'
+  ];
   var navigateFallbackWhitelist = routes.map(function(route) {
     return new RegExp('/' + route + '$');
   });
