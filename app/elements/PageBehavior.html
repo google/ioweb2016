@@ -109,7 +109,7 @@ IOBehaviors.PageBehavior = {
   disableElementOnScroll: function(container, opt_enableAfter) {
     container.style.pointerEvents = 'none';
     this.debounce('disable_container_interaction', function() {
-      container.style.pointerEvents = 'all';
+      container.style.pointerEvents = 'auto';
     }, opt_enableAfter || 250);
   },
 
