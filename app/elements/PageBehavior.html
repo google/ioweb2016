@@ -99,6 +99,21 @@ IOBehaviors.PageBehavior = {
   },
 
   /**
+   * Disables a container from user interaction (using pointer-events: none)
+   * when the page is scrolling. Enables it again
+   *
+   * @param {HTMLElement} container The container to
+   * @param {boolean} opt_enableAfter Optional number of ms to enable
+   *     interaction on the container after the user has stopped scrolling.
+   */
+  disableElementOnScroll: function(container, opt_enableAfter) {
+    container.style.pointerEvents = 'none';
+    this.debounce('disable_container_interaction', function() {
+      container.style.pointerEvents = 'all';
+    }, opt_enableAfter || 250);
+  },
+
+  /**
    * Returns the video ID of a Youtube embed URL.
    *
    * @param {string} youtubeUrl A full URL to a Youtube video.
