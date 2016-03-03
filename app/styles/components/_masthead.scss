@@ -61,10 +61,6 @@
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   padding-top: $navbarHeight;
-
-  &.smoothscroll {
-    scroll-behavior: smooth;
-  }
 }
 
 #appdrawer {

@@ -73,7 +73,7 @@ IOWA.Router_ = function(window) {
       if (el.target) {
         return;
       }
-      // Use IOWA.Util.smoothScroll for scroll links.
+      // Use Polymer.AppLayout.scroll for scroll links.
       if (el.getAttribute('data-transition') === 'smooth-scroll') {
         e.preventDefault();
         return;

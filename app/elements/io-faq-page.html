@@ -268,7 +268,11 @@ limitations under the License.
 
       var dest = IOWA.Elements.Main.querySelector(anchor.getAttribute('href'));
       if (dest) {
-        IOWA.Util.smoothScroll(dest, 400);
+        Polymer.AppLayout.scroll({
+          top: dest.getBoundingClientRect().top,
+          behavior: 'smooth',
+          target: IOWA.Elements.ScrollContainer
+        });
       }
     }
 

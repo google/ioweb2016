@@ -334,16 +334,13 @@ IOWA.Elements = (function() {
 
     template.backToTop = function(e) {
       e.preventDefault();
-      // Only smooth scroll when FAB is clicked. Otherwise we get transitions
-      // if you navigate to a new page. Note, FF has scroll-behavior: smooth,
-      // but it's not playing nicely with updateStyles();
-      if (IOWA.Util.isFF()) {
-        IOWA.Elements.ScrollContainer.scrollTop = 0;
-      } else {
-        this.$.mainScrollingRegion.classList.add('smoothscroll');
-        IOWA.Elements.ScrollContainer.scrollTop = 0;
-        this.$.mainScrollingRegion.classList.remove('smoothscroll');
-      }
+
+      Polymer.AppLayout.scroll({
+        top: 0,
+        behavior: 'smooth',
+        target: IOWA.Elements.ScrollContainer
+      });
+
       // Move focus to the top of the page
       IOWA.A11y.focusNavigation();
     };

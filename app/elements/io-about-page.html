@@ -256,7 +256,12 @@ limitations under the License.
       if (!this.photoGalleryActive) {
         // Smooth to gallery section.
         // var destEl = IOWA.Elements.Main.querySelector('.pics__section');
-        // IOWA.Util.smoothScroll(destEl, 400);
+        //
+        // Polymer.AppLayout.scroll({
+        //  top: destEl.getBoundingClientRect().top, 
+        //  behavior: 'smooth', 
+        //  target: IOWA.Elements.ScrollContainer
+        // });
 
         var galleryReady = function() {
           this.photoGalleryActive = true;
