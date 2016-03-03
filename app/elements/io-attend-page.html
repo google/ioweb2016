@@ -175,6 +175,12 @@ limitations under the License.
       this.unlisten(IOWA.Elements.ScrollContainer, 'scroll', '_onPageScroll');
     },
 
+    onPageTransitionDone: function() {
+      this.async(function() {
+        IOWA.Elements.Template.initFabScroll();
+      });
+    },
+
     _onPageScroll: function() {
       this.disableElementOnScroll(this.$.mapContainer);
     }
