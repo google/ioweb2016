@@ -14,6 +14,7 @@ limitations under the License.
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/google-youtube/google-youtube.html">
 
 <link rel="import" href="../bower_components/neon-animation/animations/scale-up-animation.html">
@@ -79,16 +80,21 @@ limitations under the License.
       <div class="card" layout horizontal wrap  vertical$="{{app.isPhoneSize}}">
 
         <div class="card-content box card--top-left-clip bg-cyan-300" layout vertical>
-          <h3 class="card__title -no-bottom-margin"><p>May 18&#8211;20, 2016</p></h3>
+          <h3 class="card__title">May 18&#8211;20, 2016</h3>
           <h3 class="card__sub-title">
             <a href="https://goo.gl/maps/7hs1NJR3ErG2" target="_blank"
                data-track-link="nav-shoreline-maps-link">
                <span>Shoreline Amphitheatre<br>Mountain View, California</span>
             </a>
           </h3>
+          <div>
+            <a href="registration/apply" target="_blank"
+               data-track-link="home-register-link">
+              <paper-button class="register-button" noink>Register now</paper-button>
+            </a>
+          </div>
           <div layout flex end>
             <div>
-              <h5><p>Registration begins March 8. <a href="/io2016/faq">Learn More</a></p></h5>
               <h5 style="font-weight:normal">Google I/O is for developers&#8212;the creative coders who are building what&#8217;s next. Together we&#8217;ll explore the latest in tech, mobile, and beyond.</h5>
             </div>
           </div>
@@ -101,6 +107,34 @@ limitations under the License.
             <img src="/io2016/images/home/hand.jpg" class="card--top-right-clip" alt="A woman is shown a demonstration of a robotic arm" aria-hidden="true">
             <img src="/io2016/images/home/dj.jpg" class="card--top-right-clip" alt="A D.J. plays turntables in a booth with a large I/O logo" aria-hidden="true">
           </iron-pages>
+        </div>
+
+        <div class="card-content box bg-bluegrey-50-30" layout vertical>
+          <h3 class="card__title">Getting to I/O</h3>
+          <div>
+            <h5 style="font-weight:normal">There are multiple ways to get to Mountain View, as well as ways to get around once you&#8217;re here. Start planning your trip now.</h5>
+          </div>
+          <div layout flex end>
+            <a href="/io2016/attend" class="card__footerlink"
+               layout horiziontal justified center flex
+               data-ajax-link
+               data-track-link="home-attend-learnmore">View travel info
+               <iron-icon icon="io:keyboard-arrow-right"></iron-icon>
+            </a>
+          </div>
+        </div>
+        <div class="card-content box bg-bluegrey-50" layout vertical>
+          <h3 class="card__title">I/O Extended</h3>
+          <div>
+              <h5 style="font-weight:normal">Can&#8217;t attend I/O in person this year? That&#8217;s OK! Just join an event in your local community to watch all of the action, or host one of your own.</h5>
+            </div>
+          <div layout flex end>
+            <a href="/io2016/extended" class="card__footerlink"
+               layout horiziontal justified center flex
+               data-ajax-link data-track-link="home-extended-learnmore">Learn more
+              <iron-icon icon="io:keyboard-arrow-right"></iron-icon>
+            </a>
+          </div>
         </div>
 
         <div class="card-content box card__video box-full fullbleed typo-white" layout vertical>

@@ -158,8 +158,16 @@ paper-progress {
   background-color: $color-grey-100;
 }
 
+.bg-bluegrey-50 {
+  background-color: $color-bluegrey-50;
+}
+
 .bg-bluegrey-50-20 {
   background-color: rgba($color-bluegrey-50, 0.2);
+}
+
+.bg-bluegrey-50-30 {
+  background-color: rgba($color-bluegrey-50, 0.3)
 }
 
 .bg-bluegrey-50-40 {
