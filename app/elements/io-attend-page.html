@@ -136,15 +136,15 @@ limitations under the License.
               </div>
             </div>
           </div>
-          
+
         </section>
 
         <section class="map" id="mapContainer">
-          
+
           <template is="dom-if" if="[[app.pageTransitionDone]]">
             <iframe src="https://www.google.com/maps/d/u/0/embed?mid=zhj-bilAxwho.kAQv4c7VcqU4" width="100%" height="480"></iframe>
           </template>
-          
+
         </section>
 
         <div class="io__hash io__hash-bottom" aria-label="I/O hash tag"></div>
@@ -166,23 +166,19 @@ limitations under the License.
 
     title: 'Attending',
     name: 'attend',
-    
+
     attached: function() {
       this.listen(IOWA.Elements.ScrollContainer, 'scroll', '_onPageScroll');
     },
-    
+
     detached: function() {
       this.unlisten(IOWA.Elements.ScrollContainer, 'scroll', '_onPageScroll');
     },
-    
+
     _onPageScroll: function() {
-      this.$.mapContainer.style.pointerEvents = 'none';
-      this.debounce('disableMapPointers', function() {
-        this.$.mapContainer.style.pointerEvents = 'all';
-      }, 250);
+      this.disableElementOnScroll(this.$.mapContainer);
     }
-   
-    
+
   });
 
 }());

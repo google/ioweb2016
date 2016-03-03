@@ -17,8 +17,7 @@ limitations under the License.
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../bower_components/google-map/google-map.html">
-<link rel="import" href="../bower_components/google-map-markerclusterer/google-map-markerclusterer.html">
-<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<!-- <link rel="import" href="../bower_components/google-map-markerclusterer/google-map-markerclusterer.html"> -->
 
 <link rel="import" href="io-gallery.html">
 <link rel="import" href="shared-app-styles.html">
@@ -88,19 +87,19 @@ limitations under the License.
               <h3 class="details--title">Find an Extended event</h3>
               <div class="details--info-block">
                 <p>
-                  Hangout with local developers and experience I/O together. Search the [[extendedLocations.length]] events from all over the world and get involved in the action.
+                  Hangout with local developers and experience I/O together. Search the <b>[[extendedLocations.length]] events</b> from all over the world and get involved in the action.
                 </p>
               </div>
             </div>
           </div>
 
-          <div id="map-container">
+          <div id="mapContainer">
             <div id="searchBox">
               <input id="autoCompleteInput" placeholder="Search for a city"></input>
-              <paper-icon-button icon="io:search"></paper-icon-button>
+              <iron-icon icon="io:search"></iron-icon>
             </div>
 
-            <google-map-markerclusterer map="{{map}}" id="cluster"></google-map-markerclusterer>
+            <!-- <google-map-markerclusterer map="[[map]]" id="cluster"></google-map-markerclusterer> -->
             <google-map id="map"
                         map="{{map}}"
                         client-id="google-io"
@@ -111,21 +110,17 @@ limitations under the License.
                         fit-to-markers
                         additional-map-options='{"backgroundColor":"none", "zoomControl":true}'>
               <template is="dom-repeat" items="[[extendedLocations]]" as="marker">
-                <google-map-marker latitude="{{marker.lat}}"
-                                   longitude="{{marker.lng}}"
+                <google-map-marker latitude="[[marker.lat]]"
+                                   longitude="[[marker.lng]]"
                                    icon="/io2016/images/extended/pin.svg">
                   <div class="map-marker">
-                    <h5><a href$="{{marker.link}}" target="_blank">{{marker.name}}</a></h5>
-                    <p><a href$="{{marker.link}}" target="_blank">View Details</a></p>
+                    <h5><a href$="[[marker.link]]" target="_blank">[[marker.name]]</a></h5>
+                    <p><a href$="[[marker.link]]" target="_blank">View Details</a></p>
                   </div>
                 </google-map-marker>
               </template>
             </google-map>
 
-            <iron-ajax auto
-                       url="/io2016/api/v1/extended"
-                       handle-as="json"
-                       on-response="onLoadExtendedLocations"></iron-ajax>
           </div>
 
           <div class="details--wrapper embed" layout horizontal>
@@ -163,6 +158,20 @@ limitations under the License.
 (function() {
   'use strict';
 
+  var _extendedLocations = []; // List of extended event locations.
+
+  function extendedLocationsPromise() {
+    if (_extendedLocations.length) {
+      return Promise.resolve(_extendedLocations);
+    }
+
+    var url = '/io2016/api/v1/extended';
+    return IOWA.Request.xhrPromise('GET', url, false).then(function(resp) {
+      _extendedLocations = resp; // Cache API response.
+      return _extendedLocations;
+    });
+  }
+
   Polymer({
     is: 'io-extended-page',
 
@@ -171,8 +180,22 @@ limitations under the License.
     title: 'I/O Extended',
     name: 'extended',
 
+     properties: {
+      /**
+       * List of extended locations from the /api/v1/extended API response.
+       */
+      extendedLocations: {
+        type: Array,
+        readOnly: true,
+        value: function() { return []; }
+      }
+    },
+
     attached: function() {
       this.listen(IOWA.Elements.ScrollContainer, 'scroll', '_onPageScroll');
+      extendedLocationsPromise().then(function(locations) {
+        this._setExtendedLocations(locations);
+      }.bind(this));
     },
 
     detached: function() {
@@ -180,28 +203,17 @@ limitations under the License.
     },
 
     _onPageScroll: function() {
-      this.$['map-container'].style.pointerEvents = 'none';
-      this.debounce('disableMapPointers', function() {
-        this.$['map-container'].style.pointerEvents = 'all';
-      }, 250);
-    },
-
-    onLoadExtendedLocations: function(e) {
-      this.extendedLocations = e.detail.response;
-
-      this.async(function() {
-        this.$.cluster.markers = this.$.map.markers.map(function(m) {
-          return m.marker;
-        });
-      }, 1000);
+      this.disableElementOnScroll(this.$.mapContainer);
     },
 
     mapReady: function() {
-      this.autocomplete = new google.maps.places.Autocomplete(this.$.autoCompleteInput, {});
-      google.maps.event.addListener(this.autocomplete, 'place_changed', this.onMapAutocomplete.bind(this));
+      this.autocomplete = new google.maps.places.Autocomplete(
+          this.$.autoCompleteInput, {});
+      google.maps.event.addListener(this.autocomplete, 'place_changed',
+                                    this._onMapAutocomplete.bind(this));
     },
 
-    onMapAutocomplete: function(e) {
+    _onMapAutocomplete: function(e) {
       var place = this.autocomplete.getPlace();
 
       if (!place || !place.geometry) {

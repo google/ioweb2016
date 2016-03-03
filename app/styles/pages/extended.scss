@@ -157,7 +157,7 @@ $name: 'page-extended';
     }
   }
 
-  #map-container {
+  #mapContainer {
     background-color: #b3d1ff;
     height: 0;
     margin-bottom: 40px;
@@ -173,17 +173,18 @@ $name: 'page-extended';
     }
   }
 
-  .map-marker h5,
-  .map-marker p {
-    font-size: 16px;
-  }
+  .map-marker {
+    h5, p {
+      font-size: 16px;
+    }
 
-  .map-marker p {
-    margin-bottom: 0;
-  }
+    p {
+      margin-bottom: 0;
+    }
 
-  .map-marker a {
-    color: #01828f;
+    a {
+      color: #01828f;
+    }
   }
 
   #searchBox {
@@ -194,20 +195,24 @@ $name: 'page-extended';
     top: 24px;
     left: 24px;
     z-index: 1;
-  }
 
-  #searchBox input {
-    border: 0;
-    padding: 12px 12px 12px 12px;
-    height: 48px;
-    font-size: 16px;
-    width: 392px;
-    @media (max-width: $tablet-breakpoint-min) {
-      width: 196px;
+    iron-icon {
+      margin-right: 12px;
     }
-  }
 
-  #searchBox input:focus {
-    outline: 0;
+    input {
+      border: 0;
+      padding: 12px 12px 12px 12px;
+      height: 48px;
+      font-size: 16px;
+      width: 392px;
+      @media (max-width: $tablet-breakpoint-min) {
+        width: 196px;
+      }
+
+      &:focus {
+        outline: 0;
+      }
+    }
   }
 }
