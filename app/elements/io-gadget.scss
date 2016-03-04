@@ -25,7 +25,7 @@
 }
 
 #livebanner {
-  background: url(../images/io-logo-grey.png) no-repeat $desktopKeyline 50%;
+  background: url(../images/io-logo-grey-small.png) no-repeat $desktopKeyline 50%;
   background-size: 50px;
   background-color: $color-cyan-400;
   height: 64px;
@@ -48,7 +48,7 @@
 
 .card {
   .card__photo {
-    background: url(../images/io-logo-grey.png) no-repeat 50% 50%;
+    background: url(../images/io-logo-grey-small.png) no-repeat 50% 50%;
     background-size: contain;
     background-color: $color-cyan-400;
     border-radius: inherit;
@@ -139,11 +139,6 @@ paper-dropdown-menu {
     color: $color-cyan-400;
   }
 
-  img {
-    width: 90px;
-    height: 65px;
-  }
-
   h1 {
     font-size: 34px;
     line-height: 1;
@@ -152,6 +147,11 @@ paper-dropdown-menu {
 
 iron-icon {
   margin-right: $mobileKeyline / 2;
+}
+
+.play__button {
+  width: 74px;
+  height: 74px;
 }
 
 

@@ -66,7 +66,7 @@ The `<io-gadget>` element renders a youtube video + social feed.
               <h1>I/O Live</h1>
               <h3>Tune in here again on May 19, starting at 9AM PDT.<br>
               Meanwhile, watch the 2016 keynote and sessions at <a href="/io2016/" target="_blank">events.google.com/io2016</a>.</h3>
-              <h4>#io15</h4>
+              <h4>#io16</h4>
             </div>
           </div>
         </template>
@@ -85,9 +85,10 @@ The `<io-gadget>` element renders a youtube video + social feed.
         <template is="dom-if" if="[[_isView(view, _VIEWS.LIVE)]]" restamp>
 
           <div class="card card--livestream" layout vertical flex two>
-            <div flex class="card__photo" relative>
+            <div flex class="card__photo" relative layout center-center>
               <img src="../images/play-video-button.png"
-                   title="Start watching" alt="Start watching">
+                   title="Start watching" alt="Start watching"
+                   class="play__button">
 
               <google-youtube id="video" height="100%" width="100%" fit
                   video-id="{{selectedVideoId}}" autohide="1" controls="2"
