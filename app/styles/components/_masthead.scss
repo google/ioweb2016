@@ -26,6 +26,7 @@
   will-change: opacity;
 }
 
+
 .masthead {
   position: absolute;
   top: 0;
@@ -54,6 +55,17 @@
 
   h1 {
     color: $color-bluegrey-600;
+     margin-bottom: 9px;
+    font-weight: 400;
+    font-size: 56px;
+
+    @media (max-width: $tablet-breakpoint-max) {
+      font-size: 45px;
+    }
+    
+    @media (max-width: $phone-breakpoint-max) {
+      font-size: 34px;
+    }
   }
 }
 
