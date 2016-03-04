@@ -15,6 +15,7 @@ limitations under the License.
 <link rel="import" href="../bower_components/google-map/google-map.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-styles/color.html">
 
 <!--
 Helper element for auto-completes places while showing a pin on a map.
@@ -35,10 +36,14 @@ Helper element for auto-completes places while showing a pin on a map.
       #autocomplete {
         width: 400px;
         max-width: 100%;
-        margin-bottom: 8px;
+        margin-bottom: 48px;
       }
       #submit-button {
-        margin: 16px 0 0 0;
+        margin-top: 48px;
+        color: var(--paper-cyan-400);
+        font size: 14px;
+        padding: 10px 16px 10px 16px;
+
       }
     </style>
     <paper-input id="autocomplete" label="Enter the address of your event"></paper-input>
