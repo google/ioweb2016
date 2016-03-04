@@ -110,7 +110,7 @@ $name: 'page-extended';
 
   .details--links {
     a {
-      display: inline-block;
+      white-space: nowrap;
     }
 
     a:first-child {
