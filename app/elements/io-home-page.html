@@ -175,12 +175,14 @@ limitations under the License.
 
         </div>
         <div class="card-content box card--bottom-right-clip fullbleed io__hash bg-bluegrey-50-40">
-          <template is="dom-if" if="[[_loadVideo]]">
-            <card-video id="card-video"
-                src="/io2016/videos/hashtag-800.mp4"
-                href="https://twitter.com/search?q=%23io16"
-                text="Search #io16 on Twitter"></card-video>
-          </template>
+          <a href="https://twitter.com/search?q=%23io16" target="_blan">
+            <template is="dom-if" if="[[_loadVideo]]">
+              <card-video id="card-video"
+                  src="/io2016/videos/hashtag-800.mp4"
+                  href="https://twitter.com/search?q=%23io16"
+                  text="Search #io16 on Twitter"></card-video>
+            </template>
+          </a>
         </div>
       </div>
     </div>
