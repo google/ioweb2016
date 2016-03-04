@@ -25,24 +25,15 @@ limitations under the License.
         height: 100%;
         position: relative;
       }
-      a {
-        display: block;
-        height: 100%;
-        overflow: hidden;
-        width: 100%;
-      }
       video {
         height: 101%;
         margin: -1px 0 0 -1px;
         width: 101%;
       }
     </style>
-
-    <a href$="{{href}}" target="_blank">
-      <span class="-off-screen">{{text}}</span>
-      <video id="card-video" src$="{{src}}"
-             on-canplaythrough="play" on-mouseover="play"></video>
-    </a>
+    <span class="-off-screen">{{text}}</span>
+    <video id="card-video" src$="{{src}}"
+           on-canplaythrough="play" on-mouseover="play"></video>
   </template>
   <script>
     (function () {
@@ -59,14 +50,6 @@ limitations under the License.
           src: {
             type: String,
             value: null
-          },
-
-          /**
-           * URL to link video to.
-           */
-          href: {
-            type: String,
-            value: 'https://twitter.com/search?q=%23io16'
           },
 
           /**
