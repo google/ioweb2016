@@ -21,7 +21,7 @@ $name: 'page-home';
 @import '../base/color';
 @import '../base/breakpoints';
 @import '../base/typography';
-
+@import '../base/shadow';
 
 ##{$name} {
 
@@ -102,6 +102,7 @@ h3 a {
     top: 0;
     left: 0;
     height: 100%;
+    width: 100%; // For IE 11.
     pointer-events: none;
   }
   .iron-selected {
@@ -123,6 +124,10 @@ h3 a {
   line-height: 14px;
   margin: $desktopKeyline 0 0 0;
   border-radius: 2px;
+
+  &:hover {
+    @include shadow-z1();
+  }
 }
 
 .card__footerlink {

@@ -322,7 +322,7 @@ paper-tabs {
 }
 
 
-@media (min-width: 769px) {
+@media (min-width: $tablet-breakpoint-min) {
   .masthead-container {
     @include keyline-24l();
   }
