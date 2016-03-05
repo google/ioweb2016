@@ -13,6 +13,8 @@ limitations under the License.
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
+
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/google-youtube/google-youtube.html">
@@ -47,8 +49,8 @@ limitations under the License.
     </div>
   </div>
 
-  <div id="aria-countdown"
-  role="timer" aria-label$="[[currentTime]]">[[currentTime]]</div>
+  <div id="aria-countdown" role="timer"
+       aria-label$="[[currentTime]]">[[currentTime]]</div>
 
   <!-- <paper-toolbar class="navbar__overlay navbar__overlay--video"
                  aria-hidden$="{{!app.fullscreenVideoActive}}" fit>
@@ -155,29 +157,32 @@ limitations under the License.
           </div>
         </div>
 
-        <div class="card-content box card--bottom-left-clip card--allow-a-wrap fullbleed typo-indigo-400 bg-bluegrey-50-20"
+        <div id="social_card"
+             class="card-content box card--bottom-left-clip card--allow-a-wrap fullbleed typo-indigo-400 bg-bluegrey-50-20"
              on-mouseenter="stopTweetCycler"
              on-mouseleave="startTweetCycler">
 
-          <social-poller url="/io2016/api/v1/social" posts="{{socialPosts}}"
-                         interval="30000"></social-poller>
+          <template is="dom-if" if="[[_scrolledToBottomCards]]">
+            <social-poller url="/io2016/api/v1/social" posts="{{socialPosts}}"
+                           interval="30000"></social-poller>
 
-          <iron-pages id="social_list" selected="0" layout vertical on-transitionend="onTransitionEnd">
-            <template is="dom-repeat" items="[[_limit(socialPosts, 5)]]" as="post">
-              <social-post view="card"
-                           kind="[[post.kind]]"
-                           author="[[post.author]]"
-                           url="[[post.url]]"
-                           text="[[post.text]]"
-                           when="[[post.when]]"
-                           layout vertical flex>
-              </social-post>
-            </template>
-          </iron-pages>
+            <iron-pages id="social_list" selected="0" layout vertical>
+              <template is="dom-repeat" items="[[_limit(socialPosts, 5)]]" as="post">
+                <social-post view="card"
+                             kind="[[post.kind]]"
+                             author="[[post.author]]"
+                             url="[[post.url]]"
+                             text="[[post.text]]"
+                             when="[[post.when]]"
+                             layout vertical flex>
+                </social-post>
+              </template>
+            </iron-pages>
+          </template>
 
         </div>
         <div class="card-content box card--bottom-right-clip fullbleed io__hash bg-bluegrey-50-40">
-          <a href="https://twitter.com/search?q=%23io16" target="_blan">
+          <a href="https://twitter.com/search?q=%23io16" target="_blank">
             <template is="dom-if" if="[[_loadVideo]]">
               <card-video id="card-video"
                   src="/io2016/videos/hashtag-800.mp4"
@@ -191,6 +196,9 @@ limitations under the License.
 
   </div>
 
+  <iron-scroll-threshold id="threshold" hidden
+      lower-triggered="{{_scrolledToBottomCards}}"></iron-scroll-threshold>
+
 </template>
 <script>
 (function () {
@@ -198,7 +206,7 @@ limitations under the License.
 
   var _cycleSocialPostsInterval = null;
   var _cyclePhotosInterval = null;
-  var SOCIAL_CYCLE = 4000;
+  var SOCIAL_CYCLE = 5000;
   var PHOTOS_CYCLE = 4000;
 
   Polymer({
@@ -216,9 +224,18 @@ limitations under the License.
         value: 'May 18 2016 09:00:00 GMT-0700 (PDT)'
       },
 
+      /**
+       * True when the user has scrolled down to the hash tag video section.
+       */
+      _scrolledToBottomCards: {
+        type: Boolean,
+        value: false,
+        observer: '_onScrolledBottomCards'
+      },
+
       _loadVideo: {
         type: Boolean,
-        computed: '_computeLoadVideo(app.isDesktopSize, app.pageTransitionDone)'
+        computed: '_computeLoadVideo(app.isDesktopSize, app.pageTransitionDone, _scrolledToBottomCards)'
       }
     },
 
@@ -228,6 +245,13 @@ limitations under the License.
     attached: function() {
       // Reset template variables for when revisiting the page.
       this.set('app.fullscreenVideoActive', false);
+
+      this.$.threshold.scrollTarget = IOWA.Elements.ScrollContainer;
+
+      // Calculate top of tweet cycler / hashtag video section.
+      this.$.threshold.lowerThreshold = IOWA.Elements.Footer.clientHeight +
+          parseInt(getComputedStyle(IOWA.Elements.Footer).height) +
+          Polymer.dom(this.root).querySelector('.card-content.box').clientHeight;
 
       if (this.app.isPhoneSize) {
         this.listen(IOWA.Elements.ScrollContainer, 'scroll', '_onPageScroll');
@@ -240,8 +264,9 @@ limitations under the License.
       // in detached
       this._stopTweetCycler = this.stopTweetCycler.bind(this);
       this._startTweetCycler = this.startTweetCycler.bind(this);
-      this.$.social_list.addEventListener('focus', this._stopTweetCycler, true);
-      this.$.social_list.addEventListener('blur', this._startTweetCycler, true);
+
+      this.$.social_card.addEventListener('focus', this._stopTweetCycler, true);
+      this.$.social_card.addEventListener('blur', this._startTweetCycler, true);
     },
 
     detached: function() {
@@ -251,18 +276,25 @@ limitations under the License.
 
       this.unlisten(IOWA.Elements.ScrollContainer, 'scroll', '_onPageScroll');
 
-      this.$.social_list.removeEventListener('focus', this._stopTweetCycler, true);
-      this.$.social_list.removeEventListener('blur', this._startTweetCycler, true);
+      this.$.social_card.removeEventListener(
+          'focus', this._stopTweetCycler, true);
+      this.$.social_card.removeEventListener(
+          'blur', this._startTweetCycler, true);
     },
 
     onPageTransitionDone: function() {
       this.$.ctimer.start(); // Start countdown.
 
-      this.startTweetCycler();
-
       // Don't cycle photos on mobile.
       if (!this.app.isPhoneSize) {
         this._cyclePhotos();
+      }
+    },
+
+    _onScrolledBottomCards: function() {
+      if (this._scrolledToBottomCards) {
+alert(5)
+        this.startTweetCycler();
       }
     },
 
@@ -294,8 +326,8 @@ limitations under the License.
       }, 250);
     },
 
-    _computeLoadVideo: function(isDesktopSize, pageTransitionDone) {
-      return isDesktopSize && pageTransitionDone;
+    _computeLoadVideo: function(isDesktopSize, pageTransitionDone, scrolledEnough) {
+      return isDesktopSize && pageTransitionDone && scrolledEnough;
     },
 
     _onSetReminder: function(e, detail) {
@@ -322,11 +354,14 @@ limitations under the License.
 
     _cycleSocialPosts: function() {
       window.clearInterval(_cycleSocialPostsInterval);
+
+      var socialList = this.$.social_card.querySelector('#social_list');
+
       // Force initial item to visible
-      this.$.social_list.selectedItem.style.visibility = 'visible';
+      socialList.selectedItem.style.visibility = 'visible';
       _cycleSocialPostsInterval = window.setInterval(function() {
-        this.$.social_list.selectNext();
-        this.$.social_list.selectedItem.style.visibility = 'visible';
+        socialList.selectNext();
+        socialList.selectedItem.style.visibility = 'visible';
       }.bind(this), SOCIAL_CYCLE);
     },
 
