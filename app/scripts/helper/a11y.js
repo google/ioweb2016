@@ -28,6 +28,7 @@ IOWA.A11y = IOWA.A11y || (function() {
     // Differentiate focus coming from mouse and keyboard.
     addFocusStates('.io-logo-link');
     addFocusStates('#navbar paper-tabs a');
+    addFocusStates('#signin-nav-elements .button-link');
     document.addEventListener('toast-message', announceLiveChange);
     document.addEventListener('page-transition-done', focusNewPage);
   }
