@@ -13,6 +13,7 @@ limitations under the License.
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<!-- <link rel="import" href="../bower_components/iron-scroll-threshold/iron-scroll-threshold.html"> -->
 <link rel="import" href="../bower_components/paper-toolbar/paper-toolbar.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
@@ -101,7 +102,7 @@ limitations under the License.
           <google-map id="map"
                       map="{{map}}"
                       client-id="google-io"
-                      on-google-map-ready="mapReady"
+                      on-google-map-ready="_onMapReady"
                       fit
                       disable-default-ui
                       single-info-window
@@ -149,6 +150,9 @@ limitations under the License.
   </div>
 </div>
 
+<!-- <iron-scroll-threshold id="threshold" hidden
+      on-lower-threshold="fetchLocations"></iron-scroll-threshold>
+ -->
 </template>
 
 <script>
@@ -189,21 +193,39 @@ limitations under the License.
     },
 
     attached: function() {
+      // this.$.threshold.scrollTarget = IOWA.Elements.ScrollContainer;
+
+      // // Calculate top of tweet cycler / hashtag video section.
+      // this.$.threshold.lowerThreshold = IOWA.Elements.Footer.clientHeight +
+      //     parseInt(getComputedStyle(IOWA.Elements.Footer).height) +
+      //     Polymer.dom(this.root).querySelector('.embed').clientHeight +
+      //     this.$.mapContainer.clientHeight;
+
       this.listen(IOWA.Elements.ScrollContainer, 'scroll', '_onPageScroll');
-      extendedLocationsPromise().then(function(locations) {
-        this._setExtendedLocations(locations);
-      }.bind(this));
+      this.fetchLocations();
     },
 
     detached: function() {
       this.unlisten(IOWA.Elements.ScrollContainer, 'scroll', '_onPageScroll');
     },
 
+    fetchLocations: function() {
+      extendedLocationsPromise().then(function(locations) {
+        this._setExtendedLocations(locations);
+      }.bind(this));
+    },
+
     _onPageScroll: function() {
       this.disableElementOnScroll(this.$.mapContainer);
     },
 
-    mapReady: function() {
+    _onScrolledToMapSection: function() {
+      extendedLocationsPromise().then(function(locations) {
+        this._setExtendedLocations(locations);
+      }.bind(this));
+    },
+
+    _onMapReady: function() {
       this.autocomplete = new google.maps.places.Autocomplete(
           this.$.autoCompleteInput, {});
       google.maps.event.addListener(this.autocomplete, 'place_changed',
