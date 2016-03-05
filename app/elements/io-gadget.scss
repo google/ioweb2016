@@ -72,6 +72,10 @@
   top: calc(50% - 56px/2);
 }
 
+.preroll-content {
+  width: 100%; // For IE.
+}
+
 #post-container {
   padding: 0 $tabletKeyline;
   overflow-y: scroll;

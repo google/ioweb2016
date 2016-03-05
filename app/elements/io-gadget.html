@@ -51,7 +51,7 @@ The `<io-gadget>` element renders a youtube video + social feed.
 
         <template is="dom-if" if="[[_isView(view, _VIEWS.BEFORE)]]" restamp>
           <div class="preroll" layout center flex two>
-            <div layout vertical self-start>
+            <div class="preroll-content" layout vertical self-start>
               <h1>I/O Live</h1>
               <h3>Tune in here on May 18, starting at 9AM PDT.<br>
               Learn more about Google I/O at <a href="https://google.com/io" target="_blank">google.com/io</a>.</h3>
@@ -62,7 +62,7 @@ The `<io-gadget>` element renders a youtube video + social feed.
 
         <template is="dom-if" if="[[_isView(view, _VIEWS.BETWEEN)]]" restamp>
           <div class="preroll" layout vertical center-center flex two>
-            <div layout vertical self-start>
+            <div class="preroll-content" layout vertical self-start>
               <h1>I/O Live</h1>
               <h3>Tune in here again on May 19, starting at 9AM PDT.<br>
               Meanwhile, watch the 2016 keynote and sessions at <a href="/io2016/" target="_blank">events.google.com/io2016</a>.</h3>
@@ -73,7 +73,7 @@ The `<io-gadget>` element renders a youtube video + social feed.
 
         <template is="dom-if" if="[[_isView(view, _VIEWS.AFTER)]]" restamp>
           <div class="preroll" layout vertical center-center flex two>
-            <div layout vertical self-start>
+            <div class="preroll-content" layout vertical self-start>
               <h1>I/O Live</h1>
               <h3>Thanks for another great Google I/O.<br>
               Watch the 2016 keynote and sessions at <a href="/io2016/" target="_blank">events.google.com/io2016</a>.</h3>
