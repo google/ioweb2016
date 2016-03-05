@@ -26,6 +26,7 @@ limitations under the License.
         position: relative;
       }
       video {
+        display: none;
         height: 101%;
         margin: -1px 0 0 -1px;
         width: 101%;
@@ -33,7 +34,7 @@ limitations under the License.
     </style>
     <span class="-off-screen">{{text}}</span>
     <video id="card-video" src$="{{src}}"
-           on-canplaythrough="play" on-mouseover="play"></video>
+           on-canplaythrough="show" on-mouseover="play"></video>
   </template>
   <script>
     (function () {
@@ -60,6 +61,11 @@ limitations under the License.
             type: String,
             value: 'Search #io16 on Twitter'
           }
+        },
+
+        show: function() {
+          this.$['card-video'].style.display = 'block';
+          this.play();
         },
 
         play: function() {
