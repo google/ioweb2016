@@ -114,6 +114,18 @@ IOBehaviors.PageBehavior = {
   },
 
   /**
+   * Attempt to move focus to the primary header for this page
+   * Useful for a11y when clicking menu links so screen reader users know
+   * page content has changed
+   */
+  manageFocus: function() {
+    var header = Polymer.dom(this.root).querySelector('.focus-target');
+    if (header) {
+      header.focus();
+    }
+  },
+
+  /**
    * Returns the video ID of a Youtube embed URL.
    *
    * @param {string} youtubeUrl A full URL to a Youtube video.

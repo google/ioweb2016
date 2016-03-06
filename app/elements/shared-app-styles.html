@@ -80,6 +80,15 @@ limitations under the License.
         --paper-icon-button-ink-color: #fff;
       }
 
+      /**
+       * Suppress outline on managed focus target.
+       * We manage focus by sending it to an important header but it doesn't
+       * need to outline
+       */
+      .focus-target:focus {
+        outline: none;
+      }
+
       /* Off screen text accessibilty to screen reader but not visible. */
       .-off-screen {
         clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
