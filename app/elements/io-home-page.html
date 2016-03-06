@@ -103,11 +103,11 @@ limitations under the License.
         </div>
         <div class="card-content box card__photo card--top-right-clip" relative>
           <iron-pages id="photo_list" class="card--top-right-clip" on-transitionend="onTransitionEnd" selected="0" fit>
-            <img src="/io2016/images/home/cardboard.jpg" class="card--top-right-clip" alt="A man wearing headphones looks through a Google cardboard device" aria-hidden="true">
-            <img src="/io2016/images/home/keynote.jpg" class="card--top-right-clip" alt="A woman presents a keynote address on stage at Google I/O" aria-hidden="true">
-            <img src="/io2016/images/home/design.jpg" class="card--top-right-clip" alt="An audience sits on bean bag chairs watching a presentation on design" aria-hidden="true">
-            <img src="/io2016/images/home/hand.jpg" class="card--top-right-clip" alt="A woman is shown a demonstration of a robotic arm" aria-hidden="true">
-            <img src="/io2016/images/home/dj.jpg" class="card--top-right-clip" alt="A D.J. plays turntables in a booth with a large I/O logo" aria-hidden="true">
+            <img src="/io2016/images/home/cardboard.jpg" class="card--top-right-clip" style="visibility: visible;" alt="A man wearing headphones looks through a Google cardboard device">
+            <img src="/io2016/images/home/keynote.jpg" class="card--top-right-clip" alt="A woman presents a keynote address on stage at Google I/O">
+            <img src="/io2016/images/home/design.jpg" class="card--top-right-clip" alt="An audience sits on bean bag chairs watching a presentation on design">
+            <img src="/io2016/images/home/hand.jpg" class="card--top-right-clip" alt="A woman is shown a demonstration of a robotic arm">
+            <img src="/io2016/images/home/dj.jpg" class="card--top-right-clip" alt="A D.J. plays turntables in a booth with a large I/O logo">
           </iron-pages>
         </div>
 
@@ -162,7 +162,7 @@ limitations under the License.
           <social-poller url="/io2016/api/v1/social" posts="{{socialPosts}}"
                          interval="30000"></social-poller>
 
-          <iron-pages id="social_list" selected="0" layout vertical>
+          <iron-pages id="social_list" selected="0" layout vertical on-transitionend="onTransitionEnd">
             <template is="dom-repeat" items="[[_limit(socialPosts, 5)]]" as="post">
               <social-post view="card"
                            kind="[[post.kind]]"
@@ -232,6 +232,16 @@ limitations under the License.
       if (this.app.isPhoneSize) {
         this.listen(IOWA.Elements.ScrollContainer, 'scroll', '_onPageScroll');
       }
+
+      // Stop tweet cycler if focused, resume when blurred
+      // Focus and blur events don't bubble so need to use capturing
+      // event handlers.
+      // Keep a reference to the bound functions around so we can clean them up
+      // in detached
+      this._stopTweetCycler = this.stopTweetCycler.bind(this);
+      this._startTweetCycler = this.startTweetCycler.bind(this);
+      this.$.social_list.addEventListener('focus', this._stopTweetCycler, true);
+      this.$.social_list.addEventListener('blur', this._startTweetCycler, true);
     },
 
     detached: function() {
@@ -240,6 +250,9 @@ limitations under the License.
       _cyclePhotosInterval = null;
 
       this.unlisten(IOWA.Elements.ScrollContainer, 'scroll', '_onPageScroll');
+
+      this.$.social_list.removeEventListener('focus', this._stopTweetCycler, true);
+      this.$.social_list.removeEventListener('blur', this._startTweetCycler, true);
     },
 
     onPageTransitionDone: function() {
@@ -254,17 +267,14 @@ limitations under the License.
     },
 
     // Manage screen reader accessibility for offscreen carousel
-    // images
+    // images and social posts
     onTransitionEnd: function(e) {
       e.stopPropagation();
-      var photo = Polymer.dom(e).rootTarget;
-      if (photo.classList.contains('iron-selected')) {
-        photo.setAttribute('aria-hidden', false);
+      var item = Polymer.dom(e).rootTarget;
+      if (!item.classList.contains('iron-selected')) {
+        item.style.visibility = 'hidden';
         return;
       }
-
-      photo.setAttribute('aria-hidden', true);
-      return;
     },
 
     startTweetCycler: function() {
@@ -306,13 +316,17 @@ limitations under the License.
       window.clearInterval(_cyclePhotosInterval);
       _cyclePhotosInterval = window.setInterval(function() {
         this.$.photo_list.selectNext();
+        this.$.photo_list.selectedItem.style.visibility = 'visible';
       }.bind(this), PHOTOS_CYCLE);
     },
 
     _cycleSocialPosts: function() {
       window.clearInterval(_cycleSocialPostsInterval);
+      // Force initial item to visible
+      this.$.social_list.selectedItem.style.visibility = 'visible';
       _cycleSocialPostsInterval = window.setInterval(function() {
         this.$.social_list.selectNext();
+        this.$.social_list.selectedItem.style.visibility = 'visible';
       }.bind(this), SOCIAL_CYCLE);
     },
 
