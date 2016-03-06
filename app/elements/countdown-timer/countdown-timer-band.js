@@ -115,6 +115,8 @@ IOWA.CountdownTimer.Band.prototype.getColor = function(ratio) {
       return this.colors[i].hex;
     }
   }
+
+  return this.colors[0].hex;
 };
 
 IOWA.CountdownTimer.Band.prototype.update = function() {
@@ -128,7 +130,7 @@ IOWA.CountdownTimer.Band.prototype.update = function() {
   ctx.lineWidth = this.parent.strokeWeight;
   ctx.lineJoin = ctx.lineCap = 'round';
 
-  var overClear = this.parent.pixelRatio * 2;
+  var overClear = this.parent.pixelRatio;
   ctx.clearRect(
     (this.center.x - this.radius) - overClear,
     (this.center.y - this.radius) - overClear,
@@ -138,15 +140,22 @@ IOWA.CountdownTimer.Band.prototype.update = function() {
 
   var lastColor;
 
+  this.quality = this.parent.quality;
+  var qualityRatio = this.parent.digits[0].points.length / this.quality;
+
   for (var i = 0; i < this.quality; i++) {
     if (this.digits[0].points.length < i) {
       continue;
     }
 
-    var x = this.radius * (this.oldShape.points[i].x + (this.currentShape.points[i].x - this.oldShape.points[i].x) * this.posShift) + this.center.x;
-    var y = this.radius * (this.oldShape.points[i].y + (this.currentShape.points[i].y - this.oldShape.points[i].y) * this.posShift) + this.center.y;
+    var inc = Math.floor(i * qualityRatio);
+    var x = this.radius * (this.oldShape.points[inc].x + (this.currentShape.points[inc].x - this.oldShape.points[inc].x) * this.posShift) + this.center.x;
+    var y = this.radius * (this.oldShape.points[inc].y + (this.currentShape.points[inc].y - this.oldShape.points[inc].y) * this.posShift) + this.center.y;
 
-    var next_inc = (i < (this.quality - 1)) ? i + 1 : 0;
+    var next_inc = Math.floor((i + 1) * qualityRatio);
+    if (next_inc >= this.oldShape.points.length || i === (this.quality - 1)) {
+      next_inc = 0;
+    }
     var x2 = this.radius * (this.oldShape.points[next_inc].x + (this.currentShape.points[next_inc].x - this.oldShape.points[next_inc].x) * this.posShift) + this.center.x;
     var y2 = this.radius * (this.oldShape.points[next_inc].y + (this.currentShape.points[next_inc].y - this.oldShape.points[next_inc].y) * this.posShift) + this.center.y;
 
@@ -174,7 +183,7 @@ IOWA.CountdownTimer.Band.prototype.update = function() {
   ctx.strokeStyle = lastColor;
   ctx.stroke();
 
-  this.strokeOffset -= this.aShift;
+  this.strokeOffset -= this.aShift / qualityRatio;
   if (this.strokeOffset > this.quality) {
     this.strokeOffset = 0;
   } else if (this.strokeOffset < 0) {
@@ -199,7 +208,7 @@ IOWA.CountdownTimer.Band.prototype.shudder = function(state) {
   }
 };
 
-IOWA.CountdownTimer.Band.prototype.resize = function() {
+IOWA.CountdownTimer.Band.prototype.redraw = function() {
   if (!this.isPlaying) {
     this.isPlaying = true;
     this.update();
