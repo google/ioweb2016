@@ -102,8 +102,10 @@ IOWA.A11y = IOWA.A11y || (function() {
       isInitialPage = false;
       return;
     }
-    // this is causing the header to disappear.
-    // IOWA.Elements.LazyPages.selectedPage.focus();
+
+    // Move focus to the main header for each page
+    var page = IOWA.Elements.LazyPages.selectedPage;
+    page.manageFocus();
   }
 
   return {
