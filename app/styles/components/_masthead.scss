@@ -78,6 +78,10 @@
 #appdrawer {
   font-size: 14px;
   font-weight: 500;
+  
+  #contentContainer {
+    width: calc(100% - 56px);
+  }
 
   .drawer-container {
     height: 100%;
