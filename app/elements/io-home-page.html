@@ -293,7 +293,10 @@ limitations under the License.
 
     _onScrolledBottomCards: function() {
       if (this._scrolledToBottomCards) {
-        this.startTweetCycler();
+        // Wait a bit for the template to have stamped the social stuff.
+        this.async(function() {
+          this.startTweetCycler();
+        }, 10);
       }
     },
 
