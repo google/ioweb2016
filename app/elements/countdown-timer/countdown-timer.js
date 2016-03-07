@@ -329,7 +329,7 @@ IOWA.CountdownTimer.Core.prototype.launchIntro = function() {
   this.intro = new IOWA.CountdownTimer.Intro(
       this.canvasElement, this.layout.radius, center, this.quality, this);
 
-  // this.containerDomElement.fire('countdown-intro', {start: true});
+  this.containerDomElement.fire('countdown-intro', {start: true});
 };
 
 IOWA.CountdownTimer.Core.prototype.closeIntro = function() {
@@ -338,7 +338,7 @@ IOWA.CountdownTimer.Core.prototype.closeIntro = function() {
   var ctx = this.canvasElement.getContext('2d');
   ctx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
 
-  // this.containerDomElement.fire('countdown-intro', {done: true});
+  this.containerDomElement.fire('countdown-intro', {done: true});
 };
 
 IOWA.CountdownTimer.Core.prototype.drawBands = function() {
