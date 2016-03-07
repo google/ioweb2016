@@ -26,14 +26,13 @@ limitations under the License.
         position: relative;
       }
       video {
-        display: none;
         height: 101%;
         margin: -1px 0 0 -1px;
         width: 101%;
       }
     </style>
     <span class="-off-screen">{{text}}</span>
-    <video id="card-video" src$="{{src}}"
+    <video id="video" src$="{{src}}" hidden
            on-canplaythrough="show" on-mouseover="play"></video>
   </template>
   <script>
@@ -60,18 +59,27 @@ limitations under the License.
           text: {
             type: String,
             value: 'Search #io16 on Twitter'
+          },
+
+          _firstLoad: {
+            type: Boolean,
+            value: true
           }
         },
 
         show: function() {
-          this.$['card-video'].style.display = 'block';
-          this.play();
+          // Some browers (Chrome) re-fire canplaythrough when you call
+          // video.play().
+          if (this._firstLoad) {
+            this.$.video.hidden = false;
+            this.play();
+            this._firstLoad = false;
+          }
         },
 
         play: function() {
-          var video = this.$['card-video'];
-          if (video.paused) {
-            video.play();
+          if (this.$.video.paused) {
+            this.$.video.play();
           }
         }
       });
