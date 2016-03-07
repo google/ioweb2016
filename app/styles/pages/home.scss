@@ -96,6 +96,7 @@ h3 a {
   social-post {
     display: flex !important; // override iron-pages styling.
     opacity: 0;
+    visibility: hidden; // Prevent keyboard focus from getting trapped in cycler
     transition: opacity 800ms ease-in-out;
     will-change: opacity;
     position: absolute;
@@ -152,6 +153,7 @@ h3 a {
   img {
     display: block !important; // override iron-pages styling.
     opacity: 0;
+    visibility: hidden; // Hide offscreen images from screenreaders
     transition: opacity 500ms ease-in-out;
     will-change: opacity;
     position: absolute;
