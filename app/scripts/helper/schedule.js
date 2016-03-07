@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+'use strict';
+
 self.IOWA = self.IOWA || {};
 
 class Schedule {
