@@ -39,9 +39,11 @@ limitations under the License.
 
   <div layout horizontal end>
     <div id="countdown-container" class="card__container">
-      <countdown-timer id="ctimer" date="[[date]]" role="timer"
+      <countdown-timer id="ctimer" date="[[date]]"
+          role="timer"
           on-countdown-intro="_onIntro"
-          current-time="{{currentTime}}"></countdown-timer>
+          current-time="{{currentTime}}"
+          tabindex="-1"></countdown-timer>
     </div>
   </div>
 
@@ -79,7 +81,7 @@ limitations under the License.
 
       <div class="card" layout horizontal wrap  vertical$="{{app.isPhoneSize}}">
 
-        <div class="card-content box card--top-left-clip bg-cyan-300" layout vertical>
+        <div class="card-content box box-more-height-mobile card--top-left-clip bg-cyan-300" layout vertical>
           <h3 class="card__title">May 18&#8211;20, 2016</h3>
           <h3 class="card__sub-title">
             <a href="https://goo.gl/maps/7hs1NJR3ErG2" target="_blank"
@@ -90,7 +92,7 @@ limitations under the License.
           <div>
             <a href="registration/apply" target="_blank"
                data-track-link="home-register-link">
-              <paper-button class="register-button" noink>Register now</paper-button>
+              <paper-button class="register-button" noink tabindex="-1">Register now</paper-button>
             </a>
           </div>
           <div layout flex end>
@@ -109,32 +111,35 @@ limitations under the License.
           </iron-pages>
         </div>
 
-        <div class="card-content box bg-bluegrey-50-30" layout vertical>
-          <h3 class="card__title">Getting to I/O</h3>
-          <div>
-            <h5 style="font-weight:normal">There are multiple ways to get to Mountain View, as well as ways to get around once you&#8217;re here. Start planning your trip now.</h5>
-          </div>
-          <div layout flex end>
-            <a href="/io2016/attend" class="card__footerlink"
-               layout horiziontal justified center flex
-               data-ajax-link
-               data-track-link="home-attend-learnmore">View travel info
-               <iron-icon icon="io:keyboard-arrow-right"></iron-icon>
-            </a>
-          </div>
-        </div>
-        <div class="card-content box bg-bluegrey-50" layout vertical>
-          <h3 class="card__title">I/O Extended</h3>
-          <div>
-              <h5 style="font-weight:normal">Can&#8217;t attend I/O in person this year? That&#8217;s OK! Just join an event in your local community to watch all of the action, or host one of your own.</h5>
+        <div class="card-content box bg-bluegrey-50-30">
+          <a href="/io2016/attend" data-ajax-link
+             data-track-link="home-attend-learnmore" layout vertical>
+            <h3 class="card__title">Getting to I/O</h3>
+            <div>
+              <h5 style="font-weight:normal">There are plenty of ways to get to Mountain View, CA. Start planning your trip now.</h5>
             </div>
-          <div layout flex end>
-            <a href="/io2016/extended" class="card__footerlink"
-               layout horiziontal justified center flex
-               data-ajax-link data-track-link="home-extended-learnmore">Learn more
-              <iron-icon icon="io:keyboard-arrow-right"></iron-icon>
-            </a>
-          </div>
+            <div layout flex end>
+              <span class="card__footerlink" layout horiziontal justified center flex>
+                View travel info
+                <iron-icon icon="io:keyboard-arrow-right"></iron-icon>
+              </span>
+            </div>
+          </a>
+        </div>
+        <div class="card-content box bg-bluegrey-50">
+          <a href="/io2016/extended" data-ajax-link
+             data-track-link="home-extended-learnmore" layout vertical>
+            <h3 class="card__title">I/O Extended</h3>
+            <div>
+              <h5 style="font-weight:normal">Can't make it to I/O this year? No problem, you can still make an event out of it.</h5>
+            </div>
+            <div layout flex end>
+              <div class="card__footerlink" layout horiziontal justified center flex>
+                Join from your location
+                <iron-icon icon="io:keyboard-arrow-right"></iron-icon>
+              </div>
+            </div>
+          </a>
         </div>
 
         <div class="card-content box card__video box-full fullbleed typo-white" layout vertical>
@@ -172,12 +177,14 @@ limitations under the License.
 
         </div>
         <div class="card-content box card--bottom-right-clip fullbleed io__hash bg-bluegrey-50-40">
-          <template is="dom-if" if="[[_loadVideo]]">
-            <card-video id="card-video"
-                src="/io2016/videos/hashtag-800.mp4"
-                href="https://twitter.com/search?q=%23io16"
-                text="Search #io16 on Twitter"></card-video>
-          </template>
+          <a href="https://twitter.com/search?q=%23io16" target="_blan">
+            <template is="dom-if" if="[[_loadVideo]]">
+              <card-video id="card-video"
+                  src="/io2016/videos/hashtag-800.mp4"
+                  href="https://twitter.com/search?q=%23io16"
+                  text="Search #io16 on Twitter"></card-video>
+            </template>
+          </a>
         </div>
       </div>
     </div>

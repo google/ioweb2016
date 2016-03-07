@@ -25,24 +25,16 @@ limitations under the License.
         height: 100%;
         position: relative;
       }
-      a {
-        display: block;
-        height: 100%;
-        overflow: hidden;
-        width: 100%;
-      }
       video {
+        display: none;
         height: 101%;
         margin: -1px 0 0 -1px;
         width: 101%;
       }
     </style>
-
-    <a href$="{{href}}" target="_blank">
-      <span class="-off-screen">{{text}}</span>
-      <video id="card-video" src$="{{src}}"
-             on-canplaythrough="play" on-mouseover="play"></video>
-    </a>
+    <span class="-off-screen">{{text}}</span>
+    <video id="card-video" src$="{{src}}"
+           on-canplaythrough="show" on-mouseover="play"></video>
   </template>
   <script>
     (function () {
@@ -62,14 +54,6 @@ limitations under the License.
           },
 
           /**
-           * URL to link video to.
-           */
-          href: {
-            type: String,
-            value: 'https://twitter.com/search?q=%23io16'
-          },
-
-          /**
            * Text for link. Not displayed to visual users --
            * for screen readers only.
            */
@@ -77,6 +61,11 @@ limitations under the License.
             type: String,
             value: 'Search #io16 on Twitter'
           }
+        },
+
+        show: function() {
+          this.$['card-video'].style.display = 'block';
+          this.play();
         },
 
         play: function() {

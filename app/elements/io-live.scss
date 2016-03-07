@@ -21,16 +21,11 @@ $ytVideoControlsHeight: $desktopKeyline;
 $widgetWidth: 360px;
 
 :host {
-  // display: block;
-  // background-color: $color-cyan-500;
   @include typo-body();
-  // font-size: 16px;
 }
 
 :host(.bg-dark-grey) {
-  // color: $color-bluegrey-100;
   background-color: $color-bluegrey-700;
-  // color: $color-section-dark-grey-text;
 }
 
 countdown-timer {
@@ -74,7 +69,6 @@ countdown-timer {
   }
 
   h2 {
-    // color: $color-heading;
     @include typo-heading-2();
     margin: 0;
 
@@ -98,11 +92,9 @@ countdown-timer {
   clip-path: circle(32px at center);
   transition: -webkit-clip-path 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   background-color: white;
-  // min-height: 500px;
   height: 60vh;
   width: calc(100% - 32px);
   max-width: $widgetWidth;
-  // @include shadow-z2();
   overflow: hidden;
   opacity: 0;
   pointer-events: none;
@@ -315,7 +307,7 @@ core-animated-pages {
     font-size: 14px;
   }
 
-  io-radio-button {
+  paper-radio-button {
     margin-right: $mobileKeyline;
     margin-top: 5px;
   }

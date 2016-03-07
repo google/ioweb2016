@@ -26,6 +26,7 @@
   will-change: opacity;
 }
 
+
 .masthead {
   position: absolute;
   top: 0;
@@ -54,6 +55,17 @@
 
   h1 {
     color: $color-bluegrey-600;
+     margin-bottom: 9px;
+    font-weight: 400;
+    font-size: 56px;
+
+    @media (max-width: $tablet-breakpoint-max) {
+      font-size: 45px;
+    }
+
+    @media (max-width: $phone-breakpoint-max) {
+      font-size: 34px;
+    }
   }
 }
 
@@ -130,6 +142,8 @@ paper-tabs {
   }
 
   paper-tab {
+    padding: 0;
+
     &:hover {
       border-bottom: 2px solid $color-bluegrey-100;
     }
@@ -137,6 +151,7 @@ paper-tabs {
     a {
       height: 100%; // make sure entire tab is a link
       flex: inherit; // Needed for IE11, in order to ensure that the <a> gets assigned a width.
+      padding: 0 12px;
     }
 
     &.iron-selected {
@@ -322,7 +337,7 @@ paper-tabs {
 }
 
 
-@media (min-width: 769px) {
+@media (min-width: $tablet-breakpoint-min) {
   .masthead-container {
     @include keyline-24l();
   }
