@@ -207,12 +207,6 @@ limitations under the License.
       this.disableElementOnScroll(this.$.mapContainer);
     },
 
-    _onScrolledToMapSection: function() {
-      extendedLocationsPromise().then(function(locations) {
-        this._setExtendedLocations(locations);
-      }.bind(this));
-    },
-
     _onMapReady: function() {
       this.autocomplete = new google.maps.places.Autocomplete(
           this.$.autoCompleteInput, {});
