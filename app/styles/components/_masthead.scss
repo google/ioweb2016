@@ -54,7 +54,7 @@
   opacity: 0;  // Initial opacity, fades in on load.
 
   h1 {
-    color: $color-bluegrey-600;
+    color: $color-bluegrey-400;
      margin-bottom: 9px;
     font-weight: 400;
     font-size: 56px;
@@ -98,6 +98,7 @@
     .drawer-menu {
       color: $color-bluegrey-600;
       overflow-y: auto;
+      padding-top: 8px;
       -webkit-overflow-scrolling: touch;
 
       a {
@@ -108,7 +109,7 @@
         }
 
         paper-item {
-          font-size: inherit;
+          font-size: 500;
         }
       }
     }
