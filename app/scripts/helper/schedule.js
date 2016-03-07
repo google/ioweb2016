@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
- 'use strict';
+'use strict';
 
 self.IOWA = self.IOWA || {};
 
