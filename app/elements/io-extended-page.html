@@ -33,121 +33,118 @@ limitations under the License.
 
 <div class="masthead-container" layout horizontal end>
   <div class="masthead-meta">
-    <h1>I/O Extended</h1>
+    <h1 class="focus-target" tabindex="-1">I/O Extended</h1>
   </div>
 </div>
 
 <div class="active">
   <div class="card__container">
-    <div class="card">
-      <div class="subpage__container slide-up">
+    <div class="subpage__container slide-up">
+      <div layout horizontal wrap>
+        <div class="card extended-full-width" layout horizontal wrap>
+          <div class="card-content box card--top-left-clip bg-cyan-300" layout vertical>
+            <p>
+              I/O Extended events include a variety of options for developers&#8212;from live streaming sessions to local demos, to hackathons, code labs, and more. These events are hosted in your neighborhood by local developer communities.
+            </p>
+          </div>
+          <div class="card-content box card__photo card--top-right-clip" relative>
+            <div class="card--top-right-clip"></div>
+          </div>
+        </div>
+      </div><!-- end subpage_container -->
 
-        <div layout horizontal wrap>
-          <div class="card extended-full-width" layout horizontal wrap>
-            <div class="card-content box card--top-left-clip bg-cyan-300" layout vertical>
-              <h5 style="font-weight:normal">
-                I/O Extended events include a variety of options for developers&#8212;from live streaming sessions to local demos, to hackathons, code labs, and more. These events are hosted in your neighborhood by local developer communities.
-              </h5>
+      <section class="details bg-bluegrey-50-40">
+
+        <div class="details--wrapper host" layout horizontal>
+          <div class="details--icon-container">
+            <div class="details--icon"></div>
+          </div>
+          <div class="details--text-container">
+            <h3 class="details--title">Host an Extended event</h3>
+            <div class="details--info-block">
+              <p>
+                We&#8217;ve got what you need to bring developers together and host your own I/O Extended event. Download the organizer guide to learn more and join the organizer community. Don&#8217;t forget to submit your event via the form below to appear on our map. You might even be featured at I/O!
+              </p>
             </div>
-            <div class="card-content box card__photo card--top-right-clip" relative>
-              <div class="card--top-right-clip"></div>
+            <div class="details--info-block details--links">
+              <p>
+                <a href="https://docs.google.com/presentation/d/1xnPwOFSGz6L2OMzRsW8RtFarEKTDIdf4s-RdvoNcBVU/"
+                    data-track-link="extended-download-guide" target="_blank">Download Guide</a>
+                <a href="/io2016/form" data-ajax-link data-track-link="extended-submit-event">Submit Event</a>
+              </p>
             </div>
           </div>
         </div>
 
-        <section class="getting-to-shoreline details bg-bluegrey-50-40">
-
-          <div class="details--wrapper host" layout horizontal>
-            <div class="details--icon-container">
-              <div class="details--icon"></div>
-            </div>
-
-            <div class="details--text-container">
-              <h3 class="details--title">Host an Extended event</h3>
-              <div class="details--info-block">
-                <p>
-                  We&#8217;ve got what you need to bring developers together and host your own I/O Extended event. Download the organizer guide to learn more and join the organizer community. Don&#8217;t forget to submit your event via the form below to appear on our map. You might even be featured at I/O!
-                </p>
-              </div>
-              <div class="details--info-block details--links">
-                <p>
-                  <a href="#">Download Guide</a>
-                  <a href="/io2016/form" data-ajax-link data-track-link="extended-submit-event">Submit Event</a>
-                </p>
-              </div>
-            </div>
+        <div class="details--wrapper find" layout horizontal>
+          <div class="details--icon-container">
+            <div class="details--icon"></div>
           </div>
 
-          <div class="details--wrapper find" layout horizontal>
-            <div class="details--icon-container">
-              <div class="details--icon"></div>
-            </div>
-
-            <div class="details--text-container -no-border">
-              <h3 class="details--title">Find an Extended event</h3>
-              <div class="details--info-block">
-                <p>
-                  Hangout with local developers and experience I/O together. Search the <b>[[extendedLocations.length]] events</b> from all over the world and get involved in the action.
-                </p>
-              </div>
+          <div class="details--text-container -no-border">
+            <h3 class="details--title">Find an Extended event</h3>
+            <div class="details--info-block">
+              <p>
+                Hangout with local developers and experience I/O together. Search the <b>[[extendedLocations.length]] events</b> from all over the world and get involved in the action.
+              </p>
             </div>
           </div>
+        </div>
 
-          <div id="mapContainer">
-            <div id="searchBox">
-              <input id="autoCompleteInput" placeholder="Search for a city"></input>
-              <iron-icon icon="io:search"></iron-icon>
-            </div>
-
-            <!-- <google-map-markerclusterer map="[[map]]" id="cluster"></google-map-markerclusterer> -->
-            <google-map id="map"
-                        map="{{map}}"
-                        client-id="google-io"
-                        on-google-map-ready="mapReady"
-                        fit
-                        disable-default-ui
-                        single-info-window
-                        fit-to-markers
-                        additional-map-options='{"backgroundColor":"none", "zoomControl":true}'>
-              <template is="dom-repeat" items="[[extendedLocations]]" as="marker">
-                <google-map-marker latitude="[[marker.lat]]"
-                                   longitude="[[marker.lng]]"
-                                   icon="/io2016/images/extended/pin.svg">
-                  <div class="map-marker">
-                    <h5><a href$="[[marker.link]]" target="_blank">[[marker.name]]</a></h5>
-                    <p><a href$="[[marker.link]]" target="_blank">View Details</a></p>
-                  </div>
-                </google-map-marker>
-              </template>
-            </google-map>
-
+        <div id="mapContainer">
+          <div id="searchBox">
+            <input id="autoCompleteInput" placeholder="Search for a city"></input>
+            <iron-icon icon="io:search"></iron-icon>
           </div>
 
-          <div class="details--wrapper embed" layout horizontal>
-            <div class="details--icon-container">
-              <div class="details--icon"></div>
-            </div>
+          <!-- <google-map-markerclusterer map="[[map]]" id="cluster"></google-map-markerclusterer> -->
+          <google-map id="map"
+                      map="{{map}}"
+                      client-id="google-io"
+                      on-google-map-ready="mapReady"
+                      fit
+                      disable-default-ui
+                      single-info-window
+                      fit-to-markers
+                      additional-map-options='{"backgroundColor":"none", "zoomControl":true}'>
+            <template is="dom-repeat" items="[[extendedLocations]]" as="marker">
+              <google-map-marker latitude="[[marker.lat]]"
+                                  longitude="[[marker.lng]]"
+                                  icon="/io2016/images/extended/pin.svg">
+                <div class="map-marker">
+                  <h5><a href$="[[marker.link]]" target="_blank">[[marker.name]]</a></h5>
+                  <p><a href$="[[marker.link]]" target="_blank">View Details</a></p>
+                </div>
+              </google-map-marker>
+            </template>
+          </google-map>
 
-            <div class="details--text-container -no-border">
-              <h3 class="details--title">Embed the I/O Live Widget on your site</h3>
-              <div class="details--info-block">
-                <p>
-                  Want to stream I/O live on your own blog or website? Use our Live Embed Widget to let all of your followers catch the I/O action in real time.
-                </p>
-              </div>
-              <div class="details--info-block">
-                <p>
-                   <a href="/io2016/widget" data-ajax-link data-track-link="extended-widget">Configure widget</a>
-                </p>
-              </div>
-            </div>
+        </div>
+
+        <div class="details--wrapper embed" layout horizontal>
+          <div class="details--icon-container">
+            <div class="details--icon"></div>
           </div>
 
-        </section>
+          <div class="details--text-container -no-border">
+            <h3 class="details--title">Embed the I/O Live Widget on your site</h3>
+            <div class="details--info-block">
+              <p>
+                Want to stream I/O live on your own blog or website? Use our Live Embed Widget to let all of your followers catch the I/O action in real time.
+              </p>
+            </div>
+            <div class="details--info-block details--links">
+              <p>
+                  <a href="/io2016/widget" data-ajax-link data-track-link="extended-widget">Configure widget</a>
+              </p>
+            </div>
+          </div>
+        </div>
 
-        <div class="io__hash io__hash-bottom" aria-label="I/O hash tag"></div>
+      </section>
 
-      </div>
+      <div class="io__hash io__hash-bottom" aria-label="I/O hash tag"></div>
+
     </div>
   </div>
 </div>

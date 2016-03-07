@@ -24,6 +24,12 @@ limitations under the License.
     :host {
       display: block;
     }
+    ol {
+      padding-left: 16px;
+    }
+    ol li {
+      margin-bottom: 24px;
+    }
   </style>
 
   <div class="masthead-container" layout horizontal end>
@@ -38,7 +44,7 @@ limitations under the License.
 
       <div class="card">
 
-        <div class="card-content card-content--top bg-bluegrey-50-40">
+        <div class="card-content card-content--top card--top-left-clip card--top-right-clip bg-bluegrey-50-60">
           <h3 class="card__title">How it works</h3>
           <div>This page will help you fill out the I/O Extended registration form by pre-populating it with your event information.</div>
         </div>
@@ -47,7 +53,7 @@ limitations under the License.
           <div class="card-content">
             <h3>Steps to register your Extended event</h3>
             <ol>
-              <li>Create a Google+ Event for your 2016 I/O Extended event. To do so, go to <a href="https://plus.google.com/events" target="_blank">https://plus.google.com/events</a> and click "Create Event".</li>
+              <li>Create a public RSVP page for your I/O Extended event using an event organizer platform of your choice. We can only feature public events on the I/O Extended website.</li>
               <li>In the form below, search for the address of your event and select the result that best matches your location from the dropdown.</li>
               <li>Visually confirm the pin is at your event location. If it's not correct, adjust the marker by dragging it to the correct location on the map. If Google Maps cannot find your location, double click the map and move the pin to the correct location.</li>
               <li>Once you are done, click "Go to the registration form". We'll open the I/O Extended registration form with your location information pre-populated.</li>
@@ -58,12 +64,15 @@ limitations under the License.
 
           <div class="card-content">
             <h3 class="card__title">First, tell us where you event is</h3>
-            <io-extended-form></io-extended-form>
+            <io-extended-form id="form"></io-extended-form>
           </div>
         </div> <!-- .bg-bluegrey-50-20 -->
 
       </div> <!-- .card -->
     </div>  <!-- .card__container -->
+
+    <div class="io__hash io__hash-bottom" aria-label="I/O hash tag"></div>
+
   </div>
 
 </template>
@@ -77,7 +86,19 @@ limitations under the License.
     behaviors: [IOBehaviors.PageBehavior],
 
     title: '2016 I/O Extended event',
-    name: 'form'
+    name: 'form',
+
+    attached: function() {
+      this.listen(IOWA.Elements.ScrollContainer, 'scroll', '_onPageScroll');
+    },
+
+    detached: function() {
+      this.unlisten(IOWA.Elements.ScrollContainer, 'scroll', '_onPageScroll');
+    },
+
+    _onPageScroll: function() {
+      this.disableElementOnScroll(this.$.form);
+    }
 
   });
 
