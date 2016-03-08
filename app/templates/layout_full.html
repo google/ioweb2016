@@ -200,6 +200,7 @@ limitations under the License.
     #navbar.scrolled paper-tabs {
       --paper-tabs-selection-bar-color: var(--paper-blue-grey-600);
     }
+    
   </style>
 </head>
 <body id="page-{% .Slug %}" class="bg-white">
@@ -218,7 +219,7 @@ limitations under the License.
                   query-matches="{{app.isDesktopSize}}"></iron-media-query>
 
 <app-drawer id="appdrawer" swipe-open="[[app.isPhoneSize]]">
-  <div layout vertical class="drawer-container">
+  <div layout vertical class="drawer-container shadow-z5">
     <paper-toolbar class="tall">
       <div class="top io-logo" flex></div>
       <div class="top">
