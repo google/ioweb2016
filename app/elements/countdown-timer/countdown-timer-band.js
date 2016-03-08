@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+window.IOWA = window.IOWA || {};
+IOWA.CountdownTimer = IOWA.CountdownTimer || {};
+
 IOWA.CountdownTimer.Band = function(canvasElement, radius, center, quality, parent, id, defaultDigit) {
   this.canvasElement = canvasElement;
   this.parent = parent;

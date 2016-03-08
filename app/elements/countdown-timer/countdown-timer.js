@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+window.IOWA = window.IOWA || {};
+IOWA.CountdownTimer = IOWA.CountdownTimer || {};
+
 IOWA.CountdownTimer.MOBILE_BREAKPOINT = 501;
 IOWA.CountdownTimer.MOBILE_MAX_BREAKPOINT = 768;
 IOWA.CountdownTimer.TABLET_BREAKPOINT = 960;
@@ -466,36 +469,22 @@ IOWA.CountdownTimer.Core.prototype.getDigits = function() {
   }
 };
 
-IOWA.CountdownTimer.Core.prototype.getPath = function(svg) {
+IOWA.CountdownTimer.Core.prototype.getPath = function(svgId) {
   var svgHeight = 132 / 2;
 
-  var path = document.getElementById(svg);
+  var path = document.getElementById(svgId);
   var length = path.getTotalLength();
-  var pointList = path.getPathData();
 
   var quality = this.quality;
   var points = [];
-  // var oldPathSeg = 0;
 
   for (var i = 0; i < length; i += length / quality) {
     var point = path.getPointAtLength(i);
-    // var pathSeg = path.getPathSegAtLength(i);
-    // ADD ACTUAL SVG POINTS?
-    // if(pathSeg != oldPathSeg){
-    //  if(pointList[oldPathSeg].type === 'C' ) {
-    //    points.push({x:(pointList[oldPathSeg].values[4]-svgHeight)/svgHeight, y:(pointList[oldPathSeg].values[5]-svgHeight)/svgHeight});
-    //  } else {
-    //    points.push({x:(pointList[oldPathSeg].values[0]-svgHeight)/svgHeight, y:(pointList[oldPathSeg].values[1]-svgHeight)/svgHeight});
-    //  }
-
-    // }
     points.push({x: (point.x - svgHeight) / svgHeight, y: (point.y - svgHeight) / svgHeight});
-    // oldPathSeg = pathSeg;
   }
 
   return {
-    points: points,
-    pointList: pointList
+    points: points
   };
 };
 
