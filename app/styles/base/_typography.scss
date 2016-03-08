@@ -36,6 +36,20 @@
   letter-spacing: -0.02em;
 }
 
+@mixin typo-card() {
+  font-family: 'Roboto', sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 32px;
+}
+
+@mixin typo-card-large() {
+  font-family: 'Roboto', sans-serif;
+  font-size: 34px;
+  font-weight: 400;
+  line-height: 48px;
+}
+
 @mixin typo-heading-3() {
   font-family: 'Roboto', sans-serif;
   font-size: 20px;
