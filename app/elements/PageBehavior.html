@@ -99,6 +99,24 @@ IOBehaviors.PageBehavior = {
   },
 
   /**
+   * Smooth scrolls page to a element with id hash.
+   * @param {string} hash The target to scroll to. For example, "#id".
+   * @param {opt_offset?} opt_offset Offset from the top of the element to
+   *     stop the scroll at. By default, 0.
+   */
+  _scrollToTarget: function(hash, opt_offset) {
+    var dest = IOWA.Elements.Main.querySelector(hash);
+    if (dest) {
+      var offset = opt_offset || 0;
+      Polymer.AppLayout.scroll({
+        top:  dest.getBoundingClientRect().top + offset,
+        behavior: 'smooth',
+        target: IOWA.Elements.ScrollContainer
+      });
+    }
+  },
+
+  /**
    * Disables a container from user interaction (using pointer-events: none)
    * when the page is scrolling. Enables it again
    *

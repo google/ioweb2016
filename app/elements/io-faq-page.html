@@ -260,19 +260,20 @@ limitations under the License.
     title: 'FAQ',
     name: 'faq',
 
+    onPageTransitionDone: function() {
+      var hash = IOWA.Router.parseUrl(location.href).hash;
+      if (hash) {
+        this._scrollToTarget(hash, -120);
+      }
+    },
+
     scrollToFaq: function(e, detail) {
       e.preventDefault();
 
       var anchor = IOWA.Util.getEventSender(e, 'a');
+      this._scrollToTarget(anchor.getAttribute('href'));
 
-      var dest = IOWA.Elements.Main.querySelector(anchor.getAttribute('href'));
-      if (dest) {
-        Polymer.AppLayout.scroll({
-          top: dest.getBoundingClientRect().top,
-          behavior: 'smooth',
-          target: IOWA.Elements.ScrollContainer
-        });
-      }
+      history.replaceState({}, null, anchor.getAttribute('href'));
     }
 
   });
