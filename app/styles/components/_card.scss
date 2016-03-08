@@ -319,6 +319,17 @@
   }
 }
 
+@media (min-width: $phone-breakpoint-min-mid-b) and (max-width: $phone-breakpoint-max) {
+  .card {
+    .card-content {
+      &.box {
+        height: 75vw;
+        width: 100vw;
+      }
+    }
+  }
+}
+
 @media (max-width: $phone-breakpoint-min-mid-b) {
   .card {
     .card-content {
