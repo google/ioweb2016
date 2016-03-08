@@ -13,7 +13,7 @@ limitations under the License.
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
-<link rel="import" href="../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
+<!-- <link rel="import" href="../bower_components/iron-scroll-threshold/iron-scroll-threshold.html"> -->
 <link rel="import" href="../bower_components/paper-toolbar/paper-toolbar.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
@@ -154,8 +154,8 @@ limitations under the License.
   </div> <!-- .card__container -->
 </div> <!-- .active -->
 
-<iron-scroll-threshold id="threshold" hidden
-      lower-triggered="{{_scrolledToMapSection}}"></iron-scroll-threshold>
+<!-- <iron-scroll-threshold id="threshold" hidden
+      lower-triggered="{{_scrolledToMapSection}}"></iron-scroll-threshold> -->
 
 </template>
 <script>
@@ -173,19 +173,20 @@ limitations under the License.
     properties: {
       _loadMap: {
         type: Boolean,
-        computed: '_computeLoadMap(app.pageTransitionDone, _scrolledToMapSection)'
+        //computed: '_computeLoadMap(app.pageTransitionDone, _scrolledToMapSection)'
+        computed: '_computeLoadMap(app.pageTransitionDone)'
       }
     },
 
     attached: function() {
       this.listen(IOWA.Elements.ScrollContainer, 'scroll', '_onPageScroll');
 
-      this.$.threshold.scrollTarget = IOWA.Elements.ScrollContainer;
+      // this.$.threshold.scrollTarget = IOWA.Elements.ScrollContainer;
 
       // Calculate top of tweet cycler / hashtag video section.
-      this.$.threshold.lowerThreshold = IOWA.Elements.Footer.clientHeight +
-          parseInt(getComputedStyle(IOWA.Elements.Footer).height) +
-          Polymer.dom(this.root).querySelector('.io__hash').clientHeight;
+      // this.$.threshold.lowerThreshold = IOWA.Elements.Footer.clientHeight +
+      //     parseInt(getComputedStyle(IOWA.Elements.Footer).height) +
+      //     Polymer.dom(this.root).querySelector('.io__hash').clientHeight;
     },
 
     detached: function() {
@@ -203,7 +204,7 @@ limitations under the License.
     },
 
     _computeLoadMap: function(pageTransitionDone, scrolledEnough) {
-      return pageTransitionDone && scrolledEnough;
+      return pageTransitionDone;// && scrolledEnough;
     },
 
   });

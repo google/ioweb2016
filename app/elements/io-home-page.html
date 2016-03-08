@@ -13,7 +13,7 @@ limitations under the License.
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
-<link rel="import" href="../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
+<!-- <link rel="import" href="../bower_components/iron-scroll-threshold/iron-scroll-threshold.html"> -->
 
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
@@ -161,7 +161,7 @@ limitations under the License.
              on-mouseenter="stopTweetCycler"
              on-mouseleave="startTweetCycler">
 
-          <template is="dom-if" if="[[_scrolledToBottomCards]]">
+          <!-- <template is="dom-if" if="[[_scrolledToBottomCards]]"> -->
             <social-poller url="/io2016/api/v1/social" posts="{{socialPosts}}"
                            interval="30000"></social-poller>
 
@@ -177,7 +177,7 @@ limitations under the License.
                 </social-post>
               </template>
             </iron-pages>
-          </template>
+          <!-- </template> -->
 
         </div>
         <div class="card-content box card--bottom-right-clip fullbleed io__hash bg-bluegrey-50-40">
@@ -195,8 +195,8 @@ limitations under the License.
 
   </div>
 
-  <iron-scroll-threshold id="threshold" hidden
-      lower-triggered="{{_scrolledToBottomCards}}"></iron-scroll-threshold>
+  <!-- <iron-scroll-threshold id="threshold" hidden
+      lower-triggered="{{_scrolledToBottomCards}}"></iron-scroll-threshold> -->
 
 </template>
 <script>
@@ -226,15 +226,16 @@ limitations under the License.
       /**
        * True when the user has scrolled down to the hash tag video section.
        */
-      _scrolledToBottomCards: {
-        type: Boolean,
-        value: false,
-        observer: '_onScrolledBottomCards'
-      },
+      // _scrolledToBottomCards: {
+      //   type: Boolean,
+      //   value: false,
+      //   observer: '_onScrolledBottomCards'
+      // },
 
       _loadVideo: {
         type: Boolean,
-        computed: '_computeLoadVideo(app.isDesktopSize, app.pageTransitionDone, _scrolledToBottomCards)'
+        //computed: '_computeLoadVideo(app.isDesktopSize, app.pageTransitionDone, _scrolledToBottomCards)'
+        computed: '_computeLoadVideo(app.isDesktopSize, app.pageTransitionDone)'
       }
     },
 
@@ -245,12 +246,12 @@ limitations under the License.
       // Reset template variables for when revisiting the page.
       this.set('app.fullscreenVideoActive', false);
 
-      this.$.threshold.scrollTarget = IOWA.Elements.ScrollContainer;
+      //this.$.threshold.scrollTarget = IOWA.Elements.ScrollContainer;
 
       // Calculate top of tweet cycler / hashtag video section.
-      this.$.threshold.lowerThreshold = IOWA.Elements.Footer.clientHeight +
-          parseInt(getComputedStyle(IOWA.Elements.Footer).height) +
-          Polymer.dom(this.root).querySelector('.card-content.box').clientHeight;
+      // this.$.threshold.lowerThreshold = IOWA.Elements.Footer.clientHeight +
+      //     parseInt(getComputedStyle(IOWA.Elements.Footer).height) +
+      //     Polymer.dom(this.root).querySelector('.card-content.box').clientHeight;
 
       if (this.app.isPhoneSize) {
         this.listen(IOWA.Elements.ScrollContainer, 'scroll', '_onPageScroll');
@@ -284,20 +285,22 @@ limitations under the License.
     onPageTransitionDone: function() {
       this.$.ctimer.start(); // Start countdown.
 
+      this.startTweetCycler();
+
       // Don't cycle photos on mobile.
       if (!this.app.isPhoneSize) {
         this._cyclePhotos();
       }
     },
 
-    _onScrolledBottomCards: function() {
-      if (this._scrolledToBottomCards) {
-        // Wait a bit for the template to have stamped the social stuff.
-        this.async(function() {
-          this.startTweetCycler();
-        }, 10);
-      }
-    },
+    // _onScrolledBottomCards: function() {
+    //   if (this._scrolledToBottomCards) {
+    //     // Wait a bit for the template to have stamped the social stuff.
+    //     this.async(function() {
+    //       this.startTweetCycler();
+    //     }, 10);
+    //   }
+    // },
 
     // Manage screen reader accessibility for offscreen carousel
     // images and social posts
@@ -328,7 +331,7 @@ limitations under the License.
     },
 
     _computeLoadVideo: function(isDesktopSize, pageTransitionDone, scrolledEnough) {
-      return isDesktopSize && pageTransitionDone && scrolledEnough;
+      return isDesktopSize && pageTransitionDone;// && scrolledEnough;
     },
 
     _onSetReminder: function(e, detail) {
