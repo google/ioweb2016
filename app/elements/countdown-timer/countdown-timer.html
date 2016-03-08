@@ -114,7 +114,7 @@ Fired when the intro sequence starts or finishes.
          * Starts the timer.
          */
         start: function() {
-          this.countdownController.start(_skipIntro);
+          this.countdownController.play(_skipIntro);
           _skipIntro = true;
         }
       });

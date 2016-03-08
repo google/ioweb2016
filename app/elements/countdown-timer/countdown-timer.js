@@ -50,8 +50,6 @@ IOWA.CountdownTimer.Core = function(targetDate, elem) {
   this.drawAll = false;
 
   this.posShift = 0;
-  this.getFormat();
-  this.setCanvasSize();
 
   this.onVisibilityChange = this.onVisibilityChange.bind(this);
   this.onResize = this.onResize.bind(this);
@@ -86,42 +84,38 @@ IOWA.CountdownTimer.Core.prototype.setUp = function(opt_skipIntro) {
     return;
   }
 
-  this.lastNumbers = this.unitDistance(this.targetDate, new Date());
-
-  this.getFormat();
   this.getDigits();
-  this.getLayout();
-
-  this.bands = this.drawBands();
-  this.isReady = true;
-
-  this.getSeparators();
+  this.lastNumbers = this.unitDistance(this.targetDate, new Date());
+  this.bands = this.createBands();
 
   if (!opt_skipIntro) {
-    this.launchIntro();
+    this.intro = new IOWA.CountdownTimer.Intro(
+        this.canvasElement, this.quality, this);
   }
+
+  this.resetCanvas();
+  this.isReady = true;
 };
 
-IOWA.CountdownTimer.Core.prototype.start = function(opt_skipIntro) {
+IOWA.CountdownTimer.Core.prototype.play = function(opt_skipIntro) {
   if (!this.isReady) {
     this.setUp(opt_skipIntro);
   }
 
-  if (!opt_skipIntro) {
-    this.intro.start();
+  if (this.isPlaying) {
+    return;
   }
 
-  this.play();
+  this.isPlaying = true;
+  this.onFrame();
 };
 
-IOWA.CountdownTimer.Core.prototype.pad = function(num) {
-  var str = num.toString();
-
-  if (str.length === 1) {
-    str = '0' + str;
+IOWA.CountdownTimer.Core.prototype.pause = function() {
+  if (!this.isPlaying) {
+    return;
   }
 
-  return str;
+  this.isPlaying = false;
 };
 
 IOWA.CountdownTimer.Core.prototype.checkTime = function() {
@@ -186,20 +180,8 @@ IOWA.CountdownTimer.Core.prototype.onFrame = function() {
     return;
   }
 
-  if (!this.isReady) {
-    requestAnimationFrame(this.onFrame);
-    return;
-  }
-
-  var ctx = this.canvasElement.getContext('2d');
-
-  if (this.introRunning) {
-    ctx.save();
-    ctx.scale(this.pixelRatio, this.pixelRatio);
-    ctx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
-    ctx.restore();
-    this.intro.update();
-    requestAnimationFrame(this.onFrame);
+  if (this.intro) {
+    this._onIntroFrame();
     return;
   }
 
@@ -207,6 +189,7 @@ IOWA.CountdownTimer.Core.prototype.onFrame = function() {
 
   var i;
   // clear relevant canvas area
+  var ctx = this.canvasElement.getContext('2d');
   ctx.save();
   ctx.scale(this.pixelRatio, this.pixelRatio);
 
@@ -245,6 +228,31 @@ IOWA.CountdownTimer.Core.prototype.onFrame = function() {
   requestAnimationFrame(this.onFrame);
 };
 
+IOWA.CountdownTimer.Core.prototype._onIntroFrame = function() {
+  if (!this.introRunning) {
+    // Initialize intro.
+    this.introRunning = true;
+    this.intro.start();
+    this.containerDomElement.fire('countdown-intro', {start: true});
+  }
+
+  var ctx = this.canvasElement.getContext('2d');
+  ctx.save();
+  ctx.scale(this.pixelRatio, this.pixelRatio);
+  ctx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
+  ctx.restore();
+  var introFinished = this.intro.update();
+
+  if (introFinished) {
+    // Destroy intro.
+    this.introRunning = false;
+    this.intro = null;
+    this.containerDomElement.fire('countdown-intro', {done: true});
+  }
+
+  requestAnimationFrame(this.onFrame);
+};
+
 IOWA.CountdownTimer.Core.prototype.unitDistance = function(target, now) {
   var difference = (new Date(target - now)).getTime() / 1000;
 
@@ -269,23 +277,6 @@ IOWA.CountdownTimer.Core.prototype.unitDistance = function(target, now) {
     minutes: minutes,
     seconds: seconds
   };
-};
-
-IOWA.CountdownTimer.Core.prototype.pause = function() {
-  if (!this.isPlaying) {
-    return;
-  }
-
-  this.isPlaying = false;
-};
-
-IOWA.CountdownTimer.Core.prototype.play = function() {
-  if (this.isPlaying) {
-    return;
-  }
-
-  this.isPlaying = true;
-  this.onFrame();
 };
 
 IOWA.CountdownTimer.Core.prototype.onMouseMove = function(e) {
@@ -320,53 +311,27 @@ IOWA.CountdownTimer.Core.prototype.setQuality = function(n) {
   }
 };
 
-IOWA.CountdownTimer.Core.prototype.launchIntro = function() {
-  this.introRunning = true;
-  var center;
-  if (this.format === 'horizontal') {
-    center = this.getBandCenter(1);
-  } else {
-    center = this.getBandCenter(5);
-  }
-
-  this.intro = new IOWA.CountdownTimer.Intro(
-      this.canvasElement, this.layout.radius, center, this.quality, this);
-
-  this.containerDomElement.fire('countdown-intro', {start: true});
-};
-
-IOWA.CountdownTimer.Core.prototype.closeIntro = function() {
-  this.introRunning = false;
-
-  var ctx = this.canvasElement.getContext('2d');
-  ctx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
-
-  this.containerDomElement.fire('countdown-intro', {done: true});
-};
-
-IOWA.CountdownTimer.Core.prototype.drawBands = function() {
+IOWA.CountdownTimer.Core.prototype.createBands = function() {
   var n = 8;
   var bands = [];
   var time = {
-    digit_0: this.pad(this.lastNumbers.days)[0],
-    digit_1: this.pad(this.lastNumbers.days)[1],
+    digit_0: Math.floor(this.lastNumbers.days / 10),
+    digit_1: this.lastNumbers.days % 10,
 
-    digit_2: this.pad(this.lastNumbers.hours)[0],
-    digit_3: this.pad(this.lastNumbers.hours)[1],
+    digit_2: Math.floor(this.lastNumbers.hours / 10),
+    digit_3: this.lastNumbers.hours % 10,
 
-    digit_4: this.pad(this.lastNumbers.minutes)[0],
-    digit_5: this.pad(this.lastNumbers.minutes)[1],
+    digit_4: Math.floor(this.lastNumbers.minutes / 10),
+    digit_5: this.lastNumbers.minutes % 10,
 
-    digit_6: this.pad(this.lastNumbers.seconds)[0],
-    digit_7: this.pad(this.lastNumbers.seconds)[1]
+    digit_6: Math.floor(this.lastNumbers.seconds / 10),
+    digit_7: this.lastNumbers.seconds % 10
   };
 
   for (var i = 0; i < n; i++) {
-    var bandCenter = this.getBandCenter(i);
     var defaultDigit = time['digit_' + i];
     bands.push(new IOWA.CountdownTimer.Band(
-               this.canvasElement, this.layout.radius, bandCenter,
-               this.quality, this, i, defaultDigit));
+               this.canvasElement, this.quality, this, i, defaultDigit));
   }
 
   return bands;
@@ -554,10 +519,10 @@ IOWA.CountdownTimer.Core.prototype.onResize = function() {
     return;
   }
 
-  this.redraw();
+  this.resetCanvas();
 };
 
-IOWA.CountdownTimer.Core.prototype.redraw = function() {
+IOWA.CountdownTimer.Core.prototype.resetCanvas = function() {
   if (!this.drawAll) {
     var ctx = this.canvasElement.getContext('2d');
     ctx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
@@ -576,15 +541,10 @@ IOWA.CountdownTimer.Core.prototype.redraw = function() {
     this.bands[i].redraw();
   }
 
-  var center;
-  if (this.format === 'horizontal') {
-    center = this.getBandCenter(1);
-  } else {
-    center = this.getBandCenter(5);
-  }
-
   if (this.intro) {
-    this.intro.center = center;
+    this.intro.radius = this.layout.radius;
+    this.intro.center = this.format === 'horizontal' ?
+        this.getBandCenter(1) : this.getBandCenter(5);
   }
 
   this.getSeparators();
