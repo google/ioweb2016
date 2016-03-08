@@ -359,7 +359,12 @@ limitations under the License.
       var socialList = this.$.social_card.querySelector('#social_list');
 
       // Force initial item to visible
-      socialList.selectedItem.style.visibility = 'visible';
+      if (socialList.selectedItem) {
+        socialList.selectedItem.style.visibility = 'visible';
+      } else {
+        socialList.children[0].style.visibility = 'visible';
+      }
+
       _cycleSocialPostsInterval = window.setInterval(function() {
         socialList.selectNext();
         socialList.selectedItem.style.visibility = 'visible';
