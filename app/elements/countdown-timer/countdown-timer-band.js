@@ -20,31 +20,22 @@ IOWA.CountdownTimer = IOWA.CountdownTimer || {};
 IOWA.CountdownTimer.Band = function(canvasElement, quality, parent, id, defaultDigit) {
   this.canvasElement = canvasElement;
   this.parent = parent;
-  this.id = id;
 
   this.aShift = 2 * (quality / 800);
   this.posShift = 0;
   this.strokeOffset = 0;
 
-  this.counter = 0;
-
   this.digits = this.parent.digits;
 
-  var n = defaultDigit;
-
-  this.oldShape = this.digits[n];
-  this.currentShape = this.digits[n];
+  this.oldShape = this.digits[defaultDigit];
+  this.currentShape = this.digits[defaultDigit];
 
   this.radius = 0;
   this.center = {x: 0, y: 0};
   this.quality = quality;
 
-  this.x = this.center.x;
-  this.y = this.center.y;
-
-  this.inc = 0;
-
   this.isPlaying = true;
+  this.needsRedraw = true;
 
   this.colors = [
     {hex: '#ffffff', ratio: 1, size: 1, oldSize: 1, active: false, tween: null},
@@ -73,7 +64,7 @@ IOWA.CountdownTimer.Band.prototype.changeShape = function(newShape) {
 
   this.tween = TweenMax.to(this, 0.65, {posShift: 1, ease: Elastic.easeInOut.config(1, 1), delay: 0, onComplete: this.onChangeComplete, onCompleteParams: [this]});
 
-  this.play();
+  this.isPlaying = true;
 };
 
 IOWA.CountdownTimer.Band.prototype.fade = function(state) {
@@ -123,7 +114,7 @@ IOWA.CountdownTimer.Band.prototype.getColor = function(ratio) {
 };
 
 IOWA.CountdownTimer.Band.prototype.update = function() {
-  if (!this.isPlaying && !this.parent.drawAll) {
+  if (!this.isPlaying && !this.parent.drawAll && !this.needsRedraw) {
     return;
   }
 
@@ -194,6 +185,8 @@ IOWA.CountdownTimer.Band.prototype.update = function() {
   }
 
   ctx.restore();
+
+  this.needsRedraw = false;
 };
 
 IOWA.CountdownTimer.Band.prototype.shudder = function(state) {
@@ -212,17 +205,7 @@ IOWA.CountdownTimer.Band.prototype.shudder = function(state) {
 };
 
 IOWA.CountdownTimer.Band.prototype.redraw = function() {
-  if (!this.isPlaying) {
-    this.isPlaying = true;
-    this.update();
-    this.isPlaying = false;
-  } else {
-    this.update();
-  }
-};
-
-IOWA.CountdownTimer.Band.prototype.play = function() {
-  this.isPlaying = true;
+  this.needsRedraw = true;
 };
 
 IOWA.CountdownTimer.Band.prototype.renderFlat = function() {
@@ -233,7 +216,7 @@ IOWA.CountdownTimer.Band.prototype.renderFlat = function() {
   this.colors[4].size = 0;
   this.colors[5].size = 1;
 
-  this.update();
+  this.needsRedraw = true;
 };
 
 IOWA.CountdownTimer.Band.prototype.stopPlaying = function() {
