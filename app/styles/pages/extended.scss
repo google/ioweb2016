@@ -40,7 +40,7 @@ $name: 'page-extended';
     p {
       @include typo-heading-2();
       line-height: 32px;
-      
+
       @media (max-width: $tablet-breakpoint-max) {
         @include typo-mobile-intro-card();
       }
@@ -68,12 +68,12 @@ $name: 'page-extended';
     padding: 72px 0;
     max-width: 760px;
     margin: 0 auto;
-    
+
     @media (max-width: $phone-breakpoint-max) {
       padding: 48px 16px;
       width: 100%;
     }
-    
+
     @media (max-width: $phone-breakpoint-mid) {
       display: block;
     }
@@ -85,10 +85,10 @@ $name: 'page-extended';
 
   .details--info-block {
     margin-bottom: 24px;
-    
+
     &:last-of-type {
       margin-bottom: 0;
-      
+
       .detail__text {
         margin-bottom: 0;
       }
@@ -115,20 +115,20 @@ $name: 'page-extended';
 
     @media (max-width: $phone-breakpoint-max) {
       width: 64px;
-      height: 64px;   
+      height: 64px;
       margin: 0 24px 0 0;
     }
-    
+
     @media (max-width: $phone-breakpoint-mid) {
      margin: 0 0 24px 0;
     }
   }
 
-  .host {  
+  .host {
     @media (max-width: $phone-breakpoint-max) {
       padding-top: 64px;
     }
-       
+
     .details--icon {
       background: transparent url(../images/extended/icon-host.svg) center center no-repeat;
       background-size: 100%;
@@ -144,7 +144,7 @@ $name: 'page-extended';
 
   .embed {
     border-bottom: none;
-    
+
     .details--icon {
       background: transparent url(../images/extended/icon-embed.svg) center center no-repeat;
       background-size: 100%;
@@ -157,7 +157,6 @@ $name: 'page-extended';
 
   #mapContainer {
     background-color: #b3d1ff;
-    height: 0;
     padding-bottom: (1 / 2) * 100%;
     position: relative;
 
@@ -212,7 +211,7 @@ $name: 'page-extended';
       }
     }
   }
-  
+
   .io__hash {
     @media (max-width: $tablet-breakpoint-min) {
       height: 400px;

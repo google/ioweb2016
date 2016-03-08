@@ -13,6 +13,7 @@ limitations under the License.
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
 <link rel="import" href="../bower_components/paper-toolbar/paper-toolbar.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
@@ -139,10 +140,10 @@ limitations under the License.
 
       </section>
 
-      <section class="map" id="mapContainer">
+      <section id="mapContainer">
 
-        <template is="dom-if" if="[[app.pageTransitionDone]]">
-          <iframe src="https://www.google.com/maps/d/u/0/embed?mid=zhj-bilAxwho.kAQv4c7VcqU4" width="100%" height="480"></iframe>
+        <template is="dom-if" if="[[_loadMap]]">
+          <iframe src="https://www.google.com/maps/d/u/0/embed?mid=zhj-bilAxwho.kAQv4c7VcqU4" width="100%" height="100%"></iframe>
         </template>
 
       </section>
@@ -152,6 +153,9 @@ limitations under the License.
     </div> <!-- .card -->
   </div> <!-- .card__container -->
 </div> <!-- .active -->
+
+<iron-scroll-threshold id="threshold" hidden
+      lower-triggered="{{_scrolledToMapSection}}"></iron-scroll-threshold>
 
 </template>
 <script>
@@ -166,8 +170,22 @@ limitations under the License.
     title: 'Attending',
     name: 'attend',
 
+    properties: {
+      _loadMap: {
+        type: Boolean,
+        computed: '_computeLoadMap(app.pageTransitionDone, _scrolledToMapSection)'
+      }
+    },
+
     attached: function() {
       this.listen(IOWA.Elements.ScrollContainer, 'scroll', '_onPageScroll');
+
+      this.$.threshold.scrollTarget = IOWA.Elements.ScrollContainer;
+
+      // Calculate top of tweet cycler / hashtag video section.
+      this.$.threshold.lowerThreshold = IOWA.Elements.Footer.clientHeight +
+          parseInt(getComputedStyle(IOWA.Elements.Footer).height) +
+          Polymer.dom(this.root).querySelector('.io__hash').clientHeight;
     },
 
     detached: function() {
@@ -182,7 +200,11 @@ limitations under the License.
 
     _onPageScroll: function() {
       this.disableElementOnScroll(this.$.mapContainer);
-    }
+    },
+
+    _computeLoadMap: function(pageTransitionDone, scrolledEnough) {
+      return pageTransitionDone && scrolledEnough;
+    },
 
   });
 

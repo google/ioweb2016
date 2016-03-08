@@ -45,6 +45,7 @@
     "iron-list": "PolymerElements/iron-list#^1.1.6",
     "iron-media-query": "PolymerElements/iron-media-query#^1.0.0",
     "iron-pages": "PolymerElements/iron-pages#^1.0.0",
+    "iron-scroll-threshold": "PolymerElements/iron-scroll-threshold#^1.0.1",
     "iron-selector": "PolymerElements/iron-selector#^1.0.0",
     "js-crc": "^0.1.0",
     "moment": "~2.11.0",

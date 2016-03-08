@@ -101,7 +101,7 @@ limitations under the License.
           <google-map id="map"
                       map="{{map}}"
                       client-id="google-io"
-                      on-google-map-ready="mapReady"
+                      on-google-map-ready="_onMapReady"
                       fit
                       disable-default-ui
                       single-info-window
@@ -190,20 +190,24 @@ limitations under the License.
 
     attached: function() {
       this.listen(IOWA.Elements.ScrollContainer, 'scroll', '_onPageScroll');
-      extendedLocationsPromise().then(function(locations) {
-        this._setExtendedLocations(locations);
-      }.bind(this));
+      this.fetchLocations();
     },
 
     detached: function() {
       this.unlisten(IOWA.Elements.ScrollContainer, 'scroll', '_onPageScroll');
     },
 
+    fetchLocations: function() {
+      extendedLocationsPromise().then(function(locations) {
+        this._setExtendedLocations(locations);
+      }.bind(this));
+    },
+
     _onPageScroll: function() {
       this.disableElementOnScroll(this.$.mapContainer);
     },
 
-    mapReady: function() {
+    _onMapReady: function() {
       this.autocomplete = new google.maps.places.Autocomplete(
           this.$.autoCompleteInput, {});
       google.maps.event.addListener(this.autocomplete, 'place_changed',
