@@ -32,6 +32,14 @@ $name: 'page-attend';
 
   .card-content {
     padding-right: 32px;
+    
+    &:nth-of-type(1) {
+      @media (max-width: 340px) {
+        height: auto;
+        padding-right: 16px;
+      }
+    }
+
 
     p {
       @include typo-heading-2();

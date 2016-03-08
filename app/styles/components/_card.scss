@@ -140,9 +140,19 @@
 }
 
 @media (min-width: $tablet-breakpoint-min) and (max-width: 960px) {
-  .card-content {
-    h5 {
-      font-size: 16px;
+  .card {
+    .card-content {
+      h5 {
+        font-size: 16px;
+      }
+      h2 {
+        @include typo-card();
+      }
+    }
+    h3,
+    .card__title p,
+    .card__sub-title {
+      @include typo-card-large();
     }
   }
 }
@@ -164,11 +174,21 @@
 
     .card-content {
       padding: 32px 64px 32px 32px;
+      
+      h2 {
+        @include typo-card-large();
+      }
 
       &.box {
         height: 480px;
       }
     }
+    
+    h3,
+    .card__title p,
+    .card__sub-title {
+      @include typo-card();
+    }   
   }
 }
 
@@ -264,12 +284,15 @@
       padding-bottom: $desktopKeyline;
       padding-top: $desktopKeyline;
       padding-right: $largeKeyline;
+      
+      h2 {
+        @include typo-card();
+      }
     }
     h3,
     .card__title p,
     .card__sub-title {
-      font-size: 34px;
-      line-height: 40px;
+      @include typo-card();
     }
     h5,
     p {
@@ -289,8 +312,7 @@
   .card {
     h3,
     .card__sub-title {
-      font-size: 24px;
-      line-height: 32px;
+      @include typo-card();
     }
     h5,
     p {
@@ -333,14 +355,16 @@
 @media (max-width: $phone-breakpoint-min-mid-b) {
   .card {
     .card-content {
-      padding-right: 36px;
+      padding-right: 16px;     
+      h2 {
+        line-height: 32px;
+      }
     }
     h3,
     .card__title,
     .card__title p,
     .card__sub-title {
-      font-size: 24px;
-      line-height: 32px;
+      @include typo-mobile-intro-card();
     }
     .card__title p {
       margin-bottom: 14px;
