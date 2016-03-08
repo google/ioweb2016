@@ -89,7 +89,7 @@ limitations under the License.
     window.ENV = {% .Env %}; // Used in analytics.js
     window.PREFIX = {% .Prefix %};
   </script>
-  <script src="/io2016/scripts/analytics.js"></script>
+  <script src="{% .Prefix %}/scripts/analytics.js"></script>
   <script>
   (function() {
     "use strict";
@@ -172,9 +172,9 @@ limitations under the License.
 
   <!-- Page styles -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
-  <link rel="stylesheet" href="/io2016/styles/main.css">
+  <link rel="stylesheet" href="{% .Prefix %}/styles/main.css">
 
-  <link rel="stylesheet" href="/io2016/styles/pages/error.css">
+  <link rel="stylesheet" href="{% .Prefix %}/styles/pages/error.css">
 </head>
 <body id="page-{% .Slug %}" class="bg-light-grey">
 
