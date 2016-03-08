@@ -361,16 +361,25 @@ limitations under the License.
 
       var socialList = this.$.social_card.querySelector('#social_list');
 
-      // Force initial item to visible
-      if (socialList.selectedItem) {
-        socialList.selectedItem.style.visibility = 'visible';
-      } else {
-        socialList.children[0].style.visibility = 'visible';
-      }
+      var forceVisible = function() {
+        // Force initial item to visible
+        if (socialList.selectedItem) {
+          socialList.selectedItem.style.visibility = 'visible';
+        } else {
+          socialList.children[0].style.visibility = 'visible';
+        }
+      };
+
+      forceVisible();
 
       _cycleSocialPostsInterval = window.setInterval(function() {
         socialList.selectNext();
-        socialList.selectedItem.style.visibility = 'visible';
+        // There appears to be a race condition that leads to
+        // socialList.selectedItem being undefined following
+        // socialList.selectNext().
+        // See https://github.com/GoogleChrome/ioweb2016/issues/409
+        // Use the forceVisible() helper to work around that bug.
+        forceVisible();
       }.bind(this), SOCIAL_CYCLE);
     },
 
