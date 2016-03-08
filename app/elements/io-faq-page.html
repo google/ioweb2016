@@ -260,7 +260,7 @@ limitations under the License.
     title: 'FAQ',
     name: 'faq',
 
-    attached: function() {
+    onPageTransitionDone: function() {
       var hash = IOWA.Router.parseUrl(location.href).hash;
       if (hash) {
         this._scrollToTarget(hash, -120);
@@ -272,6 +272,8 @@ limitations under the License.
 
       var anchor = IOWA.Util.getEventSender(e, 'a');
       this._scrollToTarget(anchor.getAttribute('href'));
+
+      history.replaceState({}, null, anchor.getAttribute('href'));
     }
 
   });
