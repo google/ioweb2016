@@ -301,7 +301,8 @@ limitations under the License.
           <section class="page__section slide-up-delay" id="agenda_content">
             <template is="dom-repeat" items="[[agenda]]" as="day">
               <section class="page__section">
-                <io-agenda day="[[day.day]]"
+                <io-agenda app="[[app]]"
+                           day="[[day.day]]"
                            start="[[day.start]]"
                            end="[[day.end]]"
                            color="[[day.color]]"

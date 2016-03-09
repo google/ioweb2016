@@ -33,18 +33,22 @@ each hour is 2 columns.  Each event is a label column and 3 columns of different
             <tbody>
             <template is="dom-repeat" items="[[events]]" as="event">
               <tr>
-                <td class="row_label">[[event.name]]</td>
+                <td class="row_label" hidden$="[[app.isPhoneSize]]">[[event.name]]</td>
                 <template is="dom-if" if="[[_checkZero('left', event)]]">
                   <td colspan$="[[_calculateLeftSpan(event)]]">
                     <div class="filler"></div>
                   </td>
                 </template>
                 <td colspan$="[[_calculateEventSpan(event)]]">
-                  <div class="filler highlighted" style$="background:[[color]];"></div>
+                  <div class="filler center_text" style$="background:[[color]];">
+                    <span hidden$="[[_fitEventSpan(event)]]">[[event.name]]</span>
+                  </div>
                 </td>
                 <template is="dom-if" if="[[_checkZero('right', event)]]">
                   <td colspan$="[[_calculateRightSpan(event)]]">
-                    <div class="filler"></div>
+                    <div class="filler">
+                      <span class="after_text" hidden$="[[_fitAfterSpan(event)]]">[[event.name]]</span>
+                    </div>
                   </td>
                 </template>
               </tr>
@@ -52,10 +56,10 @@ each hour is 2 columns.  Each event is a label column and 3 columns of different
             </tbody>
             <tfoot>
             <tr>
-              <td></td>
+              <td hidden$="[[app.isPhoneSize]]"></td>
               <template is="dom-repeat" items="[[_calculateTime(start, end)]]" as="hour">
-                <td colspan="1" style$="width:[[_cellWidth]]" class="agenda_time">
-                  <span class="agenda_hour">[[hour]]</span>
+                <td colspan="1" style$="width:[[_cellWidth]]" class$="agenda_time [[_isEveryOther(hour)]]">
+                  <span class$="agenda_hour [[_computeDoubleDigit(hour)]]" hidden$="[[_isEven(hour)]]">[[hour]]</span>
                 </td>
                 <td colspan="1" style$="width:[[_cellWidth]]"></td>
               </template>
@@ -71,6 +75,13 @@ each hour is 2 columns.  Each event is a label column and 3 columns of different
       Polymer({
         is: 'io-agenda',
         properties: {
+          /**
+           * App logic
+           */
+          app: {
+            type: Object
+          },
+
           /**
            * Label for the day e.g. Wednesday May 18
            */
@@ -196,6 +207,56 @@ each hour is 2 columns.  Each event is a label column and 3 columns of different
           } else {
             return this._calculateRightSpan(event) > 0;
           }
+        },
+
+        /**
+
+         * Returns true when viewport is mobile device and for every other hour
+         * @param hour
+         * @returns {boolean}
+         * @private
+         */
+        _isEveryOther: function(hour) {
+          if (this.app.isPhoneSize) {
+            return hour % 2 === 0 || hour === '12P';
+          } else {
+            return false;
+          }
+        },
+
+        /**
+         * Returns double_digit if the number is a double digit
+         *
+         * @param hour
+         * @returns {string}
+         * @private
+         */
+        _computeDoubleDigit: function(hour) {
+          if (hour > 9) {
+            return 'double_digit';
+          }
+        },
+
+        /**
+         * Returns true if the event name is longer than the end time - start time * 3.5
+         * @param event
+         * @returns {boolean}
+         * @private
+         */
+        _fitEventSpan: function(event) {
+          return !this.app.isPhoneSize || event.name.length >= (event.end - event.start) * 3.5;
+        },
+
+        /**
+         * Returns true if the event length is < end - start * 3.5
+         * (if the word doesn't fit in the highlighted block)
+         *
+         * @param event
+         * @returns {boolean}
+         * @private
+         */
+        _fitAfterSpan: function(event) {
+          return !this.app.isPhoneSize || event.name.length < (event.end - event.start) * 3.5;
         }
       })
     })();
