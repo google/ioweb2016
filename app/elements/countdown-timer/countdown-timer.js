@@ -211,16 +211,6 @@ IOWA.CountdownTimer.Core.prototype.onFrame = function() {
 
   if (this.drawAll) {
     ctx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
-  } else {
-    for (i = 0; i <= 3; i++) {
-      if (this.bands[i * 2].isPlaying && this.bands[i * 2 + 1].isPlaying) {
-        ctx.clearRect(
-          this.bands[i * 2].center.x - this.layout.radius - this.bandGutter / 2,
-          this.bands[i * 2].center.y - this.layout.radius - this.bandGutter,
-          this.layout.radius * 4 + this.bandGutter + this.bandPadding * 2,
-          this.layout.radius * 2 + this.bandGutter * 2);
-      }
-    }
   }
 
   ctx.restore();
@@ -310,7 +300,7 @@ IOWA.CountdownTimer.Core.prototype.handleMouseShudder = function() {
                   mouseY > (this.bands[i].center.y - this.bands[i].radius) &&
                   mouseY < (this.bands[i].center.y + this.bands[i].radius)) {
       this.bands[i].shudder(true);
-    } else if (this.bands[i].isShuddering) {
+    } else {
       this.bands[i].shudder(false);
     }
   }

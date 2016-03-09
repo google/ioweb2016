@@ -122,12 +122,13 @@ IOWA.CountdownTimer.Band.prototype.update = function() {
   ctx.lineWidth = this.parent.strokeWeight;
   ctx.lineJoin = ctx.lineCap = 'round';
 
-  var overClear = this.parent.pixelRatio;
+  var overClear = (this.parent.bandGutter + this.parent.bandPadding) / 2;
+
   ctx.clearRect(
-    (this.center.x - this.radius) - overClear,
-    (this.center.y - this.radius) - overClear,
-    (this.radius * 2) + (overClear * 2),
-    (this.radius * 2) + (overClear * 2)
+    (this.center.x - this.radius) - overClear / 2,
+    (this.center.y - this.radius) - overClear / 2,
+    (this.radius * 2) + overClear,
+    (this.radius * 2) + overClear
   );
 
   var lastColor;
@@ -192,7 +193,7 @@ IOWA.CountdownTimer.Band.prototype.shudder = function(state) {
     this.isPlaying = true;
     this.fade('in');
     this.isShuddering = true;
-  } else if (this.isPlaying && !state) {
+  } else if (this.isShuddering && this.isPlaying && !state) {
     clearTimeout(this.fadeTimer);
     var ref = this;
     this.fadeTimer = setTimeout(function() {
