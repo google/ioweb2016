@@ -32,6 +32,9 @@ io-schedule-page {
 
 .meta-filter {
   @include keyline-16();
+  paper-icon-button {
+    margin-left: $mobileKeyline / 2;
+  }
 }
 
 .page__filters {
@@ -59,14 +62,6 @@ io-schedule-page {
 
 .page__section.page__section--top {
   padding-bottom: 0;
-}
-
-.card-content  {
-  h4 {
-    font-size: 20px;
-    line-height: 32px;
-    font-weight: 400;
-  }
 }
 
 #signin-prompt {
