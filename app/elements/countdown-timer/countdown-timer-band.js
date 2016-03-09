@@ -17,7 +17,7 @@
 window.IOWA = window.IOWA || {};
 IOWA.CountdownTimer = IOWA.CountdownTimer || {};
 
-IOWA.CountdownTimer.Band = function(canvasElement, quality, parent, id, defaultDigit) {
+IOWA.CountdownTimer.Band = function(canvasElement, quality, parent, defaultDigit) {
   this.canvasElement = canvasElement;
   this.parent = parent;
 
@@ -25,10 +25,8 @@ IOWA.CountdownTimer.Band = function(canvasElement, quality, parent, id, defaultD
   this.posShift = 0;
   this.strokeOffset = 0;
 
-  this.digits = this.parent.digits;
-
-  this.oldShape = this.digits[defaultDigit];
-  this.currentShape = this.digits[defaultDigit];
+  this.oldShape = defaultDigit;
+  this.currentShape = defaultDigit;
 
   this.radius = 0;
   this.center = {x: 0, y: 0};
@@ -135,10 +133,10 @@ IOWA.CountdownTimer.Band.prototype.update = function() {
   var lastColor;
 
   this.quality = this.parent.quality;
-  var qualityRatio = this.parent.digits[0].points.length / this.quality;
+  var qualityRatio = this.currentShape.points.length / this.quality;
 
   for (var i = 0; i < this.quality; i++) {
-    if (this.digits[0].points.length < i) {
+    if (this.currentShape.points.length < i) {
       continue;
     }
 

@@ -68,8 +68,8 @@ IOWA.CountdownTimer.Intro.prototype.update = function() {
     if (this.firstRun) {
       this.parent.bands[digit].aShift *= -1;
       this.parent.bands[digit].colors[0].hex = '#78909C';
-      this.parent.bands[digit].oldShape = this.parent.bands[digit].digits[0];
-      this.parent.bands[digit].currentShape = this.parent.bands[digit].digits[0];
+      this.parent.bands[digit].oldShape = this.parent.digits[0];
+      this.parent.bands[digit].currentShape = this.parent.digits[0];
       this.parent.bands[digit].isPlaying = true;
       this.parent.bands[digit].fade('in');
       this.firstRun = false;

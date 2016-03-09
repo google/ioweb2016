@@ -54,6 +54,10 @@ IOWA.CountdownTimer.Core = function(targetDate, elem) {
 
   this.posShift = 0;
 
+  // Give canvas element a size early so other elements can animate around it.
+  this.getFormat();
+  this.setCanvasSize();
+
   this.onVisibilityChange = this.onVisibilityChange.bind(this);
   this.onResize = this.onResize.bind(this);
   this.onMouseMove = this.onMouseMove.bind(this);
@@ -95,9 +99,6 @@ IOWA.CountdownTimer.Core.prototype.setUp = function(opt_skipIntro) {
     this.intro = new IOWA.CountdownTimer.Intro(
         this.canvasElement, this.quality, this);
   }
-
-  // Give canvas element a size early so other elements can animate around it.
-  this.setCanvasSize();
 
   this.needsCanvasReset = true;
   this.isReady = true;
@@ -152,8 +153,8 @@ IOWA.CountdownTimer.Core.prototype.checkTime = function() {
     this.bands[7].renderFlat();
     // reset default band used in logo
     var d = distance.minutes % 10;
-    this.bands[5].oldShape = this.bands[5].digits[d];
-    this.bands[5].currentShape = this.bands[5].digits[d];
+    this.bands[5].oldShape = this.digits[d];
+    this.bands[5].currentShape = this.digits[d];
     this.firstRun = false;
   }
 
@@ -347,9 +348,9 @@ IOWA.CountdownTimer.Core.prototype.createBands = function() {
   };
 
   for (var i = 0; i < n; i++) {
-    var defaultDigit = time['digit_' + i];
+    var defaultDigit = this.digits[time['digit_' + i]];
     bands.push(new IOWA.CountdownTimer.Band(
-               this.canvasElement, this.quality, this, i, defaultDigit));
+               this.canvasElement, this.quality, this, defaultDigit));
   }
 
   return bands;
