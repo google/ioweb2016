@@ -31,6 +31,7 @@ module.exports = function(rootDir, handleFetch, importScripts, callback) {
     'faq',
     'form',
     'home',
+    'schedule',
     'widget'
   ];
   var navigateFallbackWhitelist = routes.map(function(route) {
