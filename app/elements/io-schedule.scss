@@ -85,9 +85,15 @@ $color-section-border: #eaeaea;
   visibility: hidden;
   padding: $tabletKeyline 0;
 
+  h1 {
+    font-size: 56px;
+    color: rgba(0,0,0,0.55);
+  }
+
   .schedule-block-meridiem {
     font-size: initial;
-    line-height: 34px;
+    font-weight: 500;
+    line-height: 29px;
     margin-left: $mobileKeyline / 2;
   }
 }
@@ -115,7 +121,7 @@ $color-section-border: #eaeaea;
   // overrides for link styling.
   text-transform: none !important;
   line-height: inherit !important;
-  font-size: inherit !important;
+  font-size: 20px;
   font-weight: inherit !important;
   color: inherit !important;
 }
@@ -127,11 +133,13 @@ $color-section-border: #eaeaea;
 }
 
 .schedule-livestream {
-  color: $color-session-detail-light-grey;
+  margin-left: $mobileKeyline / 2;
 }
 
 .filter-section {
   h4 {
+    font-size: 16px;
+    line-height: 18px;
     border-bottom: 1px solid $color-bluegrey-100;
     padding-bottom: $mobileKeyline / 2;
     margin-bottom: $mobileKeyline;
@@ -153,7 +161,7 @@ $color-section-border: #eaeaea;
 .filter-section--clearall {
   position: absolute;
   right: 0;
-  top: $mobileKeyline / 2;
+  top: -3px;
   color: $color-cyan-800;
   text-transform: uppercase;
   font-size: 14px;

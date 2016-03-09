@@ -210,7 +210,12 @@ paper-tabs {
   .card-content {
     padding: $mobileKeyline !important;
 
+    &:first-child {
+      padding-bottom: 0;
+    }
+
     &:not(:last-child) {
+      $color-light-grey-border: #eaeaea;
       border-bottom: 1px solid $color-light-grey-border;
     }
 
@@ -220,12 +225,13 @@ paper-tabs {
   }
 
   paper-checkbox {
-    margin-top: 5px;
-    margin-right: $tabletKeyline;
+    margin-right: $mobileKeyline;
   }
 
-  a {
+  a, .anchor-like {
+    color: $color-cyan-800;
     text-transform: uppercase;
+    font-size: 14px;
   }
 
   .settings-note {
@@ -283,7 +289,8 @@ paper-tabs {
 }
 
 #subpage-tabs {
-  height: $navbarHeight;
+  height: $navbarHeight + 5; // 69px;
+  color: $color-bluegrey-800;
 
   paper-tab {
     text-transform: uppercase;

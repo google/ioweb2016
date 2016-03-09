@@ -164,7 +164,7 @@ Fired when the user toggles bookmarking/removing a session.
                   <div class="schedule-block-title">
                     <h1 layout horizontal end>
                       <span>[[_getMeridiemPart(session.block, 0)]]</span>
-                      <span class="schedule-block-meridiem">[[_getMeridiemPart(session.block, 1)]]</span>
+                      <span class="schedule-block-meridiem">[[_getMeridiemLetter(session.block)]]</span>
                     </h1>
                   </div>
 
@@ -475,6 +475,10 @@ Fired when the user toggles bookmarking/removing a session.
 
         _getMeridiemPart: function(str, part) {
           return str.split(' ')[part];
+        },
+
+        _getMeridiemLetter: function(sessionBlock) {
+          return this._getMeridiemPart(sessionBlock, 1)[0];
         }
 
       });

@@ -299,8 +299,9 @@ limitations under the License.
       <span id="signin-nav-elements" layout horizontal center>
         <!-- Note: Use on-click instead of on-tap so oauth popup is not
              blocked. Needs user gesture. -->
-        <span class="anchor-like button-link" data-track-link="nav-signin"
-              on-click="signIn" role="button" tabindex="0" hidden$="[[currentUser]]" layout center>Sign in</span>
+        <span class="anchor-like button-link" role="button" tabindex="0"
+              data-track-link="nav-signin" on-click="signIn"
+              hidden="[[currentUser]]" layout center>Sign in</span>
         <template is="dom-if" if="{{currentUser}}" restamp>
           <img src$="{{currentUser.picture}}" class="profilepic">
           <paper-menu-button horizontal-align="right" vertical-align="top">
@@ -319,11 +320,11 @@ limitations under the License.
               </div>
               <div class="card-content notification__feature">
                 <h4>Notifications</h4>
-                <iron-label horizontal layout>
+                <iron-label horizontal layout center>
                   <paper-checkbox checked$="{{currentUser.notify}}"
                                   disabled$="{{_disableNotify(currentUser.notify)}}"
                                   on-tap="updateNotifyUser"></paper-checkbox>
-                  <h5>I want to receive notifications from the Google I/O 2016 web app.</h5>
+                  <b>I want to receive notifications from the Google I/O 2016 web app.</b>
                 </iron-label>
                 <p>If this option is deselected, I understand I won't be notified when:</p>
                 <ul>
