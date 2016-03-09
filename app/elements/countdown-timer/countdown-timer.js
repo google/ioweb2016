@@ -54,6 +54,8 @@ IOWA.CountdownTimer.Core = function(targetDate, elem) {
 
   this.posShift = 0;
 
+  this.digits = [];
+
   // Give canvas element a size early so other elements can animate around it.
   this.getFormat();
   this.setCanvasSize();
@@ -153,29 +155,29 @@ IOWA.CountdownTimer.Core.prototype.checkTime = function() {
     this.bands[7].renderFlat();
     // reset default band used in logo
     var d = distance.minutes % 10;
-    this.bands[5].oldShape = this.digits[d];
-    this.bands[5].currentShape = this.digits[d];
+    this.bands[5].oldShape = d;
+    this.bands[5].currentShape = d;
     this.firstRun = false;
   }
 
   if (this.firstRun || this.lastNumbers.days !== distance.days) {
-    this.bands[0].changeShape(this.digits[Math.floor(distance.days / 10)]);
-    this.bands[1].changeShape(this.digits[distance.days % 10]);
+    this.bands[0].changeShape(Math.floor(distance.days / 10));
+    this.bands[1].changeShape(distance.days % 10);
   }
 
   if (this.firstRun || this.lastNumbers.hours !== distance.hours) {
-    this.bands[2].changeShape(this.digits[Math.floor(distance.hours / 10)]);
-    this.bands[3].changeShape(this.digits[distance.hours % 10]);
+    this.bands[2].changeShape(Math.floor(distance.hours / 10));
+    this.bands[3].changeShape(distance.hours % 10);
   }
 
   if (this.firstRun || this.lastNumbers.minutes !== distance.minutes) {
-    this.bands[4].changeShape(this.digits[Math.floor(distance.minutes / 10)]);
-    this.bands[5].changeShape(this.digits[distance.minutes % 10]);
+    this.bands[4].changeShape(Math.floor(distance.minutes / 10));
+    this.bands[5].changeShape(distance.minutes % 10);
   }
 
   if (this.firstRun || this.lastNumbers.seconds !== distance.seconds) {
-    this.bands[6].changeShape(this.digits[Math.floor(distance.seconds / 10)]);
-    this.bands[7].changeShape(this.digits[distance.seconds % 10]);
+    this.bands[6].changeShape(Math.floor(distance.seconds / 10));
+    this.bands[7].changeShape(distance.seconds % 10);
   }
 
   this.lastNumbers = distance;
@@ -314,9 +316,13 @@ IOWA.CountdownTimer.Core.prototype.getFormat = function() {
 };
 
 IOWA.CountdownTimer.Core.prototype.setQuality = function(n) {
-  if (n !== undefined) {
-    this.quality = n;
-    this.onResize();
+  this.quality = n;
+
+  // Regenerate digit paths at new quality level.
+  this.getDigits();
+
+  for (var i = 0; i < this.bands.length; i++) {
+    this.bands[i].setQuality(this.quality);
   }
 };
 
@@ -338,9 +344,9 @@ IOWA.CountdownTimer.Core.prototype.createBands = function() {
   };
 
   for (var i = 0; i < n; i++) {
-    var defaultDigit = this.digits[time['digit_' + i]];
+    var defaultDigit = time['digit_' + i];
     bands.push(new IOWA.CountdownTimer.Band(
-               this.canvasElement, this.quality, this, defaultDigit));
+        this.canvasElement, this.quality, this, this.digits, defaultDigit));
   }
 
   return bands;
@@ -416,30 +422,9 @@ IOWA.CountdownTimer.Core.prototype.getSeparators = function() {
 };
 
 IOWA.CountdownTimer.Core.prototype.getDigits = function() {
-  this.digits = [];
-
-  var q = 400;
-
   for (var i = 0; i < 10; i++) {
     var path = this.getPath('path-' + i);
-
-    var d;
-    var k;
-    if (path.points.length > q) {
-      d = path.points.length - q;
-      for (k = 0; k < d; k++) {
-        path.points.pop();
-      }
-    }
-
-    if (path.points.length < q) {
-      d = this.quality - path.points.length;
-      for (k = 0; k < d; k++) {
-        path.points.push(path.points[path.points.length - 1]);
-      }
-    }
-
-    this.digits.push(path);
+    this.digits[i] = path;
   }
 };
 
@@ -452,8 +437,9 @@ IOWA.CountdownTimer.Core.prototype.getPath = function(svgId) {
   var quality = this.quality;
   var points = [];
 
-  for (var i = 0; i < length; i += length / quality) {
-    var point = path.getPointAtLength(i);
+  for (var i = 0; i < quality; i++) {
+    var distance = i * length / quality;
+    var point = path.getPointAtLength(distance);
     points.push({x: (point.x - svgHeight) / svgHeight, y: (point.y - svgHeight) / svgHeight});
   }
 
@@ -524,10 +510,6 @@ IOWA.CountdownTimer.Core.prototype.getLayout = function() {
 };
 
 IOWA.CountdownTimer.Core.prototype.onResize = function() {
-  if (!this.isReady) {
-    return;
-  }
-
   this.needsCanvasReset = true;
 };
 

@@ -17,13 +17,15 @@
 window.IOWA = window.IOWA || {};
 IOWA.CountdownTimer = IOWA.CountdownTimer || {};
 
-IOWA.CountdownTimer.Band = function(canvasElement, quality, parent, defaultDigit) {
+IOWA.CountdownTimer.Band = function(canvasElement, quality, parent, digits, defaultDigit) {
   this.canvasElement = canvasElement;
   this.parent = parent;
 
   this.aShift = 2 * (quality / 800);
   this.posShift = 0;
   this.strokeOffset = 0;
+
+  this.digits = digits;
 
   this.oldShape = defaultDigit;
   this.currentShape = defaultDigit;
@@ -92,6 +94,11 @@ IOWA.CountdownTimer.Band.prototype.onChangeComplete = function(ref) {
   }, 500 + Math.random() * 1000);
 };
 
+IOWA.CountdownTimer.Band.prototype.setQuality = function(n) {
+  this.quality = n;
+  this.needsRedraw = true;
+};
+
 IOWA.CountdownTimer.Band.prototype.getColor = function(ratio) {
   var tally = 0;
   var total = 0;
@@ -132,31 +139,19 @@ IOWA.CountdownTimer.Band.prototype.update = function() {
   );
 
   var lastColor;
+  var oldPoints = this.digits[this.oldShape].points;
+  var currentPoints = this.digits[this.currentShape].points;
 
-  this.quality = this.parent.quality;
-  var qualityRatio = this.currentShape.points.length / this.quality;
+  for (var i = 0; i < currentPoints.length; i++) {
+    var next_inc = (i < (currentPoints.length - 1)) ? i + 1 : 0;
+    var x2 = this.radius * (oldPoints[next_inc].x + (currentPoints[next_inc].x - oldPoints[next_inc].x) * this.posShift) + this.center.x;
+    var y2 = this.radius * (oldPoints[next_inc].y + (currentPoints[next_inc].y - oldPoints[next_inc].y) * this.posShift) + this.center.y;
 
-  for (var i = 0; i < this.quality; i++) {
-    if (this.currentShape.points.length < i) {
-      continue;
+    var colorRatio = (i + this.strokeOffset) / currentPoints.length;
+    if (colorRatio > 1) {
+      colorRatio = (i + this.strokeOffset - currentPoints.length) / currentPoints.length;
     }
-
-    var inc = Math.floor(i * qualityRatio);
-    var x = this.radius * (this.oldShape.points[inc].x + (this.currentShape.points[inc].x - this.oldShape.points[inc].x) * this.posShift) + this.center.x;
-    var y = this.radius * (this.oldShape.points[inc].y + (this.currentShape.points[inc].y - this.oldShape.points[inc].y) * this.posShift) + this.center.y;
-
-    var next_inc = Math.floor((i + 1) * qualityRatio);
-    if (next_inc >= this.oldShape.points.length || i === (this.quality - 1)) {
-      next_inc = 0;
-    }
-    var x2 = this.radius * (this.oldShape.points[next_inc].x + (this.currentShape.points[next_inc].x - this.oldShape.points[next_inc].x) * this.posShift) + this.center.x;
-    var y2 = this.radius * (this.oldShape.points[next_inc].y + (this.currentShape.points[next_inc].y - this.oldShape.points[next_inc].y) * this.posShift) + this.center.y;
-
-    var ratio = (i + this.strokeOffset) / this.quality;
-    if ((i + this.strokeOffset) > this.quality) {
-      ratio = (i + this.strokeOffset - this.quality) / this.quality;
-    }
-    var newColor = this.getColor(ratio);
+    var newColor = this.getColor(colorRatio);
 
     if (newColor === lastColor) {
       ctx.lineTo(x2, y2);
@@ -165,6 +160,9 @@ IOWA.CountdownTimer.Band.prototype.update = function() {
         ctx.strokeStyle = lastColor;
         ctx.stroke();
       }
+
+      var x = this.radius * (oldPoints[i].x + (currentPoints[i].x - oldPoints[i].x) * this.posShift) + this.center.x;
+      var y = this.radius * (oldPoints[i].y + (currentPoints[i].y - oldPoints[i].y) * this.posShift) + this.center.y;
 
       ctx.beginPath();
       ctx.moveTo(x, y);
@@ -176,11 +174,11 @@ IOWA.CountdownTimer.Band.prototype.update = function() {
   ctx.strokeStyle = lastColor;
   ctx.stroke();
 
-  this.strokeOffset -= this.aShift / qualityRatio;
-  if (this.strokeOffset > this.quality) {
+  this.strokeOffset -= this.aShift;
+  if (this.strokeOffset > currentPoints.length) {
     this.strokeOffset = 0;
   } else if (this.strokeOffset < 0) {
-    this.strokeOffset = this.quality - 1;
+    this.strokeOffset = currentPoints.length - 1;
   }
 
   ctx.restore();
