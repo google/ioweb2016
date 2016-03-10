@@ -459,7 +459,7 @@ IOWA.CountdownTimer.Core.prototype.getLayout = function() {
     this.bandPadding = 4;
   } else if (canvasW < IOWA.CountdownTimer.MOBILE_MAX_BREAKPOINT) {
     this.countdownMargin = 14;
-    this.bandGutter = 24;
+    this.bandGutter = 16;
     this.bandPadding = 4;
   } else if (canvasW < IOWA.CountdownTimer.TABLET_BREAKPOINT) {
     this.countdownMargin = 40;
