@@ -137,6 +137,8 @@ IOWA.Router_ = function(window) {
         subpage.style.display = 'none';
       });
       selectedSubpageSection.style.display = '';
+      // Update subnav selection.
+      IOWA.Elements.LazyPages.selectedPage.selectedSubpage = this.state.current.subpage;
     }
 
     // If current href is different than the url, update it in the browser.
