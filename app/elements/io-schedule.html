@@ -323,7 +323,6 @@ Fired when the user toggles bookmarking/removing a session.
           sessions: {
             type: Array,
             value: function() { return []; }
-            //observer: '_sessionsChanged'
           },
 
           /**
@@ -332,7 +331,6 @@ Fired when the user toggles bookmarking/removing a session.
           savedSessions: {
             type: Array,
             value: function() { return []; }
-            //observer: '_savedSessionsChanged'
           },
 
           /**
@@ -483,17 +481,6 @@ Fired when the user toggles bookmarking/removing a session.
           return true;
         },
 
-        // _sessionsChanged: function() {
-        //   this._updateMyScheduleTimeBlocks();
-        // },
-
-        // _savedSessionsChanged: function() {
-        //   if (!this.savedSessions.length) {
-        //     return;
-        //   }
-        //   this._updateMyScheduleTimeBlocks();
-        // },
-
         _updateMyScheduleTimeBlocks: function(sessions, savedSessions, gmtDayOne) {
           var timeBlocks = [[], [], []];
 
@@ -533,44 +520,9 @@ Fired when the user toggles bookmarking/removing a session.
           this.fire('session-select', {session: session});
         },
 
-        // onAddSession: function(e) {
-        //   e.stopPropagation();
-        //   this.fire('session-bookmark', {
-        //     session: e.model.session,
-        //     saved: true
-        //   });
-        // },
-
-        // onRemoveSession: function(e) {
-        //   e.stopPropagation();
-        //   this.fire('session-bookmark', {
-        //     session: e.model.session,
-        //     saved: false
-        //   });
-        // },
-
         _dayIs: function(day, targetDay) {
           return day === targetDay;
         },
-
-        // _sessionIs: function(session, targetSession) {
-        //   return session.id === targetSession;
-        // },
-
-        // _getMeridiemPart: function(str, part) {
-        //   return str.split(' ')[part];
-        // },
-
-        // _getMeridiemLetter: function(sessionBlock) {
-        //   return this._getMeridiemPart(sessionBlock, 1)[0];
-        // },
-
-        // _getDayOfWeek: function(timeBlock) {
-        //   if (!timeBlock.length) {
-        //     return;
-        //   }
-        //   return moment(timeBlock[0].startTimestamp).format('dddd');
-        // },
 
         _dayIndexToDate: function(timeBlockIdx) {
           var ioStartDay = new Date(this.gmtDayOne).getDate(); // 18
