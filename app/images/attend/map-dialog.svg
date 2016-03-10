@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="1440px" height="676px" viewBox="0 0 1440 676" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g transform="translate(0.000000, -220.000000)">
+            <g transform="translate(695.027687, 533.937096) rotate(-6.000000) translate(-695.027687, -533.937096) translate(-122.681383, 242.157733)">
+                <path d="M61.4945022,582.606468 L84.0945364,20.3710221 L617.64807,81.5241408 L1038.66474,0.160123234 L1603.75612,94.9416018 L1634.48549,567.933133 L737.996948,489.929886 L61.4945022,582.606468 Z" fill="#EEEEEE"></path>
+                <path d="M1002.64404,318.161349 C1002.64404,318.161338 1386.46353,139.958857 1386.46353,139.958857 L1386.46353,506.219742 C1386.46353,506.219742 971.219451,468.062367 971.219451,468.062363 C971.219451,468.062361 1002.64404,318.16136 1002.64404,318.161349 Z" fill="#26C6DA"></path>
+                <path d="M659.042013,115.194188 L998.113179,49.6666344 C998.113179,49.6666344 921.925096,459.359128 921.925098,459.359156 C921.925101,459.359183 755.966523,444.108982 755.966523,444.108982 L659.042013,115.194188 Z" fill="#455A64"></path>
+                <path d="M1009.0838,276.313237 C1009.0838,276.31323 1051.92787,47.4027261 1051.92787,47.4027261 L1380.36872,103.89277 C1380.36872,103.89277 1009.0838,276.313244 1009.0838,276.313237 Z" fill="#B0BEC5"></path>
+                <path d="M367.745685,495.077157 L231.808288,75.2743429 L600.333553,118.843634 L698.223391,451.034287 L367.745685,495.077157 Z" fill="#FF5252"></path>
+                <ellipse fill="#F5F5F5" cx="314.302585" cy="180.037403" rx="19.8346291" ry="19.8346291"></ellipse>
+                <ellipse fill="#F5F5F5" cx="762.870351" cy="195.29481" rx="19.8346291" ry="19.8346291"></ellipse>
+                <ellipse fill="#F5F5F5" cx="1100.05905" cy="416.527212" rx="19.8346291" ry="19.8346291"></ellipse>
+                <ellipse fill="#F5F5F5" cx="1324.34293" cy="300.570918" rx="19.8346291" ry="19.8346291"></ellipse>
+                <ellipse fill="#F5F5F5" cx="601.141837" cy="364.652028" rx="19.8346291" ry="19.8346291"></ellipse>
+                <ellipse fill="#F5F5F5" cx="1209.91238" cy="125.110738" rx="19.8346291" ry="19.8346291"></ellipse>
+                <text opacity="0.6" font-family="Roboto-Medium, Roboto" font-size="21.3603698" font-weight="400" fill="#000000">
+                    <tspan x="363.126287" y="184.779996">Sandbox West</tspan>
+                </text>
+                <text font-family="Roboto-Medium, Roboto" font-size="21.3603698" font-weight="400" fill="#FFFFFF">
+                    <tspan x="797.962387" y="200.037403">Office Hours 1</tspan>
+                </text>
+                <text opacity="0.6" font-family="Roboto-Medium, Roboto" font-size="21.3603698" font-weight="400" fill="#000000">
+                    <tspan x="1135.15108" y="421.269805">Session Rooms</tspan>
+                </text>
+                <text opacity="0.6" font-family="Roboto-Medium, Roboto" font-size="21.3603698" font-weight="400" fill="#000000">
+                    <tspan x="1156.51145" y="305.313511">Sandbox East</tspan>
+                </text>
+                <text opacity="0.6" font-family="Roboto-Medium, Roboto" font-size="21.3603698" font-weight="400" fill="#000000">
+                    <tspan x="417.570198" y="370.920361">Session Rooms</tspan>
+                </text>
+                <text opacity="0.6" font-family="Roboto-Medium, Roboto" font-size="21.3603698" font-weight="400" fill="#000000">
+                    <tspan x="1069.23879" y="131.379071">I/O Lounge</tspan>
+                </text>
+                <path d="M175.948895,72.3534849 L308.712175,503.983146 L2.45548894,548.742179 L0.202637437,51.3626304 L175.948895,72.3534849 Z" fill="#D8D8D8"></path>
+                <path d="M1436.04384,111.319472 L1439.09532,508.870284 L1592.53954,523.197942 L1592.53954,139.790831 L1436.04384,111.319472 Z" fill="#D8D8D8"></path>
+            </g>
+        </g>
+    </g>
+</svg>
