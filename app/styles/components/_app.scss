@@ -235,9 +235,6 @@ paper-progress {
 }
 
 .io-main {
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-
   .slide-up-delay {
     transform: translateY(100px);
     opacity: 0;
