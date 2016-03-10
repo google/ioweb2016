@@ -12,7 +12,6 @@ limitations under the License.
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 
 <link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
@@ -20,6 +19,108 @@ limitations under the License.
 <link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
 
 <link rel="import" href="shared-app-styles.html">
+
+
+<dom-module id="io-schedule-row">
+<link rel="import" type="css" href="io-schedule.css">
+<template>
+  <style include="shared-app-styles">
+    :host {
+      display: block;
+    }
+  </style>
+  <div layout horizontal
+       class$="[[_addClass('session-block', session.firstOfBlock)]]">
+    <div class="schedule-block-title">
+      <h1 layout horizontal end>
+        <span>[[_getMeridiemPart(session.block, 0)]]</span>
+        <span class="schedule-block-meridiem">[[_getMeridiemLetter(session.block)]]</span>
+      </h1>
+    </div>
+
+    <div class$="schedule-row [[_addClass('saved', session.saved)]]"
+         layout horizontal center
+         on-keyup="onSessionKeyUp">
+      <a href$="schedule?sid={{session.id}}"
+         id="session-{{session.id}}-time"
+         class="schedule-title"
+         on-click="onSessionSelect"
+         title$="{{session.title}}" flex>
+        <div>[[session.title]]</div>
+        <div id="session-{{session.id}}-time" class="schedule-time">
+          <span>[[session.start]]</span>
+          <span hidden$="{{_sessionIs(session, '__keynote__')}}"> - [[session.end]]</span> /
+          <span>[[session.room]]</span>
+          <iron-icon icon="io:videocam" class="schedule-livestream"
+                     hidden$="{{!session.isLivestream}}"></iron-icon>
+        </div>
+      </a>
+
+      <div class="schedule-toggle-buttons">
+        <iron-icon icon="io:add-circle"
+                   class="schedule-add-button"
+                   on-click="onAddSession"></iron-icon>
+        <iron-icon icon="io:remove-circle"
+                   class="schedule-remove-button"
+                   on-click="onRemoveSession"></iron-icon>
+      </div>
+
+    </div>
+
+  </div>
+</template>
+<script>
+(function() {
+  Polymer({
+    is: 'io-schedule-row',
+
+    properties: {
+      /**
+       * IO session object.
+       */
+      session: {
+        type: Object,
+        value: function() { return {}; }
+      }
+    },
+
+    onAddSession: function(e) {
+      e.stopPropagation();
+      this.fire('session-bookmark', {
+        session: this.session,
+        saved: true
+      });
+    },
+
+    onRemoveSession: function(e) {
+      e.stopPropagation();
+      this.fire('session-bookmark', {
+        session: this.session,
+        saved: false
+      });
+    },
+
+    // Useful for conditionally adding a class to an element based on prop.
+    _addClass: function(name, prop) {
+      return prop ? name : '';
+    },
+
+     _sessionIs: function(session, targetSession) {
+      return session.id === targetSession;
+    },
+
+    _getMeridiemPart: function(str, part) {
+      return str.split(' ')[part];
+    },
+
+    _getMeridiemLetter: function(sessionBlock) {
+      return this._getMeridiemPart(sessionBlock, 1)[0];
+    }
+
+  });
+}());
+</script>
+</dom-module>
 
 <!--
 The `<io-schedule>` element renders a schedule for a given day(s).
@@ -47,13 +148,6 @@ Fired when the user toggles bookmarking/removing a session.
         display: block;
       }
     </style>
-
-    <iron-media-query query="(min-width:320px) and (max-width:768px)"
-        query-matches="{{isPhoneSize}}"></iron-media-query>
-    <iron-media-query query="(min-width:769px) and (max-width:1135px)"
-        query-matches="{{isTabletSize}}"></iron-media-query>
-    <iron-media-query query="(min-width:1136px)"
-        query-matches="{{isDesktopSize}}"></iron-media-query>
 
     <div hidden$="[[!showFilters]]">
       <div id="filters" class="card-content bg-bluegrey-50-40" layout horizontal justified>
@@ -93,123 +187,82 @@ Fired when the user toggles bookmarking/removing a session.
       </div>
     </div>
 
-    <div class="card__container">
-      <div>
 
-        <template is="dom-if" if="{{_dayIs(day, 'myschedule')}}">
+    <template is="dom-if" if="{{_dayIs(day, 'myschedule')}}">
 
-          <div class="card">
-            <div class="card-content" layout justified
-                 horizontal$="{{!isPhoneSize}}"
-                 vertical$="{{isPhoneSize}}"
-                 center$="{{!isPhoneSize}}">
-              <span class="no-sessions">Add more events</span>
-              <a href="#day1" data-subpage-link>Browse events</a>
-            </div>
-          </div>
-
-          <template is="dom-repeat" items="[[sessions]]" as="session"
-                    filter="matchesFilters" observe="saved" initial-count="10">
-
-            <template is="dom-if" if="[[session.firstOfBlock]]">
-              <div class="schedule-row" hidden$="{{!_showSession(session, day)}}">
-                <h4>May <span>{{session.day}}</span>, <span>{{session.block}}</span></h4>
-              </div>
-            </template>
-
-            <div class="schedule-row"
-                 layout horizontal center$="{{isDesktopSize}}"
-                 hidden$="{{!_showSession(session, day)}}">
-              <paper-checkbox toggles
-                  on-change="onToggleSaveSession"
-                  aria-labelledby$="session-{{session.id}}-time session-{{session.id}}-title"
-                  checked="{{session.saved}}"></paper-checkbox>
-              <div tabindex="0" style="min-width: 0;"
-                   on-click="onSessionSelect"
-                   on-keyup="onSessionKeyUp"
-                   layout flex vertical$="{{!isDesktopSize}}"
-                   horizontal$="{{isDesktopSize}}">
-                <span id="session-{{session.id}}-time" class="schedule-time" flex auto-vertical>
-                  <span>{{session.start}}</span> <span hidden$="{{_sessionIs(session, '__keynote__')}}"> - <span>{{session.end}}</span></span>
-                </span>
-                <a href$="schedule?sid={{session.id}}"
-                   id="session-{{session.id}}-time"
-                   class="schedule-title"
-                   auto-vertical two flex$="{{!isPhoneSize}}"
-                   on-click="onSessionSelect"
-                   title$="{{session.title}}">
-                  <span>{{session.title}}</span>
-                  <iron-icon icon="io:videocam" class="schedule-livestream"
-                             hidden$="{{!session.isLivestream}}"></iron-icon>
-                </a>
-              </div>
-            </div>
-
-          </template>
-
-        </template>
-
-        <template is="dom-if" if="{{!_dayIs(day, 'myschedule')}}">
-
-          <div class="card">
-
-            <div class="card-content" layout vertical>
-
-              <template id="schedulelist" is="dom-repeat" items="[[sessions]]"
-                        as="session" filter="matchesFilters" initial-count="10">
-
-                <div layout horizontal
-                     class$="[[_addClass('session-block', session.firstOfBlock)]]"
-                     hidden$="{{!_showSession(session, day)}}">
-                  <div class="schedule-block-title">
-                    <h1 layout horizontal end>
-                      <span>[[_getMeridiemPart(session.block, 0)]]</span>
-                      <span class="schedule-block-meridiem">[[_getMeridiemLetter(session.block)]]</span>
-                    </h1>
-                  </div>
-
-                  <div class$="schedule-row [[_addClass('saved', session.saved)]]"
-                       layout horizontal center
-                       on-keyup="onSessionKeyUp">
-                    <a href$="schedule?sid={{session.id}}"
-                       id="session-{{session.id}}-time"
-                       class="schedule-title"
-                       on-click="onSessionSelect"
-                       title$="{{session.title}}" flex>
-                      <div>[[session.title]]</div>
-                      <div id="session-{{session.id}}-time" class="schedule-time">
-                        <span>[[session.start]]</span>
-                        <span hidden$="{{_sessionIs(session, '__keynote__')}}"> - [[session.end]]</span> /
-                        <span>[[session.room]]</span>
-                        <iron-icon icon="io:videocam" class="schedule-livestream"
-                                   hidden$="{{!session.isLivestream}}"></iron-icon>
-                      </div>
-                    </a>
-
-                    <div class="schedule-toggle-buttons">
-                      <iron-icon icon="io:add-circle"
-                                 class="schedule-add-button"
-                                 on-click="onAddSession"></iron-icon>
-                      <iron-icon icon="io:remove-circle"
-                                 class="schedule-remove-button"
-                                 on-click="onRemoveSession"></iron-icon>
-                    </div>
-
-                  </div>
-
-                </div>
-
-              </template>
-
-            </div>
-
-          </div> <!-- .card -->
-
-        </template>
-
+      <div class="card bg-cyan-200">
+        <div class="card-content">
+          <span class="no-sessions">Add more events</span>
+          <a href="#day1" data-subpage-link>Browse events</a>
+        </div>
       </div>
 
-    </div>
+      <div class="card__container">
+
+        <div class="card">
+
+          <div class="myschedule-day-header">
+            <div>Wednesday</div>
+            <h1>May 18</h1>
+          </div>
+          <div class="card-content card-content--no-padding-top" layout vertical>
+            <template is="dom-repeat" items="[[sessions]]" as="session"
+                      observe="saved" filter="[[_filterMyScheduleByDay(0)]]"
+                      initial-count="10">
+              <io-schedule-row session="[[session]]"></io-schedule-row>
+            </template>
+          </div>
+
+          <div class="myschedule-day-header">
+            <div>Thursday</div>
+            <h1>May 19</h1>
+          </div>
+          <div class="card-content card-content--no-padding-top" layout vertical>
+            <template is="dom-repeat" items="[[sessions]]" as="session"
+                      observe="saved" filter="[[_filterMyScheduleByDay(1)]]"
+                      initial-count="10">
+              <io-schedule-row session="[[session]]"></io-schedule-row>
+            </template>
+          </div>
+
+          <div class="myschedule-day-header">
+            <div>Friday</div>
+            <h1>May 20</h1>
+          </div>
+          <div class="card-content card-content--no-padding-top" layout vertical>
+            <template is="dom-repeat" items="[[sessions]]" as="session"
+                      observe="saved" filter="[[_filterMyScheduleByDay(2)]]"
+                      initial-count="10">
+              <io-schedule-row session="[[session]]"></io-schedule-row>
+            </template>
+          </div>
+
+        </div> <!-- .card -->
+      </div> <!-- .card__container -->
+
+    </template>
+
+    <template is="dom-if" if="{{!_dayIs(day, 'myschedule')}}">
+
+      <div class="card__container">
+
+        <div class="card">
+
+          <div class="card-content" layout vertical>
+
+            <template id="schedulelist" is="dom-repeat" items="[[sessions]]"
+                      as="session" filter="matchesFilters" initial-count="10">
+               <io-schedule-row session="[[session]]" hidden$="{{!_showSession(session, day)}}"></io-schedule-row>
+            </template>
+
+          </div> <!-- .card-content -->
+
+        </div> <!-- .card -->
+
+      </div> <!-- .card__container -->
+
+    </template>
+
   </template>
   <script>
     (function () {
@@ -270,15 +323,24 @@ Fired when the user toggles bookmarking/removing a session.
           sessions: {
             type: Array,
             value: function() { return []; }
+            //observer: '_sessionsChanged'
           },
 
           /**
            * User's list of saved sessions.
            */
-          userSessions: {
+          savedSessions: {
             type: Array,
-            value: function() { return []; },
-            observer: '_userSessionsChanged'
+            value: function() { return []; }
+            //observer: '_savedSessionsChanged'
+          },
+
+          /**
+           * Array of my my session timeblocks
+           */
+          _timeBlocks: {
+            type: Array,
+            value: function() { return []; }
           },
 
           /**
@@ -291,12 +353,9 @@ Fired when the user toggles bookmarking/removing a session.
         },
 
         observers: [
-          '_filtersChanged(filters.length)'
+          '_filtersChanged(filters.length)',
+          '_updateMyScheduleTimeBlocks(sessions, savedSessions, gmtDayOne)'
         ],
-
-        _userSessionsChanged: function() {
-          // TODO: update session listing
-        },
 
         // Useful for conditionally adding a class to an element based on prop.
         _addClass: function(name, prop) {
@@ -424,6 +483,39 @@ Fired when the user toggles bookmarking/removing a session.
           return true;
         },
 
+        // _sessionsChanged: function() {
+        //   this._updateMyScheduleTimeBlocks();
+        // },
+
+        // _savedSessionsChanged: function() {
+        //   if (!this.savedSessions.length) {
+        //     return;
+        //   }
+        //   this._updateMyScheduleTimeBlocks();
+        // },
+
+        _updateMyScheduleTimeBlocks: function(sessions, savedSessions, gmtDayOne) {
+          var timeBlocks = [[], [], []];
+
+          var ioStartDay = new Date(this.gmtDayOne).getDate(); // 18
+
+          for (var i = 0, s; s = this.sessions[i]; ++i) {
+            var dayIndex = (s.day % ioStartDay); // May 18 === 0
+            if (s.saved) {
+              timeBlocks[dayIndex].push(s);
+            }
+          }
+
+          this._timeBlocks = timeBlocks;
+        },
+
+        _filterMyScheduleByDay: function(dayIdx) {
+          return function(session) {
+            return session.saved &&
+                   session.day === this._dayIndexToDate(dayIdx);
+          }.bind(this)
+        },
+
         onSessionSelect: function(e, detail) {
           e.preventDefault();
           e.stopPropagation();
@@ -441,44 +533,48 @@ Fired when the user toggles bookmarking/removing a session.
           this.fire('session-select', {session: session});
         },
 
-        onToggleSaveSession: function(e, detail) {
-          e.stopPropagation();
-          this.fire('session-bookmark', {
-            session: e.model.session,
-            saved: e.target.checked
-          });
-        },
+        // onAddSession: function(e) {
+        //   e.stopPropagation();
+        //   this.fire('session-bookmark', {
+        //     session: e.model.session,
+        //     saved: true
+        //   });
+        // },
 
-        onAddSession: function(e) {
-          e.stopPropagation();
-          this.fire('session-bookmark', {
-            session: e.model.session,
-            saved: true
-          });
-        },
-
-        onRemoveSession: function(e) {
-          e.stopPropagation();
-          this.fire('session-bookmark', {
-            session: e.model.session,
-            saved: false
-          });
-        },
+        // onRemoveSession: function(e) {
+        //   e.stopPropagation();
+        //   this.fire('session-bookmark', {
+        //     session: e.model.session,
+        //     saved: false
+        //   });
+        // },
 
         _dayIs: function(day, targetDay) {
           return day === targetDay;
         },
 
-        _sessionIs: function(session, targetSession) {
-          return session.id === targetSession;
-        },
+        // _sessionIs: function(session, targetSession) {
+        //   return session.id === targetSession;
+        // },
 
-        _getMeridiemPart: function(str, part) {
-          return str.split(' ')[part];
-        },
+        // _getMeridiemPart: function(str, part) {
+        //   return str.split(' ')[part];
+        // },
 
-        _getMeridiemLetter: function(sessionBlock) {
-          return this._getMeridiemPart(sessionBlock, 1)[0];
+        // _getMeridiemLetter: function(sessionBlock) {
+        //   return this._getMeridiemPart(sessionBlock, 1)[0];
+        // },
+
+        // _getDayOfWeek: function(timeBlock) {
+        //   if (!timeBlock.length) {
+        //     return;
+        //   }
+        //   return moment(timeBlock[0].startTimestamp).format('dddd');
+        // },
+
+        _dayIndexToDate: function(timeBlockIdx) {
+          var ioStartDay = new Date(this.gmtDayOne).getDate(); // 18
+          return timeBlockIdx + ioStartDay;
         }
 
       });
