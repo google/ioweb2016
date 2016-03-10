@@ -56,10 +56,6 @@ IOWA.CountdownTimer.Core = function(targetDate, elem) {
 
   this.digits = [];
 
-  // Give canvas element a size early so other elements can animate around it.
-  this.getFormat();
-  this.setCanvasSize();
-
   this.onVisibilityChange = this.onVisibilityChange.bind(this);
   this.onResize = this.onResize.bind(this);
   this.onMouseMove = this.onMouseMove.bind(this);
@@ -100,6 +96,14 @@ IOWA.CountdownTimer.Core.prototype.setUp = function(opt_skipIntro) {
   if (!opt_skipIntro) {
     this.intro = new IOWA.CountdownTimer.Intro(
         this.canvasElement, this.quality, this);
+  }
+
+  // Give canvas element a size early so other elements can animate around it.
+  this.resetCanvas();
+
+  if (this.intro) {
+    // Paint opening frame of intro. Must be after `resetCanvas`, above.
+    this.intro.update();
   }
 
   this.needsCanvasReset = true;
