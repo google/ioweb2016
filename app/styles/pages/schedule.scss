@@ -26,12 +26,19 @@ $name: 'page-schedule';
 
 ##{$name} {
 
-io-schedule-page {
+io-schedule {
   min-height: 800px; // Don't want to see the footer on page load.
 }
 
 .meta-filter {
   @include keyline-16();
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &[disabled] {
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
   paper-icon-button {
     margin-left: $mobileKeyline / 2;
   }
@@ -80,7 +87,8 @@ io-schedule-page {
   }
 
   .card {
-    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
 
