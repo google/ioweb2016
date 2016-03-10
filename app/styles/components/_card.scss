@@ -62,6 +62,10 @@
         }
       }
     }
+
+    &.card-content--no-padding-top {
+      padding-top: 0 !important;
+    }
   }
 
   .card__title {
@@ -174,7 +178,7 @@
 
     .card-content {
       padding: 32px 64px 32px 32px;
-      
+
       h2 {
         @include typo-card-large();
       }
@@ -183,12 +187,12 @@
         height: 480px;
       }
     }
-    
+
     h3,
     .card__title p,
     .card__sub-title {
       @include typo-card();
-    }   
+    }
   }
 }
 
@@ -284,7 +288,7 @@
       padding-bottom: $desktopKeyline;
       padding-top: $desktopKeyline;
       padding-right: $largeKeyline;
-      
+
       h2 {
         @include typo-card();
       }
@@ -355,7 +359,7 @@
 @media (max-width: $phone-breakpoint-min-mid-b) {
   .card {
     .card-content {
-      padding-right: 16px;     
+      padding-right: 16px;
       h2 {
         line-height: 32px;
       }
