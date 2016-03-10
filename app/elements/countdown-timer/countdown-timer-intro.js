@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-IOWA.CountdownTimer.INTRO_PAUSE = 500; // # ms for intro to stay visible.
+IOWA.CountdownTimer.INTRO_PAUSE = 500; // # ms for intro to start.
 IOWA.CountdownTimer.INTRO_LENGTH = 1500; // # ms for intro to stay visible.
 
-IOWA.CountdownTimer.Intro = function(canvas, radius, center, quality, parent) {
+IOWA.CountdownTimer.Intro = function(canvas, quality, parent) {
   this.parent = parent;
 
-  this.radius = radius;
-  this.center = center;
+  this.radius = 0;
+  this.center = {x: 0, y: 0};
   this.quality = quality;
 
   this.firstRun = true;
@@ -30,8 +30,7 @@ IOWA.CountdownTimer.Intro = function(canvas, radius, center, quality, parent) {
   this.speed = 4;
 
   this.isStarted = false;
-
-  this.digit = (this.parent.format === 'horizontal') ? 1 : 5;
+  this.isFinished = false;
 
   this.canvasElement = canvas;
 
@@ -51,41 +50,32 @@ IOWA.CountdownTimer.Intro = function(canvas, radius, center, quality, parent) {
   ];
 
   this.circle = {x: 0, y: 0};
-
-  this.update();
 };
 
 IOWA.CountdownTimer.Intro.prototype.update = function() {
-  this.drawShapes();
-};
-
-IOWA.CountdownTimer.Intro.prototype.start = function() {
-  setTimeout(this.startTransition.bind(this), IOWA.CountdownTimer.INTRO_PAUSE);
-};
-
-IOWA.CountdownTimer.Intro.prototype.startTransition = function() {
-  this.isStarted = true;
-};
-
-IOWA.CountdownTimer.Intro.prototype.drawShapes = function() {
+  if (this.isFinished) {
+    return true;
+  }
   if (this.isStarted) {
     this.count += ((this.radius - this.parent.strokeWeight) - this.count) / this.speed;
   }
 
   var ctx = this.canvasElement.getContext('2d');
 
+  var digit = (this.parent.format === 'horizontal') ? 1 : 5;
+
   if (this.count > ((this.radius - this.parent.strokeWeight) - 0.05)) {
     if (this.firstRun) {
-      this.parent.bands[this.digit].aShift *= -1;
-      this.parent.bands[this.digit].colors[0].hex = '#78909C';
-      this.parent.bands[this.digit].oldShape = this.parent.bands[this.digit].digits[0];
-      this.parent.bands[this.digit].currentShape = this.parent.bands[this.digit].digits[0];
-      this.parent.bands[this.digit].isPlaying = true;
-      this.parent.bands[this.digit].fade('in');
+      this.parent.bands[digit].aShift *= -1;
+      this.parent.bands[digit].colors[0].hex = '#78909C';
+      this.parent.bands[digit].oldShape = 0;
+      this.parent.bands[digit].currentShape = 0;
+      this.parent.bands[digit].isPlaying = true;
+      this.parent.bands[digit].fade('in');
       this.firstRun = false;
       setTimeout(this.outro.bind(this), IOWA.CountdownTimer.INTRO_LENGTH);
     }
-    this.parent.bands[this.digit].update();
+    this.parent.bands[digit].update();
   } else {
     ctx.save();
     ctx.scale(this.parent.pixelRatio, this.parent.pixelRatio);
@@ -122,14 +112,18 @@ IOWA.CountdownTimer.Intro.prototype.drawShapes = function() {
   }
 
   ctx.restore();
+
+  return false;
 };
 
-IOWA.CountdownTimer.Intro.prototype.resize = function() {
-  this.radius = this.parent.layout.radius;
-  this.digit = (this.parent.format === 'horizontal') ? 1 : 5;
-  this.center = this.parent.getBandCenter(this.digit);
+IOWA.CountdownTimer.Intro.prototype.start = function() {
+  setTimeout(this.startTransition.bind(this), IOWA.CountdownTimer.INTRO_PAUSE);
+};
+
+IOWA.CountdownTimer.Intro.prototype.startTransition = function() {
+  this.isStarted = true;
 };
 
 IOWA.CountdownTimer.Intro.prototype.outro = function() {
-  this.parent.closeIntro();
+  this.isFinished = true;
 };
