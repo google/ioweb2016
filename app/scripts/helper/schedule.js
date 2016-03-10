@@ -167,6 +167,17 @@ class Schedule {
       // TODO: read user schedule and saved surveys list from cache first.
 
       IOWA.Auth.waitForSignedIn('Sign in to add events to My Schedule').then(() => {
+        // Get entire initial list of user's saved sessions, once.
+        let fbRef = IOWA.IOFirebase.firebaseRef;
+        let userId = fbRef.getAuth().uid;
+        fbRef.child(`users/${userId}/my_sessions`)
+             .orderByChild('bookmarked')
+             .equalTo(true)
+             .once('value', function(data) {
+               let savedSessions = Object.keys(data.val());
+               IOWA.Elements.Template.set('app.savedSessions', savedSessions);
+             });
+
         // Listen to session bookmark updates.
         IOWA.IOFirebase.registerToSessionUpdates((sessionId, data) => {
           let template = IOWA.Elements.Template;
@@ -219,7 +230,6 @@ class Schedule {
     IOWA.Analytics.trackEvent('session', 'bookmark', save ? 'save' : 'remove');
     return IOWA.Auth.waitForSignedIn('Sign in to add events to My Schedule').then(() => {
       return IOWA.IOFirebase.toggleSession(sessionId, save)
-          .then(() => this.clearCachedUserSchedule())
           .catch(error => IOWA.Elements.Toast.showMessage(
               error + ' The change will be retried on your next visit.'));
     });
@@ -345,16 +355,6 @@ class Schedule {
 
   clearCachedUserSchedule() {
     this.cache.userSavedSessions = [];
-  }
-
-  /**
-   * Clear all user schedule data from display.
-   */
-  clearUserSchedule() {
-    let template = IOWA.Elements.Template;
-    template.set('app.savedSessions', []);
-    Schedule.updateSavedSessionsUI(template.app.savedSessions);
-    this.clearCachedUserSchedule();
   }
 
   getSessionById(sessionId) {

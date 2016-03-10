@@ -20,12 +20,12 @@
 @import '../styles/components/_card';
 
 
+$color-section-border: #eaeaea;
+$color-session-row-hover: rgba($color-bluegrey-50, 0.4);
+
 .card-content:not(#filters) {
-  padding-top: 0 !important;
   padding-right: 0 !important;
 }
-
-$color-section-border: #eaeaea;
 
 .schedule-row {
   padding: $tabletKeyline;
@@ -33,7 +33,7 @@ $color-section-border: #eaeaea;
   width: 100%;
 
   &:hover {
-    background-color: rgba($color-bluegrey-50, 0.4);
+    background-color: $color-session-row-hover;
   }
 
   &:not(.saved):hover {
@@ -66,7 +66,7 @@ $color-section-border: #eaeaea;
 .session-block {
   border-top: 1px solid $color-section-border;
 
-  &:first-child {
+  &:first-of-type {
     border-top: 0;
   }
 
@@ -95,6 +95,15 @@ $color-section-border: #eaeaea;
     font-weight: 500;
     line-height: 29px;
     margin-left: $mobileKeyline / 2;
+  }
+}
+
+.myschedule-day-header {
+  background-color: $color-session-row-hover;
+  color: rgba(0,0,0,0.55);
+
+  h1 {
+    font-size: 45px;
   }
 }
 

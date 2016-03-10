@@ -190,11 +190,8 @@ IOBehaviors.PageBehavior = {
     return this._equal(pageName, selectedPageName);
   },
 
-  _isSelectedSubpage: function(pageName, subpageName) {
-    if (!this.pages) {
-      return false;
-    }
-    return this.pages[pageName].selectedSubpage == subpageName;
+  _isSelectedSubpage: function(selectedSubpage, subpageName) {
+    return selectedSubpage === subpageName;
   },
 
   _applyActiveClassWhenSubpage: function(selectedSubpage, subpageName) {
