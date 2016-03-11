@@ -84,21 +84,21 @@ class IOFirebase {
     debugLog('Chose the following Firebase Database Shard:', firebaseShardUrl);
     this.firebaseRef = new Firebase(firebaseShardUrl);
 
-    this._setClockOffset(); // Update the clock offset.
+    return this._setClockOffset()
+        .then(() => this.firebaseRef.authWithOAuthToken('google', accessToken))
+        .then(() => {
+          this._bumpLastActivityTimestamp();
 
-    return this.firebaseRef.authWithOAuthToken('google', accessToken).then(() => {
-      this._bumpLastActivityTimestamp();
+          IOWA.Analytics.trackEvent('login', 'success', firebaseShardUrl);
+          debugLog('Authenticated successfully to Firebase shard', firebaseShardUrl);
 
-      IOWA.Analytics.trackEvent('login', 'success', firebaseShardUrl);
-      debugLog('Authenticated successfully to Firebase shard', firebaseShardUrl);
-
-      // Check to see if there are any failed session modification requests,
-      // and if so, replay them before fetching the user schedule.
-      return this._replayQueuedOperations();
-    }).catch(error => {
-      IOWA.Analytics.trackError('firebaseRef.authWithOAuthToken(...)', error);
-      debugLog('Login to Firebase Failed!', error);
-    });
+          // Check to see if there are any failed session modification requests,
+          // and if so, replay them before fetching the user schedule.
+          return this._replayQueuedOperations();
+        }).catch(error => {
+          IOWA.Analytics.trackError('firebaseRef.authWithOAuthToken(...)', error);
+          debugLog('Login to Firebase Failed!', error);
+        });
   }
 
   /**
@@ -173,17 +173,25 @@ class IOFirebase {
   /**
    * Updates the offset between the local clock and the Firebase servers clock.
    * @private
+   * @return {Promise} Promise fulfilled when the clock has been set. The
+   *     resolve value is the offset.
    */
   _setClockOffset() {
-    if (this.firebaseRef) {
+    return new Promise((resolve, reject) => {
+      if (!this.firebaseRef) {
+        debugLog('No Firebase reference set to update clockOffset.');
+        reject();
+      }
+
       // Retrieve the offset between the local clock and Firebase's clock for
       // offline operations.
       let offsetRef = this.firebaseRef.child('/.info/serverTimeOffset');
       offsetRef.once('value', snap => {
         this.clockOffset = snap.val();
-        debugLog('Updated clock offset to', this.clockOffset, 'ms');
+        debugLog('Updated clockOffset to', this.clockOffset, 'ms');
+        resolve(this.clockOffset);
       });
-    }
+    });
   }
 
   /**
