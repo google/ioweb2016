@@ -167,16 +167,10 @@ class Schedule {
       // TODO: read user schedule and saved surveys list from cache first.
 
       IOWA.Auth.waitForSignedIn('Sign in to add events to My Schedule').then(() => {
-        // Get entire initial list of user's saved sessions, once.
-        let fbRef = IOWA.IOFirebase.firebaseRef;
-        let userId = fbRef.getAuth().uid;
-        fbRef.child(`users/${userId}/my_sessions`)
-             .orderByChild('bookmarked')
-             .equalTo(true)
-             .once('value', function(data) {
-               let savedSessions = Object.keys(data.val() || {});
-               IOWA.Elements.Template.set('app.savedSessions', savedSessions);
-             });
+        // Get entire initial list of user's saved sessions.
+        IOWA.IOFirebase.getUserSchedule(savedSessions => {
+          IOWA.Elements.Template.set('app.savedSessions', savedSessions);
+        });
 
         // Listen to session bookmark updates.
         IOWA.IOFirebase.registerToSessionUpdates((sessionId, data) => {
