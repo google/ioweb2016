@@ -173,7 +173,11 @@ limitations under the License.
   // Enable when https://github.com/Polymer/polymer/issues/3517 is fixed.
   // window.Polymer = window.Polymer || {lazyRegister: true};
   </script>
-  <link rel="import" href="elements/elements.html">
+
+  <!-- <link rel="import" href="elements/elements.html"> -->
+  <link rel="import" href="bower_components/polymer/polymer.html">
+  <!-- <link rel="import" href="elements/critical.html" async> -->
+
   {% if .Canonical %}
   <link rel="canonical" href="{% .Canonical %}">
   {% end %}
@@ -187,7 +191,6 @@ limitations under the License.
         background-color: var(--paper-grey-50);
       };
     }
-
     #navbar paper-tabs {
       --paper-tabs-selection-bar-color: var(--paper-blue-grey-100);
     }
@@ -196,7 +199,9 @@ limitations under the License.
     }
   </style>
 </head>
-<body id="page-{% .Slug %}" class="bg-white">
+<body id="page-{% .Slug %}" class="loading bg-white">
+
+<div id="splash" class="bg-bluegrey-600"></div>
 
 <template is="dom-bind" id="t">
 

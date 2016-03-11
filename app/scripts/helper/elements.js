@@ -19,7 +19,18 @@ IOWA.Elements = (function() {
 
   const ANALYTICS_LINK_ATTR = 'data-track-link';
 
+  function removeSplashScreen() {
+    var splash = document.getElementById('splash');
+    splash.addEventListener('transitionend', function() {
+      splash.parentElement.removeChild(splash);
+    });
+
+    document.body.classList.remove('loading');
+  }
+
   function updateElements() {
+    removeSplashScreen();
+
     var onPageSelect = function() {
       document.body.removeEventListener('page-select', onPageSelect);
 
