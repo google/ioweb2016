@@ -446,6 +446,19 @@ class IOFirebase {
   isAuthed() {
     return this.firebaseRef && this.firebaseRef.getAuth();
   }
+
+  /**
+   * Returns the user's list of bookmarked sessions.
+   *
+   * @return {Promise} Fulfills when the user's sessions are available.
+   */
+  getUserSchedule() {
+    let userId = this.firebaseRef.getAuth().uid;
+    return this.firebaseRef.child(`users/${userId}/my_sessions`)
+        .orderByChild('bookmarked')
+        .equalTo(true)
+        .once('value').then(data => Object.keys(data.val() || {}));
+  }
 }
 
 IOWA.IOFirebase = IOWA.IOFirebase || new IOFirebase();
