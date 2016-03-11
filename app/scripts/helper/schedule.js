@@ -174,7 +174,7 @@ class Schedule {
              .orderByChild('bookmarked')
              .equalTo(true)
              .once('value', function(data) {
-               let savedSessions = Object.keys(data.val());
+               let savedSessions = Object.keys(data.val() || {});
                IOWA.Elements.Template.set('app.savedSessions', savedSessions);
              });
 
