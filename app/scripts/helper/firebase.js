@@ -180,7 +180,7 @@ class IOFirebase {
     // Retrieve the offset between the local clock and Firebase's clock for
     // offline operations.
     let offsetRef = this.firebaseRef.child('/.info/serverTimeOffset');
-    return offsetRef.once('value', snap => {
+    return offsetRef.once('value').then(snap => {
       this.clockOffset = snap.val();
       debugLog('Updated clockOffset to', this.clockOffset, 'ms');
     });
