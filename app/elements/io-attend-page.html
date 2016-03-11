@@ -78,8 +78,7 @@ limitations under the License.
       <div class="subpage__nav bg-cyan-400" layout horizontal justified>
         <paper-tabs id="subpage-tabs" class="white"
                     attr-for-selected="label"
-                    selected="[[selectedSubpage]]"
-                    on-iron-activate="onSubNavSelect">
+                    selected="[[selectedSubpage]]">
           <paper-tab label="event" role="">
             <a href="#event" data-track-link="attending-event" data-ajax-link
                               layout horizontal center-center>Event</a>
@@ -90,7 +89,6 @@ limitations under the License.
           </paper-tab>
         </paper-tabs>
       </div>
-
 
       <!-- Event tab content -->
       <section class$="subpage-event subpage__content {{_applyActiveClassWhenSubpage(selectedSubpage, 'event')}}">
@@ -350,14 +348,7 @@ limitations under the License.
       selectedSubpage: {
         type: String,
         value: 'event'
-      },
-    },
-
-    onSubNavSelect: function() {
-      // Reset FAB position after new DOM is set.
-      this.async(function() {
-        IOWA.Elements.Template.initFabScroll();
-      });
+      }
     },
 
     attached: function() {
@@ -375,10 +366,9 @@ limitations under the License.
       this.unlisten(IOWA.Elements.ScrollContainer, 'scroll', '_onPageScroll');
     },
 
-    onPageTransitionDone: function() {
-      this.async(function() {
-        IOWA.Elements.Template.initFabScroll();
-      }, 200);
+    onSubpageTransitionDone: function() {
+      // Reset FAB position after new DOM is set.
+      IOWA.Elements.Template.initFabScroll();
     },
 
     _onPageScroll: function() {
