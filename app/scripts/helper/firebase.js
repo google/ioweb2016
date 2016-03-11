@@ -177,20 +177,12 @@ class IOFirebase {
    *     resolve value is the offset.
    */
   _setClockOffset() {
-    return new Promise((resolve, reject) => {
-      if (!this.firebaseRef) {
-        debugLog('No Firebase reference set to update clockOffset.');
-        reject();
-      }
-
-      // Retrieve the offset between the local clock and Firebase's clock for
-      // offline operations.
-      let offsetRef = this.firebaseRef.child('/.info/serverTimeOffset');
-      offsetRef.once('value', snap => {
-        this.clockOffset = snap.val();
-        debugLog('Updated clockOffset to', this.clockOffset, 'ms');
-        resolve(this.clockOffset);
-      });
+    // Retrieve the offset between the local clock and Firebase's clock for
+    // offline operations.
+    let offsetRef = this.firebaseRef.child('/.info/serverTimeOffset');
+    return offsetRef.once('value', snap => {
+      this.clockOffset = snap.val();
+      debugLog('Updated clockOffset to', this.clockOffset, 'ms');
     });
   }
 
