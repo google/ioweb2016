@@ -168,7 +168,7 @@ class Schedule {
 
       IOWA.Auth.waitForSignedIn('Sign in to add events to My Schedule').then(() => {
         // Get entire initial list of user's saved sessions.
-        IOWA.IOFirebase.getUserSchedule(savedSessions => {
+        IOWA.IOFirebase.getUserSchedule().then(savedSessions => {
           IOWA.Elements.Template.set('app.savedSessions', savedSessions);
         });
 

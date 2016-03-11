@@ -457,7 +457,7 @@ class IOFirebase {
     return this.firebaseRef.child(`users/${userId}/my_sessions`)
         .orderByChild('bookmarked')
         .equalTo(true)
-        .once('value', data => Object.keys(data.val() || {}));
+        .once('value').then(data => Object.keys(data.val() || {}));
   }
 }
 

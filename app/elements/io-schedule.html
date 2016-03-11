@@ -482,6 +482,10 @@ Fired when the user toggles bookmarking/removing a session.
         },
 
         _updateMyScheduleTimeBlocks: function(sessions, savedSessions, gmtDayOne) {
+          if (!sessions.length || !savedSessions.length) {
+            return;
+          }
+
           var timeBlocks = [[], [], []];
 
           var ioStartDay = new Date(this.gmtDayOne).getDate(); // 18
