@@ -358,9 +358,10 @@ IOWA.Elements = (function() {
     template.signIn = function(e) {
       if (e) {
         e.preventDefault();
-        if (e.target.hasAttribute(ANALYTICS_LINK_ATTR)) {
+        var target = Polymer.dom(e).rootTarget;
+        if (target.hasAttribute(ANALYTICS_LINK_ATTR)) {
           IOWA.Analytics.trackEvent(
-              'link', 'click', e.target.getAttribute(ANALYTICS_LINK_ATTR));
+              'link', 'click', target.getAttribute(ANALYTICS_LINK_ATTR));
         }
       }
       IOWA.Elements.GoogleSignIn.signIn();
@@ -369,9 +370,10 @@ IOWA.Elements = (function() {
     template.signOut = function(e) {
       if (e) {
         e.preventDefault();
-        if (e.target.hasAttribute(ANALYTICS_LINK_ATTR)) {
+        var target = Polymer.dom(e).rootTarget;
+        if (target.hasAttribute(ANALYTICS_LINK_ATTR)) {
           IOWA.Analytics.trackEvent(
-              'link', 'click', e.target.getAttribute(ANALYTICS_LINK_ATTR));
+              'link', 'click', target.getAttribute(ANALYTICS_LINK_ATTR));
         }
       }
       IOWA.Elements.GoogleSignIn.signOut();
