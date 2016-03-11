@@ -169,11 +169,13 @@
     if (e.detail.signedIn) {
       // Authorize the user to Firebase.
       var user = e.detail.user;
-      IOWA.IOFirebase.auth(user.id, user.tokenResponse.access_token);
+      IOWA.IOFirebase.auth(user.id, user.tokenResponse.access_token)
+        .then(IOWA.Schedule.loadUserSchedule.bind(IOWA.Schedule));
 
-      // Check to see if there are any failed session modification requests, and
-      // if so, replay them before fetching the user schedule.
-      IOWA.Schedule.replayQueuedRequests().then(IOWA.Schedule.loadUserSchedule.bind(IOWA.Schedule));
+      // TODO: replayed requests are handled in IOWA.IOFirebase, but
+      // IOWA.Schedule.replayQueuedRequests contains toast code. We should move
+      // back to it.
+      // IOWA.Schedule.replayQueuedRequests().then(IOWA.Schedule.loadUserSchedule.bind(IOWA.Schedule));
 
       // If the user hasn't denied notifications permission in the current browser,
       // and the user has notifications turned on globally (i.e. in at least one other browser),

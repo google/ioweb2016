@@ -22,31 +22,28 @@ class Schedule {
 
   /**
    * Name of the local DB table keeping the queued updates to the API endpoint.
-   * @static
    * @constant
    * @type {string}
    */
-  static get QUEUED_SESSION_API_UPDATES_DB_NAME() {
+  get QUEUED_SESSION_API_UPDATES_DB_NAME() {
     return 'toolbox-offline-session-updates';
   }
 
   /**
    * Schedule API endpoint.
-   * @static
    * @constant
    * @type {string}
    */
-  static get SCHEDULE_ENDPOINT() {
+  get SCHEDULE_ENDPOINT() {
     return 'api/v1/schedule';
   }
 
   /**
    * Survey API endpoint.
-   * @static
    * @constant
    * @type {string}
    */
-  static get SURVEY_ENDPOINT() {
+  get SURVEY_ENDPOINT() {
     return 'api/v1/user/survey';
   }
 
@@ -347,6 +344,26 @@ class Schedule {
     };
   }
 
+  updateSavedSessionsUI_(savedSessions) {
+    //  Mark/unmarked sessions the user has bookmarked.
+    let template = IOWA.Elements.Template;
+    let sessions = template.app.scheduleData.sessions;
+    for (let i = 0; i < sessions.length; ++i) {
+      let isSaved = savedSessions.indexOf(sessions[i].id) !== -1;
+      template.set(`app.scheduleData.sessions.${i}.saved`, isSaved);
+    }
+  }
+
+  /**
+   * Clear all user schedule data from display.
+   */
+  clearUserSchedule() {
+    let template = IOWA.Elements.Template;
+    template.set('app.savedSessions', []);
+    this.updateSavedSessionsUI_(template.app.savedSessions);
+    this.clearCachedUserSchedule();
+  }
+
   clearCachedUserSchedule() {
     this.cache.userSavedSessions = [];
   }
@@ -374,7 +391,7 @@ class Schedule {
     // Safari triggered by the simpleDB library.
     if ('serviceWorker' in navigator) {
       // Replay the queued /API requests.
-      let queuedSessionApiUpdates = simpleDB.open(Schedule.QUEUED_SESSION_API_UPDATES_DB_NAME).then(
+      let queuedSessionApiUpdates = simpleDB.open(this.QUEUED_SESSION_API_UPDATES_DB_NAME).then(
         db => {
           let replayPromises = [];
           // forEach is a special method implemented by SimpleDB. It's not the normal Array.forEach.
@@ -405,12 +422,12 @@ class Schedule {
    * Deletes the IndexedDB database used to queue up failed requests.
    * Useful when, e.g., the user has logged out.
    *
-   * @static
    * @return {Promise} Resolves once the IndexedDB database is deleted.
    */
-  static clearQueuedRequests() {
-    return simpleDB.delete(Schedule.QUEUED_SESSION_UPDATES_DB_NAME);
+  clearQueuedRequests() {
+    return simpleDB.delete(this.QUEUED_SESSION_API_UPDATES_DB_NAME);
   }
+
 }
 
 IOWA.Schedule = IOWA.Schedule || new Schedule();

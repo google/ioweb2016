@@ -77,25 +77,28 @@ class IOFirebase {
    *
    * @param {string} userId The ID of the signed-in Google user.
    * @param {string} accessToken The accessToken of the signed-in Google user.
+   * @return {Promise} Fulfills when auth is successful.
    */
   auth(userId, accessToken) {
     let firebaseShardUrl = IOFirebase._selectShard(userId);
     debugLog('Chose the following Firebase Database Shard:', firebaseShardUrl);
     this.firebaseRef = new Firebase(firebaseShardUrl);
-    this.firebaseRef.authWithOAuthToken('google', accessToken, error => {
-      if (error) {
-        IOWA.Analytics.trackError('this.firebaseRef.authWithOAuthToken(...)', error);
-        debugLog('Login to Firebase Failed!', error);
-      } else {
-        this._bumpLastActivityTimestamp();
-        IOWA.Analytics.trackEvent('login', 'success', firebaseShardUrl);
-        debugLog('Authenticated successfully to Firebase shard', firebaseShardUrl);
-      }
-    });
 
-    // Update the clock offset.
-    this._updateClockOffset();
-    this._replayQueuedOperations();
+    return this._setClockOffset()
+        .then(() => this.firebaseRef.authWithOAuthToken('google', accessToken))
+        .then(() => {
+          this._bumpLastActivityTimestamp();
+
+          IOWA.Analytics.trackEvent('login', 'success', firebaseShardUrl);
+          debugLog('Authenticated successfully to Firebase shard', firebaseShardUrl);
+
+          // Check to see if there are any failed session modification requests,
+          // and if so, replay them before fetching the user schedule.
+          return this._replayQueuedOperations();
+        }).catch(error => {
+          IOWA.Analytics.trackError('firebaseRef.authWithOAuthToken(...)', error);
+          debugLog('Login to Firebase Failed!', error);
+        });
   }
 
   /**
@@ -150,7 +153,7 @@ class IOFirebase {
   _replayQueuedOperations() {
     let queuedOperations = {};
 
-    this._simpleDbInstance().then(db => {
+    return this._simpleDbInstance().then(db => {
       // Let's read in all the queued values before we do anything else, to
       // make sure we're not confused by additional queued values that get
       // added asynchronously.
@@ -170,16 +173,17 @@ class IOFirebase {
   /**
    * Updates the offset between the local clock and the Firebase servers clock.
    * @private
+   * @return {Promise} Promise fulfilled when the clock has been set. The
+   *     resolve value is the offset.
    */
-  _updateClockOffset() {
-    if (this.firebaseRef) {
-      // Retrieve the offset between the local clock and Firebase's clock for offline operations.
-      let offsetRef = this.firebaseRef.child('/.info/serverTimeOffset');
-      offsetRef.once('value', snap => {
-        this.clockOffset = snap.val();
-        debugLog('Updated clock offset to', this.clockOffset, 'ms');
-      });
-    }
+  _setClockOffset() {
+    // Retrieve the offset between the local clock and Firebase's clock for
+    // offline operations.
+    let offsetRef = this.firebaseRef.child('/.info/serverTimeOffset');
+    return offsetRef.once('value').then(snap => {
+      this.clockOffset = snap.val();
+      debugLog('Updated clockOffset to', this.clockOffset, 'ms');
+    });
   }
 
   /**
