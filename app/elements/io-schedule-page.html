@@ -274,14 +274,14 @@ limitations under the License.
         </paper-tabs>
 
         <div class="meta-filter" layout horizontal center
-             disabled$="[[_isSelectedSubpage(selectedSubpage, 'myschedule')]]">
+             disabled$="[[_disableFiltering(selectedSubpage)]]">
           Filter <paper-icon-button icon="io:filter-list" aria-label="Filter list"
-                                    on-tap="openFilters"></paper-icon-button>
+                                    on-tap="toggleFilters"></paper-icon-button>
         </div>
       </div>
 
       <section class$="subpage-agenda subpage__content bg-bluegrey-50-20 {{_applyActiveClassWhenSubpage(selectedSubpage, 'agenda')}}">
-        <section class="page__section page__section--top slide-up">
+        <section class="slide-up">
           <div class="card__container bg-cyan-200">
             <div class="card">
               <div class="card-content max-width-800 text-justified">
@@ -293,87 +293,19 @@ limitations under the License.
           </div>
         </section>
 
-        <section class="page__section slide-up-delay" id="agenda_content">
+        <section class="slide-up-delay" id="agenda_content">
           <template is="dom-repeat" items="[[agenda]]" as="day">
-            <section class="page__section">
-              <io-agenda app="[[app]]"
-                         day="[[day.day]]"
-                         start="[[day.start]]"
-                         end="[[day.end]]"
-                         color="[[day.color]]"
-                         events="[[day.events]]"></io-agenda>
-            </section>
+            <io-agenda app="[[app]]"
+                       day="[[day.day]]"
+                       start="[[day.start]]"
+                       end="[[day.end]]"
+                       color="[[day.color]]"
+                       events="[[day.events]]"></io-agenda>
           </template>
         </section>
       </section>
 
       <section class$="subpage-day1 subpage-day2 subpage-myschedule subpage__content {{_applyActiveClassWhenNotSubpage(selectedSubpage, 'agenda')}}">
-
-        <!-- <section class="page__section page__section--top slide-up">
-          <div id="signin-prompt"
-              class$="card__container {{_addClass('prompt-hidden', user)}}"
-              hidden$="{{_equal(selectedSubpage, 'myschedule')}}">
-            <div class="card">
-              <div class="card-content">
-                <h3 class="card__title">Create your custom I/O schedule</h3>
-                <div>Sign in to add events to My Schedule.
-                  <span class="notification__feature">
-                    To get notifications on this device, you need to sign in and enable notifications.
-                    <p class="note">Note:  Notifications are activated per device. To receive notifications on multiple devices, sign in on each device, enable notifications, and make sure you're online. All device notifications can be turned on/off at any time in the settings panel.</p>
-                  </span>
-                </div>
-              </div>
-              <div class="card-content">
-                <span class="anchor-like" role="link" tabindex="0"
-                      data-track-link="schedule-sign-in" on-click="signIn">Sign in</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="card__container"
-               hidden$="{{!_equal(selectedSubpage, 'myschedule')}}">
-            <div class="card">
-
-              <template is="dom-if" if="[[!user]]">
-                <div class="card-content">
-                  <h3 class="card__title">Create your custom I/O schedule</h3>
-                  <div>
-                    Sign in to add events to My Schedule.
-                    <span class="notification__feature">
-                      To get notifications on this device, you need to sign in and enable notifications.
-                      <p class="note">Note: Notifications are activated per device. To receive notifications on multiple devices, sign in on each device, enable notifications, and make sure you're online. All device notifications can be turned on/off at any time in the settings panel.</p>
-                    </span>
-                  </div>
-                </div>
-                <div class="card-content">
-                  <span class="anchor-like" role="link" tabindex="0"
-                        data-track-link="schedule-sign-in"
-                        on-click="signIn">Sign in</span>
-                </div>
-              </template>
-
-              <template is="dom-if" if="[[user]]">
-                <div class="card-content notification__feature">
-                  <div>If you have notifications enabled, you'll be notified on this device when:
-                    <ul>
-                      <li>Events in My Schedule are about to start</li>
-                      <li>Videos of sessions added to My Schedule are available</li>
-                    </ul>
-                  </div>
-                  <p class="note">
-                    Note: Notifications are activated per device. To receive notifications on multiple devices, sign in on each device, enable notifications, and make sure you're online. All device notifications can be turned on/off at any time in the settings panel.
-                  </p>
-                </div>
-                <div class="card-content notification__feature">
-                  <span class="anchor-like" role="link" tabindex="0"
-                        data-track-link="schedule-open-settings"
-                        on-click="openSettings">Go to settings</span>
-                </div>
-              </template>
-
-            </div>
-          </div>
-        </section> -->
 
         <div class="slide-up-delay">
           <div class="page__filters" layout horizontal
@@ -395,8 +327,9 @@ limitations under the License.
               </paper-dropdown-menu>
             </span>
           </div>
-          <section class="page__section bg-bluegrey-50-20">
+          <section class="bg-bluegrey-50-20">
             <io-schedule id="scheduleEl"
+              app="[[app]]"
               day="[[selectedSubpage]]"
               sessions="{{app.scheduleData.sessions}}"
               saved-sessions="{{app.savedSessions}}"
@@ -404,7 +337,6 @@ limitations under the License.
               session-topics="[[app.filterTopics]]"
               session-types="[[app.filterSessionTypes]]"
               filters="{{sessionURLFilters}}"
-              show-filters="[[_showFilters]]"
               on-session-bookmark="_onToggleSaveSession"
               on-session-select="openSession"
               gmt-day-one="[[date]]"></io-schedule>
@@ -469,11 +401,6 @@ limitations under the License.
       },
 
       _startScheduleVideo: {
-        type: Boolean,
-        value: false
-      },
-
-      _showFilters: {
         type: Boolean,
         value: false
       },
@@ -634,10 +561,6 @@ limitations under the License.
       }
     },
 
-    openSettings: function(e) {
-      IOWA.Elements.Template.openSettings(e);
-    },
-
     openSession: function(sessionOrEvent) {
       if (!sessionOrEvent) {
        return;
@@ -648,8 +571,8 @@ limitations under the License.
       this.$.sessionDetails.open();
     },
 
-    openFilters: function() {
-      this._showFilters = !this._showFilters;
+    toggleFilters: function() {
+      this.$.scheduleEl.showFilters = !this.$.scheduleEl.showFilters;
     },
 
     onSessionDetailsClose: function(e) {
@@ -862,6 +785,14 @@ limitations under the License.
 
     _applyActiveClassWhenNotSubpage: function(selectedSubpage, subpageName) {
       return this._addClass('active', selectedSubpage !== subpageName);
+    },
+
+    _disableFiltering: function(selectedSubpage) {
+      var hide = selectedSubpage === 'myschedule' || selectedSubpage === 'agenda';
+      if (hide) {
+        this.$.scheduleEl.showFilters = false;
+      }
+      return hide;
     }
 
   });
