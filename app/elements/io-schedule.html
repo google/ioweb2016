@@ -422,14 +422,6 @@ Fired when the user toggles bookmarking/removing a session.
           '_updateMyScheduleTimeBlocks(sessions, savedSessions, gmtDayOne)'
         ],
 
-        // Useful for conditionally adding a class to an element based on prop.
-        _addClass: function(name, prop, opt_negate) {
-          if (opt_negate) {
-            return !prop ? name : '';
-          }
-          return prop ? name : '';
-        },
-
         isFilterSelected: function(filterName) {
           return this.filters.indexOf(filterName) > -1;
         },
@@ -553,13 +545,13 @@ Fired when the user toggles bookmarking/removing a session.
 
         signIn: function(e) {
           e.stopPropagation();
-          // TODO: global pollution.
+          // TODO: note global pollution. Consider firing bubbling event.
           IOWA.Elements.Template.signIn(e);
         },
 
         openSettings: function(e) {
           e.stopPropagation();
-          // TODO: global pollution.
+          // TODO: note global pollution. Consider firing bubbling event.
           IOWA.Elements.Template.openSettings(e);
         },
 
