@@ -174,7 +174,6 @@ limitations under the License.
   {% end %}
 
   <style is="custom-style" include="shared-app-styles">
-
     .masthead {
       --app-header-shadow: {
         box-shadow: inset 0px 5px 2px -3px rgba(0, 0, 0, 0.2);
@@ -184,23 +183,12 @@ limitations under the License.
       };
     }
 
-    paper-dropdown-menu.white {
-      --paper-input-container-color: inherit;
-      --paper-dropdown-menu-icon: {
-        color: inherit;
-      };
-      --paper-input-container: {
-        padding: 0;
-      };
-    }
-
     #navbar paper-tabs {
       --paper-tabs-selection-bar-color: var(--paper-blue-grey-100);
     }
     #navbar.scrolled paper-tabs {
       --paper-tabs-selection-bar-color: var(--paper-blue-grey-600);
     }
-
   </style>
 </head>
 <body id="page-{% .Slug %}" class="bg-white">
@@ -240,10 +228,6 @@ limitations under the License.
          data-track-link="nav-drawer-schedule" tabindex="-1">
         <paper-item>Schedule</paper-item>
       </a>
-      <a href="registration/apply" label="registration" data-anim-drawer
-         data-track-link="nav-drawer-registration" tabindex="-1">
-        <paper-item>Registration</paper-item>
-      </a>
       <a href="attend" label="attend" data-ajax-link data-anim-drawer
          data-track-link="nav-drawer-attend" tabindex="-1">
         <paper-item>Attending</paper-item>
@@ -280,10 +264,6 @@ limitations under the License.
           <a href="schedule#day1" data-ajax-link data-track-link="nav-schedule"
              data-transition="page-slide-transition"
              layout horizontal center>Schedule</a>
-        </paper-tab>
-        <paper-tab label="registration" tabindex="-1" role="">
-          <a href="registration/apply" data-track-link="nav-registration"
-             layout horizontal center>Registration</a>
         </paper-tab>
         <paper-tab label="attend" tabindex="-1" role="">
           <a href="attend" data-ajax-link data-track-link="nav-attend"
