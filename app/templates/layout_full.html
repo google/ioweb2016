@@ -208,7 +208,7 @@ limitations under the License.
 <template is="dom-bind" id="t">
 
 <google-signin client-id="{% .ClientID %}" scopes="profile email"
-               user="{{currentUser}}"></google-signin>
+               user="{{app.currentUser}}"></google-signin>
 
 <!-- Responsive handlers -->
 <iron-media-query id="mq-phone" full query="(min-width:320px) and (max-width:768px)"
@@ -301,9 +301,9 @@ limitations under the License.
              blocked. Needs user gesture. -->
         <span class="anchor-like button-link" role="button" tabindex="0"
               data-track-link="nav-signin" on-click="signIn"
-              hidden="[[currentUser]]" layout center>Sign in</span>
-        <template is="dom-if" if="{{currentUser}}" restamp>
-          <img src$="{{currentUser.picture}}" class="profilepic">
+              hidden="[[app.currentUser]]" layout center>Sign in</span>
+        <template is="dom-if" if="{{app.currentUser}}" restamp>
+          <img src$="{{app.currentUser.picture}}" class="profilepic">
           <paper-menu-button horizontal-align="right" vertical-align="top">
             <paper-icon-button icon="io:more-vert"
                                class="dropdown-trigger"
@@ -312,17 +312,17 @@ limitations under the License.
                  class="dropdown-content"
                  on-paper-dropdown-open="getNotificationState">
               <div class="card-content" layout horizontal>
-                <div><img src$="{{currentUser.picture}}" class="profilepic"></div>
+                <div><img src$="{{app.currentUser.picture}}" class="profilepic"></div>
                 <div>
-                  <div>[[currentUser.name]]</div>
-                  <div class="settings-email">[[currentUser.email]]</div>
+                  <div>[[app.currentUser.name]]</div>
+                  <div class="settings-email">[[app.currentUser.email]]</div>
                 </div>
               </div>
               <div class="card-content notification__feature">
                 <h4>Notifications</h4>
                 <iron-label horizontal layout center>
-                  <paper-checkbox checked$="{{currentUser.notify}}"
-                                  disabled$="{{_disableNotify(currentUser.notify)}}"
+                  <paper-checkbox checked$="{{app.currentUser.notify}}"
+                                  disabled$="{{_disableNotify(app.currentUser.notify)}}"
                                   on-tap="updateNotifyUser"></paper-checkbox>
                   <b>I want to receive notifications from the Google I/O 2016 web app.</b>
                 </iron-label>
@@ -369,10 +369,7 @@ limitations under the License.
         <io-extended-form-page app="[[app]]"></io-extended-form-page>
       </template>
       <template is="dom-if" name="schedule" restamp>
-        <io-schedule-page
-            app="[[app]]"
-            user="[[currentUser]]"
-            date="{% .StartDateStr %}"></io-schedule-page>
+        <io-schedule-page app="[[app]]" date="{% .StartDateStr %}"></io-schedule-page>
       </template>
       <template is="dom-if" name="faq" restamp>
         <io-faq-page app="[[app]]"></io-faq-page>

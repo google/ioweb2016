@@ -23,8 +23,43 @@
 $color-section-border: #eaeaea;
 $color-session-row-hover: rgba($color-bluegrey-50, 0.4);
 
-.card-content:not(#filters) {
+.card-content:not(#filters):not(#signin-prompt):not(.card-content--day-footer) {
   padding-right: 0 !important;
+}
+
+.card-content--myscheduleinfo {
+  paper-icon-button {
+    margin: -8px 0 12px -12px;
+  }
+
+  p {
+    margin: $mobileKeyline auto;
+  }
+
+  .note {
+    font-size: 12px;
+    margin: 0;
+  }
+
+  ul {
+    padding: 0 0 0 18px;
+  }
+
+  .anchor-like {
+    margin-top: $desktopKeyline;
+    display: inline-block;
+  }
+}
+
+.card-content--day-footer {
+  padding-top: 0 !important;
+
+  a {
+    color: $color-cyan-800;
+    text-transform: uppercase;
+    margin-left: $mobileKeyline / 2;
+    font-size: 14px;
+  }
 }
 
 .schedule-row {

@@ -117,20 +117,6 @@ h3 a {
   margin-top: 0;
 }
 
-.register-button {
-  width: 133px;
-  background: #fff;
-  color: $color-bluegrey-800;
-  font-size: 14px;
-  line-height: 14px;
-  margin: $desktopKeyline 0 0 0;
-  border-radius: 2px;
-
-  &:hover {
-    @include shadow-z1();
-  }
-}
-
 .card__footerlink {
   @include typo-button();
 }

@@ -91,13 +91,10 @@ IOWA.Elements = (function() {
     template.app.scheduleData = null;
     template.app.savedSessions = [];
     template.app.dontAutoSubscribe = false;
+    template.app.currentUser = null;
 
     template.pages = IOWA.PAGES; // defined in auto-generated ../pages.js
     template.selectedPage = IOWA.Router.parseUrl(window.location.href).page;
-
-    // Sign-in defaults.
-    template.isSignedIn = false;
-    template.currentUser = null;
 
     // FAB scrolling effect caches.
     template._fabCrossFooterThreshold = null; // Scroll limit when FAB sticks.

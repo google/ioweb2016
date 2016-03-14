@@ -13,7 +13,10 @@ limitations under the License.
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
 <link rel="import" href="../bower_components/paper-radio-button/paper-radio-button.html">
 <link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
@@ -84,6 +87,16 @@ limitations under the License.
       }
     },
 
+    onSessionSelect: function(e, detail) {
+      e.preventDefault();
+      e.stopPropagation();
+      this.selectSession(this.session);
+    },
+
+    selectSession: function(session) {
+      this.fire('session-select', {session: session});
+    },
+
     onAddSession: function(e) {
       e.stopPropagation();
       this.fire('session-bookmark', {
@@ -98,6 +111,13 @@ limitations under the License.
         session: this.session,
         saved: false
       });
+    },
+
+    onSessionKeyUp: function(e, detail) {
+      // enter or ctrl+alt+space (voice over click)
+      if (e.keyCode === 13 || e.altKey && e.ctrlKey && e.keyCode === 32) {
+        this.selectSession(this.session);
+      }
     },
 
     // Useful for conditionally adding a class to an element based on prop.
@@ -187,13 +207,39 @@ Fired when the user toggles bookmarking/removing a session.
       </div>
     </div>
 
-
     <template is="dom-if" if="{{_dayIs(day, 'myschedule')}}">
 
       <div class="card bg-cyan-200">
-        <div class="card-content">
-          <span class="no-sessions">Add more events</span>
-          <a href="#day1" data-subpage-link>Browse events</a>
+        <div class="card-content card-content--myscheduleinfo" hidden$="[[_hideHelp]]">
+          <iron-pages selected="[[_computeMyScheduleHelp(app.currentUser)]]">
+            <div id="signin-prompt">
+              <h3 class="card__title">Create your custom schedule</h3>
+              <div>Sign in to add events to My Schedule.
+                <span class="notification__feature">
+                  To get notifications on this device, you need to sign in and enable notifications.
+                  <p class="note">Note: Notifications are activated per device. To receive notifications on multiple devices, sign in on each device, enable notifications, and make sure you're online. All device notifications can be turned on/off at any time in the settings panel.</p>
+                </span>
+              </div>
+              <paper-button class="cta-button" data-track-link="schedule-sign-in"
+                            on-click="signIn">Sign in</paper-button>
+            </div>
+            <div id="notificationInfo" class="notification__feature">
+              <paper-icon-button icon="io:close" aria-label="Close"
+                             on-tap="closeHelp"></paper-icon-button>
+              <div>If you have notifications enabled, you'll be notified on this device when:
+                <ul>
+                  <li>Events in My Schedule are about to start</li>
+                  <li>Videos of sessions added to My Schedule are available</li>
+                </ul>
+              </div>
+              <p class="note">
+                Note: Notifications are activated per device. To receive notifications on multiple devices, sign in on each device, enable notifications, and make sure you're online. All device notifications can be turned on/off at any time in the settings panel.
+              </p>
+              <span class="anchor-like" role="link" tabindex="0"
+                    data-track-link="schedule-open-settings"
+                    on-click="openSettings">Settings</span>
+            </div>
+          </iron-pages>
         </div>
       </div>
 
@@ -212,6 +258,10 @@ Fired when the user toggles bookmarking/removing a session.
               <io-schedule-row session="[[session]]"></io-schedule-row>
             </template>
           </div>
+          <div class="card-content card-content--day-footer" layout horizontal center-center>
+            <span>Add more events.</span>
+            <a href="#day1" data-subpage-link>Browse events</a>
+          </div>
 
           <div class="myschedule-day-header card-content">
             <div>Thursday</div>
@@ -224,6 +274,10 @@ Fired when the user toggles bookmarking/removing a session.
               <io-schedule-row session="[[session]]"></io-schedule-row>
             </template>
           </div>
+          <div class="card-content card-content--day-footer" layout horizontal center-center>
+            <span>Add more events.</span>
+            <a href="#day2" data-subpage-link>Browse events</a>
+          </div>
 
           <div class="myschedule-day-header card-content">
             <div>Friday</div>
@@ -235,6 +289,10 @@ Fired when the user toggles bookmarking/removing a session.
                       initial-count="10">
               <io-schedule-row session="[[session]]"></io-schedule-row>
             </template>
+          </div>
+          <div class="card-content card-content--day-footer" layout horizontal center-center>
+            <span>Add more events.</span>
+            <a href="#day3" data-subpage-link>Browse events</a>
           </div>
 
         </div> <!-- .card -->
@@ -342,23 +400,27 @@ Fired when the user toggles bookmarking/removing a session.
           },
 
           /**
+           * If true, the my schedule help panel is shown.
+           */
+          _hideHelp: {
+            type: Boolean,
+            value: false
+          },
+
+          /**
            * True to show the filter panel
            */
           showFilters: {
             type: Boolean,
-            value: false
-          }
+            value: false,
+            notify: true
+          },
         },
 
         observers: [
           '_filtersChanged(filters.length)',
           '_updateMyScheduleTimeBlocks(sessions, savedSessions, gmtDayOne)'
         ],
-
-        // Useful for conditionally adding a class to an element based on prop.
-        _addClass: function(name, prop) {
-          return prop ? name : '';
-        },
 
         isFilterSelected: function(filterName) {
           return this.filters.indexOf(filterName) > -1;
@@ -481,6 +543,18 @@ Fired when the user toggles bookmarking/removing a session.
           return true;
         },
 
+        signIn: function(e) {
+          e.stopPropagation();
+          // TODO: note global pollution. Consider firing bubbling event.
+          IOWA.Elements.Template.signIn(e);
+        },
+
+        openSettings: function(e) {
+          e.stopPropagation();
+          // TODO: note global pollution. Consider firing bubbling event.
+          IOWA.Elements.Template.openSettings(e);
+        },
+
         _updateMyScheduleTimeBlocks: function(sessions, savedSessions, gmtDayOne) {
           if (!sessions.length || !savedSessions.length) {
             return;
@@ -507,23 +581,6 @@ Fired when the user toggles bookmarking/removing a session.
           }.bind(this)
         },
 
-        onSessionSelect: function(e, detail) {
-          e.preventDefault();
-          e.stopPropagation();
-          this.selectSession(e.model.session);
-        },
-
-        onSessionKeyUp: function(e, detail) {
-          // enter or ctrl+alt+space (voice over click)
-          if (e.keyCode === 13 || e.altKey && e.ctrlKey && e.keyCode === 32) {
-            this.selectSession(e.model.session);
-          }
-        },
-
-        selectSession: function(session) {
-          this.fire('session-select', {session: session});
-        },
-
         _dayIs: function(day, targetDay) {
           return day === targetDay;
         },
@@ -531,6 +588,14 @@ Fired when the user toggles bookmarking/removing a session.
         _dayIndexToDate: function(timeBlockIdx) {
           var ioStartDay = new Date(this.gmtDayOne).getDate(); // 18
           return timeBlockIdx + ioStartDay;
+        },
+
+        _computeMyScheduleHelp: function(user) {
+          return user ? 1 : 0;
+        },
+
+        closeHelp: function() {
+          this._hideHelp = true;
         }
 
       });
