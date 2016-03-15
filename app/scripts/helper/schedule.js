@@ -93,7 +93,7 @@ class Schedule {
       return Promise.resolve(this.scheduleData_);
     }
 
-    return IOWA.Request.xhrPromise('GET', Schedule.SCHEDULE_ENDPOINT, false).then(resp => {
+    return IOWA.Request.xhrPromise('GET', this.SCHEDULE_ENDPOINT, false).then(resp => {
       this.scheduleData_ = resp;
       return this.scheduleData_;
     });
@@ -263,7 +263,7 @@ class Schedule {
     IOWA.Analytics.trackEvent('session', 'rate', sessionId);
 
     return IOWA.Auth.waitForSignedIn('Sign in to submit feedback').then(() => {
-      let url = `${Schedule.SURVEY_ENDPOINT}/${sessionId}`;
+      let url = `${this.SURVEY_ENDPOINT}/${sessionId}`;
       let callback = response => {
         IOWA.Elements.Template.set('app.savedSurveys', response);
         IOWA.IOFirebase.markSessionRated(sessionId);
