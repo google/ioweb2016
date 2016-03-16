@@ -50,10 +50,12 @@ limitations under the License.
          on-click="onSessionSelect"
          title$="{{session.title}}" flex>
         <div>[[session.title]]</div>
-        <div id="session-{{session.id}}-time" class="schedule-time">
-          <span>[[session.start]]</span>
-          <span hidden$="{{_sessionIs(session, '__keynote__')}}"> - [[session.end]]</span> /
-          <span>[[session.room]]</span>
+        <div id="session-{{session.id}}-time" class="schedule-time" layout horizontal center>
+          <div>
+            <span>[[session.start]]</span>
+            <span hidden$="{{_sessionIs(session, '__keynote__')}}"> - [[session.end]]</span> /
+            <span>[[session.room]]</span>
+          </div>
           <iron-icon icon="io:videocam" class="schedule-livestream"
                      hidden$="{{!session.isLivestream}}"></iron-icon>
         </div>
@@ -64,6 +66,15 @@ limitations under the License.
                    class="schedule-add-button"
                    on-click="onAddSession"></iron-icon>
         <iron-icon icon="io:remove-circle"
+                   class="schedule-remove-button"
+                   on-click="onRemoveSession"></iron-icon>
+      </div>
+
+      <div class="schedule-toggle-buttons-mobile">
+        <iron-icon icon="io:add-circle-outline"
+                   class="schedule-add-button"
+                   on-click="onAddSession"></iron-icon>
+        <iron-icon icon="io:remove-circle-outline"
                    class="schedule-remove-button"
                    on-click="onRemoveSession"></iron-icon>
       </div>
@@ -247,50 +258,50 @@ Fired when the user toggles bookmarking/removing a session.
 
         <div class="card">
 
-          <div class="myschedule-day-header card-content">
+          <div class="myschedule-day-header card-content card-content--no-padding-right">
             <div>Wednesday</div>
             <h1>May 18</h1>
           </div>
-          <div class="card-content card-content--no-padding-top" layout vertical>
+          <div class="card-content card-content--no-padding-top card-content--no-padding-right" layout vertical>
             <template is="dom-repeat" items="[[sessions]]" as="session"
                       observe="saved" filter="[[_filterMyScheduleByDay(0)]]"
                       initial-count="10">
               <io-schedule-row session="[[session]]"></io-schedule-row>
             </template>
           </div>
-          <div class="card-content card-content--day-footer" layout horizontal center-center>
+          <div class="card-content card-content--day-footer card-content--no-padding-right" layout horizontal center-center>
             <span>Add more events.</span>
             <a href="#day1" data-subpage-link>Browse events</a>
           </div>
 
-          <div class="myschedule-day-header card-content">
+          <div class="myschedule-day-header card-content card-content--no-padding-right">
             <div>Thursday</div>
             <h1>May 19</h1>
           </div>
-          <div class="card-content card-content--no-padding-top" layout vertical>
+          <div class="card-content card-content--no-padding-top card-content--no-padding-right" layout vertical>
             <template is="dom-repeat" items="[[sessions]]" as="session"
                       observe="saved" filter="[[_filterMyScheduleByDay(1)]]"
                       initial-count="10">
               <io-schedule-row session="[[session]]"></io-schedule-row>
             </template>
           </div>
-          <div class="card-content card-content--day-footer" layout horizontal center-center>
+          <div class="card-content card-content--day-footer card-content--no-padding-right" layout horizontal center-center>
             <span>Add more events.</span>
             <a href="#day2" data-subpage-link>Browse events</a>
           </div>
 
-          <div class="myschedule-day-header card-content">
+          <div class="myschedule-day-header card-content card-content--no-padding-right">
             <div>Friday</div>
             <h1>May 20</h1>
           </div>
-          <div class="card-content card-content--no-padding-top" layout vertical>
+          <div class="card-content card-content--no-padding-top card-content--no-padding-right" layout vertical>
             <template is="dom-repeat" items="[[sessions]]" as="session"
                       observe="saved" filter="[[_filterMyScheduleByDay(2)]]"
                       initial-count="10">
               <io-schedule-row session="[[session]]"></io-schedule-row>
             </template>
           </div>
-          <div class="card-content card-content--day-footer" layout horizontal center-center>
+          <div class="card-content card-content--day-footer card-content--no-padding-right" layout horizontal center-center>
             <span>Add more events.</span>
             <a href="#day3" data-subpage-link>Browse events</a>
           </div>
@@ -306,7 +317,8 @@ Fired when the user toggles bookmarking/removing a session.
 
         <div class="card">
 
-          <div class="card-content" layout vertical>
+          <div class="card-content card-content--main card-content--no-padding-right"
+               layout vertical>
 
             <template id="schedulelist" is="dom-repeat" items="[[sessions]]"
                       as="session" filter="matchesFilters" initial-count="10">

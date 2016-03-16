@@ -23,10 +23,6 @@
 $color-section-border: #eaeaea;
 $color-session-row-hover: rgba($color-bluegrey-50, 0.4);
 
-.card-content:not(#filters):not(#signin-prompt):not(.card-content--day-footer) {
-  padding-right: 0 !important;
-}
-
 .card-content--myscheduleinfo {
   paper-icon-button {
     margin: -8px 0 12px -12px;
@@ -63,7 +59,7 @@ $color-session-row-hover: rgba($color-bluegrey-50, 0.4);
 }
 
 .schedule-row {
-  padding: $tabletKeyline;
+  padding: $mobileKeyline;
   border-top: 1px solid $color-section-border;
   width: 100%;
 
@@ -71,7 +67,8 @@ $color-session-row-hover: rgba($color-bluegrey-50, 0.4);
     background-color: $color-session-row-hover;
   }
 
-  &:not(.saved):hover {
+  &:not(.saved):hover,
+  &:not(.saved) .schedule-toggle-buttons-mobile {
     .schedule-add-button {
       display: inline-block;
     }
@@ -90,7 +87,7 @@ $color-session-row-hover: rgba($color-bluegrey-50, 0.4);
       border-left: 4px solid $color-cyan-400;
     }
 
-    &:hover {
+    &:hover, .schedule-toggle-buttons-mobile {
       .schedule-remove-button {
         display: inline-block;
       }
@@ -118,7 +115,7 @@ $color-session-row-hover: rgba($color-bluegrey-50, 0.4);
 .schedule-block-title {
   width: 25%;
   visibility: hidden;
-  padding: $tabletKeyline 0;
+  padding: $mobileKeyline 0;
 
   h1 {
     font-size: 56px;
@@ -144,6 +141,7 @@ $color-session-row-hover: rgba($color-bluegrey-50, 0.4);
 
 .schedule-toggle-buttons {
   cursor: pointer;
+  display: none;
 }
 
 .schedule-add-button {
@@ -156,28 +154,38 @@ $color-session-row-hover: rgba($color-bluegrey-50, 0.4);
   display: none;
 }
 
+.schedule-toggle-buttons-mobile {
+  .schedule-add-button {
+    color: $color-bluegrey-200;
+    display: none;
+  }
+
+  .schedule-remove-button {
+    color: $color-bluegrey-200;
+    display: none;
+  }
+}
+
 .schedule-title {
   cursor: pointer;
   overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-
-  // overrides for link styling.
-  text-transform: none !important;
-  line-height: inherit !important;
-  font-size: 20px;
-  font-weight: inherit !important;
-  color: inherit !important;
+  font-weight: normal;
+  line-height: 21px;
 }
 
 .schedule-time {
-  font-size: 14px;
-  white-space: nowrap;
   color: $color-session-detail-light-grey;
+  font-size: 16px;
+  line-height: 28px;
 }
 
 .schedule-livestream {
   margin-left: $mobileKeyline / 2;
+  color: rgba(0,0,0,0.25);
+}
+
+#filters {
+  padding: $mobileKeyline;
 }
 
 .filter-section {
@@ -215,3 +223,78 @@ paper-radio-button {
   display: block;
   padding: $mobileKeyline/2 0;
 }
+
+@media (max-width: $phone-breakpoint-max) {
+  .card-content--main {
+    padding-top: 0 !important;
+  }
+  .schedule-block-title {
+    h1 {
+      font-size: 24px;
+      font-weight: normal;
+      line-height: 28px;
+    }
+    .schedule-block-meridiem {
+      margin-left: 3px;
+      line-height: 23px;
+    }
+  }
+  .schedule-time {
+    color: rgba(0,0,0,0.4);
+  }
+  .myschedule-day-header {
+    font-size: 14px;
+    line-height: 16px;
+
+    h1 {
+      font-size: 24px;
+      line-height: 28px;
+    }
+  }
+}
+
+@media (min-width: $tablet-breakpoint-min) {
+  .schedule-row {
+    padding: $tabletKeyline;
+  }
+  .schedule-block-title {
+    padding: $tabletKeyline 0;
+  }
+  .schedule-title {
+    font-size: 20px;
+    line-height: 24px;
+  }
+  .schedule-time {
+    line-height: 24px;
+  }
+  .schedule-toggle-buttons {
+    display: block;
+  }
+  .schedule-toggle-buttons-mobile {
+    display: none;
+  }
+
+  #filters {
+    padding: $tabletKeyline;
+  }
+}
+
+@media (min-width: 961px) {
+  #filters {
+    padding: $desktopKeyline;
+  }
+}
+
+@media (min-width: 1305px) {
+  #filters {
+    padding: 40px;
+  }
+}
+
+@media (min-width: 1501px) {
+  #filters {
+    padding: 48px;
+  }
+}
+
+

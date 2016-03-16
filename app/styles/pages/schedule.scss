@@ -30,9 +30,16 @@ io-schedule {
   min-height: 800px; // Don't want to see the footer on page load.
 }
 
-.meta-filter {
-  @include keyline-16();
+.subpage__nav {
+  paper-dropdown-menu {
+    width: 90px;
+  }
+}
+
+.meta-filter,
+.meta-myschedue-button {
   transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
 
   &[disabled] {
     opacity: 0.3;
@@ -44,36 +51,34 @@ io-schedule {
   }
 }
 
-.page__filters {
-  paper-dropdown-menu {
-    @include typo-button();
-    margin: $tabletKeyline;
-    padding: 0;
-    border: none;
-    iron-menu {
-      margin: 0;
-    }
-    paper-item {
-      font-size: inherit;
-    }
-  }
-
-  .paper-item-separator {
-    border-top: 1px solid $color-light-grey-border;
+.meta-myschedue-button {
+  &[disabled] {
+    opacity: 0;
+    pointer-events: none;
   }
 }
 
-.schedule-rows .schedule-row {
-  margin-bottom: $tabletKeyline;
-}
+// .page__filters {
+//   paper-dropdown-menu {
+//     @include typo-button();
+//     margin: $tabletKeyline;
+//     padding: 0;
+//     border: none;
+//     iron-menu {
+//       margin: 0;
+//     }
+//     paper-item {
+//       font-size: inherit;
+//     }
+//   }
+
+//   .paper-item-separator {
+//     border-top: 1px solid $color-light-grey-border;
+//   }
+// }
 
 iron-icon[icon="schedule"] {
   margin-right: 40px;
-}
-
-.schedule-time {
-  font-size: 14px;
-  white-space: nowrap;
 }
 
 .session__rate {
@@ -316,6 +321,14 @@ iron-icon[icon="schedule"] {
 }
 
 @media (max-width: $phone-breakpoint-max) {
+  .subpage__nav {
+    @include keyline-16();
+
+    .subpage__nav--myscheduleback paper-icon-button {
+      left: -12px;
+    }
+  }
+
   .session__detail {
     margin: 0;
     left: 0 !important;
@@ -337,6 +350,10 @@ iron-icon[icon="schedule"] {
 }
 
 @media (min-width: $tablet-breakpoint-min) {
+  .meta-filter {
+    @include keyline-16();
+  }
+
   .session__detail {
     .card__photo {
       height: 430px;
