@@ -220,22 +220,6 @@ paper-progress {
   background-color: $color-bluegrey-200;
 }
 
-// .bg-google-blue {
-//   background-color: $color-google-blue-500;
-// }
-
-// .bg-google-red {
-//   background-color: $color-google-red-500;
-// }
-
-// .bg-google-green {
-//   background-color: $color-google-green-500;
-// }
-
-// .bg-google-yellow {
-//   background-color: $color-google-yellow-500;
-// }
-
 .navbar__overlay {
   position: fixed !important;  // iOS
   font-size: 20px;
@@ -276,42 +260,18 @@ paper-progress {
   background-size: contain;
 }
 
-.io-main {
-  .slide-up-delay {
-    transform: translateY(100px);
-    opacity: 0;
-    will-change: transform, opacity;
-  }
-
-  .slide-up {
-    transform: translateY(100px);
-    opacity: 0;
-    position: relative;
-    will-change: transform, opacity;
-  }
-}
-
-// .io-logo-container {
-//   position: absolute;
-//   left: 0;
-//   right: 0;
-//   bottom: 0;
-//   top: 0;
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-
-//   io-logo {
-//     will-change: transform; // https://github.com/GoogleChrome/ioweb2015/issues/254
+// .io-main {
+//   .slide-up-delay {
+//     transform: translateY(100px);
+//     opacity: 0;
+//     will-change: transform, opacity;
 //   }
 
-//   [iologobackground] {
-//     position: absolute;
-//     left: 0;
-//     right: 0;
-//     bottom: 0;
-//     top: 0;
-//     will-change: transform; // https://github.com/GoogleChrome/ioweb2015/issues/254
+//   .slide-up {
+//     transform: translateY(100px);
+//     opacity: 0;
+//     position: relative;
+//     will-change: transform, opacity;
 //   }
 // }
 
@@ -450,7 +410,6 @@ paper-slider {
   }
 }
 
-// @media (min-width: $desktop-breakpoint-mid + 1) {
 @media (min-width: 961px) {
   // h1 same as previous.
   h2 {

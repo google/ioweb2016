@@ -350,9 +350,6 @@ limitations under the License.
               </div>
             </div>
           </div>
-        </section>
-
-        <section class="slide-up-delay" id="agenda_content">
           <template is="dom-repeat" items="[[agenda]]" as="day">
             <io-agenda app="[[app]]"
                        day="[[day.day]]"
@@ -366,7 +363,7 @@ limitations under the License.
 
       <section class$="subpage-day1 subpage-day2 subpage-myschedule subpage__content {{_applyActiveClassWhenNotSubpage(selectedSubpage, 'agenda')}}">
 
-        <div class="slide-up-delay">
+        <div class="slide-up">
           <!-- <div class="page__filters" layout horizontal
                hidden$="{{_hideSessionFilters(app.isPhoneSize, selectedSubpage)}}">
             <span flex>

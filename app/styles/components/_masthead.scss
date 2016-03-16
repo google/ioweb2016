@@ -39,18 +39,10 @@
       display: inline-block;
     }
   }
-
-  // [iologodestination] {
-  //   visibility: hidden;
-
-  //   &.active {
-  //     visibility: visible
-  //   }
-  // }
 }
 
 .masthead-meta {
-  opacity: 0;  // Initial opacity, fades in on load.
+  // opacity: 0;  // Initial opacity, fades in on load.
 
   h1 {
     color: $color-bluegrey-400;
@@ -128,7 +120,6 @@ paper-tabs {
   color: $color-bluegrey-600;
 
   padding: 0 8px;
-  // height: $navbarHeight + 20;
 
   height: $navbarHeight;
 
@@ -286,7 +277,6 @@ paper-tabs {
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
   height: $subnavHeight;
-  // @include keyline-16l();
 }
 
 #subpage-tabs {

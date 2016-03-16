@@ -265,10 +265,27 @@ $name: 'page-attend';
     #mapContainer {
       height: 480px;
       background-color: #b3d1ff;
+      position: relative;
+
+      &::after {
+        content: 'Loading...';
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        font-size: 24px;
+        color: #fff;
+      }
     }
 
     iframe {
       border: none;
+      position: relative;
+      z-index: 1;
     }
   }
 
