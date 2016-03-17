@@ -192,21 +192,12 @@ $color-session-row-hover: rgba($color-bluegrey-50, 0.4);
   h4 {
     font-size: 16px;
     line-height: 18px;
-    border-bottom: 1px solid $color-bluegrey-100;
-    padding-bottom: $mobileKeyline / 2;
-    margin-bottom: $mobileKeyline;
   }
   paper-radio-group {
     display: block;
   }
   paper-checkbox {
     padding: $mobileKeyline/2 0;
-  }
-}
-
-.filter-section--types {
-  paper-radio-group {
-    column-count: 3;
   }
 }
 
@@ -217,6 +208,19 @@ $color-session-row-hover: rgba($color-bluegrey-50, 0.4);
   color: $color-cyan-800;
   text-transform: uppercase;
   font-size: 14px;
+}
+
+.filters-banner {
+  font-size: 12px;
+  padding-top: 24px !important;
+  padding-bottom: 24px !important;
+  padding-right: $tabletKeyline !important;
+  cursor: pointer;
+  color: rgba(0,0,0,0.54);
+
+  iron-icon {
+    margin-left: $mobileKeyline / 2;
+  }
 }
 
 paper-radio-button {
@@ -251,6 +255,36 @@ paper-radio-button {
       line-height: 28px;
     }
   }
+  #filters {
+    width: 224px;
+    position: absolute;
+    top: -($subnavHeight - $mobileKeyline / 2);
+    right: $mobileKeyline / 2;
+    background: #fff;
+    z-index: 1;
+    flex-direction: column;
+    @include shadow-z1();
+    overflow-y: auto;
+    height: 60vh;
+    -webkit-overflow-scrolling: touch;
+  }
+  .filter-section {
+    border-top: 1px solid $color-bluegrey-100;
+
+    &:first-of-type {
+      border-top: 0;
+    }
+    &:not(:last-of-type) {
+      padding-bottom: $tabletKeyline;
+    }
+
+    h4 {
+      padding: $tabletKeyline 0;
+    }
+  }
+  .filter-section--clearall {
+    display: none;
+  }
 }
 
 @media (min-width: $tablet-breakpoint-min) {
@@ -272,6 +306,20 @@ paper-radio-button {
   }
   .schedule-toggle-buttons-mobile {
     display: none;
+  }
+
+  .filter-section {
+    h4 {
+      border-bottom: 1px solid $color-bluegrey-100;
+      padding-bottom: $mobileKeyline / 2;
+      margin-bottom: $mobileKeyline;
+    }
+  }
+
+  .filter-section--types {
+    paper-radio-group {
+      column-count: 3;
+    }
   }
 
   #filters {

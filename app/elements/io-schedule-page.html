@@ -364,26 +364,6 @@ limitations under the License.
       <section class$="subpage-day1 subpage-day2 subpage-myschedule subpage__content {{_applyActiveClassWhenNotSubpage(selectedSubpage, 'agenda')}}">
 
         <div class="slide-up">
-          <!-- <div class="page__filters" layout horizontal
-               hidden$="{{_hideSessionFilters(app.isPhoneSize, selectedSubpage)}}">
-            <span flex>
-              <paper-dropdown-menu horizontal-align="left"
-                                   no-label-float noink>
-                <paper-menu class="dropdown-content" selected="Filters"
-                            attr-for-selected="label"
-                            on-iron-activate="selectFilter">
-                  <paper-item label="Filters">Filters</paper-item>
-                  <template is="dom-repeat" items="[[app.filterThemes]]" as="theme">
-                    <paper-item label="[[theme]]">[[theme]]</paper-item>
-                  </template>
-                  <template is="dom-repeat" items="{{app.filterSessionTypes}}" as="type">
-                    <paper-item label="[[type]]">[[type]]</paper-item>
-                  </template>
-                  <paper-item label="Live streamed">Live streamed</paper-item>
-                </paper-menu>
-              </paper-dropdown-menu>
-            </span>
-          </div> -->
           <section class="bg-bluegrey-50-20">
             <io-schedule id="scheduleEl"
               app="[[app]]"

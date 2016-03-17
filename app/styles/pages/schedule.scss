@@ -20,7 +20,6 @@ $name: 'page-schedule';
 @import '../base/layout';
 @import '../base/color';
 @import '../base/breakpoints';
-@import '../base/shadow';
 @import '../base/typography';
 
 
@@ -44,6 +43,10 @@ io-schedule {
   &[disabled] {
     opacity: 0.3;
     pointer-events: none;
+  }
+
+  paper-menu-button {
+    padding: 0;
   }
 
   paper-icon-button {
@@ -326,6 +329,12 @@ iron-icon[icon="schedule"] {
 
     .subpage__nav--myscheduleback paper-icon-button {
       left: -12px;
+    }
+  }
+
+  .meta-filter {
+    paper-icon-button {
+      z-index: 2; // Filter icon appears over dropdown on mobile.
     }
   }
 
