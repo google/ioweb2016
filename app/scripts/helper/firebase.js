@@ -40,13 +40,26 @@ class IOFirebase {
      * Stores references to SimpleDB wrappers around IndexedDB.
      * @type {Object}
      */
-    this.simpleDbInstance = null;
+    this.simpleDbInstances = {};
 
     // Disconnect Firebase while the focus is off the page to save battery.
     if (typeof document.hidden !== 'undefined') {
       document.addEventListener('visibilitychange',
           () => document.hidden ? IOFirebase.goOffline() : IOFirebase.goOnline());
     }
+  }
+
+  /**
+   * List of SimpleDB names used for offline reads/updates.
+   * @static
+   * @constant
+   * @type {Object}
+   */
+  static get DB_NAMES() {
+    return {
+      READS: 'firebase-reads',
+      UPDATES: 'firebase-updates'
+    };
   }
 
   /**
@@ -122,19 +135,20 @@ class IOFirebase {
    * write operations.
    *
    * @private
+   * @param {string} name The name of the SimpleDB database.
    * @return {Promise} Fulfills with the SimpleDB instance.
    */
-  _simpleDbInstance() {
+  _simpleDbInstance(name) {
     if (window.simpleDB) {
-      if (this.simpleDbInstance) {
+      if (this.simpleDbInstances[name]) {
         // Resolve immediately if we already have an open instance.
-        return Promise.resolve(this.simpleDbInstance);
+        return Promise.resolve(this.simpleDbInstances[name]);
       }
 
-      return window.simpleDB.open('firebase-updates').then(db => {
+      return window.simpleDB.open(name).then(db => {
         // Stash the instance away for reuse next time.
-        this.simpleDbInstance = db;
-        return this.simpleDbInstance;
+        this.simpleDbInstances[name] = db;
+        return this.simpleDbInstances[name];
       });
     }
 
@@ -153,7 +167,7 @@ class IOFirebase {
   _replayQueuedOperations() {
     let queuedOperations = {};
 
-    return this._simpleDbInstance().then(db => {
+    return this._simpleDbInstance(IOFirebase.DB_NAMES.UPDATES).then(db => {
       // Let's read in all the queued values before we do anything else, to
       // make sure we're not confused by additional queued values that get
       // added asynchronously.
@@ -242,7 +256,67 @@ class IOFirebase {
   }
 
   /**
+   * Clears out the data in the READS IndexedDB datastore.
+   *
+   * @returns {Promise} Fulfills when the SimpleDB data is cleared.
+   */
+  clearCachedReads() {
+    return this._simpleDbInstance(IOFirebase.DB_NAMES.READS).then(db => db.clear());
+  }
+
+  /**
+   * Replays the cached My Sessions data from IndexedDB.
+   *
+   * @param callback The callback to invoke for each piece of cached data
+   * @returns {Promise} Fulfills when the replay is complete
+   */
+  replayCachedSavedSessions(callback) {
+    return this._replayCachedData('my_sessions', callback);
+  }
+
+  /**
+   * Replays the cached session feedback data from IndexedDB.
+   *
+   * @param callback The callback to invoke for each piece of cached data
+   * @returns {Promise} Fulfills when the replay is complete
+   */
+  replayCachedSessionFeedback(callback) {
+    return this._replayCachedData('feedback', callback);
+  }
+
+  /**
+   * Invokes callback for every IndexedDB entry that corresponds to the Firebase
+   * ref location.
+   *
+   * @param refSubstring A URL representing a Firebase location ref
+   * @param callback The callback to invoke for each piece of cached data
+   * @returns {Promise} Fulfills when the replay is complete
+   */
+  _replayCachedData(refSubstring, callback) {
+    return this._simpleDbInstance(IOFirebase.DB_NAMES.READS).then(db => {
+      let firebaseUrlRegexp = new RegExp(`${refSubstring}.*?([^/]+)$`);
+      return db.forEach((cacheKey, cachedValue) => {
+        if (cachedValue) {
+          let matches = cacheKey.match(firebaseUrlRegexp);
+          if (matches) {
+            // matches[1] represents the first capture group, which will
+            // contain the equivalent of the key (all the characters after the
+            // final / up until the end of the string.)
+            callback(matches[1], cachedValue);
+          }
+        }
+      });
+    }).catch(error => {
+      debugLog('SimpleDB error while reading cache data:', error);
+    });
+  }
+
+  /**
    * Register to get updates on the given user data attribute.
+   * If there's a previously cached value for the attribute in IndexedDB, then
+   * invoke the callback with that first.
+   * Every time there's an update to the underlying Firebase data, write the
+   * current value to IndexedDB.
    *
    * @private
    * @param {string} attribute The Firebase user data attribute for which updated will trigger the
@@ -254,10 +328,28 @@ class IOFirebase {
     if (this.isAuthed()) {
       let userId = this.firebaseRef.getAuth().uid;
       let ref = this.firebaseRef.child(`users/${userId}/${attribute}`);
+      let refString = ref.toString();
 
-      ref.on('child_added', dataSnapshot => callback(dataSnapshot.key(), dataSnapshot.val()));
-      ref.on('child_changed', dataSnapshot => callback(dataSnapshot.key(), dataSnapshot.val()));
-      ref.on('child_removed', dataSnapshot => callback(dataSnapshot.key(), null));
+      var wrappedCallback = (key, freshValue) => {
+        // Lexical this ftw!
+        return this._simpleDbInstance(IOFirebase.DB_NAMES.READS).then(db => {
+          return db.set(`${refString}/${key}`, freshValue);
+        }).catch(error => {
+          debugLog('SimpleDB error in wrappedCallback:', error);
+        }).then(() => {
+          return callback(key, freshValue);
+        });
+      };
+
+      ref.on('child_added', dataSnapshot => {
+        wrappedCallback(dataSnapshot.key(), dataSnapshot.val());
+      });
+      ref.on('child_changed', dataSnapshot => {
+        wrappedCallback(dataSnapshot.key(), dataSnapshot.val());
+      });
+      ref.on('child_removed', dataSnapshot => {
+        wrappedCallback(dataSnapshot.key(), null);
+      });
     } else {
       debugLog('Trying to subscribe to Firebase while not authorized.');
     }
@@ -369,7 +461,7 @@ class IOFirebase {
    * @return {Promise} Promise that fulfills once IDB is updated.
    */
   _queueOperation(attribute, value) {
-    return this._simpleDbInstance().then(db => {
+    return this._simpleDbInstance(IOFirebase.DB_NAMES.UPDATES).then(db => {
       return db.set(attribute, value);
     }).catch(error => {
       // This might have rejected if IndexedDB is unavailable in the current
@@ -390,7 +482,7 @@ class IOFirebase {
    * @return {Promise} Promise that fulfills once IDB is updated.
    */
   _dequeueOperation(attribute) {
-    return this._simpleDbInstance().then(db => {
+    return this._simpleDbInstance(IOFirebase.DB_NAMES.UPDATES).then(db => {
       return db.delete(attribute);
     }).catch(error => {
       // This might have rejected if IndexedDB is unavailable in the current
