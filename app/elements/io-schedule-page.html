@@ -330,12 +330,38 @@ limitations under the License.
             </a>
           </div>
 
-          <div class="meta-filter" layout horizontal center
-               disabled$="[[_disableFiltering(selectedSubpage)]]"
-               on-tap="toggleFilters">
-            <span hidden$="[[app.isPhoneSize]]">Filter</span>
-            <paper-icon-button icon="io:filter-list" aria-label="Filter list"></paper-icon-button>
-          </div>
+          <!-- <template is="dom-if" if="[[!app.isPhoneSize]]"> -->
+            <div class="meta-filter" layout horizontal center
+                 disabled$="[[_disableFiltering(selectedSubpage)]]"
+                 on-tap="toggleFilters">
+              <span hidden$="[[app.isPhoneSize]]">Filter</span>
+              <paper-icon-button icon="io:filter-list" aria-label="Filter list"></paper-icon-button>
+            </div>
+          <!-- </template> -->
+
+          <!-- <template is="dom-if" if="[[app.isPhoneSize]]">
+            <div class="meta-filter page__filters" layout horizontal
+                 disabled$="[[_disableFiltering(selectedSubpage)]]">
+
+              <paper-menu-button horizontal-align="right" ignore-select>
+                <paper-icon-button icon="io:filter-list"
+                                   aria-label="Filter list"
+                                   class="dropdown-trigger" ></paper-icon-button>
+                <paper-menu class="dropdown-content"
+                            attr-for-selected="label"
+                            on-iron-activate="selectFilter">
+                  <template is="dom-repeat" items="[[app.filterThemes]]" as="theme">
+                    <paper-item label="[[theme]]">[[theme]]</paper-item>
+                  </template>
+                  <template is="dom-repeat" items="{{app.filterSessionTypes}}" as="type">
+                    <paper-item label="[[type]]">[[type]]</paper-item>
+                  </template>
+                  <paper-item label="Live streamed">Live streamed</paper-item>
+                </paper-menu>
+              </paper-menu-button>
+            </div>
+          </template> -->
+
         </div>
       </div>
 
@@ -364,26 +390,6 @@ limitations under the License.
       <section class$="subpage-day1 subpage-day2 subpage-myschedule subpage__content {{_applyActiveClassWhenNotSubpage(selectedSubpage, 'agenda')}}">
 
         <div class="slide-up">
-          <!-- <div class="page__filters" layout horizontal
-               hidden$="{{_hideSessionFilters(app.isPhoneSize, selectedSubpage)}}">
-            <span flex>
-              <paper-dropdown-menu horizontal-align="left"
-                                   no-label-float noink>
-                <paper-menu class="dropdown-content" selected="Filters"
-                            attr-for-selected="label"
-                            on-iron-activate="selectFilter">
-                  <paper-item label="Filters">Filters</paper-item>
-                  <template is="dom-repeat" items="[[app.filterThemes]]" as="theme">
-                    <paper-item label="[[theme]]">[[theme]]</paper-item>
-                  </template>
-                  <template is="dom-repeat" items="{{app.filterSessionTypes}}" as="type">
-                    <paper-item label="[[type]]">[[type]]</paper-item>
-                  </template>
-                  <paper-item label="Live streamed">Live streamed</paper-item>
-                </paper-menu>
-              </paper-dropdown-menu>
-            </span>
-          </div> -->
           <section class="bg-bluegrey-50-20">
             <io-schedule id="scheduleEl"
               app="[[app]]"
