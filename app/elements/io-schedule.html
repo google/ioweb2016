@@ -209,7 +209,7 @@ Fired when the user toggles bookmarking/removing a session.
         </div>
         <div class="filter-section filter-section--types" relative>
           <h4>Tracks</h4>
-          <a href="#" class="filter-section--clearall" on-tap="clearFilters">Clear all</a>
+          <a href="#" class="filter-section--clearall" on-click="clearFilters">Clear all</a>
           <paper-radio-group allow-empty-selection
                              on-paper-radio-group-changed="onApplyFilter"
                              on-iron-deselect="onApplyFilter">
@@ -319,6 +319,14 @@ Fired when the user toggles bookmarking/removing a session.
       <div class="card__container">
 
         <div class="card">
+
+          <div class="card-content filters-banner bg-bluegrey-50-60"
+               hidden$="[[!filters.length]]" layout horizontal center justified>
+            <span>filtering by [[_prettifyFilters(filters.*)]]</span>
+            <span layout horizontal center on-click="clearFilters">
+              clear <iron-icon icon="io:close"></iron-icon>
+            </span>
+          </div>
 
           <div class="card-content card-content--main card-content--no-padding-top card-content--no-padding-right" layout vertical>
 
@@ -606,6 +614,10 @@ Fired when the user toggles bookmarking/removing a session.
 
         _computeMyScheduleHelp: function(user) {
           return user ? 1 : 0;
+        },
+
+        _prettifyFilters: function(filters) {
+          return this.filters.join(', ');
         },
 
         closeHelp: function() {

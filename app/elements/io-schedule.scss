@@ -210,6 +210,19 @@ $color-session-row-hover: rgba($color-bluegrey-50, 0.4);
   font-size: 14px;
 }
 
+.filters-banner {
+  font-size: 12px;
+  padding-top: 24px !important;
+  padding-bottom: 24px !important;
+  padding-right: $tabletKeyline !important;
+  cursor: pointer;
+  color: rgba(0,0,0,0.54);
+
+  iron-icon {
+    margin-left: $mobileKeyline / 2;
+  }
+}
+
 paper-radio-button {
   display: block;
   padding: $mobileKeyline/2 0;
