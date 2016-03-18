@@ -168,6 +168,10 @@ limitations under the License.
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
   <link rel="stylesheet" href="styles/main.css">
 
+  <script>
+  // Enable when https://github.com/Polymer/polymer/issues/3517 is fixed.
+  // window.Polymer = window.Polymer || {lazyRegister: true};
+  </script>
   <link rel="import" href="elements/elements.html">
   {% if .Canonical %}
   <link rel="canonical" href="{% .Canonical %}">

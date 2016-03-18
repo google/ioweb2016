@@ -20,30 +20,32 @@ $name: 'page-attend';
 
 ##{$name} {
 
-  h4 {
-    font-size: 24px;
-    margin-top: 4px;
-    margin-bottom: 8px;
-  }
-
-  .card-content {
-    min-height: 320px;
-    padding-right: 32px;
-
-    &:nth-of-type(1) {
-      @media (max-width: 340px) {
-        height: auto;
-        padding-right: 16px;
-      }
+  io-attend-page {
+    h4 {
+      font-size: 24px;
+      margin-top: 4px;
+      margin-bottom: 8px;
     }
 
+    .card-content {
+      min-height: 320px;
+      padding-right: 32px;
 
-    p {
-      @include typo-heading-2();
-      line-height: 32px;
+      &:nth-of-type(1) {
+        @media (max-width: 340px) {
+          height: auto;
+          padding-right: 16px;
+        }
+      }
 
-      @media (max-width: $tablet-breakpoint-max) {
-        @include typo-mobile-intro-card();
+
+      p {
+        @include typo-heading-2();
+        line-height: 32px;
+
+        @media (max-width: $tablet-breakpoint-max) {
+          @include typo-mobile-intro-card();
+        }
       }
     }
   }

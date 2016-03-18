@@ -52,7 +52,7 @@
       "description": "One in 5 people in the U.S. will have a disability in their lives. They want to be productive, creative and of course -- use your app. Technology has made more experiences, connections, and products available to people with disabilities but there is still room for improvement. With our talk we will help you to understand the experience of your app from the perspective of a user with accessibility needs. We will share best practices, pitfalls, and a step by step guide on how to use easy UX research techniques to improve the accessibility of your application. (Note: This Sandbox talk will be offered twice throughout the event. Check the schedule to confirm timings.)",
       "startTimestamp": "2016-05-18T19:30:00Z",
       "endTimestamp": "2016-05-18T20:00:00Z",
-      "isLivestream": false,
+      "isLivestream": true,
       "tags": [
         "THEME_DEVELOP&DESIGN",
         "TOPIC_ACCESSIBILITY",
