@@ -92,6 +92,7 @@ IOWA.Elements = (function() {
     template.app.savedSessions = [];
     template.app.dontAutoSubscribe = false;
     template.app.currentUser = null;
+    template.app.showMySchedulHelp = true;
 
     template.pages = IOWA.PAGES; // defined in auto-generated ../pages.js
     template.selectedPage = IOWA.Router.parseUrl(window.location.href).page;

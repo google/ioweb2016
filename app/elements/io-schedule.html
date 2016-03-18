@@ -40,7 +40,6 @@ limitations under the License.
         <span class="schedule-block-meridiem">[[_getMeridiemLetter(session.block)]]</span>
       </h1>
     </div>
-
     <div class$="schedule-row [[_addClass('saved', session.saved)]]"
          layout horizontal center
          on-keyup="onSessionKeyUp">
@@ -57,7 +56,7 @@ limitations under the License.
             <span>[[session.room]]</span>
           </div>
           <iron-icon icon="io:videocam" class="schedule-livestream"
-                     hidden$="{{!session.isLivestream}}"></iron-icon>
+                     hidden$="[[!session.isLivestream]]"></iron-icon>
         </div>
       </a>
 
@@ -136,7 +135,7 @@ limitations under the License.
       return prop ? name : '';
     },
 
-     _sessionIs: function(session, targetSession) {
+    _sessionIs: function(session, targetSession) {
       return session.id === targetSession;
     },
 
@@ -221,10 +220,19 @@ Fired when the user toggles bookmarking/removing a session.
       </div>
     </div>
 
+    <div class="card-content filters-banner bg-bluegrey-50-60"
+         hidden$="[[!filters.length]]" layout horizontal center justified>
+      <span>filtering by [[_prettifyFilters(filters.*)]]</span>
+      <span layout horizontal center on-click="clearFilters">
+        clear <iron-icon icon="io:close"></iron-icon>
+      </span>
+    </div>
+
     <template is="dom-if" if="{{_dayIs(day, 'myschedule')}}">
 
       <div class="card bg-cyan-200">
-        <div class="card-content card-content--myscheduleinfo" hidden$="[[_hideHelp]]">
+        <div class="card-content card-content--myscheduleinfo"
+             hidden$="[[!app.showMySchedulHelp]]">
           <iron-pages selected="[[_computeMyScheduleHelp(app.currentUser)]]">
             <div id="signin-prompt">
               <h3 class="card__title">Create your custom schedule</h3>
@@ -259,7 +267,7 @@ Fired when the user toggles bookmarking/removing a session.
 
       <div class="card__container">
 
-        <div class="card">
+        <div class="card" on-session-bookmark="_onSessionRemove">
 
           <div class="myschedule-day-header card-content card-content--no-padding-right">
             <div>Wednesday</div>
@@ -320,19 +328,12 @@ Fired when the user toggles bookmarking/removing a session.
 
         <div class="card">
 
-          <div class="card-content filters-banner bg-bluegrey-50-60"
-               hidden$="[[!filters.length]]" layout horizontal center justified>
-            <span>filtering by [[_prettifyFilters(filters.*)]]</span>
-            <span layout horizontal center on-click="clearFilters">
-              clear <iron-icon icon="io:close"></iron-icon>
-            </span>
-          </div>
-
           <div class="card-content card-content--main card-content--no-padding-top card-content--no-padding-right" layout vertical>
 
             <template id="schedulelist" is="dom-repeat" items="[[sessions]]"
                       as="session" filter="matchesFilters" initial-count="10">
-               <io-schedule-row session="[[session]]" hidden$="{{!_showSession(session, day)}}"></io-schedule-row>
+              <io-schedule-row session="[[session]]"
+                  hidden$="[[!_showSession(session, day)]]"></io-schedule-row>
             </template>
 
           </div> <!-- .card-content -->
@@ -414,22 +415,6 @@ Fired when the user toggles bookmarking/removing a session.
           },
 
           /**
-           * Array of my my session timeblocks
-           */
-          _timeBlocks: {
-            type: Array,
-            value: function() { return []; }
-          },
-
-          /**
-           * If true, the my schedule help panel is shown.
-           */
-          _hideHelp: {
-            type: Boolean,
-            value: false
-          },
-
-          /**
            * True to show the filter panel
            */
           showFilters: {
@@ -441,7 +426,10 @@ Fired when the user toggles bookmarking/removing a session.
 
         observers: [
           '_filtersChanged(filters.length)',
-          '_updateMyScheduleTimeBlocks(sessions, savedSessions, gmtDayOne)'
+          // Recalc time blocks when users list of saved sessions comes in.
+          '_recalcFirstOfBlock(sessions.length, savedSessions)',
+          // Recalc time blocks when new day is selected or filter is applied.
+          '_recalcFirstOfBlock(sessions.length, day, filters.length)'
         ],
 
         isFilterSelected: function(filterName) {
@@ -461,6 +449,8 @@ Fired when the user toggles bookmarking/removing a session.
           } else if (radioGroup.selected) {
             this.push('filters', radioGroup.selected);
           }
+
+          IOWA.Elements.Template.initFabScroll();
         },
 
         onLiveSessionsFilters: function(e) {
@@ -557,6 +547,7 @@ Fired when the user toggles bookmarking/removing a session.
           if (!this.filters.length) {
             return true;
           }
+
           for (var i = 0, filter; filter = this.filters[i]; ++i) {
             if (!session.filters[filter]) {
               return false;
@@ -577,30 +568,11 @@ Fired when the user toggles bookmarking/removing a session.
           IOWA.Elements.Template.openSettings(e);
         },
 
-        _updateMyScheduleTimeBlocks: function(sessions, savedSessions, gmtDayOne) {
-          if (!sessions.length || !savedSessions.length) {
-            return;
-          }
-
-          var timeBlocks = [[], [], []];
-
-          var ioStartDay = new Date(this.gmtDayOne).getDate(); // 18
-
-          for (var i = 0, s; s = this.sessions[i]; ++i) {
-            var dayIndex = (s.day % ioStartDay); // May 18 === 0
-            if (s.saved) {
-              timeBlocks[dayIndex].push(s);
-            }
-          }
-
-          this._timeBlocks = timeBlocks;
-        },
-
         _filterMyScheduleByDay: function(dayIdx) {
           return function(session) {
             return session.saved &&
                    session.day === this._dayIndexToDate(dayIdx);
-          }.bind(this)
+          }.bind(this);
         },
 
         _dayIs: function(day, targetDay) {
@@ -621,7 +593,33 @@ Fired when the user toggles bookmarking/removing a session.
         },
 
         closeHelp: function() {
-          this._hideHelp = true;
+          this.set('app.showMySchedulHelp', false);
+        },
+
+        _recalcFirstOfBlock: function() {
+          if (!this.sessions.length) {
+            return;
+          }
+
+          this.debounce('_recalcFirstOfBlock', function() {
+            var currentBlock;
+            for (var i = 0, session; session = this.sessions[i]; ++i) {
+              this.set(['sessions', i, 'firstOfBlock'], false);
+
+              if (session.block !== currentBlock &&
+                  this._showSession(session, this.day)) {
+                this.set(['sessions', i, 'firstOfBlock'], true);
+                currentBlock = session.block;
+              }
+            }
+          }, 50);
+        },
+
+        _onSessionRemove: function(e, detail) {
+          // Recalc time blocks when session is removed from my schedule.
+          if (this.day === 'myschedule' && !detail.saved) {
+            this._recalcFirstOfBlock();
+          }
         }
 
       });
