@@ -14,7 +14,8 @@
         },
         "my_sessions": {
           "$session_id": {
-            ".validate": "!data.exists() || newData.child('timestamp').val() > data.child('timestamp').val()"
+            ".validate": "!data.exists() || newData.child('timestamp').val() > data.child('timestamp').val()",
+            ".indexOn": "bookmarked"
           }
         },
         "feedback": {
