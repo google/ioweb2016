@@ -350,13 +350,16 @@ limitations under the License.
               </div>
             </div>
           </div>
-          <template is="dom-repeat" items="[[agenda]]" as="day">
-            <io-agenda app="[[app]]"
-                       day="[[day.day]]"
-                       start="[[day.start]]"
-                       end="[[day.end]]"
-                       color="[[day.color]]"
-                       events="[[day.events]]"></io-agenda>
+          <template is="dom-if"
+                    if="[[_isSelectedSubpage(selectedSubpage, 'agenda')]]">
+            <template is="dom-repeat" items="[[agenda]]" as="day">
+              <io-agenda app="[[app]]"
+                         day="[[day.day]]"
+                         start="[[day.start]]"
+                         end="[[day.end]]"
+                         color="[[day.color]]"
+                         events="[[day.events]]"></io-agenda>
+            </template>
           </template>
         </section>
       </section>
