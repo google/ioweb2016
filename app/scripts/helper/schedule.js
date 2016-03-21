@@ -159,53 +159,64 @@ class Schedule {
    * signed-in user before calling this function.
    */
   loadUserSchedule() {
+    let sessionUpdatesCallback = (sessionId, data) => {
+      let template = IOWA.Elements.Template;
+
+      let savedSessions = template.app.savedSessions;
+      let savedSessionsListIndex = savedSessions.indexOf(sessionId);
+      let sessionsListIndex = template.app.scheduleData.sessions.findIndex(
+        session => session.id === sessionId);
+      if (data && data.bookmarked && savedSessions.indexOf(sessionId) === -1) {
+        // Add session to bookmarked sessions.
+        template.push('app.savedSessions', sessionId);
+        template.set(`app.scheduleData.sessions.${sessionsListIndex}.saved`, true);
+
+        debugLog(`Session ${sessionId} bookmarked!`);
+      } else if (data && !data.bookmarked && savedSessionsListIndex !== -1) {
+        // Remove the session from the bookmarks if present.
+        template.splice('app.savedSessions', savedSessionsListIndex, 1);
+        template.set(`app.scheduleData.sessions.${sessionsListIndex}.saved`, false);
+
+        debugLog(`Session ${sessionId} removed from bookmarks!`);
+      }
+    };
+
+    let sessionFeedbackUpdatesCallback = sessionId => {
+      let template = IOWA.Elements.Template;
+      let savedFeedback = template.app.savedSurveys;
+      let sessionsListIndex = template.app.scheduleData.sessions.findIndex(
+        session => session.id === sessionId);
+      if (savedFeedback.indexOf(sessionId) === -1) {
+        // Add feedback to saved feedbacks.
+        template.push('app.savedSurveys', sessionId);
+        template.set(`app.scheduleData.sessions.${sessionsListIndex}.rated`, true);
+
+        debugLog(`Session ${sessionId} has received feedback!`);
+      }
+    };
+
     // Only fetch their schedule if the worker has responded with the master schedule.
     this.schedulePromise().then(() => {
-      // TODO: read user schedule and saved surveys list from cache first.
-
-      IOWA.Auth.waitForSignedIn('Sign in to add events to My Schedule').then(() => {
+      // This will read cached my_schedule and feedback data from IndexedDB
+      // locally, and use it to initially populate the schedule page.
+      return Promise.all([
+        IOWA.IOFirebase.replayCachedSavedSessions(sessionUpdatesCallback),
+        IOWA.IOFirebase.replayCachedSessionFeedback(sessionFeedbackUpdatesCallback)
+      ]);
+    }).then(() => {
+      IOWA.Auth.waitForSignedIn().then(() => {
+        return IOWA.IOFirebase.clearCachedReads();
+      }).then(() => {
         // Get entire initial list of user's saved sessions.
         IOWA.IOFirebase.getUserSchedule().then(savedSessions => {
           IOWA.Elements.Template.set('app.savedSessions', savedSessions);
         });
 
         // Listen to session bookmark updates.
-        IOWA.IOFirebase.registerToSessionUpdates((sessionId, data) => {
-          let template = IOWA.Elements.Template;
-
-          let savedSessions = template.app.savedSessions;
-          let savedSessionsListIndex = savedSessions.indexOf(sessionId);
-          let sessionsListIndex = template.app.scheduleData.sessions.findIndex(
-              session => session.id === sessionId);
-          if (data && data.bookmarked && savedSessions.indexOf(sessionId) === -1) {
-            // Add session to bookmarked sessions.
-            template.push('app.savedSessions', sessionId);
-            template.set(`app.scheduleData.sessions.${sessionsListIndex}.saved`, true);
-
-            debugLog(`Session ${sessionId} bookmarked!`);
-          } else if (data && !data.bookmarked && savedSessionsListIndex !== -1) {
-            // Remove the session from the bookmarks if present.
-            template.splice('app.savedSessions', savedSessionsListIndex, 1);
-            template.set(`app.scheduleData.sessions.${sessionsListIndex}.saved`, false);
-
-            debugLog(`Session ${sessionId} removed from bookmarks!`);
-          }
-        });
+        IOWA.IOFirebase.registerToSessionUpdates(sessionUpdatesCallback);
 
         // Listen to feedback updates.
-        IOWA.IOFirebase.registerToFeedbackUpdates(sessionId => {
-          let template = IOWA.Elements.Template;
-          let savedFeedback = template.app.savedSurveys;
-          let sessionsListIndex = template.app.scheduleData.sessions.findIndex(
-            session => session.id === sessionId);
-          if (savedFeedback.indexOf(sessionId) === -1) {
-            // Add feedback to saved feedbacks.
-            template.push('app.savedSurveys', sessionId);
-            template.set(`app.scheduleData.sessions.${sessionsListIndex}.rated`, true);
-
-            debugLog(`Session ${sessionId} has received feedback!`);
-          }
-        });
+        IOWA.IOFirebase.registerToFeedbackUpdates(sessionFeedbackUpdatesCallback);
       });
     });
   }
@@ -376,56 +387,6 @@ class Schedule {
       }
     }
     return null;
-  }
-
-  /**
-   * Checks to see if there are any failed schedule update requests queued in IndexedDB, and if so,
-   * replays them. Should only be called when auth is available, i.e. after login.
-   *
-   * @return {Promise} Resolves once the replay attempts are done, whether or not they succeeded.
-   */
-  // TODO: Not sure of this is ever called now. Might need to change this to Firebase stuff.
-  replayQueuedRequests() {
-    // Only bother checking for queued requests if we're on a browser with service worker support,
-    // since they can't be queued otherwise. This has a side effect of working around a bug in
-    // Safari triggered by the simpleDB library.
-    if ('serviceWorker' in navigator) {
-      // Replay the queued /API requests.
-      let queuedSessionApiUpdates = simpleDB.open(this.QUEUED_SESSION_API_UPDATES_DB_NAME).then(
-        db => {
-          let replayPromises = [];
-          // forEach is a special method implemented by SimpleDB. It's not the normal Array.forEach.
-          return db.forEach(function(url, method) {
-            let replayPromise = IOWA.Request.xhrPromise(method, url, true).then(function() {
-              return db.delete(url).then(function() {
-                return true;
-              });
-            });
-            replayPromises.push(replayPromise);
-          }).then(() => {
-            if (replayPromises.length) {
-              return Promise.all(replayPromises).then(() =>
-                IOWA.Elements.Toast.showMessage('My Schedule was updated with offline changes.'));
-            }
-          });
-        }).catch(() => {
-          IOWA.Elements.Toast.showMessage('Offline changes could not be applied to My Schedule.');
-        });
-
-      return Promise.all([queuedSessionApiUpdates]);
-    }
-
-    return Promise.resolve();
-  }
-
-  /**
-   * Deletes the IndexedDB database used to queue up failed requests.
-   * Useful when, e.g., the user has logged out.
-   *
-   * @return {Promise} Resolves once the IndexedDB database is deleted.
-   */
-  clearQueuedRequests() {
-    return simpleDB.delete(this.QUEUED_SESSION_API_UPDATES_DB_NAME);
   }
 
 }
