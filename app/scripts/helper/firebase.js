@@ -331,7 +331,7 @@ class IOFirebase {
       let refString = ref.toString();
 
       // wrappedCallback takes care of storing a "shadow" IndexedDB  copy of
-      // the data that's being read from Firefox, and then invokes the actual
+      // the data that's being read from Firebase, and then invokes the actual
       // callback to allow that data to be consumed.
       let wrappedCallback = (key, freshValue) => {
         // Lexical this ftw!
