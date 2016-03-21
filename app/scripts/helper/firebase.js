@@ -330,7 +330,10 @@ class IOFirebase {
       let ref = this.firebaseRef.child(`users/${userId}/${attribute}`);
       let refString = ref.toString();
 
-      var wrappedCallback = (key, freshValue) => {
+      // wrappedCallback takes care of storing a "shadow" IndexedDB  copy of
+      // the data that's being read from Firefox, and then invokes the actual
+      // callback to allow that data to be consumed.
+      let wrappedCallback = (key, freshValue) => {
         // Lexical this ftw!
         return this._simpleDbInstance(IOFirebase.DB_NAMES.READS).then(db => {
           return db.set(`${refString}/${key}`, freshValue);
