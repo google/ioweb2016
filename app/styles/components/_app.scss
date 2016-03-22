@@ -17,11 +17,14 @@
 @import '../base/vars';
 @import '../base/typography';
 
+html {
+  height: 100%;
+}
+
 html, body {
   color:  $color-text;
   margin: 0;
   padding: 0;
-  height: 100%;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
   @include typo-body();
@@ -325,7 +328,7 @@ paper-progress {
 }
 
 #fab {
-  position: absolute;
+  position: fixed;
   left: 0;
   right: 0;
   bottom: 40px;
@@ -334,10 +337,6 @@ paper-progress {
 
   &.active paper-fab {
     transform: scale(1);
-  }
-
-  &.fixed {
-    position: fixed;
   }
 
   paper-fab {
