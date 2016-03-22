@@ -89,13 +89,11 @@ IOWA.Elements = (function() {
     template.app.scheduleData = null;
     template.app.savedSessions = [];
     template.app.dontAutoSubscribe = false;
+    template.app.currentUser = null;
+    template.app.showMySchedulHelp = true;
 
     template.pages = IOWA.PAGES; // defined in auto-generated ../pages.js
     template.selectedPage = IOWA.Router.parseUrl(window.location.href).page;
-
-    // Sign-in defaults.
-    template.isSignedIn = false;
-    template.currentUser = null;
 
     // FAB scrolling effect caches.
     template._fabCrossFooterThreshold = null; // Scroll limit when FAB sticks.
@@ -356,9 +354,10 @@ IOWA.Elements = (function() {
     template.signIn = function(e) {
       if (e) {
         e.preventDefault();
-        if (e.target.hasAttribute(ANALYTICS_LINK_ATTR)) {
+        var target = Polymer.dom(e).rootTarget;
+        if (target.hasAttribute(ANALYTICS_LINK_ATTR)) {
           IOWA.Analytics.trackEvent(
-              'link', 'click', e.target.getAttribute(ANALYTICS_LINK_ATTR));
+              'link', 'click', target.getAttribute(ANALYTICS_LINK_ATTR));
         }
       }
       IOWA.Elements.GoogleSignIn.signIn();
@@ -367,9 +366,10 @@ IOWA.Elements = (function() {
     template.signOut = function(e) {
       if (e) {
         e.preventDefault();
-        if (e.target.hasAttribute(ANALYTICS_LINK_ATTR)) {
+        var target = Polymer.dom(e).rootTarget;
+        if (target.hasAttribute(ANALYTICS_LINK_ATTR)) {
           IOWA.Analytics.trackEvent(
-              'link', 'click', e.target.getAttribute(ANALYTICS_LINK_ATTR));
+              'link', 'click', target.getAttribute(ANALYTICS_LINK_ATTR));
         }
       }
       IOWA.Elements.GoogleSignIn.signOut();
@@ -407,17 +407,10 @@ IOWA.Elements = (function() {
     // global notifications are enabled, the current browser has a push subscription,
     // and window.Notification.permission === 'granted'.
     // Updates IOWA.Elements.GoogleSignIn.user.notify = false otherwise.
-    template.getNotificationState = function(e, detail) {
-      // The core-overlay-open event that invokes this is called once when the overlay opens, and
-      // once when it closes. We only want this code to run when the overlay opens.
-      // detail is true when the setting panel is opened, and false when it's closed.
-      if (!detail) {
-        return;
-      }
-
+    template.getNotificationState = function() {
       // This sends a signal to the template that we're still calculating the proper state, and
       // that the checkbox should be disabled for the time being.
-      IOWA.Elements.GoogleSignIn.user.notify = null;
+      IOWA.Elements.GoogleSignIn.set('user.notify', null);
 
       // First, check the things that can be done synchronously, before the promises.
       if (IOWA.Notifications.isSupported && window.Notification.permission === 'granted') {
@@ -428,20 +421,20 @@ IOWA.Elements = (function() {
             // subscription for the current browser.
             IOWA.Notifications.isExistingSubscriptionPromise().then(function(isExistingSubscription) {
               // Set user.notify property based on whether there's an existing push manager subscription
-              IOWA.Elements.GoogleSignIn.user.notify = isExistingSubscription;
+              IOWA.Elements.GoogleSignIn.set('user.notify', isExistingSubscription);
             });
           } else {
             // If notifications are off globally, then always set the user.notify to false.
-            IOWA.Elements.GoogleSignIn.user.notify = false;
+            IOWA.Elements.GoogleSignIn.set('user.notify', false);
           }
         }).catch(function() {
           // If something goes wrong while calculating the notifications state, just assume false.
-          IOWA.Elements.GoogleSignIn.user.notify = false;
+          IOWA.Elements.GoogleSignIn.set('user.notify', false);
         });
       } else {
         // Wrap this in an async to ensure that the checked attribute is properly updated.
         this.async(function() {
-          IOWA.Elements.GoogleSignIn.user.notify = false;
+          IOWA.Elements.GoogleSignIn.set('user.notify', false);
         });
       }
     };

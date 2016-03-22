@@ -49,14 +49,34 @@ IOWA.Auth = IOWA.Auth || (function() {
 
   document.addEventListener('signin-change', function(e) {
     if (e.detail.user) {
-      setUserUI(e.detail.user);
+      // Authorize the user to Firebase.
+      var user = e.detail.user;
+      IOWA.IOFirebase.auth(user.id, user.tokenResponse.access_token).then(() => {
+        setUserUI(user);
 
-      // Call the resolve() function for each of the promises that are waiting on being signed in,
-      // and remove each from the queue.
-      while (pendingResolutions.length) {
-        var pendingResolution = pendingResolutions.shift();
-        pendingResolution();
-      }
+        // Call the resolve() function for each of the promises that are waiting on being signed in,
+        // and remove each from the queue.
+        while (pendingResolutions.length) {
+          var pendingResolution = pendingResolutions.shift();
+          pendingResolution();
+        }
+
+        // If the user hasn't denied notifications permission in the current browser,
+        // and the user has notifications turned on globally (i.e. in at least one other browser),
+        // and there isn't already a subscription in the current browser, then try to enable
+        // notifications in the current browser.
+        if (window.Notification.permission !== 'denied') {
+          IOWA.Notifications.isNotifyEnabledPromise().then(function(isGlobalNotificationsEnabled) {
+            if (isGlobalNotificationsEnabled) {
+              IOWA.Notifications.isExistingSubscriptionPromise().then(function(isLocalSubscription) {
+                if (!isLocalSubscription) {
+                  IOWA.Notifications.subscribePromise();
+                }
+              });
+            }
+          });
+        }
+      });
     } else {
       clearUserUI();
       if (IOWA.Notifications.isSupported) {
@@ -73,8 +93,7 @@ IOWA.Auth = IOWA.Auth || (function() {
         navigator.serviceWorker.controller.postMessage('clear-cached-user-data');
       }
 
-      // Delete any queued schedule modifications.
-      IOWA.Schedule.clearQueuedRequests();
+      IOWA.IOFirebase.unAuth();
     }
   });
 
@@ -101,10 +120,8 @@ IOWA.Auth = IOWA.Auth || (function() {
    * @return {Promise} Resolves once the user is signed in. Does not reject.
    */
   function waitForSignedIn(message) {
-    message = message || 'Please sign in';
-
     // If we're already signed in, return a Promise that resolves immediately.
-    if (getTokenResponse_()) {
+    if (getTokenResponse_() && IOWA.IOFirebase.isAuthed()) {
       return Promise.resolve();
     }
 
@@ -112,9 +129,12 @@ IOWA.Auth = IOWA.Auth || (function() {
     // the 'signin-change' event handler is fired for a signed-in event.
     return new Promise(function(resolve) {
       pendingResolutions.push(resolve);
-      IOWA.Elements.Toast.showMessage(message, null, 'Sign in', function() {
-        IOWA.Elements.GoogleSignIn.signIn();
-      });
+
+      if (message) {
+        IOWA.Elements.Toast.showMessage(message, null, 'Sign in', function() {
+          IOWA.Elements.GoogleSignIn.signIn();
+        });
+      }
     });
   }
 

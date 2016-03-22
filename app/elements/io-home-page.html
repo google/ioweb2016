@@ -90,12 +90,6 @@ limitations under the License.
                <span>Shoreline Amphitheatre<br>Mountain View, California</span>
             </a>
           </h3>
-          <div>
-            <a href="/io2016/registration/apply" target="_blank"
-               data-track-link="home-register-link">
-              <paper-button class="register-button" noink tabindex="-1">Register now</paper-button>
-            </a>
-          </div>
           <div layout flex end>
             <div>
               <h5 style="font-weight:normal">Google I/O is for developers&#8212;the creative coders who are building what&#8217;s next. Together we&#8217;ll explore the latest in tech, mobile, and beyond.</h5>
@@ -113,15 +107,15 @@ limitations under the License.
         </div>
 
         <div class="card-content box bg-bluegrey-50-30">
-          <a href="/io2016/attend" data-ajax-link
-             data-track-link="home-attend-learnmore" layout vertical>
-            <h3 class="card__title">Getting to I/O</h3>
+          <a href="/io2016/schedule" data-ajax-link
+             data-track-link="home-schedule-learnmore" layout vertical>
+            <h3 class="card__title">I/O Schedule</h3>
             <div>
-              <h5 style="font-weight:normal">There are plenty of ways to get to Mountain View, CA. Start planning your trip now.</h5>
+              <h5 style="font-weight:normal">Browse the entire event agenda and create your own custom I/O schedule. Sign in and get notifications on your device.</h5>
             </div>
             <div layout flex end>
               <span class="card__footerlink" layout horiziontal justified center flex>
-                View travel info
+                View schedule
                 <iron-icon icon="io:keyboard-arrow-right"></iron-icon>
               </span>
             </div>
@@ -132,7 +126,7 @@ limitations under the License.
              data-track-link="home-extended-learnmore" layout vertical>
             <h3 class="card__title">I/O Extended</h3>
             <div>
-              <h5 style="font-weight:normal">Can't make it to I/O this year? No problem, you can still make an event out of it.</h5>
+              <h5 style="font-weight:normal">Can&#8217;t make it to I/O this year? No problem, you can still make an event out of it.</h5>
             </div>
             <div layout flex end>
               <div class="card__footerlink" layout horiziontal justified center flex>
@@ -143,7 +137,22 @@ limitations under the License.
           </a>
         </div>
 
-        <div class="card-content box card__video box-full fullbleed typo-white" layout vertical>
+        <div class="card-content box bg-bluegrey-700 typo-white">
+          <a href="/io2016/attend#travel" data-ajax-link
+             data-track-link="home-attending-learnmore" layout vertical>
+            <h3 class="card__title">Getting to I/O</h3>
+            <div>
+              <h5 style="font-weight:normal">There are plenty of ways to get to Mountain View, CA. Start planning your trip now.</h5>
+            </div>
+            <div layout flex end>
+              <div class="card__footerlink" layout horiziontal justified center flex>
+                View Travel Info
+                <iron-icon icon="io:keyboard-arrow-right"></iron-icon>
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="card-content box card__video fullbleed typo-white" layout vertical>
           <div class="card-content card__play-button card__photo photo__recap"
                style="height:100%"
                on-tap="openDialogVideo"

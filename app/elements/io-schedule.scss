@@ -23,12 +23,43 @@
 $color-section-border: #eaeaea;
 $color-session-row-hover: rgba($color-bluegrey-50, 0.4);
 
-.card-content:not(#filters) {
-  padding-right: 0 !important;
+.card-content--myscheduleinfo {
+  paper-icon-button {
+    margin: -8px 0 12px -12px;
+  }
+
+  p {
+    margin: $mobileKeyline auto;
+  }
+
+  .note {
+    font-size: 12px;
+    margin: 0;
+  }
+
+  ul {
+    padding: 0 0 0 18px;
+  }
+
+  .anchor-like {
+    margin-top: $desktopKeyline;
+    display: inline-block;
+  }
+}
+
+.card-content--day-footer {
+  padding-top: 0 !important;
+
+  a {
+    color: $color-cyan-800;
+    text-transform: uppercase;
+    margin-left: $mobileKeyline / 2;
+    font-size: 14px;
+  }
 }
 
 .schedule-row {
-  padding: $tabletKeyline;
+  padding: $mobileKeyline;
   border-top: 1px solid $color-section-border;
   width: 100%;
 
@@ -36,7 +67,8 @@ $color-session-row-hover: rgba($color-bluegrey-50, 0.4);
     background-color: $color-session-row-hover;
   }
 
-  &:not(.saved):hover {
+  &:not(.saved):hover,
+  &:not(.saved) .schedule-toggle-buttons-mobile {
     .schedule-add-button {
       display: inline-block;
     }
@@ -55,7 +87,7 @@ $color-session-row-hover: rgba($color-bluegrey-50, 0.4);
       border-left: 4px solid $color-cyan-400;
     }
 
-    &:hover {
+    &:hover, .schedule-toggle-buttons-mobile {
       .schedule-remove-button {
         display: inline-block;
       }
@@ -83,7 +115,7 @@ $color-session-row-hover: rgba($color-bluegrey-50, 0.4);
 .schedule-block-title {
   width: 25%;
   visibility: hidden;
-  padding: $tabletKeyline 0;
+  padding: $mobileKeyline 0;
 
   h1 {
     font-size: 56px;
@@ -109,6 +141,7 @@ $color-session-row-hover: rgba($color-bluegrey-50, 0.4);
 
 .schedule-toggle-buttons {
   cursor: pointer;
+  display: none;
 }
 
 .schedule-add-button {
@@ -121,49 +154,50 @@ $color-session-row-hover: rgba($color-bluegrey-50, 0.4);
   display: none;
 }
 
+.schedule-toggle-buttons-mobile {
+  .schedule-add-button {
+    color: $color-bluegrey-200;
+    display: none;
+  }
+
+  .schedule-remove-button {
+    color: $color-bluegrey-200;
+    display: none;
+  }
+}
+
 .schedule-title {
   cursor: pointer;
   overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-
-  // overrides for link styling.
-  text-transform: none !important;
-  line-height: inherit !important;
-  font-size: 20px;
-  font-weight: inherit !important;
-  color: inherit !important;
+  font-weight: normal;
+  line-height: 21px;
 }
 
 .schedule-time {
-  font-size: 14px;
-  white-space: nowrap;
   color: $color-session-detail-light-grey;
+  font-size: 16px;
+  line-height: 28px;
 }
 
 .schedule-livestream {
   margin-left: $mobileKeyline / 2;
+  color: rgba(0,0,0,0.25);
+}
+
+#filters {
+  padding: $mobileKeyline;
 }
 
 .filter-section {
   h4 {
     font-size: 16px;
     line-height: 18px;
-    border-bottom: 1px solid $color-bluegrey-100;
-    padding-bottom: $mobileKeyline / 2;
-    margin-bottom: $mobileKeyline;
   }
   paper-radio-group {
     display: block;
   }
   paper-checkbox {
     padding: $mobileKeyline/2 0;
-  }
-}
-
-.filter-section--types {
-  paper-radio-group {
-    column-count: 3;
   }
 }
 
@@ -176,7 +210,143 @@ $color-session-row-hover: rgba($color-bluegrey-50, 0.4);
   font-size: 14px;
 }
 
+.filters-banner {
+  font-size: 12px;
+  padding-top: 24px !important;
+  padding-bottom: 24px !important;
+  padding-right: $tabletKeyline !important;
+  cursor: pointer;
+  color: rgba(0,0,0,0.54);
+
+  iron-icon {
+    margin-left: $mobileKeyline / 2;
+  }
+}
+
 paper-radio-button {
   display: block;
   padding: $mobileKeyline/2 0;
 }
+
+@media (max-width: $phone-breakpoint-max) {
+  .card-content--main {
+    padding-top: 0 !important;
+  }
+  .schedule-block-title {
+    h1 {
+      font-size: 24px;
+      font-weight: normal;
+      line-height: 28px;
+    }
+    .schedule-block-meridiem {
+      margin-left: 3px;
+      line-height: 23px;
+    }
+  }
+  .schedule-time {
+    color: rgba(0,0,0,0.4);
+  }
+  .myschedule-day-header {
+    font-size: 14px;
+    line-height: 16px;
+
+    h1 {
+      font-size: 24px;
+      line-height: 28px;
+    }
+  }
+  #filters {
+    width: 224px;
+    position: absolute;
+    top: -($subnavHeight - $mobileKeyline / 2);
+    right: $mobileKeyline / 2;
+    background: #fff;
+    z-index: 1;
+    flex-direction: column;
+    @include shadow-z1();
+    overflow-y: auto;
+    height: 60vh;
+    -webkit-overflow-scrolling: touch;
+  }
+  .filter-section {
+    border-top: 1px solid $color-bluegrey-100;
+
+    &:first-of-type {
+      border-top: 0;
+    }
+    &:not(:last-of-type) {
+      padding-bottom: $tabletKeyline;
+    }
+
+    h4 {
+      padding: $tabletKeyline 0;
+    }
+  }
+  .filter-section--clearall {
+    display: none;
+  }
+}
+
+@media (min-width: $tablet-breakpoint-min) {
+  .schedule-row {
+    padding: $tabletKeyline;
+  }
+  .schedule-block-title {
+    padding: $tabletKeyline 0;
+  }
+  .schedule-title {
+    font-size: 20px;
+    line-height: 24px;
+
+    > div {
+      max-width: 95%;
+    }
+  }
+  .schedule-time {
+    line-height: 24px;
+  }
+  .schedule-toggle-buttons {
+    display: block;
+  }
+  .schedule-toggle-buttons-mobile {
+    display: none;
+  }
+
+  .filter-section {
+    h4 {
+      border-bottom: 1px solid $color-bluegrey-100;
+      padding-bottom: $mobileKeyline / 2;
+      margin-bottom: $mobileKeyline;
+    }
+  }
+
+  .filter-section--types {
+    paper-radio-group {
+      column-count: 3;
+    }
+  }
+
+  #filters {
+    padding: $tabletKeyline;
+  }
+}
+
+@media (min-width: 961px) {
+  #filters {
+    padding: $desktopKeyline;
+  }
+}
+
+@media (min-width: 1305px) {
+  #filters {
+    padding: 40px;
+  }
+}
+
+@media (min-width: 1501px) {
+  #filters {
+    padding: 48px;
+  }
+}
+
+

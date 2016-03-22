@@ -24,6 +24,7 @@ limitations under the License.
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 
 <link rel="import" href="shared-app-styles.html">
@@ -35,7 +36,17 @@ limitations under the License.
 <dom-module id="io-schedule-page">
 <link rel="import" type="css" href="io-schedule-page.css">
 <template>
-<style include="shared-app-styles"></style>
+<style include="shared-app-styles">
+  paper-dropdown-menu {
+    --paper-input-container-color: inherit;
+    --paper-dropdown-menu-icon: {
+      color: inherit;
+    };
+    --paper-input-container-underline-focus: {
+      display: none;
+    };
+  }
+</style>
 
 <div class="masthead-container" layout vertical end-justified>
   <div class="masthead-meta">
@@ -247,42 +258,89 @@ limitations under the License.
 
     <div class="subpage__container">
 
-      <div class="subpage__nav bg-cyan-400" layout horizontal justified>
-        <paper-tabs id="subpage-tabs" class="white"
-                    attr-for-selected="label"
-                    selected="[[selectedSubpage]]"
-                    on-iron-activate="onSubNavSelect">
-          <paper-tab label="agenda" role="">
-            <a href="#agenda" data-track-link="schedule-agenda" data-ajax-link
-                              layout horizontal center-center>Agenda</a>
-          </paper-tab>
-          <paper-tab label="day1" role="">
-            <a href="#day1" data-track-link="schedule-day1" data-ajax-link
-                            layout horizontal center-center>May 18</a>
-          </paper-tab>
-          <paper-tab label="day2" role="">
-            <a href="#day2" data-track-link="schedule-day2" data-ajax-link
-                            layout horizontal center-center>May 19</a>
-          </paper-tab>
-          <paper-tab label="day3" role="">
-            <a href="#day3" data-track-link="schedule-day3" data-ajax-link
-                            layout horizontal center-center>May 20</a>
-          </paper-tab>
-          <paper-tab label="myschedule" role="">
-            <a href="#myschedule" data-track-link="schedule-mysched" data-ajax-link
-                                  layout horizontal center-center>My Schedule</a>
-          </paper-tab>
-        </paper-tabs>
+      <div class="subpage__nav bg-cyan-400" layout horizontal center justified>
+        <template is="dom-if" if="[[!app.isPhoneSize]]">
+          <paper-tabs id="subpage-tabs" class="white"
+                      attr-for-selected="label"
+                      selected="[[selectedSubpage]]">
+            <paper-tab label="agenda" role="">
+              <a href="#agenda" data-track-link="schedule-agenda" data-ajax-link
+                                layout horizontal center-center>Agenda</a>
+            </paper-tab>
+            <paper-tab label="day1" role="">
+              <a href="#day1" data-track-link="schedule-day1" data-ajax-link
+                              layout horizontal center-center>May 18</a>
+            </paper-tab>
+            <paper-tab label="day2" role="">
+              <a href="#day2" data-track-link="schedule-day2" data-ajax-link
+                              layout horizontal center-center>May 19</a>
+            </paper-tab>
+            <paper-tab label="day3" role="">
+              <a href="#day3" data-track-link="schedule-day3" data-ajax-link
+                              layout horizontal center-center>May 20</a>
+            </paper-tab>
+            <paper-tab label="myschedule" role="">
+              <a href="#myschedule" data-track-link="schedule-mysched" data-ajax-link
+                                    layout horizontal center-center>My Schedule</a>
+            </paper-tab>
+          </paper-tabs>
+        </template>
 
-        <div class="meta-filter" layout horizontal center
-             disabled$="[[_isSelectedSubpage(selectedSubpage, 'myschedule')]]">
-          Filter <paper-icon-button icon="io:filter-list" aria-label="Filter list"
-                                    on-tap="openFilters"></paper-icon-button>
+        <template is="dom-if" if="[[_showDaySelector(app.isPhoneSize, selectedSubpage)]]">
+          <paper-dropdown-menu horizontal-align="left"
+                               no-label-float noink>
+            <paper-listbox class="dropdown-content"
+                          attr-for-selected="label"
+                          selected="[[selectedSubpage]]">
+              <paper-item label="agenda">
+                <a href="#agenda" data-track-link="schedule-agenda" data-ajax-link
+                                  layout horizontal center-center>Agenda</a>
+              </paper-item>
+              <paper-item label="day1">
+                <a href="#day1" data-track-link="schedule-day1" data-ajax-link
+                                layout horizontal center-center>May 18</a>
+              </paper-item>
+              <paper-item label="day2">
+                <a href="#day2" data-track-link="schedule-day2" data-ajax-link
+                                layout horizontal center-center>May 19</a>
+              </paper-item>
+              <paper-item label="day3">
+                <a href="#day3" data-track-link="schedule-day3" data-ajax-link
+                                layout horizontal center-center>May 20</a>
+              </paper-item>
+            </paper-listbox>
+          </paper-dropdown-menu>
+        </template>
+
+        <template is="dom-if" if="[[_showMyScheduleArrow(app.isPhoneSize, selectedSubpage)]]">
+          <div class="subpage__nav--myscheduleback" layout horizontal center>
+            <paper-icon-button icon="io:arrow-back"
+                               aria-label="Close My Schedule"
+                               on-tap="_goBack"></paper-icon-button>
+            <span>My Schedule</span>
+          </div>
+        </template>
+
+        <div layout horizontal center>
+          <div class="meta-myschedue-button"
+               hidden$="[[!app.isPhoneSize]]"
+               disabled$="[[_disableMyScheduleGuy(selectedSubpage)]]">
+            <a href="#myschedule" data-track-link="schedule-mysched" data-ajax-link>
+              <paper-icon-button icon="io:person" aria-label="My Schedule"></paper-icon-button>
+            </a>
+          </div>
+
+          <div class="meta-filter" layout horizontal center
+               disabled$="[[_disableFiltering(selectedSubpage)]]"
+               on-tap="toggleFilters">
+            <span hidden$="[[app.isPhoneSize]]">Filter</span>
+            <paper-icon-button icon="io:filter-list" aria-label="Filter list"></paper-icon-button>
+          </div>
         </div>
       </div>
 
       <section class$="subpage-agenda subpage__content bg-bluegrey-50-20 {{_applyActiveClassWhenSubpage(selectedSubpage, 'agenda')}}">
-        <section class="page__section page__section--top slide-up">
+        <section class="slide-up">
           <div class="card__container bg-cyan-200">
             <div class="card">
               <div class="card-content max-width-800 text-justified">
@@ -292,112 +350,26 @@ limitations under the License.
               </div>
             </div>
           </div>
-        </section>
-
-        <section class="page__section slide-up-delay" id="agenda_content">
-          <template is="dom-repeat" items="[[agenda]]" as="day">
-            <section class="page__section">
+          <template is="dom-if"
+                    if="[[_isSelectedSubpage(selectedSubpage, 'agenda')]]">
+            <template is="dom-repeat" items="[[agenda]]" as="day">
               <io-agenda app="[[app]]"
                          day="[[day.day]]"
                          start="[[day.start]]"
                          end="[[day.end]]"
                          color="[[day.color]]"
                          events="[[day.events]]"></io-agenda>
-            </section>
+            </template>
           </template>
         </section>
       </section>
 
       <section class$="subpage-day1 subpage-day2 subpage-myschedule subpage__content {{_applyActiveClassWhenNotSubpage(selectedSubpage, 'agenda')}}">
 
-        <!-- <section class="page__section page__section--top slide-up">
-          <div id="signin-prompt"
-              class$="card__container {{_addClass('prompt-hidden', user)}}"
-              hidden$="{{_equal(selectedSubpage, 'myschedule')}}">
-            <div class="card">
-              <div class="card-content">
-                <h3 class="card__title">Create your custom I/O schedule</h3>
-                <div>Sign in to add events to My Schedule.
-                  <span class="notification__feature">
-                    To get notifications on this device, you need to sign in and enable notifications.
-                    <p class="note">Note:  Notifications are activated per device. To receive notifications on multiple devices, sign in on each device, enable notifications, and make sure you're online. All device notifications can be turned on/off at any time in the settings panel.</p>
-                  </span>
-                </div>
-              </div>
-              <div class="card-content">
-                <span class="anchor-like" role="link" tabindex="0"
-                      data-track-link="schedule-sign-in" on-click="signIn">Sign in</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="card__container"
-               hidden$="{{!_equal(selectedSubpage, 'myschedule')}}">
-            <div class="card">
-
-              <template is="dom-if" if="[[!user]]">
-                <div class="card-content">
-                  <h3 class="card__title">Create your custom I/O schedule</h3>
-                  <div>
-                    Sign in to add events to My Schedule.
-                    <span class="notification__feature">
-                      To get notifications on this device, you need to sign in and enable notifications.
-                      <p class="note">Note: Notifications are activated per device. To receive notifications on multiple devices, sign in on each device, enable notifications, and make sure you're online. All device notifications can be turned on/off at any time in the settings panel.</p>
-                    </span>
-                  </div>
-                </div>
-                <div class="card-content">
-                  <span class="anchor-like" role="link" tabindex="0"
-                        data-track-link="schedule-sign-in"
-                        on-click="signIn">Sign in</span>
-                </div>
-              </template>
-
-              <template is="dom-if" if="[[user]]">
-                <div class="card-content notification__feature">
-                  <div>If you have notifications enabled, you'll be notified on this device when:
-                    <ul>
-                      <li>Events in My Schedule are about to start</li>
-                      <li>Videos of sessions added to My Schedule are available</li>
-                    </ul>
-                  </div>
-                  <p class="note">
-                    Note: Notifications are activated per device. To receive notifications on multiple devices, sign in on each device, enable notifications, and make sure you're online. All device notifications can be turned on/off at any time in the settings panel.
-                  </p>
-                </div>
-                <div class="card-content notification__feature">
-                  <span class="anchor-like" role="link" tabindex="0"
-                        data-track-link="schedule-open-settings"
-                        on-click="openSettings">Go to settings</span>
-                </div>
-              </template>
-
-            </div>
-          </div>
-        </section> -->
-
-        <div class="slide-up-delay">
-          <div class="page__filters" layout horizontal
-               hidden$="{{_hideSessionFilters(app.isPhoneSize, selectedSubpage)}}">
-            <span flex>
-              <paper-dropdown-menu horizontal-align="left">
-                <paper-menu class="dropdown-content" selected="Filters"
-                            attr-for-selected="label"
-                            on-iron-activate="selectFilter">
-                  <paper-item label="Filters">Filters</paper-item>
-                  <template is="dom-repeat" items="[[app.filterThemes]]" as="theme">
-                    <paper-item label="[[theme]]">[[theme]]</paper-item>
-                  </template>
-                  <template is="dom-repeat" items="{{app.filterSessionTypes}}" as="type">
-                    <paper-item label="[[type]]">[[type]]</paper-item>
-                  </template>
-                  <paper-item label="Live streamed">Live streamed</paper-item>
-                </paper-menu>
-              </paper-dropdown-menu>
-            </span>
-          </div>
-          <section class="page__section bg-bluegrey-50-20">
+        <div class="slide-up">
+          <section class="bg-bluegrey-50-20">
             <io-schedule id="scheduleEl"
+              app="[[app]]"
               day="[[selectedSubpage]]"
               sessions="{{app.scheduleData.sessions}}"
               saved-sessions="{{app.savedSessions}}"
@@ -405,7 +377,6 @@ limitations under the License.
               session-topics="[[app.filterTopics]]"
               session-types="[[app.filterSessionTypes]]"
               filters="{{sessionURLFilters}}"
-              show-filters="[[_showFilters]]"
               on-session-bookmark="_onToggleSaveSession"
               on-session-select="openSession"
               gmt-day-one="[[date]]"></io-schedule>
@@ -470,11 +441,6 @@ limitations under the License.
       },
 
       _startScheduleVideo: {
-        type: Boolean,
-        value: false
-      },
-
-      _showFilters: {
         type: Boolean,
         value: false
       },
@@ -587,13 +553,6 @@ limitations under the License.
     title: 'Schedule',
     name: 'schedule',
 
-    onSubNavSelect: function() {
-      // Reset FAB position after new DOM is set.
-      this.async(function() {
-        IOWA.Elements.Template.initFabScroll();
-      });
-    },
-
     attached: function() {
       // TODO: check that this is still needed in paper-tabs.
       IOWA.A11y.addFocusStates(SUBTAB_SELECTOR);
@@ -628,6 +587,11 @@ limitations under the License.
       }, 200);
     },
 
+    onSubpageTransitionDone: function() {
+      // Reset FAB position after new DOM is set.
+      IOWA.Elements.Template.initFabScroll();
+    },
+
     sessionDetailsPopstateHandler: function(e) {
       this.sessionURLFilters = getFiltersFromURL();
       if (!this.$.sessionDetails.opened && this.selectedSession) {
@@ -635,10 +599,6 @@ limitations under the License.
       } else {
         this.$.sessionDetails.close();
       }
-    },
-
-    openSettings: function(e) {
-      IOWA.Elements.Template.openSettings(e);
     },
 
     openSession: function(sessionOrEvent) {
@@ -651,8 +611,8 @@ limitations under the License.
       this.$.sessionDetails.open();
     },
 
-    openFilters: function() {
-      this._showFilters = !this._showFilters;
+    toggleFilters: function() {
+      this.$.scheduleEl.showFilters = !this.$.scheduleEl.showFilters;
     },
 
     onSessionDetailsClose: function(e) {
@@ -715,21 +675,6 @@ limitations under the License.
         this.set('selectedSession.saved', saved);
         IOWA.Schedule.bookmarkSessionNotification(saved);
       }.bind(this));
-    },
-
-// TODO: fix logic. This is for the mobile dropdown.
-
-    selectFilter: function(e, detail) {
-      var menu = Polymer.dom(e).rootTarget;
-
-      var oldFilters = this.$.scheduleEl.filters;
-      this.$.scheduleEl.filters = menu.selectedIndex ? [menu.selected] : [];
-      var newFilters = this.$.scheduleEl.filters;
-      // This should not be necessary, since assigning filters above should trigger
-      // the change watcher automatically. For unknown reason, on mobile only, Polymer
-      // is accepting the new value for filters attribute, but not triggering
-      // the change watcher, so we call it manually here.
-      this.$.scheduleEl._filtersChanged(newFilters, oldFilters);
     },
 
     onRelatedContent: function(e, detail) {
@@ -865,6 +810,32 @@ limitations under the License.
 
     _applyActiveClassWhenNotSubpage: function(selectedSubpage, subpageName) {
       return this._addClass('active', selectedSubpage !== subpageName);
+    },
+
+    _disableFiltering: function(selectedSubpage) {
+      var hide = selectedSubpage === 'myschedule' || selectedSubpage === 'agenda';
+      if (hide) {
+        this.$.scheduleEl.showFilters = false;
+      }
+      return hide;
+    },
+
+    _showDaySelector: function(isMobile, selectedSubpage) {
+      return isMobile && selectedSubpage !== 'myschedule';
+    },
+
+    _showMyScheduleArrow: function(isMobile, selectedSubpage) {
+      return isMobile && selectedSubpage === 'myschedule';
+    },
+
+    _disableMyScheduleGuy: function(selectedSubpage) {
+      return selectedSubpage === 'myschedule';
+    },
+
+    _goBack: function(e) {
+      e.stopPropagation();
+      e.preventDefault();
+      window.history.go(-1);
     }
 
   });

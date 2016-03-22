@@ -13,7 +13,10 @@ limitations under the License.
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
 <link rel="import" href="../bower_components/paper-radio-button/paper-radio-button.html">
 <link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
@@ -37,7 +40,6 @@ limitations under the License.
         <span class="schedule-block-meridiem">[[_getMeridiemLetter(session.block)]]</span>
       </h1>
     </div>
-
     <div class$="schedule-row [[_addClass('saved', session.saved)]]"
          layout horizontal center
          on-keyup="onSessionKeyUp">
@@ -47,12 +49,14 @@ limitations under the License.
          on-click="onSessionSelect"
          title$="{{session.title}}" flex>
         <div>[[session.title]]</div>
-        <div id="session-{{session.id}}-time" class="schedule-time">
-          <span>[[session.start]]</span>
-          <span hidden$="{{_sessionIs(session, '__keynote__')}}"> - [[session.end]]</span> /
-          <span>[[session.room]]</span>
+        <div id="session-{{session.id}}-time" class="schedule-time" layout horizontal center>
+          <div>
+            <span>[[session.start]]</span>
+            <span hidden$="{{_sessionIs(session, '__keynote__')}}"> - [[session.end]]</span> /
+            <span>[[session.room]]</span>
+          </div>
           <iron-icon icon="io:videocam" class="schedule-livestream"
-                     hidden$="{{!session.isLivestream}}"></iron-icon>
+                     hidden$="[[!session.isLivestream]]"></iron-icon>
         </div>
       </a>
 
@@ -61,6 +65,15 @@ limitations under the License.
                    class="schedule-add-button"
                    on-click="onAddSession"></iron-icon>
         <iron-icon icon="io:remove-circle"
+                   class="schedule-remove-button"
+                   on-click="onRemoveSession"></iron-icon>
+      </div>
+
+      <div class="schedule-toggle-buttons-mobile">
+        <iron-icon icon="io:add-circle-outline"
+                   class="schedule-add-button"
+                   on-click="onAddSession"></iron-icon>
+        <iron-icon icon="io:remove-circle-outline"
                    class="schedule-remove-button"
                    on-click="onRemoveSession"></iron-icon>
       </div>
@@ -84,6 +97,16 @@ limitations under the License.
       }
     },
 
+    onSessionSelect: function(e, detail) {
+      e.preventDefault();
+      e.stopPropagation();
+      this.selectSession(this.session);
+    },
+
+    selectSession: function(session) {
+      this.fire('session-select', {session: session});
+    },
+
     onAddSession: function(e) {
       e.stopPropagation();
       this.fire('session-bookmark', {
@@ -100,12 +123,19 @@ limitations under the License.
       });
     },
 
+    onSessionKeyUp: function(e, detail) {
+      // enter or ctrl+alt+space (voice over click)
+      if (e.keyCode === 13 || e.altKey && e.ctrlKey && e.keyCode === 32) {
+        this.selectSession(this.session);
+      }
+    },
+
     // Useful for conditionally adding a class to an element based on prop.
     _addClass: function(name, prop) {
       return prop ? name : '';
     },
 
-     _sessionIs: function(session, targetSession) {
+    _sessionIs: function(session, targetSession) {
       return session.id === targetSession;
     },
 
@@ -147,9 +177,12 @@ Fired when the user toggles bookmarking/removing a session.
       :host {
         display: block;
       }
+      paper-radio-button, paper-checkbox {
+        --primary-text-color: inherit;
+      }
     </style>
 
-    <div hidden$="[[!showFilters]]">
+    <div hidden$="[[!showFilters]]" relative>
       <div id="filters" class="card-content bg-bluegrey-50-40" layout horizontal justified>
         <div class="filter-section">
           <h4>Tracks</h4>
@@ -175,7 +208,7 @@ Fired when the user toggles bookmarking/removing a session.
         </div>
         <div class="filter-section filter-section--types" relative>
           <h4>Tracks</h4>
-          <a href="#" class="filter-section--clearall" on-tap="clearFilters">Clear all</a>
+          <a href="#" class="filter-section--clearall" on-click="clearFilters">Clear all</a>
           <paper-radio-group allow-empty-selection
                              on-paper-radio-group-changed="onApplyFilter"
                              on-iron-deselect="onApplyFilter">
@@ -187,54 +220,101 @@ Fired when the user toggles bookmarking/removing a session.
       </div>
     </div>
 
+    <div class="card-content filters-banner bg-bluegrey-50-60"
+         hidden$="[[!filters.length]]" layout horizontal center justified>
+      <span>filtering by [[_prettifyFilters(filters.*)]]</span>
+      <span layout horizontal center on-click="clearFilters">
+        clear <iron-icon icon="io:close"></iron-icon>
+      </span>
+    </div>
 
     <template is="dom-if" if="{{_dayIs(day, 'myschedule')}}">
 
       <div class="card bg-cyan-200">
-        <div class="card-content">
-          <span class="no-sessions">Add more events</span>
-          <a href="#day1" data-subpage-link>Browse events</a>
+        <div class="card-content card-content--myscheduleinfo"
+             hidden$="[[!app.showMySchedulHelp]]">
+          <iron-pages selected="[[_computeMyScheduleHelp(app.currentUser)]]">
+            <div id="signin-prompt">
+              <h3 class="card__title">Create your custom schedule</h3>
+              <div>Sign in to add events to My Schedule.
+                <span class="notification__feature">
+                  To get notifications on this device, you need to sign in and enable notifications.
+                  <p class="note">Note: Notifications are activated per device. To receive notifications on multiple devices, sign in on each device, enable notifications, and make sure you're online. All device notifications can be turned on/off at any time in the settings panel.</p>
+                </span>
+              </div>
+              <paper-button class="cta-button" data-track-link="schedule-sign-in"
+                            on-click="signIn">Sign in</paper-button>
+            </div>
+            <div id="notificationInfo" class="notification__feature">
+              <paper-icon-button icon="io:close" aria-label="Close"
+                             on-tap="closeHelp"></paper-icon-button>
+              <div>If you have notifications enabled, you'll be notified on this device when:
+                <ul>
+                  <li>Events in My Schedule are about to start</li>
+                  <li>Videos of sessions added to My Schedule are available</li>
+                </ul>
+              </div>
+              <p class="note">
+                Note: Notifications are activated per device. To receive notifications on multiple devices, sign in on each device, enable notifications, and make sure you're online. All device notifications can be turned on/off at any time in the settings panel.
+              </p>
+              <span class="anchor-like" role="link" tabindex="0"
+                    data-track-link="schedule-open-settings"
+                    on-click="openSettings">Settings</span>
+            </div>
+          </iron-pages>
         </div>
       </div>
 
       <div class="card__container">
 
-        <div class="card">
+        <div class="card" on-session-bookmark="_onSessionRemove">
 
-          <div class="myschedule-day-header card-content">
+          <div class="myschedule-day-header card-content card-content--no-padding-right">
             <div>Wednesday</div>
             <h1>May 18</h1>
           </div>
-          <div class="card-content card-content--no-padding-top" layout vertical>
+          <div class="card-content card-content--no-padding-top card-content--no-padding-right" layout vertical>
             <template is="dom-repeat" items="[[sessions]]" as="session"
                       observe="saved" filter="[[_filterMyScheduleByDay(0)]]"
                       initial-count="10">
               <io-schedule-row session="[[session]]"></io-schedule-row>
             </template>
           </div>
+          <div class="card-content card-content--day-footer card-content--no-padding-right" layout horizontal center-center>
+            <span>Add more events.</span>
+            <a href="#day1" data-subpage-link>Browse events</a>
+          </div>
 
-          <div class="myschedule-day-header card-content">
+          <div class="myschedule-day-header card-content card-content--no-padding-right">
             <div>Thursday</div>
             <h1>May 19</h1>
           </div>
-          <div class="card-content card-content--no-padding-top" layout vertical>
+          <div class="card-content card-content--no-padding-top card-content--no-padding-right" layout vertical>
             <template is="dom-repeat" items="[[sessions]]" as="session"
                       observe="saved" filter="[[_filterMyScheduleByDay(1)]]"
                       initial-count="10">
               <io-schedule-row session="[[session]]"></io-schedule-row>
             </template>
           </div>
+          <div class="card-content card-content--day-footer card-content--no-padding-right" layout horizontal center-center>
+            <span>Add more events.</span>
+            <a href="#day2" data-subpage-link>Browse events</a>
+          </div>
 
-          <div class="myschedule-day-header card-content">
+          <div class="myschedule-day-header card-content card-content--no-padding-right">
             <div>Friday</div>
             <h1>May 20</h1>
           </div>
-          <div class="card-content card-content--no-padding-top" layout vertical>
+          <div class="card-content card-content--no-padding-top card-content--no-padding-right" layout vertical>
             <template is="dom-repeat" items="[[sessions]]" as="session"
                       observe="saved" filter="[[_filterMyScheduleByDay(2)]]"
                       initial-count="10">
               <io-schedule-row session="[[session]]"></io-schedule-row>
             </template>
+          </div>
+          <div class="card-content card-content--day-footer card-content--no-padding-right" layout horizontal center-center>
+            <span>Add more events.</span>
+            <a href="#day3" data-subpage-link>Browse events</a>
           </div>
 
         </div> <!-- .card -->
@@ -248,11 +328,12 @@ Fired when the user toggles bookmarking/removing a session.
 
         <div class="card">
 
-          <div class="card-content" layout vertical>
+          <div class="card-content card-content--main card-content--no-padding-top card-content--no-padding-right" layout vertical>
 
             <template id="schedulelist" is="dom-repeat" items="[[sessions]]"
                       as="session" filter="matchesFilters" initial-count="10">
-               <io-schedule-row session="[[session]]" hidden$="{{!_showSession(session, day)}}"></io-schedule-row>
+              <io-schedule-row session="[[session]]"
+                  hidden$="[[!_showSession(session, day)]]"></io-schedule-row>
             </template>
 
           </div> <!-- .card-content -->
@@ -334,31 +415,22 @@ Fired when the user toggles bookmarking/removing a session.
           },
 
           /**
-           * Array of my my session timeblocks
-           */
-          _timeBlocks: {
-            type: Array,
-            value: function() { return []; }
-          },
-
-          /**
            * True to show the filter panel
            */
           showFilters: {
             type: Boolean,
-            value: false
-          }
+            value: false,
+            notify: true
+          },
         },
 
         observers: [
           '_filtersChanged(filters.length)',
-          '_updateMyScheduleTimeBlocks(sessions, savedSessions, gmtDayOne)'
+          // Recalc time blocks when users list of saved sessions comes in.
+          '_recalcFirstOfBlock(sessions.length, savedSessions)',
+          // Recalc time blocks when new day is selected or filter is applied.
+          '_recalcFirstOfBlock(sessions.length, day, filters.length)'
         ],
-
-        // Useful for conditionally adding a class to an element based on prop.
-        _addClass: function(name, prop) {
-          return prop ? name : '';
-        },
 
         isFilterSelected: function(filterName) {
           return this.filters.indexOf(filterName) > -1;
@@ -377,6 +449,8 @@ Fired when the user toggles bookmarking/removing a session.
           } else if (radioGroup.selected) {
             this.push('filters', radioGroup.selected);
           }
+
+          IOWA.Elements.Template.initFabScroll();
         },
 
         onLiveSessionsFilters: function(e) {
@@ -473,6 +547,7 @@ Fired when the user toggles bookmarking/removing a session.
           if (!this.filters.length) {
             return true;
           }
+
           for (var i = 0, filter; filter = this.filters[i]; ++i) {
             if (!session.filters[filter]) {
               return false;
@@ -481,43 +556,23 @@ Fired when the user toggles bookmarking/removing a session.
           return true;
         },
 
-        _updateMyScheduleTimeBlocks: function(sessions, savedSessions, gmtDayOne) {
-          var timeBlocks = [[], [], []];
+        signIn: function(e) {
+          e.stopPropagation();
+          // TODO: note global pollution. Consider firing bubbling event.
+          IOWA.Elements.Template.signIn(e);
+        },
 
-          var ioStartDay = new Date(this.gmtDayOne).getDate(); // 18
-
-          for (var i = 0, s; s = this.sessions[i]; ++i) {
-            var dayIndex = (s.day % ioStartDay); // May 18 === 0
-            if (s.saved) {
-              timeBlocks[dayIndex].push(s);
-            }
-          }
-
-          this._timeBlocks = timeBlocks;
+        openSettings: function(e) {
+          e.stopPropagation();
+          // TODO: note global pollution. Consider firing bubbling event.
+          IOWA.Elements.Template.openSettings(e);
         },
 
         _filterMyScheduleByDay: function(dayIdx) {
           return function(session) {
             return session.saved &&
                    session.day === this._dayIndexToDate(dayIdx);
-          }.bind(this)
-        },
-
-        onSessionSelect: function(e, detail) {
-          e.preventDefault();
-          e.stopPropagation();
-          this.selectSession(e.model.session);
-        },
-
-        onSessionKeyUp: function(e, detail) {
-          // enter or ctrl+alt+space (voice over click)
-          if (e.keyCode === 13 || e.altKey && e.ctrlKey && e.keyCode === 32) {
-            this.selectSession(e.model.session);
-          }
-        },
-
-        selectSession: function(session) {
-          this.fire('session-select', {session: session});
+          }.bind(this);
         },
 
         _dayIs: function(day, targetDay) {
@@ -527,6 +582,44 @@ Fired when the user toggles bookmarking/removing a session.
         _dayIndexToDate: function(timeBlockIdx) {
           var ioStartDay = new Date(this.gmtDayOne).getDate(); // 18
           return timeBlockIdx + ioStartDay;
+        },
+
+        _computeMyScheduleHelp: function(user) {
+          return user ? 1 : 0;
+        },
+
+        _prettifyFilters: function(filters) {
+          return this.filters.join(', ');
+        },
+
+        closeHelp: function() {
+          this.set('app.showMySchedulHelp', false);
+        },
+
+        _recalcFirstOfBlock: function() {
+          if (!this.sessions.length) {
+            return;
+          }
+
+          this.debounce('_recalcFirstOfBlock', function() {
+            var currentBlock;
+            for (var i = 0, session; session = this.sessions[i]; ++i) {
+              this.set(['sessions', i, 'firstOfBlock'], false);
+
+              if (session.block !== currentBlock &&
+                  this._showSession(session, this.day)) {
+                this.set(['sessions', i, 'firstOfBlock'], true);
+                currentBlock = session.block;
+              }
+            }
+          }, 50);
+        },
+
+        _onSessionRemove: function(e, detail) {
+          // Recalc time blocks when session is removed from my schedule.
+          if (this.day === 'myschedule' && !detail.saved) {
+            this._recalcFirstOfBlock();
+          }
         }
 
       });
