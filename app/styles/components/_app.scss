@@ -345,13 +345,6 @@ paper-progress {
     will-change: transform;
     transform: scale(0);
     pointer-events: all;
-    box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.12),
-                0px 8px 8px 0px rgba(0,0,0,0.24);
-
-    &:hover {
-      box-shadow: 0px 0px 14px 0px rgba(0,0,0,0.12),
-                  0px 14px 14px 0px rgba(0,0,0,0.24);
-    }
   }
 }
 
