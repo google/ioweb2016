@@ -462,7 +462,7 @@ IOWA.Elements = (function() {
       this._fabCrossFooterThreshold = IOWA.Elements.Scroller.scrollHeight - containerHeight - fabMetrics.height;
 
       // Make sure FAB is in correct location when window is resized.
-      this._setFabPosition(IOWA.Elements.Scroller.scrollTop);
+      this._setFabPosition(this._scrollTopValue(IOWA.Elements.Scroller));
 
       // Note: there's no harm in re-adding existing listeners with
       // the same params.
@@ -495,8 +495,16 @@ IOWA.Elements = (function() {
       }
     };
 
+    template._scrollTopValue = function(element) {
+      if (element === document.documentElement || element === document.body) {
+        return (document.documentElement && document.documentElement.scrollTop) ||
+          document.body.scrollTop;
+      }
+      return element.scrollTop;
+    };
+
     template._onContentScroll = function() {
-      var scrollTop = IOWA.Elements.Scroller.scrollTop;
+      var scrollTop = this._scrollTopValue(IOWA.Elements.Scroller);
 
       if (scrollTop === 0) {
         this.$.navbar.classList.remove('scrolled');
