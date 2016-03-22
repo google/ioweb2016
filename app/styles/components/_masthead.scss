@@ -32,13 +32,22 @@
   left: 0;
   right: 0;
 
-  paper-toolbar {
-    .io-logo {
-      margin-top: $mobileKeyline / 2;
-      margin-left: $mobileKeyline / 2;
-      display: inline-block;
-    }
+  // paper-toolbar {
+  //   .io-logo {
+  //     margin-top: $mobileKeyline / 2;
+  //     margin-left: $mobileKeyline / 2;
+  //     display: inline-block;
+  //   }
+  // }
+
+  .subpage__nav {
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: 100%;
+    margin: 0 auto;
   }
+
 }
 
 .masthead-meta {
@@ -351,6 +360,7 @@ paper-tabs {
 @media (min-width: 961px) {
   $container-max-width: 960px;
 
+  .masthead .subpage__nav,
   .masthead-container {
     max-width: $container-max-width;
     @include keyline-32l();
@@ -364,6 +374,7 @@ paper-tabs {
 @media (min-width: 1305px) {
   $container-max-width: 1160px;
 
+  .masthead .subpage__nav,
   .masthead-container {
     max-width: $container-max-width;
     @include keyline-40l();
@@ -377,6 +388,7 @@ paper-tabs {
 @media (min-width: 1501px) {
   $container-max-width: 1280px;
 
+  .masthead .subpage__nav,
   .masthead-container {
     max-width: $container-max-width;
     @include keyline-48l();
@@ -390,6 +402,7 @@ paper-tabs {
 @media (min-width: 1601px) {
   $container-max-width: 1440px;
 
+  .masthead .subpage__nav,
   .masthead-container {
     max-width: $container-max-width;
   }
@@ -398,6 +411,7 @@ paper-tabs {
 @media (min-width: 1801px) {
   $container-max-width: 1600px;
 
+  .masthead .subpage__nav,
   .masthead-container {
     max-width: $container-max-width;
   }

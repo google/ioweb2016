@@ -558,6 +558,24 @@ limitations under the License.
       IOWA.A11y.addFocusStates(SUBTAB_SELECTOR);
 
       this.listen(window, 'popstate', 'sessionDetailsPopstateHandler');
+
+
+var subnav = header.querySelector('.subpage__nav');
+var pageSubnav = Polymer.dom(this.root).querySelector('.subpage__nav')
+var mastheadContainer = Polymer.dom(this.root).querySelector('.masthead-container')
+
+  IOWA.Elements.ScrollContainer.addEventListener('scroll', function(e) {
+    var pageSubnavReachedTop = e.target.scrollTop - header.clientHeight -
+                               mastheadContainer.clientHeight >= 0;
+    var headerOnScreen = header.isOnScreen();
+
+//console.log(headerOnScreen, atTop);
+    if (pageSubnavReachedTop) {
+      subnav.style.display = 'block';
+    } else {
+      subnav.style.display = 'none';
+    }
+  });
     },
 
     detached: function() {
