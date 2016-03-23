@@ -450,7 +450,7 @@ IOWA.Elements = (function() {
           IOWA.Elements.ScrollContainer.innerHeight : IOWA.Elements.ScrollContainer.scrollHeight;
       var fabMetrics = this.$.fab.getBoundingClientRect();
 
-      this._fabBottom = parseInt(window.getComputedStyle(this.$.fab).getPropertyValue('bottom'), 10);
+      this._fabBottom = parseInt(window.getComputedStyle(this.$.fab).bottom, 10);
 
       this._fabCrossFooterThreshold = IOWA.Elements.Scroller.scrollHeight - containerHeight - fabMetrics.height;
 
