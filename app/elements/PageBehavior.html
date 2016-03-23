@@ -10,6 +10,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
+<link rel="import" href="UtilBehavior.html">
 
 <script>
 /**
@@ -23,7 +24,7 @@ page elements.
 'use strict';
 
 window.IOBehaviors = window.IOBehaviors || {};
-IOBehaviors.PageBehavior = {
+var PageBehavior = {
 
   properties: {
     /*
@@ -154,51 +155,10 @@ IOBehaviors.PageBehavior = {
       return youtubeUrl;
     }
     return youtubeUrl.replace(/https?:\/\/youtu\.be\//, '');
-  },
-
-  /**
-   * Returns a subset of an array
-   *
-   * @param {array} array The array.
-   * @param {number} howMany A full URL to a youtube video.
-   */
-  _limit: function(array, howMany) {
-    return array.slice(0, howMany);
-  },
-
-  _equal: function(key, val) {
-    return key === val;
-  },
-
-  _ternary: function(boolean, yes, no) {
-    return boolean ? yes : no;
-  },
-
-  _propOfArrayItem: function(array, index, prop) {
-    return array[index][prop];
-  },
-
-  _addClass: function(name, prop) {
-    return prop ? name : '';
-  },
-
-  _enableTabIndex: function(val) {
-    return val ? 0 : -1;
-  },
-
-  _isPage: function(pageName, selectedPageName) {
-    return this._equal(pageName, selectedPageName);
-  },
-
-  _isSelectedSubpage: function(selectedSubpage, subpageName) {
-    return selectedSubpage === subpageName;
-  },
-
-  _applyActiveClassWhenSubpage: function(selectedSubpage, subpageName) {
-    return this._addClass('active', selectedSubpage === subpageName);
   }
-
 };
+
+IOBehaviors.PageBehavior = [PageBehavior, IOBehaviors.UtilBehavior];
 
 })();
 </script>
