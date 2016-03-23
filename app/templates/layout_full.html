@@ -330,33 +330,9 @@ limitations under the License.
 
     </app-toolbar>
 
-    <app-toolbar class="subpage__nav bg-cyan-400" role="navigation"
-                 layout horizontal center justified>
-      <paper-tabs id="subpage-tabs" class="white"
-                  attr-for-selected="label"
-                  selected="[[selectedSubpage]]">
-        <paper-tab label="agenda" role="">
-          <a href="#agenda" data-track-link="schedule-agenda" data-ajax-link
-                            layout horizontal center-center>Agenda</a>
-        </paper-tab>
-        <paper-tab label="day1" role="">
-          <a href="#day1" data-track-link="schedule-day1" data-ajax-link
-                          layout horizontal center-center>May 18</a>
-        </paper-tab>
-        <paper-tab label="day2" role="">
-          <a href="#day2" data-track-link="schedule-day2" data-ajax-link
-                          layout horizontal center-center>May 19</a>
-        </paper-tab>
-        <paper-tab label="day3" role="">
-          <a href="#day3" data-track-link="schedule-day3" data-ajax-link
-                          layout horizontal center-center>May 20</a>
-        </paper-tab>
-        <paper-tab label="myschedule" role="">
-          <a href="#myschedule" data-track-link="schedule-mysched" data-ajax-link
-                                layout horizontal center-center>My Schedule</a>
-        </paper-tab>
-      </paper-tabs>
-    </app-toolbar>
+    <io-schedule-subnav selected-subpage="{{selectedSubpage}}" app="[[app]]"
+                        show-filters="{{showFilters}}"
+                        class="invisible"></io-schedule-subnav>
 
   </app-header>
 
@@ -382,7 +358,9 @@ limitations under the License.
         <io-extended-form-page app="[[app]]"></io-extended-form-page>
       </template>
       <template is="dom-if" name="schedule" restamp>
-        <io-schedule-page app="[[app]]" date="{% .StartDateStr %}"></io-schedule-page>
+        <io-schedule-page app="[[app]]" date="{% .StartDateStr %}"
+                          selected-subpage="{{selectedSubpage}}"
+                          show-filters="{{showFilters}}"></io-schedule-page>
       </template>
       <template is="dom-if" name="faq" restamp>
         <io-faq-page app="[[app]]"></io-faq-page>

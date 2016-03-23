@@ -1,0 +1,211 @@
+<!--
+Copyright 2016 Google Inc. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+
+<link rel="import" href="shared-app-styles.html">
+
+<!--
+The `<io-schedule-subnav>` implements the schedule pages sub navigation.
+-->
+<dom-module id="io-schedule-subnav">
+<template>
+<style include="shared-app-styles">
+  :host {
+    display: block;
+  }
+
+  /* Note: paper-tabs needs its parent to have layout in order to calculate
+  its selection bar transform. Instead, visibility hide the subnav, set the
+  selected tab, then display: none it. */
+  :host(.invisible) {
+    /*visibility: hidden;
+    pointer-events: none;*/
+    top: -1000px;
+  }
+
+  .subpage__nav {
+    margin: 0 auto;
+    padding-left: 0;
+  }
+
+  @media (min-width: 768px) {
+    #subpage-tabs {
+      margin-left: -12px;
+    }
+  }
+
+  paper-dropdown-menu {
+    --paper-input-container-color: inherit;
+    --paper-dropdown-menu-icon: {
+      color: inherit;
+    };
+    --paper-input-container-underline-focus: {
+      display: none;
+    };
+  }
+</style>
+
+<div class="subpage__nav bg-cyan-400" layout horizontal center justified>
+  <template is="dom-if" if="[[!app.isPhoneSize]]">
+    <paper-tabs id="subpage-tabs" class="white"
+                attr-for-selected="label"
+                selected="[[selectedSubpage]]">
+      <paper-tab label="agenda" role="">
+        <a href="#agenda" data-track-link="schedule-agenda" data-ajax-link
+                          layout horizontal center-center>Agenda</a>
+      </paper-tab>
+      <paper-tab label="day1" role="">
+        <a href="#day1" data-track-link="schedule-day1" data-ajax-link
+                        layout horizontal center-center>May 18</a>
+      </paper-tab>
+      <paper-tab label="day2" role="">
+        <a href="#day2" data-track-link="schedule-day2" data-ajax-link
+                        layout horizontal center-center>May 19</a>
+      </paper-tab>
+      <paper-tab label="day3" role="">
+        <a href="#day3" data-track-link="schedule-day3" data-ajax-link
+                        layout horizontal center-center>May 20</a>
+      </paper-tab>
+      <paper-tab label="myschedule" role="">
+        <a href="#myschedule" data-track-link="schedule-mysched" data-ajax-link
+                              layout horizontal center-center>My Schedule</a>
+      </paper-tab>
+    </paper-tabs>
+  </template>
+
+  <template is="dom-if" if="[[_showDaySelector(app.isPhoneSize, selectedSubpage)]]">
+    <paper-dropdown-menu horizontal-align="left"
+                         no-label-float noink>
+      <paper-listbox class="dropdown-content"
+                    attr-for-selected="label"
+                    selected="[[selectedSubpage]]">
+        <paper-item label="agenda">
+          <a href="#agenda" data-track-link="schedule-agenda" data-ajax-link
+                            layout horizontal center-center>Agenda</a>
+        </paper-item>
+        <paper-item label="day1">
+          <a href="#day1" data-track-link="schedule-day1" data-ajax-link
+                          layout horizontal center-center>May 18</a>
+        </paper-item>
+        <paper-item label="day2">
+          <a href="#day2" data-track-link="schedule-day2" data-ajax-link
+                          layout horizontal center-center>May 19</a>
+        </paper-item>
+        <paper-item label="day3">
+          <a href="#day3" data-track-link="schedule-day3" data-ajax-link
+                          layout horizontal center-center>May 20</a>
+        </paper-item>
+      </paper-listbox>
+    </paper-dropdown-menu>
+  </template>
+
+  <template is="dom-if" if="[[_showMyScheduleArrow(app.isPhoneSize, selectedSubpage)]]">
+    <div class="subpage__nav--myscheduleback" layout horizontal center>
+      <paper-icon-button icon="io:arrow-back"
+                         aria-label="Close My Schedule"
+                         on-tap="_goBack"></paper-icon-button>
+      <span>My Schedule</span>
+    </div>
+  </template>
+
+  <div layout horizontal center>
+    <div class="meta-myschedue-button"
+         hidden$="[[!app.isPhoneSize]]"
+         disabled$="[[_disableMyScheduleGuy(selectedSubpage)]]">
+      <a href="#myschedule" data-track-link="schedule-mysched" data-ajax-link>
+        <paper-icon-button icon="io:person" aria-label="My Schedule"></paper-icon-button>
+      </a>
+    </div>
+
+    <div class="meta-filter" layout horizontal center
+         disabled$="[[_disableFiltering(selectedSubpage)]]"
+         on-tap="toggleFilters">
+      <span hidden$="[[app.isPhoneSize]]">Filter</span>
+      <paper-icon-button icon="io:filter-list" aria-label="Filter list"></paper-icon-button>
+    </div>
+  </div>
+</div>
+
+</template>
+<script>
+(function() {
+  Polymer({
+    is: 'io-schedule-subnav',
+
+    properties: {
+      /**
+       * App logic
+       */
+      app: {
+        type: Object
+      },
+
+      /**
+       * The selected subpage/tab.
+       */
+      selectedSubpage: {
+        type: String,
+        value: null,
+        notify: true
+      },
+
+      /**
+       * When true, indicates the filters UI should be showing.
+       */
+      showFilters: {
+        type: Boolean,
+        value: false,
+        notify: true
+      }
+    },
+
+    _disableFiltering: function(selectedSubpage) {
+      var hide = selectedSubpage === 'myschedule' || selectedSubpage === 'agenda';
+      if (hide) {
+        this.showFilters = false;
+      }
+      return hide;
+    },
+
+    _showDaySelector: function(isMobile, selectedSubpage) {
+      return isMobile && selectedSubpage !== 'myschedule';
+    },
+
+    _showMyScheduleArrow: function(isMobile, selectedSubpage) {
+      return isMobile && selectedSubpage === 'myschedule';
+    },
+
+    _disableMyScheduleGuy: function(selectedSubpage) {
+      return selectedSubpage === 'myschedule';
+    },
+
+    _goBack: function(e) {
+      e.stopPropagation();
+      e.preventDefault();
+      window.history.go(-1);
+    },
+
+    toggleFilters: function() {
+      this.showFilters = !this.showFilters;
+    }
+
+  })
+})();
+</script>
+</dom-module>

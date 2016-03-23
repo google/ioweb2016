@@ -196,6 +196,39 @@ IOBehaviors.PageBehavior = {
 
   _applyActiveClassWhenSubpage: function(selectedSubpage, subpageName) {
     return this._addClass('active', selectedSubpage === subpageName);
+  },
+
+  setupSubnavEffects: function() {
+    this._appHeader = document.querySelector('#header');
+    this._mainSubnav = this._appHeader.querySelector('io-schedule-subnav');
+
+    this.listen(IOWA.Elements.ScrollContainer, 'scroll', '_runSubnavEffects');
+  },
+
+  teardownSubnavEffects: function() {
+    this.unlisten(IOWA.Elements.ScrollContainer, 'scroll', '_runSubnavEffects');
+    this._appHeader = null;
+    this._mainSubnav = null;
+  },
+
+  _runSubnavEffects: function(e) {
+    var scrollingUp = !this._appHeader._wasScrollingDown;
+
+    var subnavScrollTop = e.target.scrollTop -
+                          this._appHeader.clientHeight -
+                          this.$.mastheadContainer.clientHeight;
+
+    // Scrolling down.
+    if (subnavScrollTop >= 0) {
+      // Hide the page's subnav when it reaches the top of the page.
+      this._mainSubnav.classList.remove('invisible');
+    } else if (scrollingUp && Math.abs(subnavScrollTop) >= this.$.subnav.clientHeight) {
+      // Scrolling up.
+      // When the user is scrolling back up, return the page's visibility
+      // when it's directly under fixed subnav. This make its it appear as
+      // if the subnav returns to position: static, scrolling with the page.
+      this._mainSubnav.classList.add('invisible');
+    }
   }
 
 };
