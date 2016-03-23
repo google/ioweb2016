@@ -61,6 +61,18 @@ limitations under the License.
         @apply(--layout-scroll);
       }
 
+      /* Note: paper-tabs needs its parent to have layout in order to calculate
+      its selection bar transform. Instead, visibility hide the subnav, set the
+      selected tab, then display: none it. */
+      .offscreen {
+        top: -1000px;
+      }
+
+      .subpage__nav {
+        margin: 0 auto;
+        padding-left: 0;
+      }
+
       paper-fab {
         box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.12),
                     0px 8px 8px 0px rgba(0,0,0,0.24);

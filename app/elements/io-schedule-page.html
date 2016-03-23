@@ -20,32 +20,20 @@ limitations under the License.
 
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../bower_components/paper-menu/paper-menu.html">
-<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
-<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
-<link rel="import" href="../bower_components/paper-item/paper-item.html">
 
 <link rel="import" href="shared-app-styles.html">
 <link rel="import" href="PageBehavior.html">
 
+<link rel="import" href="io-schedule-subnav.html">
 <link rel="import" href="io-schedule.html">
 <link rel="import" href="io-agenda.html">
 
 <dom-module id="io-schedule-page">
 <link rel="import" type="css" href="io-schedule-page.css">
 <template>
-<style include="shared-app-styles">
-  paper-dropdown-menu {
-    --paper-input-container-color: inherit;
-    --paper-dropdown-menu-icon: {
-      color: inherit;
-    };
-    --paper-input-container-underline-focus: {
-      display: none;
-    };
-  }
-</style>
+<style include="shared-app-styles"></style>
 
-<div class="masthead-container" layout vertical end-justified>
+<div id="mastheadContainer" class="masthead-container" layout vertical end-justified>
   <div class="masthead-meta">
     <h1 class="focus-target" tabindex="-1">Schedule</h1>
   </div>
@@ -158,86 +146,9 @@ limitations under the License.
 
     <div class="subpage__container">
 
-      <div class="subpage__nav bg-cyan-400" layout horizontal center justified>
-        <template is="dom-if" if="[[!app.isPhoneSize]]">
-          <paper-tabs id="subpage-tabs" class="white"
-                      attr-for-selected="label"
-                      selected="[[selectedSubpage]]">
-            <paper-tab label="agenda" role="">
-              <a href="#agenda" data-track-link="schedule-agenda" data-ajax-link
-                                layout horizontal center-center>Agenda</a>
-            </paper-tab>
-            <paper-tab label="day1" role="">
-              <a href="#day1" data-track-link="schedule-day1" data-ajax-link
-                              layout horizontal center-center>May 18</a>
-            </paper-tab>
-            <paper-tab label="day2" role="">
-              <a href="#day2" data-track-link="schedule-day2" data-ajax-link
-                              layout horizontal center-center>May 19</a>
-            </paper-tab>
-            <paper-tab label="day3" role="">
-              <a href="#day3" data-track-link="schedule-day3" data-ajax-link
-                              layout horizontal center-center>May 20</a>
-            </paper-tab>
-            <paper-tab label="myschedule" role="">
-              <a href="#myschedule" data-track-link="schedule-mysched" data-ajax-link
-                                    layout horizontal center-center>My Schedule</a>
-            </paper-tab>
-          </paper-tabs>
-        </template>
-
-        <template is="dom-if" if="[[_showDaySelector(app.isPhoneSize, selectedSubpage)]]">
-          <paper-dropdown-menu horizontal-align="left"
-                               no-label-float noink>
-            <paper-listbox class="dropdown-content"
-                          attr-for-selected="label"
-                          selected="[[selectedSubpage]]">
-              <paper-item label="agenda">
-                <a href="#agenda" data-track-link="schedule-agenda" data-ajax-link
-                                  layout horizontal center-center>Agenda</a>
-              </paper-item>
-              <paper-item label="day1">
-                <a href="#day1" data-track-link="schedule-day1" data-ajax-link
-                                layout horizontal center-center>May 18</a>
-              </paper-item>
-              <paper-item label="day2">
-                <a href="#day2" data-track-link="schedule-day2" data-ajax-link
-                                layout horizontal center-center>May 19</a>
-              </paper-item>
-              <paper-item label="day3">
-                <a href="#day3" data-track-link="schedule-day3" data-ajax-link
-                                layout horizontal center-center>May 20</a>
-              </paper-item>
-            </paper-listbox>
-          </paper-dropdown-menu>
-        </template>
-
-        <template is="dom-if" if="[[_showMyScheduleArrow(app.isPhoneSize, selectedSubpage)]]">
-          <div class="subpage__nav--myscheduleback" layout horizontal center>
-            <paper-icon-button icon="io:arrow-back"
-                               aria-label="Close My Schedule"
-                               on-tap="goBack"></paper-icon-button>
-            <span>My Schedule</span>
-          </div>
-        </template>
-
-        <div layout horizontal center>
-          <div class="meta-myschedue-button"
-               hidden$="[[!app.isPhoneSize]]"
-               disabled$="[[_disableMyScheduleGuy(selectedSubpage)]]">
-            <a href="#myschedule" data-track-link="schedule-mysched" data-ajax-link>
-              <paper-icon-button icon="io:person" aria-label="My Schedule"></paper-icon-button>
-            </a>
-          </div>
-
-          <div class="meta-filter" layout horizontal center
-               disabled$="[[_disableFiltering(selectedSubpage)]]"
-               on-tap="toggleFilters">
-            <span hidden$="[[app.isPhoneSize]]">Filter</span>
-            <paper-icon-button icon="io:filter-list" aria-label="Filter list"></paper-icon-button>
-          </div>
-        </div>
-      </div>
+      <io-schedule-subnav id="subnav"
+          selected-subpage="[[selectedSubpage]]" app="[[app]]"
+          show-filters="{{showFilters}}"></io-schedule-subnav>
 
       <section class$="subpage-agenda subpage__content bg-bluegrey-50-20 {{_applyActiveClassWhenSubpage(selectedSubpage, 'agenda')}}">
         <section class="slide-up">
@@ -268,7 +179,7 @@ limitations under the License.
 
         <div class="slide-up">
           <section class="bg-bluegrey-50-20">
-              <io-schedule id="scheduleEl"
+            <io-schedule id="scheduleEl"
               app="[[app]]"
               day="[[selectedSubpage]]"
               sessions="{{app.scheduleData.sessions}}"
@@ -276,7 +187,8 @@ limitations under the License.
               session-themes="[[app.filterThemes]]"
               session-topics="[[app.filterTopics]]"
               session-types="[[app.filterSessionTypes]]"
-              gmt-day-one="[[date]]"></io-schedule>
+              gmt-day-one="[[date]]"
+              show-filters="{{showFilters}}"></io-schedule>
           </section>
         </div>
       </section>
@@ -301,6 +213,10 @@ limitations under the License.
 
     behaviors: [IOBehaviors.PageBehavior],
 
+    title: 'Schedule',
+    name: 'schedule',
+    hasSubnav: true, // Toggles the subnav scroll effects.
+
     properties: {
       /**
        * The target date for I/O to start. Should be specified in ISO 8601
@@ -316,7 +232,17 @@ limitations under the License.
        */
       selectedSubpage: {
         type: String,
-        value: 'day1'
+        value: 'day1',
+        notify: true
+      },
+
+      /**
+       * True to show the filter panel
+       */
+       showFilters: {
+        type: Boolean,
+        value: false,
+        notify: true
       },
 
       /**
@@ -424,9 +350,6 @@ limitations under the License.
       }
     },
 
-    title: 'Schedule',
-    name: 'schedule',
-
     attached: function() {
       // TODO: check that this is still needed in paper-tabs.
       IOWA.A11y.addFocusStates(SUBTAB_SELECTOR);
@@ -472,28 +395,7 @@ limitations under the License.
 
     _applyActiveClassWhenNotSubpage: function(selectedSubpage, subpageName) {
       return this._addClass('active', selectedSubpage !== subpageName);
-    },
-
-    _disableFiltering: function(selectedSubpage) {
-      var hide = selectedSubpage === 'myschedule' || selectedSubpage === 'agenda';
-      if (hide) {
-        this.$.scheduleEl.showFilters = false;
-      }
-      return hide;
-    },
-
-    _showDaySelector: function(isMobile, selectedSubpage) {
-      return isMobile && selectedSubpage !== 'myschedule';
-    },
-
-    _showMyScheduleArrow: function(isMobile, selectedSubpage) {
-      return isMobile && selectedSubpage === 'myschedule';
-    },
-
-    _disableMyScheduleGuy: function(selectedSubpage) {
-      return selectedSubpage === 'myschedule';
     }
-
   });
 
 }());
