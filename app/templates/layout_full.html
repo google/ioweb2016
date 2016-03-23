@@ -330,7 +330,7 @@ limitations under the License.
     </app-toolbar>
   </app-header>
 
-  <div id="mainScrollingRegion" fit>
+  <div id="mainScrollingRegion">
   <main class$="io-main {{_addClass('transitionIn', pageTransitioningIn)}} {{_addClass('transitionOut', pageTransitioningOut)}}">
 
     <!-- When adding in new pages, make sure to make a corresponding update
@@ -364,15 +364,6 @@ limitations under the License.
 
   </main>
 
-  <div id="fab" class="fixed" hidden$="[[app.isPhoneSize]]" layout end-justified>
-    <!-- _onContentScroll handler in elements.js will flip the tabindex and aria-hidden -->
-    <a id="fabAnchor" href="#" on-click="backToTop"
-       data-track-link="link-backtotop" tabindex="-1"
-       aria-hidden="true" aria-label="back to top">
-      <paper-fab icon="io:expand-less" noink mini="[[app.isPhoneSize]]" tabindex="-1"></paper-fab>
-    </a>
-  </div>
-
   <footer class="bg-bluegrey-50-40" layout horizontal center>
 
     <div flex>
@@ -398,8 +389,16 @@ limitations under the License.
       </div>
     </div>
   </footer>
-</div>
 
+</div>
+  <div id="fab" class="fixed" hidden$="[[app.isPhoneSize]]" layout end-justified>
+    <!-- _onContentScroll handler in elements.js will flip the tabindex and aria-hidden -->
+    <a id="fabAnchor" href="#" on-click="backToTop"
+       data-track-link="link-backtotop" tabindex="-1"
+       aria-hidden="true" aria-label="back to top">
+      <paper-fab icon="io:expand-less" noink mini="[[app.isPhoneSize]]" tabindex="-1"></paper-fab>
+    </a>
+  </div>
 </template>
 
 <io-toast id="toast" duration="9000"></io-toast>

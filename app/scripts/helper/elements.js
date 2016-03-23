@@ -71,10 +71,8 @@ IOWA.Elements = (function() {
     IOWA.Elements.GoogleSignIn = signin;
     IOWA.Elements.LazyPages = lazyPages;
 
-    IOWA.Elements.ScrollContainer = document.querySelector('#mainScrollingRegion');
-
-    masthead.scroller = IOWA.Elements.ScrollContainer;
-    masthead.scrollTarget = IOWA.Elements.ScrollContainer;
+    IOWA.Elements.ScrollContainer = window;
+    IOWA.Elements.Scroller = document.documentElement;
 
     // Kickoff a11y helpers for elements
     IOWA.A11y.init();
@@ -99,7 +97,7 @@ IOWA.Elements = (function() {
 
     // FAB scrolling effect caches.
     template._fabCrossFooterThreshold = null; // Scroll limit when FAB sticks.
-    template._fabPinTop = null; // Top to pin FAB at.
+    template._fabBottom = null; // Bottom to pin FAB at.
 
     IOWA.Util.setMetaThemeColor('#546E7A');
 
@@ -275,7 +273,7 @@ IOWA.Elements = (function() {
       Polymer.AppLayout.scroll({
         top: 0,
         behavior: 'smooth',
-        target: IOWA.Elements.ScrollContainer
+        target: IOWA.Elements.Scroller
       });
 
       // Move focus to the top of the page
@@ -387,20 +385,16 @@ IOWA.Elements = (function() {
 
       this.$.fab.style.top = ''; // clear out old styles.
 
-      var scroller = IOWA.Elements.ScrollContainer;
+      var containerHeight = IOWA.Elements.ScrollContainer === window ?
+          IOWA.Elements.ScrollContainer.innerHeight : IOWA.Elements.ScrollContainer.scrollHeight;
       var fabMetrics = this.$.fab.getBoundingClientRect();
 
-      // FAB stops when 1/2 of it crosses the footer.
-      this._fabPinTop = scroller.scrollHeight -
-                        IOWA.Elements.Footer.clientHeight -
-                        fabMetrics.height / 2;
+      this._fabBottom = parseInt(window.getComputedStyle(this.$.fab).bottom, 10);
 
-      this._fabCrossFooterThreshold = scroller.scrollHeight -
-                                      scroller.clientHeight -
-                                      fabMetrics.height;
+      this._fabCrossFooterThreshold = IOWA.Elements.Scroller.scrollHeight - containerHeight - fabMetrics.height;
 
       // Make sure FAB is in correct location when window is resized.
-      this._setFabPosition(IOWA.Elements.ScrollContainer.scrollTop);
+      this._setFabPosition(IOWA.Elements.Masthead._scrollTop);
 
       // Note: there's no harm in re-adding existing listeners with
       // the same params.
@@ -427,16 +421,14 @@ IOWA.Elements = (function() {
       }, 500);
 
       if (this._fabCrossFooterThreshold <= scrollTop) {
-        this.$.fab.classList.remove('fixed');
-        this.$.fab.style.top = (this._fabPinTop) + 'px';
+        this.$.fab.style.transform = 'translateY(-' + (scrollTop - this._fabCrossFooterThreshold) + 'px)';
       } else {
-        this.$.fab.style.top = '';
-        this.$.fab.classList.add('fixed');
+        this.$.fab.style.transform = '';
       }
     };
 
     template._onContentScroll = function() {
-      var scrollTop = IOWA.Elements.ScrollContainer.scrollTop;
+      var scrollTop = IOWA.Elements.Masthead._scrollTop;
 
       if (scrollTop === 0) {
         this.$.navbar.classList.remove('scrolled');

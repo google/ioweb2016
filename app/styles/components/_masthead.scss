@@ -27,7 +27,7 @@
 }
 
 .masthead {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
@@ -61,8 +61,6 @@
 }
 
 #mainScrollingRegion {
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
   padding-top: $navbarHeight;
 }
 
