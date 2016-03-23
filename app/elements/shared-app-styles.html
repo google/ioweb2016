@@ -73,6 +73,16 @@ limitations under the License.
         padding-left: 0;
       }
 
+      paper-fab {
+        box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.12),
+                    0px 8px 8px 0px rgba(0,0,0,0.24);
+      }
+
+      paper-fab:hover {
+        box-shadow: 0px 0px 14px 0px rgba(0,0,0,0.12),
+                    0px 14px 14px 0px rgba(0,0,0,0.24);
+      }
+
       paper-tabs {
         --paper-tabs-selection-bar-color: currentcolor;
       }
@@ -85,6 +95,7 @@ limitations under the License.
       }
 
       paper-dialog {
+        color: inherit;
         --paper-font-title: {}; /* nuke paper-dialog's styling */
       }
 
@@ -103,6 +114,13 @@ limitations under the License.
         --paper-checkbox-checked-color: var(--paper-cyan-600);
         --paper-checkbox-checked-ink-color: var(--paper-cyan-600);
         --paper-checkbox-unchecked-ink-color: var(--paper-cyan-600);
+      }
+
+      iron-image {
+        background-color: #f5f8f6; /* match hashtag logo bg */
+        --iron-image-placeholder: {
+          background-size: contain !important;
+        };
       }
 
       .video_overlay-dialog paper-icon-button {
