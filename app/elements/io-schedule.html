@@ -976,6 +976,10 @@ Fired when the user toggles bookmarking/removing a session.
         },
 
         _showSession: function(session, day) {
+          if (!day) {
+            return false;
+          }
+
           var showSession = false;
 
           if (day === 'myschedule' && session.saved) {
