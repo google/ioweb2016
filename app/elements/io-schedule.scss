@@ -297,16 +297,14 @@ paper-radio-button {
   .schedule-title {
     font-size: 20px;
     line-height: 24px;
-
-    > div {
-      max-width: 95%;
-    }
   }
   .schedule-time {
     line-height: 24px;
   }
   .schedule-toggle-buttons {
     display: block;
+    height: 24px;
+    width: 24px;
   }
   .schedule-toggle-buttons-mobile {
     display: none;
