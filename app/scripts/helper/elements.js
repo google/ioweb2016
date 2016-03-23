@@ -482,9 +482,9 @@ IOWA.Elements = (function() {
       }, 500);
 
       if (this._fabCrossFooterThreshold <= scrollTop) {
-        this.$.fab.style.bottom = (this._fabBottom + (scrollTop - this._fabCrossFooterThreshold)) + 'px';
+        this.$.fab.style.transform = 'translateY(-' + (scrollTop - this._fabCrossFooterThreshold) + 'px)';
       } else {
-        this.$.fab.style.bottom = '';
+        this.$.fab.style.transform = '';
       }
     };
 
