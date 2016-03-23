@@ -200,7 +200,7 @@ var PageBehavior = {
   _runSubnavEffects: function(e) {
     var scrollingUp = !this._appHeader._wasScrollingDown;
 
-    var subnavScrollTop = e.target.scrollTop -
+    var subnavScrollTop = this._appHeader._scrollTop -
                           this._appHeader.clientHeight -
                           this.$.mastheadContainer.clientHeight;
 
