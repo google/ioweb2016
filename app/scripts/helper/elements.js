@@ -72,7 +72,7 @@ IOWA.Elements = (function() {
     IOWA.Elements.LazyPages = lazyPages;
 
     IOWA.Elements.ScrollContainer = window;
-    IOWA.Elements.Scroller = document.body;
+    IOWA.Elements.Scroller = document.documentElement;
 
     // Kickoff a11y helpers for elements
     IOWA.A11y.init();
@@ -455,7 +455,7 @@ IOWA.Elements = (function() {
       this._fabCrossFooterThreshold = IOWA.Elements.Scroller.scrollHeight - containerHeight - fabMetrics.height;
 
       // Make sure FAB is in correct location when window is resized.
-      this._setFabPosition(this._scrollTopValue(IOWA.Elements.Scroller));
+      this._setFabPosition(IOWA.Elements.Masthead._scrollTop);
 
       // Note: there's no harm in re-adding existing listeners with
       // the same params.
@@ -488,16 +488,8 @@ IOWA.Elements = (function() {
       }
     };
 
-    template._scrollTopValue = function(element) {
-      if (element === document.documentElement || element === document.body) {
-        return (document.documentElement && document.documentElement.scrollTop) ||
-          document.body.scrollTop;
-      }
-      return element.scrollTop;
-    };
-
     template._onContentScroll = function() {
-      var scrollTop = this._scrollTopValue(IOWA.Elements.Scroller);
+      var scrollTop = IOWA.Elements.Masthead._scrollTop;
 
       if (scrollTop === 0) {
         this.$.navbar.classList.remove('scrolled');
