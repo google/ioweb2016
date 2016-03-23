@@ -71,10 +71,8 @@ IOWA.Elements = (function() {
     IOWA.Elements.GoogleSignIn = signin;
     IOWA.Elements.LazyPages = lazyPages;
 
-    IOWA.Elements.ScrollContainer = document.querySelector('#mainScrollingRegion');
-
-    masthead.scroller = IOWA.Elements.ScrollContainer;
-    masthead.scrollTarget = IOWA.Elements.ScrollContainer;
+    IOWA.Elements.ScrollContainer = window;
+    IOWA.Elements.Scroller = document.documentElement;
 
     // Kickoff a11y helpers for elements
     IOWA.A11y.init();
@@ -91,17 +89,15 @@ IOWA.Elements = (function() {
     template.app.scheduleData = null;
     template.app.savedSessions = [];
     template.app.dontAutoSubscribe = false;
+    template.app.currentUser = null;
+    template.app.showMySchedulHelp = true;
 
     template.pages = IOWA.PAGES; // defined in auto-generated ../pages.js
     template.selectedPage = IOWA.Router.parseUrl(window.location.href).page;
 
-    // Sign-in defaults.
-    template.isSignedIn = false;
-    template.currentUser = null;
-
     // FAB scrolling effect caches.
     template._fabCrossFooterThreshold = null; // Scroll limit when FAB sticks.
-    template._fabPinTop = null; // Top to pin FAB at.
+    template._fabBottom = null; // Bottom to pin FAB at.
 
     IOWA.Util.setMetaThemeColor('#546E7A');
 
@@ -259,67 +255,6 @@ IOWA.Elements = (function() {
     //   });
     // };
 
-//     template.openShareWindow = function(e) {
-//       e.preventDefault();
-
-//       var type = Polymer.dom(e).rootTarget.getAttribute('data-share-type');
-//       var url = null;
-//       var width = 600;
-//       var height = 600;
-//       var winOptions = 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=' +
-//                        height + ',width=' + width;
-
-//       var title = document.title;
-
-// // TODO: update for polymer 1.0 port
-//       var selectedSession = Polymer.dom(e).rootTarget.templateInstance.model.selectedSession;
-//       if (selectedSession) {
-//         title = selectedSession.title;
-//       }
-
-//       // Shorten current URL so it's ready to go.
-//       IOWA.Util.shortenURL(location.href).then(function(shortURL) {
-//         switch (type) {
-//           case 'fb':
-//             height = 229;
-//             url = 'https://www.facebook.com/sharer.php?u=' +
-//                   encodeURIComponent(shortURL) +
-//                   '&t=' + encodeURIComponent(title);
-
-//             break;
-
-//           case 'gplus':
-//             height = 348;
-//             width = 512;
-//             url = 'https://plus.google.com/share?url=' +
-//                   encodeURIComponent(shortURL) +
-//                   '&hl=' + encodeURIComponent(document.documentElement.lang);
-//             break;
-
-//           case 'twitter':
-//             height = 253;
-
-//             var el = document.getElementById('share-text');
-//             var text = el.textContent || 'Google I/O 2016';
-
-//             if (selectedSession) {
-//               text = 'Check out "' + title + '" at #io16: ' + shortURL;
-//             }
-
-//             url = 'https://twitter.com/intent/tweet?text=' +
-//                    encodeURIComponent(text);
-
-//             break;
-
-//           default:
-
-//             return;
-//         }
-
-//         window.open(url, 'share', winOptions);
-//       });
-//     };
-
     template.openSettings = function(e) {
       var attr = Polymer.dom(e).rootTarget.getAttribute(ANALYTICS_LINK_ATTR);
       if (attr) {
@@ -338,7 +273,7 @@ IOWA.Elements = (function() {
       Polymer.AppLayout.scroll({
         top: 0,
         behavior: 'smooth',
-        target: IOWA.Elements.ScrollContainer
+        target: IOWA.Elements.Scroller
       });
 
       // Move focus to the top of the page
@@ -358,9 +293,10 @@ IOWA.Elements = (function() {
     template.signIn = function(e) {
       if (e) {
         e.preventDefault();
-        if (e.target.hasAttribute(ANALYTICS_LINK_ATTR)) {
+        var target = Polymer.dom(e).rootTarget;
+        if (target.hasAttribute(ANALYTICS_LINK_ATTR)) {
           IOWA.Analytics.trackEvent(
-              'link', 'click', e.target.getAttribute(ANALYTICS_LINK_ATTR));
+              'link', 'click', target.getAttribute(ANALYTICS_LINK_ATTR));
         }
       }
       IOWA.Elements.GoogleSignIn.signIn();
@@ -369,9 +305,10 @@ IOWA.Elements = (function() {
     template.signOut = function(e) {
       if (e) {
         e.preventDefault();
-        if (e.target.hasAttribute(ANALYTICS_LINK_ATTR)) {
+        var target = Polymer.dom(e).rootTarget;
+        if (target.hasAttribute(ANALYTICS_LINK_ATTR)) {
           IOWA.Analytics.trackEvent(
-              'link', 'click', e.target.getAttribute(ANALYTICS_LINK_ATTR));
+              'link', 'click', target.getAttribute(ANALYTICS_LINK_ATTR));
         }
       }
       IOWA.Elements.GoogleSignIn.signOut();
@@ -409,17 +346,10 @@ IOWA.Elements = (function() {
     // global notifications are enabled, the current browser has a push subscription,
     // and window.Notification.permission === 'granted'.
     // Updates IOWA.Elements.GoogleSignIn.user.notify = false otherwise.
-    template.getNotificationState = function(e, detail) {
-      // The core-overlay-open event that invokes this is called once when the overlay opens, and
-      // once when it closes. We only want this code to run when the overlay opens.
-      // detail is true when the setting panel is opened, and false when it's closed.
-      if (!detail) {
-        return;
-      }
-
+    template.getNotificationState = function() {
       // This sends a signal to the template that we're still calculating the proper state, and
       // that the checkbox should be disabled for the time being.
-      IOWA.Elements.GoogleSignIn.user.notify = null;
+      IOWA.Elements.GoogleSignIn.set('user.notify', null);
 
       // First, check the things that can be done synchronously, before the promises.
       if (IOWA.Notifications.isSupported && window.Notification.permission === 'granted') {
@@ -430,20 +360,20 @@ IOWA.Elements = (function() {
             // subscription for the current browser.
             IOWA.Notifications.isExistingSubscriptionPromise().then(function(isExistingSubscription) {
               // Set user.notify property based on whether there's an existing push manager subscription
-              IOWA.Elements.GoogleSignIn.user.notify = isExistingSubscription;
+              IOWA.Elements.GoogleSignIn.set('user.notify', isExistingSubscription);
             });
           } else {
             // If notifications are off globally, then always set the user.notify to false.
-            IOWA.Elements.GoogleSignIn.user.notify = false;
+            IOWA.Elements.GoogleSignIn.set('user.notify', false);
           }
         }).catch(function() {
           // If something goes wrong while calculating the notifications state, just assume false.
-          IOWA.Elements.GoogleSignIn.user.notify = false;
+          IOWA.Elements.GoogleSignIn.set('user.notify', false);
         });
       } else {
         // Wrap this in an async to ensure that the checked attribute is properly updated.
         this.async(function() {
-          IOWA.Elements.GoogleSignIn.user.notify = false;
+          IOWA.Elements.GoogleSignIn.set('user.notify', false);
         });
       }
     };
@@ -455,20 +385,16 @@ IOWA.Elements = (function() {
 
       this.$.fab.style.top = ''; // clear out old styles.
 
-      var scroller = IOWA.Elements.ScrollContainer;
+      var containerHeight = IOWA.Elements.ScrollContainer === window ?
+          IOWA.Elements.ScrollContainer.innerHeight : IOWA.Elements.ScrollContainer.scrollHeight;
       var fabMetrics = this.$.fab.getBoundingClientRect();
 
-      // FAB stops when 1/2 of it crosses the footer.
-      this._fabPinTop = scroller.scrollHeight -
-                        IOWA.Elements.Footer.clientHeight -
-                        fabMetrics.height / 2;
+      this._fabBottom = parseInt(window.getComputedStyle(this.$.fab).bottom, 10);
 
-      this._fabCrossFooterThreshold = scroller.scrollHeight -
-                                      scroller.clientHeight -
-                                      fabMetrics.height;
+      this._fabCrossFooterThreshold = IOWA.Elements.Scroller.scrollHeight - containerHeight - fabMetrics.height;
 
       // Make sure FAB is in correct location when window is resized.
-      this._setFabPosition(IOWA.Elements.ScrollContainer.scrollTop);
+      this._setFabPosition(IOWA.Elements.Masthead._scrollTop);
 
       // Note: there's no harm in re-adding existing listeners with
       // the same params.
@@ -495,16 +421,14 @@ IOWA.Elements = (function() {
       }, 500);
 
       if (this._fabCrossFooterThreshold <= scrollTop) {
-        this.$.fab.classList.remove('fixed');
-        this.$.fab.style.top = (this._fabPinTop) + 'px';
+        this.$.fab.style.transform = 'translateY(-' + (scrollTop - this._fabCrossFooterThreshold) + 'px)';
       } else {
-        this.$.fab.style.top = '';
-        this.$.fab.classList.add('fixed');
+        this.$.fab.style.transform = '';
       }
     };
 
     template._onContentScroll = function() {
-      var scrollTop = IOWA.Elements.ScrollContainer.scrollTop;
+      var scrollTop = IOWA.Elements.Masthead._scrollTop;
 
       if (scrollTop === 0) {
         this.$.navbar.classList.remove('scrolled');

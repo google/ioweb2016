@@ -17,11 +17,14 @@
 @import '../base/vars';
 @import '../base/typography';
 
+html {
+  height: 100%;
+}
+
 html, body {
   color:  $color-text;
   margin: 0;
   padding: 0;
-  height: 100%;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
   @include typo-body();
@@ -35,6 +38,20 @@ body {
   @include typo-button();
   white-space: nowrap;
   cursor: pointer;
+}
+
+.cta-button {
+  width: 133px;
+  background: #fff;
+  color: $color-bluegrey-800;
+  font-size: 14px;
+  line-height: 14px;
+  margin: $mobileKeyline 0 0 0;
+  border-radius: 2px;
+
+  &:hover {
+    @include shadow-z1();
+  }
 }
 
 .strong {
@@ -182,21 +199,29 @@ paper-progress {
   background-color: rgba($color-bluegrey-50, 0.6);
 }
 
-// .bg-google-blue {
-//   background-color: $color-google-blue-500;
-// }
+.bg-bluegrey-700 {
+  background-color: $color-bluegrey-700;
+}
 
-// .bg-google-red {
-//   background-color: $color-google-red-500;
-// }
+.bg-indigo-400 {
+  background-color: $color-indigo-400;
+}
 
-// .bg-google-green {
-//   background-color: $color-google-green-500;
-// }
+.bg-amber-400 {
+  background-color: $color-amber-400;
+}
 
-// .bg-google-yellow {
-//   background-color: $color-google-yellow-500;
-// }
+.bg-lightgreen-600 {
+  background-color: $color-lightgreen-600;
+}
+
+.bg-red-A200 {
+  background-color: $color-red-A200;
+}
+
+.bg-bluegrey-200 {
+  background-color: $color-bluegrey-200;
+}
 
 .navbar__overlay {
   position: fixed !important;  // iOS
@@ -238,42 +263,18 @@ paper-progress {
   background-size: contain;
 }
 
-.io-main {
-  .slide-up-delay {
-    transform: translateY(100px);
-    opacity: 0;
-    will-change: transform, opacity;
-  }
-
-  .slide-up {
-    transform: translateY(100px);
-    opacity: 0;
-    position: relative;
-    will-change: transform, opacity;
-  }
-}
-
-// .io-logo-container {
-//   position: absolute;
-//   left: 0;
-//   right: 0;
-//   bottom: 0;
-//   top: 0;
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-
-//   io-logo {
-//     will-change: transform; // https://github.com/GoogleChrome/ioweb2015/issues/254
+// .io-main {
+//   .slide-up-delay {
+//     transform: translateY(100px);
+//     opacity: 0;
+//     will-change: transform, opacity;
 //   }
 
-//   [iologobackground] {
-//     position: absolute;
-//     left: 0;
-//     right: 0;
-//     bottom: 0;
-//     top: 0;
-//     will-change: transform; // https://github.com/GoogleChrome/ioweb2015/issues/254
+//   .slide-up {
+//     transform: translateY(100px);
+//     opacity: 0;
+//     position: relative;
+//     will-change: transform, opacity;
 //   }
 // }
 
@@ -325,7 +326,7 @@ paper-progress {
 }
 
 #fab {
-  position: absolute;
+  position: fixed;
   left: 0;
   right: 0;
   bottom: 40px;
@@ -336,10 +337,6 @@ paper-progress {
     transform: scale(1);
   }
 
-  &.fixed {
-    position: fixed;
-  }
-
   paper-fab {
     background: #fff;
     color: inherit;
@@ -347,13 +344,6 @@ paper-progress {
     will-change: transform;
     transform: scale(0);
     pointer-events: all;
-    box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.12),
-                0px 8px 8px 0px rgba(0,0,0,0.24);
-
-    &:hover {
-      box-shadow: 0px 0px 14px 0px rgba(0,0,0,0.12),
-                  0px 14px 14px 0px rgba(0,0,0,0.24);
-    }
   }
 }
 
@@ -412,7 +402,6 @@ paper-slider {
   }
 }
 
-// @media (min-width: $desktop-breakpoint-mid + 1) {
 @media (min-width: 961px) {
   // h1 same as previous.
   h2 {

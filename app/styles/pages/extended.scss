@@ -24,25 +24,27 @@ $name: 'page-extended';
 
 ##{$name} {
 
-  p {
-    @include typo-body();
-  }
-
-  h4 {
-    font-size: 24px;
-    margin-top: 4px;
-    margin-bottom: 8px;
-  }
-
-  .card-content {
-    padding-right: 32px;
-
+  io-extended-page {
     p {
-      @include typo-heading-2();
-      line-height: 32px;
+      @include typo-body();
+    }
 
-      @media (max-width: $tablet-breakpoint-max) {
-        @include typo-mobile-intro-card();
+    h4 {
+      font-size: 24px;
+      margin-top: 4px;
+      margin-bottom: 8px;
+    }
+
+    .card-content {
+      padding-right: 32px;
+
+      p {
+        @include typo-heading-2();
+        line-height: 32px;
+
+        @media (max-width: $tablet-breakpoint-max) {
+          @include typo-mobile-intro-card();
+        }
       }
     }
   }

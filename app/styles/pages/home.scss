@@ -54,7 +54,7 @@ h3 a {
   &.card__play-button {
     background-image: linear-gradient(to top, transparent 70%, #000),
                       url(../images/home/recap.jpg);
-    background-position: 50% 50%, 0 50%;
+    background-position: 50% 50%, 50% 50%;
     background-size: cover, cover;
     cursor: pointer;
     position: relative;
@@ -115,20 +115,6 @@ h3 a {
 #countdown-container {
   width: 100%;
   margin-top: 0;
-}
-
-.register-button {
-  width: 133px;
-  background: #fff;
-  color: $color-bluegrey-800;
-  font-size: 14px;
-  line-height: 14px;
-  margin: $desktopKeyline 0 0 0;
-  border-radius: 2px;
-
-  &:hover {
-    @include shadow-z1();
-  }
 }
 
 .card__footerlink {

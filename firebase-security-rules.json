@@ -13,6 +13,7 @@
           }
         },
         "my_sessions": {
+          ".indexOn": "bookmarked",
           "$session_id": {
             ".validate": "!data.exists() || newData.child('timestamp').val() > data.child('timestamp').val()"
           }

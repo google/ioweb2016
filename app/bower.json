@@ -62,6 +62,7 @@
     "paper-fab": "PolymerElements/paper-fab#^1.0.0",
     "paper-item": "PolymerElements/paper-item#^1.0.0",
     "paper-input": "PolymerElements/paper-input#^1.1.6",
+    "paper-listbox": "PolymerElements/paper-listbox#^1.1.2",
     "paper-menu-button": "PolymerElements/paper-menu-button#^1.0.0",
     "paper-radio-group": "PolymerElements/paper-radio-group#^1.0.0",
     "paper-radio-button": "PolymerElements/paper-radio-button#^1.0.0",

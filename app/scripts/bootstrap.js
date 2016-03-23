@@ -125,6 +125,11 @@
     IOWA.Notifications.init();
 
     initWorker();
+
+    // TODO: Is this the best place to call loadUserSchedule()?
+    // It waits on a promise for the master schedule to load, so it doesn't
+    // *hurt* to call it early.
+    IOWA.Schedule.loadUserSchedule();
   }
 
   // TODO: fix when new page elements have these hooks.
@@ -161,38 +166,6 @@
     if (IOWA.Elements && IOWA.Elements.Toast) {
       IOWA.Elements.Toast.showMessage(
         'Offline. Changes you make to My Schedule will be saved for later.');
-    }
-  });
-
-  // Watch for sign-in changes to fetch user schedule, update UI, etc.
-  window.addEventListener('signin-change', function(e) {
-    if (e.detail.signedIn) {
-      // Authorize the user to Firebase.
-      var user = e.detail.user;
-      IOWA.IOFirebase.auth(user.id, user.tokenResponse.access_token);
-
-      // Check to see if there are any failed session modification requests, and
-      // if so, replay them before fetching the user schedule.
-      IOWA.Schedule.replayQueuedRequests().then(IOWA.Schedule.loadUserSchedule.bind(IOWA.Schedule));
-
-      // If the user hasn't denied notifications permission in the current browser,
-      // and the user has notifications turned on globally (i.e. in at least one other browser),
-      // and there isn't already a subscription in the current browser, then try to enable
-      // notifications in the current browser.
-      if (window.Notification.permission !== 'denied') {
-        IOWA.Notifications.isNotifyEnabledPromise().then(function(isGlobalNotificationsEnabled) {
-          if (isGlobalNotificationsEnabled) {
-            IOWA.Notifications.isExistingSubscriptionPromise().then(function(isLocalSubscription) {
-              if (!isLocalSubscription) {
-                IOWA.Notifications.subscribePromise();
-              }
-            });
-          }
-        });
-      }
-    } else {
-      IOWA.IOFirebase.unAuth();
-      IOWA.Schedule.clearUserSchedule();
     }
   });
 

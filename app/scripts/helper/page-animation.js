@@ -350,7 +350,25 @@ IOWA.PageAnimation = (function() {
   function play(animation, opt_callback) {
     var player = document.timeline.play(animation);
     if (opt_callback) {
-      player.onfinish = opt_callback;
+      player.onfinish = function() {
+        var main = IOWA.Elements.Main.querySelector('.active .slide-up');
+        if (main) {
+          main.style = 'transform: none; opacity: 1';
+        }
+
+        var mainDelayed = IOWA.Elements.Main.querySelector(
+            '.active .slide-up-delay');
+        if (mainDelayed) {
+          mainDelayed.style = 'transform: none; opacity: 1';
+        }
+
+        // Removes the effects of the animation b/c we've applied it inline.
+        // This helps paper-dropdown-menus properly overlay the main content
+        // area when they open. When the content remains transformed, there
+        // are layering bugs.
+        this.cancel();
+        opt_callback();
+      };
     }
   }
 
