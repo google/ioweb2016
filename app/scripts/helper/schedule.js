@@ -207,10 +207,10 @@ class Schedule {
       IOWA.Auth.waitForSignedIn().then(() => {
         return IOWA.IOFirebase.clearCachedReads();
       }).then(() => {
-        // Get entire initial list of user's saved sessions.
-        IOWA.IOFirebase.getUserSchedule().then(savedSessions => {
-          IOWA.Elements.Template.set('app.savedSessions', savedSessions);
-        });
+        // // Get entire initial list of user's saved sessions.
+        // IOWA.IOFirebase.getUserSchedule().then(savedSessions => {
+        //   IOWA.Elements.Template.set('app.savedSessions', savedSessions);
+        // });
 
         // Listen to session bookmark updates.
         IOWA.IOFirebase.registerToSessionUpdates(sessionUpdatesCallback);

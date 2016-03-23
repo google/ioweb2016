@@ -255,67 +255,6 @@ IOWA.Elements = (function() {
     //   });
     // };
 
-//     template.openShareWindow = function(e) {
-//       e.preventDefault();
-
-//       var type = Polymer.dom(e).rootTarget.getAttribute('data-share-type');
-//       var url = null;
-//       var width = 600;
-//       var height = 600;
-//       var winOptions = 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=' +
-//                        height + ',width=' + width;
-
-//       var title = document.title;
-
-// // TODO: update for polymer 1.0 port
-//       var selectedSession = Polymer.dom(e).rootTarget.templateInstance.model.selectedSession;
-//       if (selectedSession) {
-//         title = selectedSession.title;
-//       }
-
-//       // Shorten current URL so it's ready to go.
-//       IOWA.Util.shortenURL(location.href).then(function(shortURL) {
-//         switch (type) {
-//           case 'fb':
-//             height = 229;
-//             url = 'https://www.facebook.com/sharer.php?u=' +
-//                   encodeURIComponent(shortURL) +
-//                   '&t=' + encodeURIComponent(title);
-
-//             break;
-
-//           case 'gplus':
-//             height = 348;
-//             width = 512;
-//             url = 'https://plus.google.com/share?url=' +
-//                   encodeURIComponent(shortURL) +
-//                   '&hl=' + encodeURIComponent(document.documentElement.lang);
-//             break;
-
-//           case 'twitter':
-//             height = 253;
-
-//             var el = document.getElementById('share-text');
-//             var text = el.textContent || 'Google I/O 2016';
-
-//             if (selectedSession) {
-//               text = 'Check out "' + title + '" at #io16: ' + shortURL;
-//             }
-
-//             url = 'https://twitter.com/intent/tweet?text=' +
-//                    encodeURIComponent(text);
-
-//             break;
-
-//           default:
-
-//             return;
-//         }
-
-//         window.open(url, 'share', winOptions);
-//       });
-//     };
-
     template.openSettings = function(e) {
       var attr = Polymer.dom(e).rootTarget.getAttribute(ANALYTICS_LINK_ATTR);
       if (attr) {
