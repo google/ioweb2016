@@ -30,20 +30,6 @@ The `<io-schedule-subnav>` implements the schedule pages sub navigation.
     display: block;
   }
 
-  /* Note: paper-tabs needs its parent to have layout in order to calculate
-  its selection bar transform. Instead, visibility hide the subnav, set the
-  selected tab, then display: none it. */
-  :host(.invisible) {
-    /*visibility: hidden;
-    pointer-events: none;*/
-    top: -1000px;
-  }
-
-  .subpage__nav {
-    margin: 0 auto;
-    padding-left: 0;
-  }
-
   @media (min-width: 768px) {
     #subpage-tabs {
       margin-left: -12px;

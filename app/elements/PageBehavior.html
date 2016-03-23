@@ -31,6 +31,14 @@ IOBehaviors.PageBehavior = {
      */
     name: {
       type: String
+    },
+
+    /*
+     * True if the page has a subnav. Should be override consumers of this behavior.
+     */
+    hasSubnav: {
+      type: Boolean,
+      value: false
     }
   },
 
@@ -47,10 +55,13 @@ IOBehaviors.PageBehavior = {
     if (IOWA.Elements.ScrollContainer) {
       IOWA.Elements.ScrollContainer.scrollTop = 0;
     }
+
+    this.setupSubnavEffects();
   },
 
   detached: function() {
     this.unlisten(document.body, 'page-transition-done', 'onPageTransitionDone');
+    this.teardownSubnavEffects();
   },
 
   checkOpenDialogVideo: function(e) {
@@ -199,13 +210,29 @@ IOBehaviors.PageBehavior = {
   },
 
   setupSubnavEffects: function() {
-    this._appHeader = document.querySelector('#header');
-    this._mainSubnav = this._appHeader.querySelector('io-schedule-subnav');
+    if (!this.hasSubnav) {
+      return;
+    }
 
-    this.listen(IOWA.Elements.ScrollContainer, 'scroll', '_runSubnavEffects');
+    // Wait one tick for app-header have stamped the page's ghost subnav.
+    this.async(function() {
+      this._appHeader = document.querySelector('#header');
+      this._mainSubnav = this._appHeader.querySelector('.header_subnav');
+
+      // Double check page actually has a subnav.
+      if (!this._mainSubnav) {
+        return;
+      }
+
+      this.listen(IOWA.Elements.ScrollContainer, 'scroll', '_runSubnavEffects');
+    });
   },
 
   teardownSubnavEffects: function() {
+    if (!this.hasSubnav) {
+      return;
+    }
+
     this.unlisten(IOWA.Elements.ScrollContainer, 'scroll', '_runSubnavEffects');
     this._appHeader = null;
     this._mainSubnav = null;
@@ -221,13 +248,13 @@ IOBehaviors.PageBehavior = {
     // Scrolling down.
     if (subnavScrollTop >= 0) {
       // Hide the page's subnav when it reaches the top of the page.
-      this._mainSubnav.classList.remove('invisible');
+      this._mainSubnav.classList.remove('offscreen');
     } else if (scrollingUp && Math.abs(subnavScrollTop) >= this.$.subnav.clientHeight) {
       // Scrolling up.
       // When the user is scrolling back up, return the page's visibility
       // when it's directly under fixed subnav. This make its it appear as
       // if the subnav returns to position: static, scrolling with the page.
-      this._mainSubnav.classList.add('invisible');
+      this._mainSubnav.classList.add('offscreen');
     }
   }
 

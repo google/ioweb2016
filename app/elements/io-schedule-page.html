@@ -289,7 +289,7 @@ limitations under the License.
               on-session-bookmark="_onToggleSaveSession"
               on-session-select="openSession"
               gmt-day-one="[[date]]"
-              show-filters="[[showFilters]]"></io-schedule>
+              show-filters="{{showFilters}}"></io-schedule>
           </section>
         </div>
       </section>
@@ -349,6 +349,15 @@ limitations under the License.
       selectedSession: {
         type: Object,
         value: null
+      },
+
+      /**
+       * True to show the filter panel
+       */
+      showFilters: {
+        type: Boolean,
+        value: false,
+        notify: true
       },
 
       _startScheduleVideo: {
@@ -463,20 +472,19 @@ limitations under the License.
 
     title: 'Schedule',
     name: 'schedule',
+    hasSubnav: true, // Toggles the subnav scroll effects.
 
     attached: function() {
       // TODO: check that this is still needed in paper-tabs.
       IOWA.A11y.addFocusStates(SUBTAB_SELECTOR);
 
       this.listen(window, 'popstate', 'sessionDetailsPopstateHandler');
-      this.setupSubnavEffects();
     },
 
     detached: function() {
       IOWA.A11y.removeFocusStates(SUBTAB_SELECTOR);
 
       this.unlisten(window, 'popstate', 'sessionDetailsPopstateHandler');
-      this.teardownSubnavEffects();
     },
 
     onPageTransitionDone: function(e) {

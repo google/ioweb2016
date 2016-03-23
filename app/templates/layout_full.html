@@ -330,9 +330,28 @@ limitations under the License.
 
     </app-toolbar>
 
-    <io-schedule-subnav selected-subpage="{{selectedSubpage}}" app="[[app]]"
-                        show-filters="{{showFilters}}"
-                        class="invisible"></io-schedule-subnav>
+    <!-- Pages that have subnavs which participate in scrolling effects go here. -->
+    <template is="dom-if" if="[[_isPage('schedule', selectedPage)]]" restamp>
+      <io-schedule-subnav selected-subpage="{{selectedSubpage}}" app="[[app]]"
+                          show-filters="{{showFilters}}"
+                          class="header_subnav offscreen"></io-schedule-subnav>
+    </template>
+    <template is="dom-if" if="[[_isPage('attend', selectedPage)]]" restamp>
+      <div class="header_subnav offscreen subpage__nav bg-cyan-400" layout horizontal justified>
+        <paper-tabs id="subpage-tabs" class="white"
+                    attr-for-selected="label"
+                    selected="{{selectedSubpage}}">
+          <paper-tab label="event" role="">
+            <a href="#event" data-track-link="attending-event" data-ajax-link
+               layout horizontal center-center>Event</a>
+          </paper-tab>
+          <paper-tab label="travel" role="">
+            <a href="#travel" data-track-link="attending-travel" data-ajax-link
+               layout horizontal center-center>Travel</a>
+          </paper-tab>
+        </paper-tabs>
+      </div>
+    </template>
 
   </app-header>
 
@@ -349,7 +368,8 @@ limitations under the License.
             date="{% .StartDateStr %}"></io-home-page>
       </template>
       <template is="dom-if" name="attend" restamp>
-        <io-attend-page app="[[app]]"></io-attend-page>
+        <io-attend-page app="[[app]]"
+                        selected-subpage="{{selectedSubpage}}"></io-attend-page>
       </template>
       <template is="dom-if" name="extended" restamp>
         <io-extended-page app="[[app]]"></io-extended-page>

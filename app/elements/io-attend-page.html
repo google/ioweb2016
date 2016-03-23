@@ -34,7 +34,7 @@ limitations under the License.
     }
   </style>
 
-<div class="masthead-container" layout horizontal end>
+<div id="mastheadContainer" class="masthead-container" layout horizontal end>
   <div class="masthead-meta">
     <h1 class="focus-target" tabindex="-1">Attending</h1>
   </div>
@@ -75,17 +75,17 @@ limitations under the License.
   <div class="card">
     <div class="subpage__container">
 
-      <div class="subpage__nav bg-cyan-400" layout horizontal justified>
+      <div id="subnav" class="subpage__nav bg-cyan-400" layout horizontal justified>
         <paper-tabs id="subpage-tabs" class="white"
                     attr-for-selected="label"
                     selected="[[selectedSubpage]]">
           <paper-tab label="event" role="">
             <a href="#event" data-track-link="attending-event" data-ajax-link
-                              layout horizontal center-center>Event</a>
+               layout horizontal center-center>Event</a>
           </paper-tab>
           <paper-tab label="travel" role="">
             <a href="#travel" data-track-link="attending-travel" data-ajax-link
-                            layout horizontal center-center>Travel</a>
+               layout horizontal center-center>Travel</a>
           </paper-tab>
         </paper-tabs>
       </div>
@@ -334,6 +334,7 @@ limitations under the License.
 
     title: 'Attending',
     name: 'attend',
+    hasSubnav: true, // Toggles the subnav scroll effects.
 
     properties: {
       _loadMap: {
@@ -346,7 +347,8 @@ limitations under the License.
        */
       selectedSubpage: {
         type: String,
-        value: 'event'
+        value: 'event',
+        notify: true
       }
     },
 
