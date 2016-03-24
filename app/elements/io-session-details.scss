@@ -18,39 +18,26 @@
 
 $color-section-border: #eaeaea;
 
-// :host(.inline) #sessionDetails {
-//   // Overrides for paper-dialog
-//   position: absolute !important;
-//   top: 0 !important;
-//   left: 0 !important;
-//   right: 0 !important;
-//   padding: 0 !important;
-//   margin: 0 !important;
-//   height: 100% !important;
-//   width: 100% !important;
-//   max-height: 100% !important;
-//   max-width: 100% !important;
-//   z-index: 1 !important;
-//   box-shadow: none !important;
-// }
-
-// .session_details_wrapper {
-//   padding: 0;
-//   margin: 0;
-// }
+:host([inline]) #sessionDetails {
+  // Overrides for paper-dialog
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  height: 100% !important;
+  width: 100% !important;
+  max-height: 100% !important;
+  max-width: 100% !important;
+  z-index: 1 !important;
+  box-shadow: none !important;
+}
 
 #sessionDetails {
   max-width: $tablet-breakpoint-min;
   position: fixed;
-
- // .scrollable {
- //   padding: 0;
- //   margin: 0;
- //   height: 100%;
- //   position: relative; // So back arrow scrolls away.
- // }
 }
-
 
 #sessionDetails {
   font-size: 16px;
@@ -78,7 +65,6 @@ $color-section-border: #eaeaea;
   .fullschedule-banner {
     height: $subnavHeight;
     margin: 0;
-    cursor: pointer;
     color: rgba(0,0,0,0.54);
 
     paper-icon-button {
@@ -113,7 +99,6 @@ $color-section-border: #eaeaea;
   }
 
   .session__info__links {
-    //border-top: 1px solid $color-light-grey-border;
     text-transform: uppercase;
 
       .anchor-like {
@@ -129,9 +114,6 @@ $color-section-border: #eaeaea;
     margin: $desktopKeyline 0;
     max-width: 700px;
   }
-  // .session__title {
-  //   color: #000;
-  // }
   .session__categories {
     font-size: 14px;
     line-height: 40px;
@@ -142,14 +124,10 @@ $color-section-border: #eaeaea;
     }
   }
   .session__time {
-    color:$color-session-detail-light-grey;
+    color: $color-session-detail-light-grey;
     font-size: 16px;
     font-weight: 400;
     line-height: 28px;
-  }
-  .session__livestream {
-    // color: $color-session-detail-light-grey;
-    // text-align: right;
   }
   .session__tags {
     a:not(:last-of-type)::after {
@@ -186,6 +164,10 @@ $color-section-border: #eaeaea;
   border-bottom: 1px solid $color-section-border;
 }
 
+.session__info__section--header {
+  font-weight: 500;
+}
+
 .session__speakers {
   max-width: calc(100% - 64px);
 
@@ -215,11 +197,37 @@ $color-section-border: #eaeaea;
 
 .speaker__info {
   .speaker__desc {
-    padding: $mobileKeyline 0;
+    padding-top: $mobileKeyline;
     font-size: 14px;
   }
   a {
     color: inherit !important;
+  }
+}
+
+.session__related {
+  border-top: 1px solid $color-section-border;
+
+  .related__card {
+    margin-top: $desktopKeyline;
+  }
+
+  .related__info {
+    margin-top: -5px;
+  }
+
+  .related__time {
+    font-size: 14px;
+    color: $color-session-detail-light-grey;
+  }
+
+  .related_sessionicon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    background-size: 100px;
+    background-position: 50% 50%;
+    margin-right: $mobileKeyline;
   }
 }
 
@@ -229,7 +237,6 @@ $color-section-border: #eaeaea;
     left: 0 !important;
     top: 0 !important;
     width: 100%;
-    height: 100%;
   }
 }
 
@@ -253,8 +260,12 @@ $color-section-border: #eaeaea;
       width: calc(50% - 32px);
     }
   }
+  .session__related {
+    .related__card {
+      width: calc(50% - 32px);
+    }
+  }
   .session__time {
-    color:$color-session-detail-light-grey;
     line-height: 21px;
   }
 }

@@ -44,24 +44,17 @@ limitations under the License.
 <template>
   <style include="shared-app-styles"></style>
 
-  <!-- <paper-dialog id="sessionDetails"
-                no-cancel-on-outside-click
-                no-cancel-on-esc-key
+  <paper-dialog id="sessionDetails"
+                no-cancel-on-outside-click="[[inline]]"
+                no-cancel-on-esc-key="[[inline]]"
+                with-backdrop="[[!inline]]"
                 restore-focus-on-close
                 no-auto-focus
                 entry-animation="scale-up-animation"
                 exit-animation="fade-out-animation"
                 on-iron-overlay-closed="_onSessionDetailsClose"
-                on-iron-overlay-opened="_onSessionDetailsOpen"> -->
-  <paper-dialog id="sessionDetails"
-                restore-focus-on-close
-                with-backdrop$="[[!app.isIOS]]"
-                entry-animation="scale-up-animation"
-                exit-animation="fade-out-animation"
-                on-iron-overlay-closed="_onSessionDetailsClose"
                 on-iron-overlay-opened="_onSessionDetailsOpen">
 
-    <!-- <div class="scrollable"> -->
       <div class="fullschedule-banner card-content bg-bluegrey-50-60"
            layout horizontal center>
         <paper-icon-button icon="io:arrow-back" dialog-dismiss
@@ -69,135 +62,152 @@ limitations under the License.
         <span>Full Schedule</span>
       </div>
 
-      <paper-dialog-scrollable>
+      <paper-dialog-scrollable id="scrollable">
 
-      <!-- <div class="session_details_wrapper bg-bluegrey-50-20"> -->
-      <div class="bg-bluegrey-50-20">
+        <div class="bg-bluegrey-50-20">
 
-        <div class="card__photo" relative>
+          <div class="card__photo" relative>
 
-          <template is="dom-if" if="[[sessionHasVideo(_startScheduleVideo, selectedSession.isLivestream, selectedSession.youtubeUrl)]]" restamp>
-            <google-youtube
-                video-id="[[_toVideoIdFilter(selectedSession.youtubeUrl)]]"
-                height="100%" width="100%" fit
-                autohide="1" controls="2" modestbranding="1" showinfo="0"
-                iv_load_policy="3" rel="0" autoplay="1"
-                on-google-youtube-ready="onScheduleVideoReady"></google-youtube>
-          </template>
-          <div class="play__button__container" on-click="onVideoPlay"
-               data-track-link$="{{selectedSession.youtubeUrl}}"
-               hidden$="{{showSessionPlayButton(selectedSession)}}"
-               layout vertical center-center fit>
-            <h4>Watch video</h4>
-          </div>
-          <iron-image src="[[placeholderImage(selectedSession)]]"
-                      placeholder="images/io16-social.jpg"
-                      sizing="cover" preload fade fit></iron-image>
-          <paper-fab icon="[[_computeSessionSavedIcon(selectedSession.saved)]]"
-                     mini="[[app.isPhoneSize]]"
-                     class$="[[_addClass('active', selectedSession.saved)]]"
-                     on-up="_onToggleSaveSession"></paper-fab>
-        </div>
-        <div class="session__info__section session__details">
-          <h3 class="session__title" tabindex="-1">{{selectedSession.title}}</h3>
-          <h5 class="session__time">May <span>{{selectedSession.day}}</span> / <span>{{selectedSession.start}}</span><span hidden$="{{_equal('__keynote__', selectedSession.id)}}"> - {{selectedSession.end}}</span> / <span>{{selectedSession.room}}</span></h5>
-          <div class="session__desc">{{selectedSession.description}}</div>
-          <div class="session__categories">
-            <div class="session__livestream" hidden$="{{!selectedSession.isLivestream}}">
-              <iron-icon icon="io:videocam"></iron-icon>
-              <a href="/io2016/schedule?filters=Live%20Streamed"
-                 data-track-link="schedule-details-filter"
-                 on-click="_onApplyFilter">Live streamed</a>
+            <template is="dom-if" if="[[sessionHasVideo(_startScheduleVideo, selectedSession.isLivestream, selectedSession.youtubeUrl)]]" restamp>
+              <google-youtube
+                  video-id="[[_toVideoIdFilter(selectedSession.youtubeUrl)]]"
+                  height="100%" width="100%" fit
+                  autohide="1" controls="2" modestbranding="1" showinfo="0"
+                  iv_load_policy="3" rel="0" autoplay="1"
+                  on-google-youtube-ready="onScheduleVideoReady"></google-youtube>
+            </template>
+            <div class="play__button__container" on-click="onVideoPlay"
+                 data-track-link$="{{selectedSession.youtubeUrl}}"
+                 hidden$="{{showSessionPlayButton(selectedSession)}}"
+                 layout vertical center-center fit>
+              <h4>Watch video</h4>
             </div>
-            <template is="dom-if" if="[[tags.length]]">
-              <div class="session__tags">
-                <iron-icon icon="io:filter-list" aria-label="Filter sessions"></iron-icon>
-                <template is="dom-repeat" items="[[tags]]" as="tag">
-                  <a href$="/io2016/schedule?filters=[[tag]]"
-                     data-track-link="schedule-details-filter"
-                     on-click="_onApplyFilter">[[tag]]</a>
-                </template>
+            <iron-image src="[[placeholderImage(selectedSession)]]"
+                        placeholder="images/io16-social.jpg"
+                        sizing="cover" preload fade fit></iron-image>
+            <paper-fab icon="[[_computeSessionSavedIcon(selectedSession.saved)]]"
+                       mini="[[app.isPhoneSize]]"
+                       class$="[[_addClass('active', selectedSession.saved)]]"
+                       on-up="_onToggleSaveSession"></paper-fab>
+          </div>
+          <div class="session__info__section session__details">
+            <h3 class="session__title" tabindex="-1">{{selectedSession.title}}</h3>
+            <h5 class="session__time">May <span>{{selectedSession.day}}</span> / <span>{{selectedSession.start}}</span><span hidden$="{{_equal('__keynote__', selectedSession.id)}}"> - {{selectedSession.end}}</span> / <span>{{selectedSession.room}}</span></h5>
+            <div class="session__desc">{{selectedSession.description}}</div>
+            <div class="session__categories">
+              <div class="session__livestream" hidden$="{{!selectedSession.isLivestream}}">
+                <iron-icon icon="io:videocam"></iron-icon>
+                <a href="/io2016/schedule?filters=Live%20Streamed"
+                   data-track-link="schedule-details-filter"
+                   on-click="_onApplyFilter">Live streamed</a>
               </div>
-            </template>
+              <template is="dom-if" if="[[tags.length]]">
+                <div class="session__tags">
+                  <iron-icon icon="io:filter-list" aria-label="Filter sessions"></iron-icon>
+                  <template is="dom-repeat" items="[[tags]]" as="tag">
+                    <a href$="/io2016/schedule?filters=[[tag]]"
+                       data-track-link="schedule-details-filter"
+                       on-click="_onApplyFilter">[[tag]]</a>
+                  </template>
+                </div>
+              </template>
+            </div>
+
+            <paper-menu-button class="session__social"
+                               on-iron-activate="openShareWindow"
+                               on-iron-overlay-closed="noop">
+              <paper-button class="dropdown-trigger" raised>Share</paper-button>
+              <paper-listbox class="dropdown-content" layout vertical>
+                <paper-item data-share-type="gplus"
+                            data-track-link="schedule-share-gplus">
+                  <iron-icon icon="io:post-gplus" class="share-icon"></iron-icon> Google
+                </paper-item>
+                <paper-item data-share-type="twitter"
+                            data-track-link="schedule-share-twitter">
+                  <iron-icon icon="io:post-twitter" class="share-icon"></iron-icon> Twitter
+                </paper-item>
+                <paper-item data-share-type="fb"
+                            data-track-link="schedule-share-fb">
+                  <iron-icon icon="io:post-facebook" class="share-icon"></iron-icon> Facebook
+                </paper-item>
+              </paper-listbox>
+            </paper-menu-button>
+
           </div>
 
-          <paper-menu-button class="session__social"
-                             on-iron-activate="openShareWindow"
-                             on-iron-overlay-closed="noop">
-            <paper-button class="dropdown-trigger" raised>Share</paper-button>
-            <paper-listbox class="dropdown-content" layout vertical>
-              <paper-item data-share-type="gplus"
-                          data-track-link="schedule-share-gplus">
-                <iron-icon icon="io:post-gplus" class="share-icon"></iron-icon> Google
-              </paper-item>
-              <paper-item data-share-type="twitter"
-                          data-track-link="schedule-share-twitter">
-                <iron-icon icon="io:post-twitter" class="share-icon"></iron-icon> Twitter
-              </paper-item>
-              <paper-item data-share-type="fb"
-                          data-track-link="schedule-share-fb">
-                <iron-icon icon="io:post-facebook" class="share-icon"></iron-icon> Facebook
-              </paper-item>
-            </paper-listbox>
-          </paper-menu-button>
-
-        </div>
-
-        <div class="session__info__section session__speakers"
-             hidden$="{{!selectedSession.speakers.length}}">
-          <span>Speakers</span>
-          <div layout horizontal justified wrap>
-            <template is="dom-repeat" items="[[selectedSession.speakers]]" as="speakerId">
-              <div class="speaker__card">
-                <div layout horizontal>
-                  <div>
-                    <img src$="[[speakerProfilePic(app.scheduleData.speakers, speakerId)]]"
-                         class="profilepic">
+          <div class="session__info__section session__speakers"
+               hidden$="{{!selectedSession.speakers.length}}">
+            <span class="session__info__section--header">Speakers</span>
+            <div layout horizontal justified wrap>
+              <template is="dom-repeat" items="[[selectedSession.speakers]]" as="speakerId">
+                <div class="speaker__card">
+                  <div layout horizontal>
+                    <div>
+                      <img src$="[[speakerProfilePic(app.scheduleData.speakers, speakerId)]]"
+                           class="profilepic">
+                    </div>
+                    <div>
+                      <div class="speaker__name">{{_propOfArrayItem(app.scheduleData.speakers, speakerId, 'name')}}</div>
+                      <div class="speaker__title">{{_propOfArrayItem(app.scheduleData.speakers, speakerId, 'company')}}</div>
+                    </div>
                   </div>
-                  <div>
-                    <div class="speaker__name">{{_propOfArrayItem(app.scheduleData.speakers, speakerId, 'name')}}</div>
-                    <div class="speaker__title">{{_propOfArrayItem(app.scheduleData.speakers, speakerId, 'company')}}</div>
+                  <div class="speaker__info" >
+                    <div class="speaker__desc">{{_propOfArrayItem(app.scheduleData.speakers, speakerId, 'bio')}}</div>
+                    <div class="session__social" layout horizontal center>
+                      <a href$="{{_propOfArrayItem(app.scheduleData.speakers, speakerId, 'plusoneUrl')}}" target="_blank" class="share-icon" hidden$="{{!_propOfArrayItem(app.scheduleData.speakers, speakerId, 'plusoneUrl')}}"><iron-icon icon="io:post-gplus"></iron-icon></a>
+                      <a href$="{{_propOfArrayItem(app.scheduleData.speakers, speakerId, 'twitterUrl')}}" target="_blank" class="share-icon" hidden$="{{!_propOfArrayItem(app.scheduleData.speakers, speakerId, 'twitterUrl')}}"><iron-icon icon="io:post-twitter" class="twitter-icon"></iron-icon></a>
+                    </div>
                   </div>
                 </div>
-                <div class="speaker__info" >
-                  <div class="speaker__desc">{{_propOfArrayItem(app.scheduleData.speakers, speakerId, 'bio')}}</div>
-                  <div class="session__social" layout horizontal center>
-                    <a href$="{{_propOfArrayItem(app.scheduleData.speakers, speakerId, 'plusoneUrl')}}" target="_blank" class="share-icon" hidden$="{{!_propOfArrayItem(app.scheduleData.speakers, speakerId, 'plusoneUrl')}}"><iron-icon icon="io:post-gplus"></iron-icon></a>
-                    <a href$="{{_propOfArrayItem(app.scheduleData.speakers, speakerId, 'twitterUrl')}}" target="_blank" class="share-icon" hidden$="{{!_propOfArrayItem(app.scheduleData.speakers, speakerId, 'twitterUrl')}}"><iron-icon icon="io:post-twitter" class="twitter-icon"></iron-icon></a>
-                  </div>
-                </div>
-              </div>
-            </template>
+              </template>
 
+            </div>
           </div>
-        </div>
 
-        <!-- <div class="session__info__section session__info__links card-content"
-            layout horizontal justified$="{{app.isPhoneSize}}"
-            hidden$="{{_computeHideSessionInfo(selectedSession)}}">
-          <span class="anchor-like" role="link"
-                on-click="onRelatedContent"
-                data-track-link="schedule-detail-related"
-                hidden$="{{!selectedSession.hasRelated}}"
-                dialog-dismiss>View related content</span>
-          <span class="anchor-like" role="link"
-              on-click="onRateSession"
-              data-track-link="schedule-rate-session"
-              hidden$="{{_computeHideSessionRating(selectedSession)}}">Rate session</span>
-          <span class="anchor-like-disabled" hidden$="{{!selectedSession.rated}}">Rating submitted</span>
-        </div> -->
-      </div>
+          <div class="session__info__section session__related"
+               hidden$="{{!selectedSession.hasRelated}}">
+            <span class="session__info__section--header">Similar Sessions</span>
+            <div layout horizontal justified wrap>
+              <template is="dom-repeat" items="[[relatedSessions]]" as="session">
+                <div class="related__card" layout horizontal>
+                  <div class="related_sessionicon"
+                       style$="background-image:url([[session.photoUrl]])">
+                  </div>
+                  <div class="related__info">
+                    <div>
+                      <a href$="/io2016/schedule?sid=[[session.id]]"
+                         on-click="_onSimilarSessionClick"
+                         data-track-link="schedule-detail-related">[[session.title]]</a>
+                    </div>
+                    <div class="related__time">May <span>[[selectedSession.day]]</span>, <span>[[selectedSession.start]]</div></h5>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+
+          <!-- <div class="session__info__section session__info__links card-content"
+              layout horizontal justified$="{{app.isPhoneSize}}"
+              hidden$="{{_computeHideSessionInfo(selectedSession)}}">
+            <span class="anchor-like" role="link"
+                  on-click="onRelatedContent"
+                  data-track-link="schedule-detail-related"
+                  hidden$="{{!selectedSession.hasRelated}}"
+                  dialog-dismiss>View related content</span>
+            <span class="anchor-like" role="link"
+                on-click="onRateSession"
+                data-track-link="schedule-rate-session"
+                hidden$="{{_computeHideSessionRating(selectedSession)}}">Rate session</span>
+            <span class="anchor-like-disabled" hidden$="{{!selectedSession.rated}}">Rating submitted</span>
+          </div> -->
+        </div>
 
       </paper-dialog-scrollable>
-    <!-- </div>  --><!-- .scrollable -->
   </paper-dialog>
 
 </template>
 <script>
 (function() {
-  // Flag to not double-record page view on deep linking into session.
-  var pageIsDeepLinked_ = false;
-
   Polymer({
     is: 'io-session-details',
 
@@ -214,9 +224,28 @@ limitations under the License.
         observer: '_selectedSessionChanged'
       },
 
+      /**
+       * List of this sessions sanitized tags.
+       */
       tags: {
         type: Array,
         computed: '_computeTagList(selectedSession.tags)'
+      },
+
+      /**
+       * List of related sessions.
+       */
+      relatedSessions: {
+        type: Array,
+        computed: '_computeRelatedSessions(selectedSession.hasRelated, selectedSession.filters)'
+      },
+
+      /**
+       * When true, the session details panel opens inline to the schedule list.
+       */
+      inline: {
+        type: Boolean,
+        value: false
       },
 
       _startScheduleVideo: {
@@ -228,10 +257,14 @@ limitations under the License.
     _selectedSessionChanged: function() {
       if (this.selectedSession) {
         this.$.sessionDetails.open();
-        Polymer.IronDropdownScrollManager.pushScrollLock(this);
+        if (!this.inline) {
+          Polymer.IronDropdownScrollManager.pushScrollLock(this);
+        }
       } else {
         this.$.sessionDetails.close();
-        Polymer.IronDropdownScrollManager.removeScrollLock(this);
+        if (!this.inline) {
+          Polymer.IronDropdownScrollManager.removeScrollLock(this);
+        }
       }
     },
 
@@ -329,7 +362,6 @@ limitations under the License.
       history.replaceState({}, null, url);
 
       document.title = 'Schedule';
-      pageIsDeepLinked_ = false;
 
       // Reset video state.
       var video = this.$.sessionDetails.querySelector('google-youtube')
@@ -358,12 +390,6 @@ limitations under the License.
       var url = IOWA.Router.composeUrl('schedule', selectedSubpage,
                                        sessionId, search);
       history.pushState({}, null, url);
-
-      // Report session detail as pageview in GA, only if we're not loading
-      // the page from a session detail deep link. Don't want to double record.
-      if (!pageIsDeepLinked_) {
-        IOWA.Analytics.trackPageView(location.pathname + location.hash);
-      }
     },
 
     _onApplyFilter: function(e) {
@@ -384,17 +410,31 @@ limitations under the License.
       this.fire('apply-filter', {tag: tag});
     },
 
-    onRelatedContent: function(e, detail) {
-      e.stopPropagation();
-
-      var target = Polymer.dom(e).rootTarget;
-
-      if (target && target.hasAttribute(this.app.ANALYTICS_LINK_ATTR)) {
-        IOWA.Analytics.trackEvent('link', 'click',
-            target.getAttribute(this.app.ANALYTICS_LINK_ATTR));
+    _computeRelatedSessions: function(hasRelated, filters) {
+      if (!hasRelated) {
+        return [];
       }
-      this.filters = [this.selectedSession.id];
+
+      var relatedSessions = Object.keys(filters).map(function(filter) {
+        return IOWA.Schedule.getSessionById(filter);
+      }).filter(function(session) {
+        return session;
+      });
+
+      return relatedSessions;
     },
+
+    // onRelatedContent: function(e, detail) {
+    //   e.stopPropagation();
+
+    //   var target = Polymer.dom(e).rootTarget;
+
+    //   if (target && target.hasAttribute(this.app.ANALYTICS_LINK_ATTR)) {
+    //     IOWA.Analytics.trackEvent('link', 'click',
+    //         target.getAttribute(this.app.ANALYTICS_LINK_ATTR));
+    //   }
+    //   this.filters = [this.selectedSession.id];
+    // },
 
     onRateSession: function(e, detail) {
       var target = Polymer.dom(e).rootTarget;
@@ -470,6 +510,22 @@ limitations under the License.
 
         window.open(url, 'share', winOptions);
       }.bind(this));
+    },
+
+    _onSimilarSessionClick: function(e) {
+      this.noop(e);
+
+      var target = Polymer.dom(e).rootTarget;
+      if (target && target.hasAttribute(this.app.ANALYTICS_LINK_ATTR)) {
+        IOWA.Analytics.trackEvent('link', 'click',
+            target.getAttribute(this.app.ANALYTICS_LINK_ATTR));
+      }
+
+      this.selectedSession = IOWA.Schedule.getSessionById( e.model.session.id);
+      this.$.scrollable.scrollTarget.scrollTop = 0;
+      // Panel is already open, but force the event handler so the pushState
+      // and other code runs.
+      this._onSessionDetailsOpen();
     },
 
     noop: function(e) {
@@ -685,9 +741,6 @@ Fired when the user toggles bookmarking/removing a session.
 
     <div relative on-session-bookmark="_onToggleSaveSession">
 
-      <!-- <io-session-details id="sessionDetails" class="inline"
-                          selected-session="{{selectedSession}}"
-                          app="[[app]]"></io-session-details> -->
       <io-session-details id="sessionDetails"
                           selected-session="{{selectedSession}}"
                           app="[[app]]"
@@ -1169,6 +1222,14 @@ Fired when the user toggles bookmarking/removing a session.
           } else {
             this.selectedSession = sessionOrEvent;
           }
+
+          // Report session detail as pageview in GA, only if we're not loading
+          // the page from a session detail deep link. Don't want to double record.
+          if (!pageIsDeepLinked_) {
+            IOWA.Analytics.trackPageView(location.pathname + location.hash);
+          }
+
+          pageIsDeepLinked_ = false;
         },
 
         _savedSessionsChanged: function(record) {
