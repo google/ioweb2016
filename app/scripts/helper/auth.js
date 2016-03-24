@@ -27,7 +27,7 @@ IOWA.Auth = IOWA.Auth || (function() {
       if (user.isSignedIn()) {
         return user.getAuthResponse();
       }
-    } else if (gapi.auth) {
+    } else if (gapi && gapi.auth) {
       return gapi.auth.getToken();
     }
     return null;
