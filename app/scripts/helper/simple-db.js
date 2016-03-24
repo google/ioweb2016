@@ -22,7 +22,10 @@
   var STORE = 'store';
 
   // Chrome iOS has window.indexeDB, but it is null.
-  if (!(global.indexedDB && indexedDB.open)) {
+  if (!(global.indexedDB && global.indexedDB.open)) {
+    if (global.IOWA && global.IOWA.Analytics) {
+      global.IOWA.Analytics.trackEvent('IndexedDB', 'unsupported');
+    }
     return;
   }
 
