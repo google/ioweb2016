@@ -176,7 +176,8 @@ var PageBehavior = {
     // Wait one tick for app-header have stamped the page's ghost subnav.
     this.async(function() {
       this._appHeader = document.querySelector('#header');
-      this._mainSubnav = this._appHeader.querySelector('.header_subnav');
+      //this._mainSubnav = this._appHeader.querySelector('.header_subnav');
+this._mainSubnav = IOWA.Elements.Main.querySelector('.subpage__nav__wrapper');
 
       // Double check page actually has a subnav.
       if (!this._mainSubnav) {
@@ -204,17 +205,37 @@ var PageBehavior = {
                           this._appHeader.clientHeight -
                           this.$.mastheadContainer.clientHeight;
 
+    this._mainSubnav.classList.toggle('down', this._appHeader.shadow);
+
+console.log(Math.abs(subnavScrollTop) >= this.$.subnav.clientHeight)
+
     // Scrolling down.
     if (subnavScrollTop >= 0) {
       // Hide the page's subnav when it reaches the top of the page.
-      this._mainSubnav.classList.remove('offscreen');
+      // this._mainSubnav.classList.remove('offscreen');
+this._mainSubnav.style.position = 'fixed';
+// this._mainSubnav.style.zIndex = 10;
+// this._mainSubnav.style.top = 0;
+this._mainSubnav.style.transitionDuration = '200ms';
+
     } else if (scrollingUp && Math.abs(subnavScrollTop) >= this.$.subnav.clientHeight) {
+
+      if (Math.abs(subnavScrollTop) + this.$.subnav.clientHeight >= this.$.subnav.clientHeight) {
+this._mainSubnav.style.transitionDuration = '0ms';
+this._mainSubnav.classList.remove('down');
+this._mainSubnav.style.position = 'static';
+
+      }
+
+
+
+
       // Scrolling up.
       // When the user is scrolling back up, return the page's subnav visibility
       // when it's directly under fixed subnav in the header. This makes it
       // appear as if the subnav returns to position: static, as it continues
       // scrolling with the page.
-      this._mainSubnav.classList.add('offscreen');
+      // this._mainSubnav.classList.add('offscreen');
     }
   }
 };

@@ -46,6 +46,8 @@ The `<io-schedule-subnav>` implements the schedule pages sub navigation.
   }
 </style>
 
+<div class="subpage__nav__wrapper" layout vertical>
+
 <div class="subpage__nav bg-cyan-400" layout horizontal center justified>
   <template is="dom-if" if="[[!app.isPhoneSize]]">
     <paper-tabs id="subpage-tabs" class="white"
@@ -176,6 +178,8 @@ The `<io-schedule-subnav>` implements the schedule pages sub navigation.
       clear <iron-icon icon="io:close"></iron-icon>
     </span>
   </div>
+</div>
+
 </div>
 
 </template>

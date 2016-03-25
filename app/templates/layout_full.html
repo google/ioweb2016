@@ -331,7 +331,7 @@ limitations under the License.
     </app-toolbar>
 
     <!-- Pages that have subnavs which participate in scrolling effects go here. -->
-    <template is="dom-if" if="[[_isPage('schedule', selectedPage)]]" restamp>
+    <!-- <template is="dom-if" if="[[_isPage('schedule', selectedPage)]]" restamp>
       <div class="card" on-update-filters="_onUpdateFiltersInPageSubnav">
         <io-schedule-subnav selected-subpage="{{selectedSubpage}}" app="[[app]]"
                             show-filters="{{showFilters}}"
@@ -341,7 +341,7 @@ limitations under the License.
                             session-types="[[app.filterSessionTypes]]"
                             class="header_subnav offscreen"></io-schedule-subnav>
       </div>
-    </template>
+    </template> -->
     <template is="dom-if" if="[[_isPage('attend', selectedPage)]]" restamp>
       <div class="header_subnav offscreen subpage__nav bg-cyan-400" layout horizontal justified>
         <paper-tabs id="subpage-tabs" class="white"
