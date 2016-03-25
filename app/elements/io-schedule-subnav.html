@@ -18,24 +18,20 @@ limitations under the License.
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 
+<link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../bower_components/paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+
+<link rel="import" href="UtilBehavior.html">
 <link rel="import" href="shared-app-styles.html">
 
 <!--
 The `<io-schedule-subnav>` implements the schedule pages sub navigation.
 -->
 <dom-module id="io-schedule-subnav">
+<link rel="import" type="css" href="io-schedule-subnav.css">
 <template>
 <style include="shared-app-styles">
-  :host {
-    display: block;
-  }
-
-  @media (min-width: 768px) {
-    #subpage-tabs {
-      margin-left: -12px;
-    }
-  }
-
   paper-dropdown-menu {
     --paper-input-container-color: inherit;
     --paper-dropdown-menu-icon: {
@@ -45,9 +41,12 @@ The `<io-schedule-subnav>` implements the schedule pages sub navigation.
       display: none;
     };
   }
+  paper-radio-button, paper-checkbox {
+    --primary-text-color: inherit;
+  }
 </style>
 
-<div class="subpage__nav bg-cyan-400" layout horizontal center justified>
+<div class="subpage__nav subpage__nav__container bg-cyan-400" layout horizontal center justified>
   <template is="dom-if" if="[[!app.isPhoneSize]]">
     <paper-tabs id="subpage-tabs" class="white"
                 attr-for-selected="label"
@@ -128,11 +127,59 @@ The `<io-schedule-subnav>` implements the schedule pages sub navigation.
   </div>
 </div>
 
+<div class="subpage__nav__container filters__panel" hidden$="[[!showFilters]]">
+  <div id="filters" class="card-content bg-bluegrey-50-40" layout horizontal justified>
+    <div class="filter-section">
+      <h4>Tracks</h4>
+      <paper-radio-group allow-empty-selection
+                         on-paper-radio-group-changed="onApplyFilter"
+                         on-iron-deselect="onApplyFilter">
+        <template is="dom-repeat" items="[[sessionThemes]]" as="theme">
+          <paper-radio-button name="[[theme]]">[[theme]]</paper-radio-button>
+        </template>
+      </paper-radio-group>
+    </div>
+    <div class="filter-section">
+      <h4>Types</h4>
+      <paper-checkbox id="liveStreamFilter" name="Live streamed"
+          on-tap="onLiveSessionsFilters">Live streamed</paper-checkbox>
+      <paper-radio-group allow-empty-selection
+                         on-paper-radio-group-changed="onApplyFilter"
+                         on-iron-deselect="onApplyFilter">
+        <template is="dom-repeat" items="[[sessionTypes]]" as="type">
+          <paper-radio-button name="[[type]]">[[type]]</paper-radio-button>
+        </template>
+      </paper-radio-group>
+    </div>
+    <div class="filter-section filter-section--types" relative>
+      <h4>Tracks</h4>
+      <a href="#" class="filter-section--clearall" on-click="clearFilters">Clear all</a>
+      <paper-radio-group allow-empty-selection
+                         on-paper-radio-group-changed="onApplyFilter"
+                         on-iron-deselect="onApplyFilter">
+        <template is="dom-repeat" items="[[sessionTopics]]" as="track">
+          <paper-radio-button name="[[track]]">[[track]]</paper-radio-button>
+        </template>
+      </paper-radio-group>
+    </div>
+  </div>
+</div>
+
+<div class="card-content filters-banner bg-bluegrey-50-60"
+     hidden$="[[!filters.length]]" layout horizontal center justified>
+  <span>filtering by [[_prettifyFilters(filters.*)]]</span>
+  <span layout horizontal center on-click="clearFilters">
+    clear <iron-icon icon="io:close"></iron-icon>
+  </span>
+</div>
+
 </template>
 <script>
 (function() {
   Polymer({
     is: 'io-schedule-subnav',
+
+    behaviors: [IOBehaviors.UtilBehavior],
 
     properties: {
       /**
@@ -152,14 +199,67 @@ The `<io-schedule-subnav>` implements the schedule pages sub navigation.
       },
 
       /**
+       * Array of applied filters.
+       */
+      filters: {
+        type: Array,
+        value: function() { return []; },
+        notify: true
+      },
+
+      /**
        * When true, indicates the filters UI should be showing.
        */
       showFilters: {
         type: Boolean,
         value: false,
         notify: true
+      },
+
+      /**
+       * Array of session theme names.
+       */
+      sessionThemes: {
+        type: Array,
+        value: function() { return []; }
+      },
+
+      /**
+       * Array of session topic names.
+       */
+      sessionTopics: {
+        type: Array,
+        value: function() { return []; }
+      },
+
+      /**
+       * Array of session types.
+       */
+      sessionTypes: {
+        type: Array,
+        value: function() { return []; }
+      },
+
+      /**
+       * Array of scheduled sessions.
+       */
+      sessions: {
+        type: Array,
+        value: function() { return []; }
+      },
+
+      /**
+       * User's list of saved sessions.
+       */
+      savedSessions: {
+        type: Array,
+        value: function() { return []; }
       }
     },
+
+    observers: [
+      '_filtersChanged(filters.length)'
+    ],
 
     _disableFiltering: function(selectedSubpage) {
       var hide = selectedSubpage === 'myschedule' || selectedSubpage === 'agenda';
@@ -189,6 +289,98 @@ The `<io-schedule-subnav>` implements the schedule pages sub navigation.
 
     toggleFilters: function() {
       this.showFilters = !this.showFilters;
+    },
+
+    _prettifyFilters: function(filters) {
+      return this.filters.join(', ');
+    },
+
+    onApplyFilter: function(e, detail) {
+      var radioGroup = Polymer.dom(e.target).node;
+
+      // Remove previous selected filter.
+      if (detail.item) {
+        var deselected = detail.item.name;
+        var idx = this.filters.indexOf(deselected);
+        if (idx !== -1) {
+          this.splice('filters', idx, 1);
+        }
+      } else if (radioGroup.selected) {
+        this.push('filters', radioGroup.selected);
+      }
+
+      IOWA.Elements.Template.initFabScroll();
+    },
+
+    _filtersChanged: function(length) {
+      // Don't modify URL or list of sessions if this is page load.
+      if (!this._readied) {
+        return;
+      }
+
+      var filters = this.filters.join(',');
+      var search = window.location.search;
+      if (filters.length) {
+        search = IOWA.Util.setSearchParam(search, 'filters', filters);
+      } else {
+        search = IOWA.Util.removeSearchParam(search, 'filters');
+      }
+
+      history.replaceState({}, '', [
+        window.location.origin,
+        window.location.pathname,
+        search,
+        window.location.hash
+      ].join(''));
+    },
+
+    onLiveSessionsFilters: function(e) {
+      var checkbox = Polymer.dom(e).localTarget;
+      var idx = this.filters.indexOf(checkbox.name);
+      if (idx !== -1) {
+        this.splice('filters', idx, 1);
+      } else if (checkbox.checked) {
+        this.push('filters', checkbox.name);
+      }
+    },
+
+    _updateFilterRadioButtons: function() {
+      if (!this.filters.length) {
+        return;
+      }
+
+      var radios = this.$.filters.querySelectorAll('paper-radio-group');
+      Array.prototype.forEach.call(radios, function(radio) {
+        for (var i = 0, filter; filter = this.filters[i]; ++i) {
+          radio.selected = filter;
+          if (radio.selectedItem) {
+            break;
+          }
+        }
+      }.bind(this));
+
+      var checkbox = this.$.liveStreamFilter;
+      checkbox.checked = this.filters.indexOf(checkbox.name) > -1;
+    },
+
+    clearFilters: function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      this.filters = [];
+
+      var radios = this.$.filters.querySelectorAll('paper-radio-group');
+      Array.prototype.forEach.call(radios, function(radio) {
+        radio.selected = null;
+      });
+
+      this.$.liveStreamFilter.checked = false;
+    },
+
+    deepLinkFromURL: function() {
+      // Note: global methods being used.
+      var parsedUrl = IOWA.Router.parseUrl(window.location.toString());
+      this.filters = this.getFiltersFromURL(parsedUrl);
+      this._updateFilterRadioButtons();
     }
 
   })

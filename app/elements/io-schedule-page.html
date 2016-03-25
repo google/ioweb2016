@@ -148,7 +148,11 @@ limitations under the License.
 
       <io-schedule-subnav id="subnav"
           selected-subpage="[[selectedSubpage]]" app="[[app]]"
-          show-filters="{{showFilters}}"></io-schedule-subnav>
+          show-filters="{{showFilters}}"
+          filters="{{filters}}"
+          session-themes="[[app.filterThemes]]"
+          session-topics="[[app.filterTopics]]"
+          session-types="[[app.filterSessionTypes]]"></io-schedule-subnav>
 
       <section class$="subpage-agenda subpage__content bg-bluegrey-50-20 {{_applyActiveClassWhenSubpage(selectedSubpage, 'agenda')}}">
         <section class="slide-up">
@@ -184,11 +188,9 @@ limitations under the License.
               day="[[selectedSubpage]]"
               sessions="{{app.scheduleData.sessions}}"
               saved-sessions="{{app.savedSessions}}"
-              session-themes="[[app.filterThemes]]"
-              session-topics="[[app.filterTopics]]"
-              session-types="[[app.filterSessionTypes]]"
               gmt-day-one="[[date]]"
-              show-filters="{{showFilters}}"></io-schedule>
+              filters="{{filters}}"></io-schedule>
+              <!-- show-filters="{{showFilters}}"></io-schedule> -->
           </section>
         </div>
       </section>
@@ -359,8 +361,8 @@ limitations under the License.
       IOWA.A11y.removeFocusStates(SUBTAB_SELECTOR);
     },
 
-    onPageTransitionDone: function(e) {
-      this.$.scheduleEl.deepLinkFromURL();
+    onPageTransitionDone: function() {
+      this.$.subnav.deepLinkFromURL();
 
       this.async(function() {
         IOWA.Elements.Template.initFabScroll();

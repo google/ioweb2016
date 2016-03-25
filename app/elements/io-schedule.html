@@ -19,9 +19,9 @@ limitations under the License.
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 
-<link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
-<link rel="import" href="../bower_components/paper-radio-button/paper-radio-button.html">
-<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+<!-- <link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html"> -->
+<!-- <link rel="import" href="../bower_components/paper-radio-button/paper-radio-button.html"> -->
+<!-- <link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html"> -->
 
 <link rel="import" href="io-session-details.html">
 
@@ -179,12 +179,12 @@ Fired when the user toggles bookmarking/removing a session.
       :host {
         display: block;
       }
-      paper-radio-button, paper-checkbox {
+      /*paper-radio-button, paper-checkbox {
         --primary-text-color: inherit;
-      }
+      }*/
     </style>
 
-    <div hidden$="[[!showFilters]]" relative>
+    <!-- <div hidden$="[[!showFilters]]" relative>
       <div id="filters" class="card-content bg-bluegrey-50-40" layout horizontal justified>
         <div class="filter-section">
           <h4>Tracks</h4>
@@ -228,7 +228,7 @@ Fired when the user toggles bookmarking/removing a session.
       <span layout horizontal center on-click="clearFilters">
         clear <iron-icon icon="io:close"></iron-icon>
       </span>
-    </div>
+    </div> -->
 
     <div relative on-session-bookmark="_onToggleSaveSession">
 
@@ -387,54 +387,54 @@ Fired when the user toggles bookmarking/removing a session.
             type: String
           },
 
-          /**
-           * Array of session theme names.
-           */
-          sessionThemes: {
-            type: Array,
-            value: function() { return []; }
-          },
+          // /**
+          //  * Array of session theme names.
+          //  */
+          // sessionThemes: {
+          //   type: Array,
+          //   value: function() { return []; }
+          // },
 
-          /**
-           * Array of session topic names.
-           */
-          sessionTopics: {
-            type: Array,
-            value: function() { return []; }
-          },
+          // /**
+          //  * Array of session topic names.
+          //  */
+          // sessionTopics: {
+          //   type: Array,
+          //   value: function() { return []; }
+          // },
 
-          /**
-           * Array of session types.
-           */
-          sessionTypes: {
-            type: Array,
-            value: function() { return []; }
-          },
+          // /**
+          //  * Array of session types.
+          //  */
+          // sessionTypes: {
+          //   type: Array,
+          //   value: function() { return []; }
+          // },
 
-          /**
-           * Array of scheduled sessions.
-           */
-          sessions: {
-            type: Array,
-            value: function() { return []; }
-          },
+          // /**
+          //  * Array of scheduled sessions.
+          //  */
+          // sessions: {
+          //   type: Array,
+          //   value: function() { return []; }
+          // },
 
-          /**
-           * User's list of saved sessions.
-           */
-          savedSessions: {
-            type: Array,
-            value: function() { return []; }
-          },
+          // /**
+          //  * User's list of saved sessions.
+          //  */
+          // savedSessions: {
+          //   type: Array,
+          //   value: function() { return []; }
+          // },
 
-          /**
-           * True to show the filter panel
-           */
-          showFilters: {
-            type: Boolean,
-            value: false,
-            notify: true
-          },
+          // /**
+          //  * True to show the filter panel
+          //  */
+          // showFilters: {
+          //   type: Boolean,
+          //   value: false,
+          //   notify: true
+          // },
 
           /**
            * Selected session to show details for.
@@ -466,26 +466,26 @@ Fired when the user toggles bookmarking/removing a session.
           this.unlisten(window, 'popstate', 'sessionDetailsPopstateHandler');
         },
 
-        isFilterSelected: function(filterName) {
-          return this.filters.indexOf(filterName) > -1;
-        },
+        // isFilterSelected: function(filterName) {
+        //   return this.filters.indexOf(filterName) > -1;
+        // },
 
-        onApplyFilter: function(e, detail) {
-          var radioGroup = Polymer.dom(e.target).node;
+        // onApplyFilter: function(e, detail) {
+        //   var radioGroup = Polymer.dom(e.target).node;
 
-          // Remove previous selected filter.
-          if (detail.item) {
-            var deselected = detail.item.name;
-            var idx = this.filters.indexOf(deselected);
-            if (idx !== -1) {
-              this.splice('filters', idx, 1);
-            }
-          } else if (radioGroup.selected) {
-            this.push('filters', radioGroup.selected);
-          }
+        //   // Remove previous selected filter.
+        //   if (detail.item) {
+        //     var deselected = detail.item.name;
+        //     var idx = this.filters.indexOf(deselected);
+        //     if (idx !== -1) {
+        //       this.splice('filters', idx, 1);
+        //     }
+        //   } else if (radioGroup.selected) {
+        //     this.push('filters', radioGroup.selected);
+        //   }
 
-          IOWA.Elements.Template.initFabScroll();
-        },
+        //   IOWA.Elements.Template.initFabScroll();
+        // },
 
         _useFilter: function(e, detail) {
           e.preventDefault();
@@ -495,15 +495,15 @@ Fired when the user toggles bookmarking/removing a session.
           this.selectedSession = null;
         },
 
-        onLiveSessionsFilters: function(e) {
-          var checkbox = Polymer.dom(e).localTarget;
-          var idx = this.filters.indexOf(checkbox.name);
-          if (idx !== -1) {
-            this.splice('filters', idx, 1);
-          } else if (checkbox.checked) {
-            this.push('filters', checkbox.name);
-          }
-        },
+        // onLiveSessionsFilters: function(e) {
+        //   var checkbox = Polymer.dom(e).localTarget;
+        //   var idx = this.filters.indexOf(checkbox.name);
+        //   if (idx !== -1) {
+        //     this.splice('filters', idx, 1);
+        //   } else if (checkbox.checked) {
+        //     this.push('filters', checkbox.name);
+        //   }
+        // },
 
         /**
          * Extracts filters from a URL deep link and updates the UI accordingly.
@@ -511,8 +511,8 @@ Fired when the user toggles bookmarking/removing a session.
         deepLinkFromURL: function() {
           // Note: global methods being used.
           var parsedUrl = IOWA.Router.parseUrl(window.location.toString());
-          this.filters = this.getFiltersFromURL(parsedUrl);
-          this._updateFilterRadioButtons();
+          // this.filters = this.getFiltersFromURL(parsedUrl);
+          // this._updateFilterRadioButtons();
 
           IOWA.Schedule.schedulePromise().then(function(data) {
             // Deep link into session. First, try to pull session id from the
@@ -527,24 +527,24 @@ Fired when the user toggles bookmarking/removing a session.
           }.bind(this));
         },
 
-        _updateFilterRadioButtons: function() {
-          if (!this.filters.length) {
-            return;
-          }
+        // _updateFilterRadioButtons: function() {
+        //   if (!this.filters.length) {
+        //     return;
+        //   }
 
-          var radios = this.$.filters.querySelectorAll('paper-radio-group');
-          Array.prototype.forEach.call(radios, function(radio) {
-            for (var i = 0, filter; filter = this.filters[i]; ++i) {
-              radio.selected = filter;
-              if (radio.selectedItem) {
-                break;
-              }
-            }
-          }.bind(this));
+        //   var radios = this.$.filters.querySelectorAll('paper-radio-group');
+        //   Array.prototype.forEach.call(radios, function(radio) {
+        //     for (var i = 0, filter; filter = this.filters[i]; ++i) {
+        //       radio.selected = filter;
+        //       if (radio.selectedItem) {
+        //         break;
+        //       }
+        //     }
+        //   }.bind(this));
 
-          var checkbox = this.$.liveStreamFilter;
-          checkbox.checked = this.filters.indexOf(checkbox.name) > -1;
-        },
+        //   var checkbox = this.$.liveStreamFilter;
+        //   checkbox.checked = this.filters.indexOf(checkbox.name) > -1;
+        // },
 
         _filtersChanged: function(length) {
           // Don't modify URL or list of sessions if this is page load.
@@ -552,13 +552,13 @@ Fired when the user toggles bookmarking/removing a session.
             return;
           }
 
-          var filters = this.filters.join(',');
-          var search = window.location.search;
-          if (filters.length) {
-            search = IOWA.Util.setSearchParam(search, 'filters', filters);
-          } else {
-            search = IOWA.Util.removeSearchParam(search, 'filters');
-          }
+          // var filters = this.filters.join(',');
+          // var search = window.location.search;
+          // if (filters.length) {
+          //   search = IOWA.Util.setSearchParam(search, 'filters', filters);
+          // } else {
+          //   search = IOWA.Util.removeSearchParam(search, 'filters');
+          // }
 
           // Force template repeat to re-render schedule list.
           var list = Polymer.dom(this.root).querySelector('#schedulelist');
@@ -566,26 +566,26 @@ Fired when the user toggles bookmarking/removing a session.
             list.render();
           }
 
-          history.replaceState({}, '', [
-            window.location.origin,
-            window.location.pathname,
-            search,
-            window.location.hash
-          ].join(''));
+          // history.replaceState({}, '', [
+          //   window.location.origin,
+          //   window.location.pathname,
+          //   search,
+          //   window.location.hash
+          // ].join(''));
         },
 
-        clearFilters: function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-          this.filters = [];
+        // clearFilters: function(e) {
+        //   e.preventDefault();
+        //   e.stopPropagation();
+        //   this.filters = [];
 
-          var radios = this.$.filters.querySelectorAll('paper-radio-group');
-          Array.prototype.forEach.call(radios, function(radio) {
-            radio.selected = null;
-          });
+        //   var radios = this.$.filters.querySelectorAll('paper-radio-group');
+        //   Array.prototype.forEach.call(radios, function(radio) {
+        //     radio.selected = null;
+        //   });
 
-          this.$.liveStreamFilter.checked = false;
-        },
+        //   this.$.liveStreamFilter.checked = false;
+        // },
 
         _showSession: function(session, day) {
           if (!day) {
@@ -656,9 +656,9 @@ Fired when the user toggles bookmarking/removing a session.
           return user ? 1 : 0;
         },
 
-        _prettifyFilters: function(filters) {
-          return this.filters.join(', ');
-        },
+        // _prettifyFilters: function(filters) {
+        //   return this.filters.join(', ');
+        // },
 
         closeHelp: function() {
           this.set('app.showMySchedulHelp', false);
