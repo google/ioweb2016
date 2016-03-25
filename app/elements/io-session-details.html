@@ -254,13 +254,12 @@ limitations under the License.
     },
 
     onVideoPlay: function(e, detail) {
-      e.stopPropagation();
-      e.preventDefault();
+      this.noop(e);
 
       this._startScheduleVideo = true;
 
       var target = Polymer.dom(e).rootTarget;
-      if (target.hasAttribute(this.app.ANALYTICS_LINK_ATTR)) {
+      if (target && target.hasAttribute(this.app.ANALYTICS_LINK_ATTR)) {
         var videoUrl = target.getAttribute(this.app.ANALYTICS_LINK_ATTR);
         IOWA.Analytics.trackEvent('schedule', 'video play', videoUrl);
         IOWA.IOFirebase.markVideoAsViewed(videoUrl);
@@ -373,8 +372,7 @@ limitations under the License.
     },
 
     _onApplyFilter: function(e) {
-      e.preventDefault();
-      e.stopPropagation();
+      this.noop(e);
 
       var target = Polymer.dom(e).rootTarget;
       if (target && target.hasAttribute(this.app.ANALYTICS_LINK_ATTR)) {
@@ -405,15 +403,12 @@ limitations under the License.
     },
 
     openShareWindow: function(e, detail) {
-      e.preventDefault();
-      e.stopPropagation();
+      this.noop(e);
 
       var type = detail.item.getAttribute('data-share-type');
       var url = null;
       var width = 600;
       var height = 600;
-      var winOptions = 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=' +
-                       height + ',width=' + width;
 
       var title = this.selectedSession ?
                   this.selectedSession.title : document.title;
@@ -454,6 +449,8 @@ limitations under the License.
             return;
         }
 
+        var winOptions = 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=' +
+                         height + ',width=' + width;
         window.open(url, 'share', winOptions);
       }.bind(this));
     },
