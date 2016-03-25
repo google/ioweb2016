@@ -149,7 +149,7 @@ limitations under the License.
       <io-schedule-subnav id="subnav"
           selected-subpage="[[selectedSubpage]]" app="[[app]]"
           show-filters="{{showFilters}}"
-          filters="{{filters}}"
+filters="{{filters}}"
           session-themes="[[app.filterThemes]]"
           session-topics="[[app.filterTopics]]"
           session-types="[[app.filterSessionTypes]]"></io-schedule-subnav>
@@ -189,8 +189,7 @@ limitations under the License.
               sessions="{{app.scheduleData.sessions}}"
               saved-sessions="{{app.savedSessions}}"
               gmt-day-one="[[date]]"
-              filters="{{filters}}"></io-schedule>
-              <!-- show-filters="{{showFilters}}"></io-schedule> -->
+filters="[[filters]]"></io-schedule>
           </section>
         </div>
       </section>
@@ -239,12 +238,29 @@ limitations under the License.
       },
 
       /**
-       * True to show the filter panel
+       * True to show the filter panel.
        */
        showFilters: {
         type: Boolean,
         value: false,
         notify: true
+      },
+
+      // /**
+      //  * Array of applied filters.
+      //  */
+      // filters: {
+      //   type: Array,
+      //   value: function() { return []; },
+      //   notify: true
+      // },
+
+      subnav: {
+        type: Object,
+        readOnly: true,
+        value: function() {
+          return this.$.subnav || null;
+        }
       },
 
       /**
@@ -362,7 +378,13 @@ limitations under the License.
     },
 
     onPageTransitionDone: function() {
-      this.$.subnav.deepLinkFromURL();
+      this.$.scheduleEl.deepLinkFromURL();
+      this.deepLinkSubnavFromURL();
+
+      this.$.subnav.updateOtherInstances();
+
+// TODO deep link other nav
+// figure out how to sync them
 
       this.async(function() {
         IOWA.Elements.Template.initFabScroll();
@@ -372,10 +394,6 @@ limitations under the License.
     onSubpageTransitionDone: function() {
       // Reset FAB position after new DOM is set.
       IOWA.Elements.Template.initFabScroll();
-    },
-
-    toggleFilters: function() {
-      this.$.scheduleEl.showFilters = !this.$.scheduleEl.showFilters;
     },
 
     _computeDisableRateSession: function(answersRecord) {
@@ -397,7 +415,19 @@ limitations under the License.
 
     _applyActiveClassWhenNotSubpage: function(selectedSubpage, subpageName) {
       return this._addClass('active', selectedSubpage !== subpageName);
-    }
+    },
+
+    /**
+     * Kicks the UI of the subnav radio button state to update.
+     */
+    deepLinkSubnavFromURL: function() {
+      // this.$.subnav._updateFilterRadioButtons();
+      this.$.subnav.deepLinkFromURL();
+    },
+
+    updateURLFromFilters: function() {
+      this.$.scheduleEl.updateURLFromFilters();
+    },
   });
 
 }());

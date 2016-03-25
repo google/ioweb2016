@@ -455,6 +455,34 @@ IOWA.Elements = (function() {
       this.$.appdrawer.close();
     };
 
+    template._onUpdateFiltersInHeaderSubnav = function(e) {
+      // e.stopPropagation();
+
+      var otherSubNav = e.detail.el;
+      var subnav = IOWA.Elements.Masthead.querySelector('io-schedule-subnav');
+      if (subnav) {
+        subnav.filters = otherSubNav.filters;
+        subnav._updateFilterRadioButtons();
+      }
+
+      var page = IOWA.Elements.Main.querySelector('io-schedule-page');
+      page.updateURLFromFilters();
+    };
+
+    template._onUpdateFiltersInPageSubnav = function(e) {
+      // e.stopPropagation();
+      var otherSubNav = e.detail.el;
+      var page = IOWA.Elements.Main.querySelector('io-schedule-page');
+      page.subnav.filters = otherSubNav.filters;
+
+// console.log(subnav.filters);
+
+      // page.deepLinkSubnavFromURL();
+      page.subnav._updateFilterRadioButtons();
+
+      page.updateURLFromFilters();
+    };
+
     template.addEventListener('dom-change', updateElements);
 
     template.addEventListener('page-transition-done', function() {

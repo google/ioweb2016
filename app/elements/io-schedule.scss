@@ -81,7 +81,6 @@ $color-session-row-hover: rgba($color-bluegrey-50, 0.4);
       content: '';
       position: absolute;
       left: 0;
-      border-left: 4px solid #26C6DA;
       top: 0;
       height: 100%;
       border-left: 4px solid $color-cyan-400;
@@ -98,9 +97,9 @@ $color-session-row-hover: rgba($color-bluegrey-50, 0.4);
 .session-block {
   border-top: 1px solid $color-section-border;
 
-  &:first-of-type {
-    border-top: 0;
-  }
+  // &:first-of-type {
+  //   border-top: 0;
+  // }
 
   .schedule-row {
     border-top: 0 !important;

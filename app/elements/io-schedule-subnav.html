@@ -46,7 +46,7 @@ The `<io-schedule-subnav>` implements the schedule pages sub navigation.
   }
 </style>
 
-<div class="subpage__nav subpage__nav__container bg-cyan-400" layout horizontal center justified>
+<div class="subpage__nav bg-cyan-400" layout horizontal center justified>
   <template is="dom-if" if="[[!app.isPhoneSize]]">
     <paper-tabs id="subpage-tabs" class="white"
                 attr-for-selected="label"
@@ -127,13 +127,15 @@ The `<io-schedule-subnav>` implements the schedule pages sub navigation.
   </div>
 </div>
 
-<div class="subpage__nav__container filters__panel" hidden$="[[!showFilters]]">
-  <div id="filters" class="card-content bg-bluegrey-50-40" layout horizontal justified>
+<div class="filters__panel" showfilters$="[[showFilters]]">
+
+  <div id="filters" class="card-content bg-bluegrey-50-60" layout horizontal justified>
     <div class="filter-section">
       <h4>Tracks</h4>
       <paper-radio-group allow-empty-selection
                          on-paper-radio-group-changed="onApplyFilter"
-                         on-iron-deselect="onApplyFilter">
+                         on-iron-deselect="onApplyFilter"
+                         on-iron-activate="updateOtherInstances">
         <template is="dom-repeat" items="[[sessionThemes]]" as="theme">
           <paper-radio-button name="[[theme]]">[[theme]]</paper-radio-button>
         </template>
@@ -142,10 +144,11 @@ The `<io-schedule-subnav>` implements the schedule pages sub navigation.
     <div class="filter-section">
       <h4>Types</h4>
       <paper-checkbox id="liveStreamFilter" name="Live streamed"
-          on-tap="onLiveSessionsFilters">Live streamed</paper-checkbox>
+                      on-tap="onLiveSessionsFilters">Live streamed</paper-checkbox>
       <paper-radio-group allow-empty-selection
                          on-paper-radio-group-changed="onApplyFilter"
-                         on-iron-deselect="onApplyFilter">
+                         on-iron-deselect="onApplyFilter"
+                         on-iron-activate="updateOtherInstances">
         <template is="dom-repeat" items="[[sessionTypes]]" as="type">
           <paper-radio-button name="[[type]]">[[type]]</paper-radio-button>
         </template>
@@ -156,7 +159,8 @@ The `<io-schedule-subnav>` implements the schedule pages sub navigation.
       <a href="#" class="filter-section--clearall" on-click="clearFilters">Clear all</a>
       <paper-radio-group allow-empty-selection
                          on-paper-radio-group-changed="onApplyFilter"
-                         on-iron-deselect="onApplyFilter">
+                         on-iron-deselect="onApplyFilter"
+                         on-iron-activate="updateOtherInstances">
         <template is="dom-repeat" items="[[sessionTopics]]" as="track">
           <paper-radio-button name="[[track]]">[[track]]</paper-radio-button>
         </template>
@@ -165,12 +169,13 @@ The `<io-schedule-subnav>` implements the schedule pages sub navigation.
   </div>
 </div>
 
-<div class="card-content filters-banner bg-bluegrey-50-60"
-     hidden$="[[!filters.length]]" layout horizontal center justified>
-  <span>filtering by [[_prettifyFilters(filters.*)]]</span>
-  <span layout horizontal center on-click="clearFilters">
-    clear <iron-icon icon="io:close"></iron-icon>
-  </span>
+<div class="filters-banner__panel" hidden$="[[!filters.length]]">
+  <div class="filters-banner card-content bg-bluegrey-50-60" layout horizontal center justified>
+    <span>filtering by [[_prettifyFilters(filters.*)]]</span>
+    <span layout horizontal center on-click="clearFilters">
+      clear <iron-icon icon="io:close"></iron-icon>
+    </span>
+  </div>
 </div>
 
 </template>
@@ -318,20 +323,26 @@ The `<io-schedule-subnav>` implements the schedule pages sub navigation.
         return;
       }
 
-      var filters = this.filters.join(',');
-      var search = window.location.search;
-      if (filters.length) {
-        search = IOWA.Util.setSearchParam(search, 'filters', filters);
-      } else {
-        search = IOWA.Util.removeSearchParam(search, 'filters');
-      }
+      // var filters = this.filters.join(',');
+      // var search = window.location.search;
+      // if (filters.length) {
+      //   search = IOWA.Util.setSearchParam(search, 'filters', filters);
+      // } else {
+      //   search = IOWA.Util.removeSearchParam(search, 'filters');
+      // }
 
-      history.replaceState({}, '', [
-        window.location.origin,
-        window.location.pathname,
-        search,
-        window.location.hash
-      ].join(''));
+      // history.replaceState({}, '', [
+      //   window.location.origin,
+      //   window.location.pathname,
+      //   search,
+      //   window.location.hash
+      // ].join(''));
+    },
+
+    updateOtherInstances: function() {
+      this.debounce('update-filters', function() {
+        this.fire('update-filters', {el: this});
+      }, 100);
     },
 
     onLiveSessionsFilters: function(e) {

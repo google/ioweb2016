@@ -210,9 +210,10 @@ var PageBehavior = {
       this._mainSubnav.classList.remove('offscreen');
     } else if (scrollingUp && Math.abs(subnavScrollTop) >= this.$.subnav.clientHeight) {
       // Scrolling up.
-      // When the user is scrolling back up, return the page's visibility
-      // when it's directly under fixed subnav. This make its it appear as
-      // if the subnav returns to position: static, scrolling with the page.
+      // When the user is scrolling back up, return the page's subnav visibility
+      // when it's directly under fixed subnav in the header. This makes it
+      // appear as if the subnav returns to position: static, as it continues
+      // scrolling with the page.
       this._mainSubnav.classList.add('offscreen');
     }
   }
