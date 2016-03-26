@@ -140,16 +140,6 @@ IOWA.Router_ = function(window) {
       // Update subnav selection.
       var selectedPage = IOWA.Elements.LazyPages.selectedPage;
       selectedPage.selectedSubpage = this.state.current.subpage;
-
-      // If page has subnav, help setup sub page content scrolling when
-      // users select new sub pages.
-      if (selectedPage.hasSubnav) {
-        var headerDown = this.t.$.header.shadow;
-        if (!headerDown) {
-          this.t.set('app.headerReveals', false);
-        }
-        selectedPage.scrollToTopOfSubContainer();
-      }
     }
 
     // If current href is different than the url, update it in the browser.
@@ -236,6 +226,18 @@ IOWA.Router_ = function(window) {
         .then(function() {
           // Update current state of the page in Router and Template.
           router.state.current = router.parseUrl(router.state.end.href);
+
+          // If page has subnav, help setup sub page content scrolling when
+          // users select new sub pages.
+          var selectedPage = IOWA.Elements.LazyPages.selectedPage;
+          if (selectedPage.hasSubnav) {
+            var headerDown = router.t.$.header.shadow;
+            if (!headerDown) {
+              router.t.set('app.headerReveals', false);
+            }
+            selectedPage.scrollToTopOfSubContainer();
+          }
+
           // Update UI state based on the router's state.
           return router.updateUIstate();
         })
