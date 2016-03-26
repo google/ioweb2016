@@ -32,11 +32,7 @@ limitations under the License.
 <dom-module id="io-schedule-row">
 <link rel="import" type="css" href="io-schedule.css">
 <template>
-  <style include="shared-app-styles">
-    :host {
-      display: block;
-    }
-  </style>
+  <style include="shared-app-styles"></style>
   <div layout horizontal
        class$="[[_addClass('session-block', session.firstOfBlock)]]">
     <div class="schedule-block-title">
@@ -184,7 +180,7 @@ Fired when the user toggles bookmarking/removing a session.
       }
     </style>
 
-    <div hidden$="[[!showFilters]]" relative>
+    <div class="filters__panel" showfilters$="[[showFilters]]">
       <div id="filters" class="card-content bg-bluegrey-50-40" layout horizontal justified>
         <div class="filter-section">
           <h4>Tracks</h4>
