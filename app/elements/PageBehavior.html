@@ -215,7 +215,33 @@ var PageBehavior = {
       // if the subnav returns to position: static, scrolling with the page.
       this._mainSubnav.classList.add('offscreen');
     }
-  }
+  },
+
+  /**
+   * Scrolls to the top of the subpage content.
+   *
+   * @param {number} opt_offset Optional scroll offset from the top of the sub
+   *     page content.
+   */
+  scrollToTopOfSubContainer: function(opt_offset) {
+    var offset = opt_offset || 0;
+    var scrollTop =  this.$.subnav.clientHeight +
+                     this.$.mastheadContainer.clientHeight + offset;
+
+
+    // Both navs are showing. Factor in top nav height in scrollTop calc.
+    var headerDown = this._appHeader.shadow;
+    if (headerDown) {
+      offset -= this._appHeader.clientHeight;
+    }
+
+    // Scroll to top of subcontainer content if the user hasn't scrolled enough
+    // for the sticky nav to be visible.
+    if (this._mainSubnav && !this._mainSubnav.classList.contains('offscreen')) {
+      IOWA.Elements.Scroller.scrollTop = scrollTop + offset;
+    }
+  },
+
 };
 
 IOBehaviors.PageBehavior = [PageBehavior, IOBehaviors.UtilBehavior];

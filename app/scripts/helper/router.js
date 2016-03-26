@@ -138,7 +138,18 @@ IOWA.Router_ = function(window) {
       });
       selectedSubpageSection.style.display = '';
       // Update subnav selection.
-      IOWA.Elements.LazyPages.selectedPage.selectedSubpage = this.state.current.subpage;
+      var selectedPage = IOWA.Elements.LazyPages.selectedPage;
+      selectedPage.selectedSubpage = this.state.current.subpage;
+
+      // If page has subnav, help setup sub page content scrolling when
+      // users select new sub pages.
+      if (selectedPage.hasSubnav) {
+        var headerDown = this.t.$.header.shadow;
+        if (!headerDown) {
+          this.t.set('app.headerReveals', false);
+        }
+        selectedPage.scrollToTopOfSubContainer();
+      }
     }
 
     // If current href is different than the url, update it in the browser.
