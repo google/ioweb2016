@@ -1,0 +1,482 @@
+<!--
+Copyright 2016 Google Inc. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+
+<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+<link rel="import" href="../bower_components/iron-dropdown/iron-dropdown-scroll-manager.html">
+<link rel="import" href="../bower_components/neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="../bower_components/neon-animation/animations/fade-out-animation.html">
+
+<link rel="import" href="../bower_components/google-youtube/google-youtube.html">
+
+<link rel="import" href="UtilBehavior.html">
+<link rel="import" href="shared-app-styles.html">
+
+<dom-module id="io-session-details">
+<link rel="import" type="css" href="io-session-details.css">
+<template>
+  <style include="shared-app-styles"></style>
+
+  <paper-dialog id="sessionDetails"
+                no-cancel-on-outside-click="[[inline]]"
+                no-cancel-on-esc-key="[[inline]]"
+                with-backdrop="[[!inline]]"
+                restore-focus-on-close
+                no-auto-focus
+                entry-animation="scale-up-animation"
+                exit-animation="fade-out-animation"
+                on-iron-overlay-closed="_onSessionDetailsClose"
+                on-iron-overlay-opened="_onSessionDetailsOpen">
+
+    <div class="fullschedule-banner card-content bg-bluegrey-50-60"
+         layout horizontal center>
+      <paper-icon-button icon="io:arrow-back" dialog-dismiss
+                         aria-label="Full Schedule"></paper-icon-button>
+      <span>Full Schedule</span>
+    </div>
+
+    <paper-dialog-scrollable id="scrollable">
+
+      <div class="bg-bluegrey-50-20">
+
+        <div class="card__photo" relative>
+
+          <template is="dom-if" if="[[sessionHasVideo(_startScheduleVideo, selectedSession.isLivestream, selectedSession.youtubeUrl)]]" restamp>
+            <google-youtube
+                video-id="[[_toVideoIdFilter(selectedSession.youtubeUrl)]]"
+                height="100%" width="100%" fit
+                autohide="1" controls="2" modestbranding="1" showinfo="0"
+                iv_load_policy="3" rel="0" autoplay="1"
+                on-google-youtube-ready="onScheduleVideoReady"></google-youtube>
+          </template>
+          <div class="play__button__container" on-click="onVideoPlay"
+               data-track-link$="{{selectedSession.youtubeUrl}}"
+               hidden$="{{showSessionPlayButton(selectedSession)}}"
+               layout vertical center-center fit>
+            <h4>Watch video</h4>
+          </div>
+          <iron-image src="[[placeholderImage(selectedSession)]]"
+                      placeholder="images/io16-social.jpg"
+                      sizing="cover" preload fade fit></iron-image>
+          <paper-fab icon="[[_computeSessionSavedIcon(selectedSession.saved)]]"
+                     mini="[[app.isPhoneSize]]"
+                     class$="[[_addClass('active', selectedSession.saved)]]"
+                     on-up="_onToggleSaveSession"></paper-fab>
+        </div>
+        <div class="session__info__section session__details">
+          <h3 class="session__title" tabindex="-1">{{selectedSession.title}}</h3>
+          <h5 class="session__time">May <span>{{selectedSession.day}}</span> / <span>{{selectedSession.start}}</span><span hidden$="{{_equal('__keynote__', selectedSession.id)}}"> - {{selectedSession.end}}</span> / <span>{{selectedSession.room}}</span></h5>
+          <div class="session__desc">{{selectedSession.description}}</div>
+          <div class="session__categories">
+            <div class="session__livestream" hidden$="{{!selectedSession.isLivestream}}">
+              <iron-icon icon="io:videocam"></iron-icon>
+              <a href="/io2016/schedule?filters=Live%20Streamed"
+                 data-track-link="schedule-details-filter"
+                 on-click="_onApplyFilter">Live streamed</a>
+            </div>
+            <template is="dom-if" if="[[tags.length]]">
+              <div class="session__tags">
+                <iron-icon icon="io:filter-list" aria-label="Filter sessions"></iron-icon>
+                <template is="dom-repeat" items="[[tags]]" as="tag">
+                  <a href$="/io2016/schedule?filters=[[tag]]"
+                     data-track-link="schedule-details-filter"
+                     on-click="_onApplyFilter">[[tag]]</a>
+                </template>
+              </div>
+            </template>
+          </div>
+
+          <paper-menu-button class="session__social"
+                             on-iron-activate="openShareWindow"
+                             on-iron-overlay-opened="noop"
+                             on-iron-overlay-closed="noop">
+            <paper-button class="dropdown-trigger" raised>Share</paper-button>
+            <paper-listbox class="dropdown-content" layout vertical>
+              <paper-item data-share-type="gplus"
+                          data-track-link="schedule-share-gplus">
+                <iron-icon icon="io:post-gplus" class="share-icon"></iron-icon> Google
+              </paper-item>
+              <paper-item data-share-type="twitter"
+                          data-track-link="schedule-share-twitter">
+                <iron-icon icon="io:post-twitter" class="share-icon"></iron-icon> Twitter
+              </paper-item>
+              <paper-item data-share-type="fb"
+                          data-track-link="schedule-share-fb">
+                <iron-icon icon="io:post-facebook" class="share-icon"></iron-icon> Facebook
+              </paper-item>
+            </paper-listbox>
+          </paper-menu-button>
+
+        </div>
+
+        <div class="session__info__section session__speakers"
+             hidden$="{{!selectedSession.speakers.length}}">
+          <span class="session__info__section--header">Speakers</span>
+          <div layout horizontal justified wrap>
+            <template is="dom-repeat" items="[[selectedSession.speakers]]" as="speakerId">
+              <div class="speaker__card">
+                <div layout horizontal>
+                  <div>
+                    <img src$="[[speakerProfilePic(app.scheduleData.speakers, speakerId)]]"
+                         class="profilepic">
+                  </div>
+                  <div>
+                    <div class="speaker__name">{{_propOfArrayItem(app.scheduleData.speakers, speakerId, 'name')}}</div>
+                    <div class="speaker__title">{{_propOfArrayItem(app.scheduleData.speakers, speakerId, 'company')}}</div>
+                  </div>
+                </div>
+                <div class="speaker__info" >
+                  <div class="speaker__desc">{{_propOfArrayItem(app.scheduleData.speakers, speakerId, 'bio')}}</div>
+                  <div class="session__social" layout horizontal center>
+                    <a href$="{{_propOfArrayItem(app.scheduleData.speakers, speakerId, 'plusoneUrl')}}" target="_blank" class="share-icon" hidden$="{{!_propOfArrayItem(app.scheduleData.speakers, speakerId, 'plusoneUrl')}}"><iron-icon icon="io:post-gplus"></iron-icon></a>
+                    <a href$="{{_propOfArrayItem(app.scheduleData.speakers, speakerId, 'twitterUrl')}}" target="_blank" class="share-icon" hidden$="{{!_propOfArrayItem(app.scheduleData.speakers, speakerId, 'twitterUrl')}}"><iron-icon icon="io:post-twitter" class="twitter-icon"></iron-icon></a>
+                  </div>
+                </div>
+              </div>
+            </template>
+
+          </div>
+        </div>
+
+        <div class="session__info__section session__related"
+             hidden$="{{!selectedSession.hasRelated}}">
+          <span class="session__info__section--header">Similar Sessions</span>
+          <div layout horizontal justified wrap>
+            <template is="dom-repeat" items="[[relatedSessions]]" as="session">
+              <div class="related__card" layout horizontal>
+                <div class="related_sessionicon"
+                     style$="background-image:url([[session.photoUrl]])">
+                </div>
+                <div class="related__info">
+                  <div>
+                    <a href$="/io2016/schedule?sid=[[session.id]]"
+                       on-click="_onSimilarSessionClick"
+                       data-track-link="schedule-detail-related">[[session.title]]</a>
+                  </div>
+                  <div class="related__time">May <span>[[selectedSession.day]]</span>, <span>[[selectedSession.start]]</div></h5>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+
+    </paper-dialog-scrollable>
+  </paper-dialog>
+
+</template>
+<script>
+(function() {
+  Polymer({
+    is: 'io-session-details',
+
+    behaviors: [IOBehaviors.UtilBehavior],
+
+    properties: {
+      /**
+       * IO session object to display details for.
+       */
+      selectedSession: {
+        type: Object,
+        value: null,
+        notify: true,
+        observer: '_selectedSessionChanged'
+      },
+
+      /**
+       * List of this sessions sanitized tags.
+       */
+      tags: {
+        type: Array,
+        computed: '_computeTagList(selectedSession.tags)'
+      },
+
+      /**
+       * List of related sessions.
+       */
+      relatedSessions: {
+        type: Array,
+        computed: '_computeRelatedSessions(selectedSession.hasRelated, selectedSession.filters)'
+      },
+
+      /**
+       * When true, the session details panel opens inline to the schedule list.
+       */
+      inline: {
+        type: Boolean,
+        value: false
+      },
+
+      _startScheduleVideo: {
+        type: Boolean,
+        value: false
+      }
+    },
+
+    _selectedSessionChanged: function() {
+      if (this.selectedSession) {
+        this.$.sessionDetails.open();
+        if (!this.inline) {
+          Polymer.IronDropdownScrollManager.pushScrollLock(this);
+        }
+      } else {
+        this.$.sessionDetails.close();
+        if (!this.inline) {
+          Polymer.IronDropdownScrollManager.removeScrollLock(this);
+        }
+      }
+    },
+
+    onScheduleVideoReady: function(e, detail) {
+      this.$.sessionDetails.querySelector('iron-image').classList.add('fadeout');
+      this.$.sessionDetails.querySelector('.play__button__container').classList.add('fadeout');
+    },
+
+    onVideoPlay: function(e, detail) {
+      this.noop(e);
+
+      this._startScheduleVideo = true;
+
+      var target = Polymer.dom(e).rootTarget;
+      if (target && target.hasAttribute(this.app.ANALYTICS_LINK_ATTR)) {
+        var videoUrl = target.getAttribute(this.app.ANALYTICS_LINK_ATTR);
+        IOWA.Analytics.trackEvent('schedule', 'video play', videoUrl);
+        IOWA.IOFirebase.markVideoAsViewed(videoUrl);
+      }
+    },
+
+    sessionHasVideo: function(startVideo, isLivestream, youtubeUrl) {
+      return startVideo && !isLivestream && youtubeUrl;
+    },
+
+    showSessionPlayButton: function(selectedSession) {
+      if (!selectedSession) {
+        return false;
+      }
+      return selectedSession.isLivestream || !selectedSession.youtubeUrl;
+    },
+
+    placeholderImage: function(selectedSession) {
+      if (selectedSession && selectedSession.photoUrl) {
+        return selectedSession.photoUrl;
+      }
+      return 'images/schedule/session_placeholder.jpg';
+    },
+
+    speakerProfilePic: function(speakers, id) {
+      if (speakers && speakers[id].thumbnailUrl) {
+        return speakers[id].thumbnailUrl;
+      }
+      return 'images/schedule/profile_placeholder.png';
+    },
+
+    _computeHideSessionInfo: function(session) {
+      if (session === null) {
+        return false;
+      }
+      var isFinished = new Date(session.endTimestamp) < Date.now();
+      return session.id === '__afterhours__' ||
+             (!isFinished && !session.hasRelated);
+    },
+
+    _computeHideSessionRating: function(session) {
+      if (session === null) {
+        return false;
+      }
+      var isFinished = new Date(session.endTimestamp) < Date.now();
+      return session.rated || session.id == '__afterhours__' || !isFinished;
+    },
+
+    _computeSessionSavedIcon: function(saved) {
+      return saved ? 'io:check' : 'io:add';
+    },
+
+    _computeTagList: function(tagList) {
+      if (!tagList) {
+        return [];
+      }
+      var tags = this.app.scheduleData.tags;
+      var list = tagList.map(function(tag) {
+        return tags[tag] ? tags[tag].name : '';
+      }).filter(function(tag) {
+        return tag.length;
+      });
+      return list;
+    },
+
+    _onToggleSaveSession: function(e) {
+      var saved = !this.selectedSession.saved;
+      this.fire('session-bookmark', {
+        session: this.selectedSession,
+        saved: saved
+      });
+    },
+
+    _onSessionDetailsClose: function(e) {
+      // Remove session id hash from URL.
+      var search = IOWA.Util.removeSearchParam(window.location.search, 'sid');
+      var selectedSubpage = IOWA.Router.parseUrl(window.location.href).subpage;
+      var url = IOWA.Router.composeUrl('schedule', selectedSubpage, '', search);
+      history.replaceState({}, null, url);
+
+      document.title = 'Schedule';
+
+      // Reset video state.
+      var video = this.$.sessionDetails.querySelector('google-youtube')
+      if (video) {
+        video.pause();
+      }
+      this.$.sessionDetails.querySelector('iron-image').classList.remove('fadeout');
+      this.$.sessionDetails.querySelector('.play__button__container').classList.remove('fadeout');
+      this._startScheduleVideo = false;
+
+      this.selectedSession = null;
+    },
+
+    _onSessionDetailsOpen: function() {
+      // TODO dialog supports autofocus attr.
+      //this.$.sessionDetails.querySelector('.session__title').focus();
+
+      document.title = this.selectedSession.title + ' - Google I/O Schedule';
+
+      // Update URL with deep link. Always ensure sid parameter is set.
+      var sessionId = this.selectedSession.id;
+
+      var search = IOWA.Util.setSearchParam(location.search, 'sid', sessionId);
+      var selectedSubpage = IOWA.Router.parseUrl(window.location.href).subpage;
+
+      var url = IOWA.Router.composeUrl('schedule', selectedSubpage,
+                                       sessionId, search);
+      history.pushState({}, null, url);
+    },
+
+    _onApplyFilter: function(e) {
+      this.noop(e);
+
+      var target = Polymer.dom(e).rootTarget;
+      if (target && target.hasAttribute(this.app.ANALYTICS_LINK_ATTR)) {
+        IOWA.Analytics.trackEvent('link', 'click',
+            target.getAttribute(this.app.ANALYTICS_LINK_ATTR));
+      }
+
+      var tag = target.textContent;
+      if (e.model) {
+        tag = e.model.tag;
+      }
+
+      this.fire('apply-filter', {tag: tag});
+    },
+
+    _computeRelatedSessions: function(hasRelated, filters) {
+      if (!hasRelated) {
+        return [];
+      }
+
+      var relatedSessions = Object.keys(filters).map(function(filter) {
+        return IOWA.Schedule.getSessionById(filter);
+      }).filter(function(session) {
+        return session;
+      });
+
+      return relatedSessions;
+    },
+
+    openShareWindow: function(e, detail) {
+      this.noop(e);
+
+      var type = detail.item.getAttribute('data-share-type');
+      var url = null;
+      var width = 600;
+      var height = 600;
+
+      var title = this.selectedSession ?
+                  this.selectedSession.title : document.title;
+
+      // Shorten current URL so it's ready to go.
+      IOWA.Util.shortenURL(location.href).then(function(shortURL) {
+        switch (type) {
+          case 'fb':
+            height = 229;
+            url = 'https://www.facebook.com/sharer.php?u=' +
+                  encodeURIComponent(shortURL) +
+                  '&t=' + encodeURIComponent(title);
+
+            break;
+          case 'gplus':
+            height = 348;
+            width = 512;
+            url = 'https://plus.google.com/share?url=' +
+                  encodeURIComponent(shortURL) +
+                  '&hl=' + encodeURIComponent(document.documentElement.lang);
+            break;
+          case 'twitter':
+            height = 253;
+
+            var text = '#io16 brings together devs to explore the next ' +
+                       'generation of tech and mobile. Join us online or in ' +
+                       'person May 18-20: https://google.com/io';
+
+            if (this.selectedSession) {
+              text = 'Check out "' + title + '" at #io16: ' + shortURL;
+            }
+
+            url = 'https://twitter.com/intent/tweet?text=' +
+                   encodeURIComponent(text);
+
+            break;
+          default:
+            return;
+        }
+
+        var winOptions = 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=' +
+                         height + ',width=' + width;
+        window.open(url, 'share', winOptions);
+      }.bind(this));
+    },
+
+    _onSimilarSessionClick: function(e) {
+      this.noop(e);
+
+      var target = Polymer.dom(e).rootTarget;
+      if (target && target.hasAttribute(this.app.ANALYTICS_LINK_ATTR)) {
+        IOWA.Analytics.trackEvent('link', 'click',
+            target.getAttribute(this.app.ANALYTICS_LINK_ATTR));
+      }
+
+      this.selectedSession = IOWA.Schedule.getSessionById(e.model.session.id);
+      this.$.scrollable.scrollTarget.scrollTop = 0;
+      // Panel is already open, but force the event handler so the pushState
+      // and other code runs.
+      this._onSessionDetailsOpen();
+    },
+
+    noop: function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+  });
+}());
+</script>
+</dom-module>
