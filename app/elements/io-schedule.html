@@ -376,6 +376,14 @@ Fired when the user toggles bookmarking/removing a session.
             notify: true
           },
 
+          filtersPanel: {
+            type: Object,
+            readOnly: true,
+            value: function() {
+              return this.$.filters;
+            }
+          },
+
           /**
            * Timestamp for the start of the event in GMT timezone.
            */

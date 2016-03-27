@@ -350,7 +350,8 @@ paper-tabs {
   $container-max-width: 960px;
 
   .masthead .subpage__nav,
-  .masthead-container {
+  .masthead-container,
+  .filters__panel {
     max-width: $container-max-width;
     @include keyline-32l();
   }
@@ -364,7 +365,8 @@ paper-tabs {
   $container-max-width: 1160px;
 
   .masthead .subpage__nav,
-  .masthead-container {
+  .masthead-container,
+  .filters__panel {
     max-width: $container-max-width;
     @include keyline-40l();
   }
@@ -378,7 +380,8 @@ paper-tabs {
   $container-max-width: 1280px;
 
   .masthead .subpage__nav,
-  .masthead-container {
+  .masthead-container,
+  .filters__panel {
     max-width: $container-max-width;
     @include keyline-48l();
   }
@@ -392,7 +395,8 @@ paper-tabs {
   $container-max-width: 1440px;
 
   .masthead .subpage__nav,
-  .masthead-container {
+  .masthead-container,
+  .filters__panel {
     max-width: $container-max-width;
   }
 }
@@ -401,7 +405,8 @@ paper-tabs {
   $container-max-width: 1600px;
 
   .masthead .subpage__nav,
-  .masthead-container {
+  .masthead-container,
+  .filters__panel {
     max-width: $container-max-width;
   }
 }

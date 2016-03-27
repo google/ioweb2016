@@ -195,12 +195,25 @@ $color-session-row-hover: rgba($color-bluegrey-50, 0.4);
   z-index: 2;
   width: 100%;
   box-shadow: 0px 5px 2px -3px rgba(0, 0, 0, 0.2);
-  transition: clip 400ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: clip 400ms cubic-bezier(0.4, 0, 0.2, 1),
+              transform 100ms linear;
   clip: rect(0px, 1200px, 0px, 0px);
+  will-change: transform;
+  padding-left: 0;
 
   &[showfilters] {
     clip: rect(0px, 1200px, 350px, 0px);
   }
+
+  &.fixed {
+    position: fixed;
+    top: $navbarHeight;
+  }
+
+  &.down {
+    transform: translate3d(0, $subnavHeight, 0);
+  }
+
 }
 
 #filters {

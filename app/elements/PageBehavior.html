@@ -200,23 +200,48 @@ var PageBehavior = {
   },
 
   _runSubnavEffects: function(e) {
-    var scrollingUp = !this._appHeader._wasScrollingDown;
+    this.debounce('_runSubnavEffects', function() {
 
-    var subnavScrollTop = this._appHeader._scrollTop -
-                          this._appHeader.clientHeight -
-                          this.$.mastheadContainer.clientHeight;
+      var scrollingUp = !this._appHeader._wasScrollingDown;
 
-    // Scrolling down.
-    if (subnavScrollTop >= 0) {
-      // Hide the page's subnav when it reaches the top of the page.
-      this._mainSubnav.classList.remove('offscreen');
-    } else if (scrollingUp && Math.abs(subnavScrollTop) >= this.$.subnav.clientHeight) {
-      // Scrolling up.
-      // When the user is scrolling back up, return the page's visibility
-      // when it's directly under fixed subnav. This make its it appear as
-      // if the subnav returns to position: static, scrolling with the page.
-      this._mainSubnav.classList.add('offscreen');
-    }
+      var subnavScrollTop = this._appHeader._scrollTop -
+                            this._appHeader.clientHeight -
+                            this.$.mastheadContainer.clientHeight;
+
+      var filtersPanel = this.$.scheduleEl && this.$.scheduleEl.filtersPanel.parentElement;
+      if (filtersPanel) {
+        filtersPanel.classList.toggle('down', this._appHeader.shadow);
+      }
+
+      // Scrolling down.
+      if (subnavScrollTop >= 0) {
+        // Hide the page's subnav when it reaches the top of the page.
+        this._mainSubnav.classList.remove('offscreen');
+
+        if (filtersPanel) {
+          filtersPanel.classList.add('fixed');
+        }
+      } else if (scrollingUp && Math.abs(subnavScrollTop) >= this.$.subnav.clientHeight) {
+        if (filtersPanel) {
+          if (this.showFilters) {
+            filtersPanel.style.transitionDuration = '0ms';
+          }
+
+          filtersPanel.classList.remove('fixed');
+          filtersPanel.classList.remove('down');
+
+          this.debounce('scroll-trans-duration', function() {
+            filtersPanel.style.transitionDuration = '';
+          }, 50);
+        }
+
+        // Scrolling up.
+        // When the user is scrolling back up, return the page's visibility
+        // when it's directly under fixed subnav. This make its it appear as
+        // if the subnav returns to position: static, scrolling with the page.
+        this._mainSubnav.classList.add('offscreen');
+      }
+    });
   },
 
   /**
