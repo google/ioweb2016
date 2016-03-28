@@ -182,6 +182,8 @@ Fired when the user toggles bookmarking/removing a session.
 
     <div class="filters__panel" showfilters$="[[showFilters]]">
       <div id="filters" class="card-content bg-bluegrey-50-40" layout horizontal justified>
+        <iron-icon class="filters_toggle_button" icon="io:filter-list"
+            aria-label="Filter list" on-tap="toggleFilters"></iron-icon>
         <div class="filter-section">
           <h4>Tracks</h4>
           <paper-radio-group allow-empty-selection
@@ -437,7 +439,8 @@ Fired when the user toggles bookmarking/removing a session.
           showFilters: {
             type: Boolean,
             value: false,
-            notify: true
+            notify: true,
+            observer: '_showFiltersChanged'
           },
 
           /**
@@ -468,10 +471,6 @@ Fired when the user toggles bookmarking/removing a session.
 
         detached: function() {
           this.unlisten(window, 'popstate', 'sessionDetailsPopstateHandler');
-        },
-
-        isFilterSelected: function(filterName) {
-          return this.filters.indexOf(filterName) > -1;
         },
 
         onApplyFilter: function(e, detail) {
@@ -736,6 +735,16 @@ Fired when the user toggles bookmarking/removing a session.
             this.set('selectedSession.saved',
                      IOWA.Schedule.getSessionById(this.selectedSession.id).saved);
           }, 100);
+        },
+
+        toggleFilters: function() {
+          this.showFilters = !this.showFilters;
+        },
+
+        _showFiltersChanged: function() {
+          if (this.showFilters && this.app.isPhoneSize) {
+            this.$.filters.scrollTop = 0;
+          }
         }
 
       });
