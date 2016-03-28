@@ -205,8 +205,6 @@ limitations under the License.
 (function () {
   'use strict';
 
-  var SUBTAB_SELECTOR = '#subpage-tabs a';
-
   Polymer({
 
     is: 'io-schedule-page',
@@ -348,15 +346,6 @@ limitations under the License.
           }]
         }]
       }
-    },
-
-    attached: function() {
-      // TODO: check that this is still needed in paper-tabs.
-      IOWA.A11y.addFocusStates(SUBTAB_SELECTOR);
-    },
-
-    detached: function() {
-      IOWA.A11y.removeFocusStates(SUBTAB_SELECTOR);
     },
 
     onPageTransitionDone: function(e) {

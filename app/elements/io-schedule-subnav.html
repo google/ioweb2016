@@ -30,6 +30,22 @@ The `<io-schedule-subnav>` implements the schedule pages sub navigation.
     display: block;
   }
 
+  :host(.offscreen) {
+    display: none;
+  }
+
+  paper-tab {
+    padding: 0;
+  }
+
+  paper-tab a {
+    padding: 0 12px;
+  }
+
+  paper-tab .focused {
+    background: rgba(0, 0, 0, 0.1);
+  }
+
   @media (min-width: 768px) {
     #subpage-tabs {
       margin-left: -12px;
@@ -47,30 +63,38 @@ The `<io-schedule-subnav>` implements the schedule pages sub navigation.
   }
 </style>
 
-<div class="subpage__nav bg-cyan-400" layout horizontal center justified>
+<nav class="subpage__nav bg-cyan-400" layout horizontal center justified>
   <template is="dom-if" if="[[!app.isPhoneSize]]">
     <paper-tabs id="subpage-tabs" class="white"
                 attr-for-selected="label"
-                selected="[[selectedSubpage]]">
-      <paper-tab label="agenda" role="">
+                selected="[[selectedSubpage]]"
+                tabindex="-1"
+                activate-event=""
+                role="">
+      <paper-tab label="agenda" tabindex="-1" role="">
         <a href="#agenda" data-track-link="schedule-agenda" data-ajax-link
-                          layout horizontal center-center>Agenda</a>
+                          layout horizontal center-center
+                          aria-label="agenda">Agenda</a>
       </paper-tab>
-      <paper-tab label="day1" role="">
+      <paper-tab label="day1" tabindex="-1" role="">
         <a href="#day1" data-track-link="schedule-day1" data-ajax-link
-                        layout horizontal center-center>May 18</a>
+                        layout horizontal center-center
+                        aria-label="may eighteenth">May 18</a>
       </paper-tab>
-      <paper-tab label="day2" role="">
+      <paper-tab label="day2" tabindex="-1" role="">
         <a href="#day2" data-track-link="schedule-day2" data-ajax-link
-                        layout horizontal center-center>May 19</a>
+                        layout horizontal center-center
+                        aria-label="may nineteenth">May 19</a>
       </paper-tab>
-      <paper-tab label="day3" role="">
+      <paper-tab label="day3" tabindex="-1" role="">
         <a href="#day3" data-track-link="schedule-day3" data-ajax-link
-                        layout horizontal center-center>May 20</a>
+                        layout horizontal center-center
+                        aria-label="may twentieth">May 20</a>
       </paper-tab>
-      <paper-tab label="myschedule" role="">
+      <paper-tab label="myschedule" tabindex="-1" role="">
         <a href="#myschedule" data-track-link="schedule-mysched" data-ajax-link
-                              layout horizontal center-center>My Schedule</a>
+                              layout horizontal center-center
+                              aria-label="my schedule">My Schedule</a>
       </paper-tab>
     </paper-tabs>
   </template>
@@ -126,11 +150,14 @@ The `<io-schedule-subnav>` implements the schedule pages sub navigation.
       <paper-icon-button icon="io:filter-list" aria-label="Filter list"></paper-icon-button>
     </div>
   </div>
-</div>
+</nav>
 
 </template>
 <script>
 (function() {
+
+  var SUBTAB_SELECTOR = '#subpage-tabs a';
+
   Polymer({
     is: 'io-schedule-subnav',
 
@@ -159,6 +186,17 @@ The `<io-schedule-subnav>` implements the schedule pages sub navigation.
         value: false,
         notify: true
       }
+    },
+
+    attached: function() {
+      // Wait till after subnav effects to look for focusable items
+      this.async(function() {
+        IOWA.A11y.addFocusStates(SUBTAB_SELECTOR);
+      });
+    },
+
+    detached: function() {
+      IOWA.A11y.removeFocusStates(SUBTAB_SELECTOR);
     },
 
     _disableFiltering: function(selectedSubpage) {
