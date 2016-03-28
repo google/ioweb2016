@@ -368,6 +368,8 @@ limitations under the License.
     },
 
     onSubpageTransitionDone: function() {
+      this.set('app.headerReveals', true);
+
       // Reset FAB position after new DOM is set.
       IOWA.Elements.Template.initFabScroll();
     },

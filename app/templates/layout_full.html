@@ -248,7 +248,8 @@ limitations under the License.
   </div>
 </app-drawer>
 
-  <app-header reveals effects="fade-background waterfall" id="header" class="masthead">
+  <app-header id="header" class="masthead"
+              reveals="[[app.headerReveals]]" effects="fade-background waterfall">
     <app-toolbar id="navbar" role="navigation">
       <paper-icon-button icon="io:menu"
                          on-tap="toggleDrawer"
@@ -368,7 +369,7 @@ limitations under the License.
             date="{% .StartDateStr %}"></io-home-page>
       </template>
       <template is="dom-if" name="attend" restamp>
-        <io-attend-page app="[[app]]"
+        <io-attend-page app="{{app}}"
                         selected-subpage="{{selectedSubpage}}"></io-attend-page>
       </template>
       <template is="dom-if" name="extended" restamp>
@@ -378,7 +379,7 @@ limitations under the License.
         <io-extended-form-page app="[[app]]"></io-extended-form-page>
       </template>
       <template is="dom-if" name="schedule" restamp>
-        <io-schedule-page app="[[app]]" date="{% .StartDateStr %}"
+        <io-schedule-page app="{{app}}" date="{% .StartDateStr %}"
                           selected-subpage="{{selectedSubpage}}"
                           show-filters="{{showFilters}}"></io-schedule-page>
       </template>

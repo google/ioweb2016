@@ -189,12 +189,6 @@ iron-icon[icon="schedule"] {
     }
   }
 
-  .meta-filter {
-    paper-icon-button {
-      z-index: 2; // Filter icon appears over dropdown on mobile.
-    }
-  }
-
   .session__rate {
     margin: 0;
     left: 0 !important;
