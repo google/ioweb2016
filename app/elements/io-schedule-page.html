@@ -148,7 +148,9 @@ limitations under the License.
 
       <io-schedule-subnav id="subnav"
           selected-subpage="[[selectedSubpage]]" app="[[app]]"
-          show-filters="{{showFilters}}"></io-schedule-subnav>
+          show-filters="{{showFilters}}"
+          filters="[[filters]]"
+          on-filters-clear="clearFilters"></io-schedule-subnav>
 
       <section class$="subpage-agenda subpage__content bg-bluegrey-50-20 {{_applyActiveClassWhenSubpage(selectedSubpage, 'agenda')}}">
         <section class="slide-up">
@@ -188,7 +190,8 @@ limitations under the License.
               session-topics="[[app.filterTopics]]"
               session-types="[[app.filterSessionTypes]]"
               gmt-day-one="[[date]]"
-              show-filters="{{showFilters}}"></io-schedule>
+              show-filters="{{showFilters}}"
+              filters="{{filters}}"></io-schedule>
           </section>
         </div>
       </section>
@@ -240,6 +243,14 @@ limitations under the License.
        showFilters: {
         type: Boolean,
         value: false,
+        notify: true
+      },
+
+      /**
+       * Array of applied filters.
+       */
+      filters: {
+        type: Array,
         notify: true
       },
 
@@ -365,6 +376,10 @@ limitations under the License.
 
     toggleFilters: function() {
       this.$.scheduleEl.showFilters = !this.$.scheduleEl.showFilters;
+    },
+
+    clearFilters: function(e) {
+      this.$.scheduleEl.clearFilters();
     },
 
     _computeDisableRateSession: function(answersRecord) {

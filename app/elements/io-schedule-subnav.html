@@ -23,6 +23,11 @@ limitations under the License.
 <!--
 The `<io-schedule-subnav>` implements the schedule pages sub navigation.
 -->
+<!--
+Fired when the clears filter "x" is clicked.
+
+@event filters-clear
+-->
 <dom-module id="io-schedule-subnav">
 <template>
 <style include="shared-app-styles">
@@ -61,9 +66,28 @@ The `<io-schedule-subnav>` implements the schedule pages sub navigation.
       display: none;
     };
   }
+
+  .filters-banner-wrapper {
+    background-color: #fff;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 69px; /* subnav height */
+    font-size: 12px;
+    cursor: pointer;
+    color: rgba(0,0,0,0.54);
+  }
+  .filters-banner {
+    padding-top: 24px !important;
+    padding-bottom: 24px !important;
+    padding-right: 16px !important;
+  }
+  .filters-banner iron-icon {
+    margin-left: 8px;
+  }
 </style>
 
-<nav class="subpage__nav bg-cyan-400" layout horizontal center justified>
+<nav class="subpage__nav bg-cyan-400 card" layout horizontal center justified relative>
   <template is="dom-if" if="[[!app.isPhoneSize]]">
     <paper-tabs id="subpage-tabs" class="white"
                 attr-for-selected="label"
@@ -150,6 +174,16 @@ The `<io-schedule-subnav>` implements the schedule pages sub navigation.
       <paper-icon-button icon="io:filter-list" aria-label="Filter list"></paper-icon-button>
     </div>
   </div>
+
+  <div class="filters-banner-wrapper" hidden$="[[!filters.length]]">
+    <div class="filters-banner card-content bg-bluegrey-50-60" layout horizontal center justified>
+      <span>filtering by [[_prettifyFilters(filters.length)]]</span>
+      <span layout horizontal center on-click="clearFilters">
+        clear <iron-icon icon="io:close"></iron-icon>
+      </span>
+    </div>
+  </div>
+
 </nav>
 
 </template>
@@ -185,6 +219,13 @@ The `<io-schedule-subnav>` implements the schedule pages sub navigation.
         type: Boolean,
         value: false,
         notify: true
+      },
+
+      /**
+       * Array of applied filters.
+       */
+      filters: {
+        type: Array
       }
     },
 
@@ -227,6 +268,14 @@ The `<io-schedule-subnav>` implements the schedule pages sub navigation.
 
     toggleFilters: function() {
       this.showFilters = !this.showFilters;
+    },
+
+    _prettifyFilters: function(filters) {
+      return this.filters.join(', ');
+    },
+
+    clearFilters: function() {
+      this.fire('filters-clear');
     }
 
   })

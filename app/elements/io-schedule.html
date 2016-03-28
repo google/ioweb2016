@@ -180,7 +180,8 @@ Fired when the user toggles bookmarking/removing a session.
       }
     </style>
 
-    <div class="filters__panel" showfilters$="[[showFilters]]">
+    <div class="filters__panel" filtering$="[[_isFiltering(filters.length)]]"
+         showfilters$="[[showFilters]]">
       <div id="filters" class="card-content bg-bluegrey-50-40" layout horizontal justified>
         <iron-icon class="filters_toggle_button" icon="io:filter-list"
             aria-label="Filter list" on-tap="toggleFilters"></iron-icon>
@@ -220,15 +221,8 @@ Fired when the user toggles bookmarking/removing a session.
       </div>
     </div>
 
-    <div class="card-content filters-banner bg-bluegrey-50-60"
-         hidden$="[[!filters.length]]" layout horizontal center justified>
-      <span>filtering by [[_prettifyFilters(filters.*)]]</span>
-      <span layout horizontal center on-click="clearFilters">
-        clear <iron-icon icon="io:close"></iron-icon>
-      </span>
-    </div>
-
-    <div relative on-session-bookmark="_onToggleSaveSession">
+    <div class$="[[_addClass('has-filtering-banner', filters.length)]]"
+         on-session-bookmark="_onToggleSaveSession" relative>
 
       <io-session-details id="sessionDetails"
                           selected-session="{{selectedSession}}"
@@ -578,8 +572,11 @@ Fired when the user toggles bookmarking/removing a session.
         },
 
         clearFilters: function(e) {
-          e.preventDefault();
-          e.stopPropagation();
+          if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+
           this.filters = [];
 
           var radios = this.$.filters.querySelectorAll('paper-radio-group');
@@ -659,9 +656,9 @@ Fired when the user toggles bookmarking/removing a session.
           return user ? 1 : 0;
         },
 
-        _prettifyFilters: function(filters) {
-          return this.filters.join(', ');
-        },
+        // _prettifyFilters: function(filters) {
+        //   return this.filters.join(', ');
+        // },
 
         closeHelp: function() {
           this.set('app.showMySchedulHelp', false);
@@ -745,6 +742,10 @@ Fired when the user toggles bookmarking/removing a session.
           if (this.showFilters && this.app.isPhoneSize) {
             this.$.filters.scrollTop = 0;
           }
+        },
+
+        _isFiltering: function(filtersLen) {
+          return filtersLen > 0;
         }
 
       });
