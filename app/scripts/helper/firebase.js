@@ -115,7 +115,7 @@ class IOFirebase {
   }
 
   /**
-   * Unauthorizes Firebase.
+   * Unauthorizes Firebase and clears out the IndexedDB entries.
    */
   unAuth() {
     if (this.firebaseRef) {
@@ -128,6 +128,11 @@ class IOFirebase {
       debugLog('Unauthorized Firebase');
       this.firebaseRef = null;
     }
+
+    // Clear out IndexedDB and the session UI.
+    this.clearCachedReads();
+    this.clearCachedUpdates();
+    IOWA.Schedule.clearUserSchedule();
   }
 
   /**
@@ -258,10 +263,19 @@ class IOFirebase {
   /**
    * Clears out the data in the READS IndexedDB datastore.
    *
-   * @returns {Promise} Fulfills when the SimpleDB data is cleared.
+   * @returns {Promise} Fulfills when the IndexedDB data is cleared.
    */
   clearCachedReads() {
     return this._simpleDbInstance(IOFirebase.DB_NAMES.READS).then(db => db.clear());
+  }
+
+  /**
+   * Clears out the data in the UPDATES IndexedDB datastore.
+   *
+   * @returns {Promise} Fulfills when the IndexedDB data is cleared.
+   */
+  clearCachedUpdates() {
+    return this._simpleDbInstance(IOFirebase.DB_NAMES.UPDATES).then(db => db.clear());
   }
 
   /**
