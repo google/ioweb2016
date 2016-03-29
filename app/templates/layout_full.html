@@ -296,8 +296,7 @@ limitations under the License.
              app.currentUser, since a subset of app.currentUser might be
              populated by cached data. -->
         <template is="dom-if" if="{{app.currentUser.id}}" restamp>
-          <paper-menu-button horizontal-align="right" vertical-align="top"
-                             on-paper-dropdown-open="getNotificationState">
+          <paper-menu-button horizontal-align="right" vertical-align="top">
             <paper-icon-button icon="io:more-vert"
                                class="dropdown-trigger"
                                aria-label="Settings"></paper-icon-button>
@@ -309,22 +308,7 @@ limitations under the License.
                   <div class="settings-email">[[app.currentUser.email]]</div>
                 </div>
               </div>
-              <div class="card-content notification__feature">
-                <h4>Notifications</h4>
-                <iron-label horizontal layout center>
-                  <paper-checkbox checked$="{{app.currentUser.notify}}"
-                                  disabled$="{{_disableNotify(app.currentUser.notify)}}"
-                                  on-tap="updateNotifyUser"></paper-checkbox>
-                  <b>I want to receive notifications from the Google I/O 2016 web app.</b>
-                </iron-label>
-                <p>If this option is deselected, I understand I won't be notified when:</p>
-                <ul>
-                  <li>I/O is about to start</li>
-                  <li>Events added to My Schedule are about to start</li>
-                  <li>Videos of sessions added to My Schedule are available</li>
-                </ul>
-                <p class="settings-note"><b>Note</b>: Notifications are activated per device. To receive notifications on multiple devices, sign in on each device, enable notifications, and make sure you're online. All device notifications can be turned on/off at any time in the settings panel.</p>
-              </div>
+              <io-notification-widget></io-notification-widget>
               <div class="card-content" layout horizontal justified>
                 <a href="https://www.google.com/intl/en/policies/terms/"
                    data-track-link="login-tos" target="_blank">Terms of Service</a>
@@ -466,7 +450,6 @@ limitations under the License.
 <script src="scripts/helper/request.js"></script>
 <script src="scripts/helper/picasa.js"></script>
 <script src="scripts/helper/simple-db.js"></script>
-<script src="scripts/helper/notifications.js"></script>
 <script src="scripts/helper/schedule.js"></script>
 <script src="scripts/bootstrap.js"></script>
 <!-- endbuild -->
