@@ -179,6 +179,8 @@ gulp.task('concat-and-uglify-js', 'Crush JS', ['eslint', 'generate-page-metadata
   // The ordering of the scripts in the gulp.src() array matter!
   // This order needs to match the order in templates/layout_full.html
   var siteScripts = [
+    // The SimpleDB polyfill needs to be run through Babel, so include it here.
+    'bower_components/simpledb_polyfill/index.js',
     'main.js',
     'pages.js',
     'helper/util.js',
@@ -210,14 +212,21 @@ gulp.task('concat-and-uglify-js', 'Crush JS', ['eslint', 'generate-page-metadata
 
   var serviceWorkerScriptStream = gulp.src([
     IOWA.appDir + '/bower_components/sw-toolbox/sw-toolbox.js',
-    IOWA.appDir + '/scripts/helper/simple-db.js',
+    IOWA.appDir + '/bower_components/simpledb_polyfill/index.js',
     IOWA.appDir + '/scripts/sw-toolbox/*.js'
   ])
     .pipe(reload({stream: true, once: true}))
+    .pipe($.babel({
+      presets: ['es2015'],
+      compact: false
+    }))
     .pipe($.concat('sw-toolbox-scripts.js'));
 
   return merge(siteScriptStream, siteLibStream).add(analyticsScriptStream).add(serviceWorkerScriptStream)
-    .pipe($.uglify({preserveComments: 'some'}).on('error', function() {}))
+    .pipe($.uglify({preserveComments: 'some'})
+    .on('error', function(error) {
+      $.util.log(error);
+    }))
     .pipe(gulp.dest(IOWA.distDir + '/' + IOWA.appDir + '/scripts'))
     .pipe($.size({title: 'concat-and-uglify-js'}));
 });
@@ -364,7 +373,7 @@ gulp.task('generate-data-worker-dev', 'Generate data-worker.js for dev', functio
 gulp.task('generate-service-worker-dev', 'Generate service worker for dev', ['sass'], function(callback) {
   del.sync([IOWA.appDir + '/service-worker.js']);
   var importScripts = glob.sync('scripts/sw-toolbox/*.js', {cwd: IOWA.appDir});
-  importScripts.unshift('scripts/helper/simple-db.js');
+  importScripts.unshift('bower_components/simpledb_polyfill/index.js');
   importScripts.unshift('bower_components/sw-toolbox/sw-toolbox.js');
 
   generateServiceWorker(IOWA.appDir, !!argv['fetch-dev'], importScripts, function(error, serviceWorkerFileContents) {
