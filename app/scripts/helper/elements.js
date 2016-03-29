@@ -19,18 +19,8 @@ IOWA.Elements = (function() {
 
   const ANALYTICS_LINK_ATTR = 'data-track-link';
 
-  function removeSplashScreen() {
-    var splash = document.getElementById('splash');
-    splash.addEventListener('transitionend', function() {
-      splash.parentElement.removeChild(splash);
-    });
-
-    document.body.classList.remove('loading');
-  }
-
-  function updateElements() {
-    removeSplashScreen();
-
+  // Called from critical.html when the bundle is loaded.
+  function onElementsBundleLoaded() {
     var onPageSelect = function() {
       document.body.removeEventListener('page-select', onPageSelect);
 
@@ -56,8 +46,15 @@ IOWA.Elements = (function() {
       );
     };
 
-    document.body.addEventListener('page-select', onPageSelect);
+    if (IOWA.Elements && IOWA.Elements.LazyPages &&
+        IOWA.Elements.LazyPages.selectedPage) {
+      onPageSelect();
+    } else {
+      document.body.addEventListener('page-select', onPageSelect);
+    }
+  }
 
+  function onDomBindStamp() {
     var main = document.querySelector('.io-main');
 
     var masthead = document.querySelector('.masthead');
@@ -481,7 +478,7 @@ IOWA.Elements = (function() {
       template.addEventListener('dom-change', resolve);
     });
 
-    template.domStampedPromise.then(updateElements);
+    template.domStampedPromise.then(onDomBindStamp);
 
     template.addEventListener('page-transition-done', function() {
       this.set('app.pageTransitionDone', true);
@@ -499,6 +496,7 @@ IOWA.Elements = (function() {
   }
 
   return {
-    init: init
+    init,
+    onElementsBundleLoaded
   };
 })();

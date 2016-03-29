@@ -13,27 +13,35 @@ limitations under the License.
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
+<link rel="import" href="shared-app-styles.html">
 
-<link rel="import" href="../bower_components/iron-selector/iron-selectable.html">
-<!-- <link rel="import" href="../bower_components/iron-selector/iron-selector.html"> -->
-
-
-<!-- <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html"> -->
-
-
-<!-- <link rel="import" href="elements.html"> -->
+<!-- Fixes timing issues with loading these elements. -->
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 
 <script>
 (function() {
   'use strict';
 
-setTimeout(function() {
+  function removeSplashScreen() {
+    var splash = document.getElementById('splash');
+    splash.addEventListener('transitionend', function() {
+      splash.parentElement.removeChild(splash);
+    });
+
+    document.body.classList.remove('loading');
+  }
 
   Polymer.Base.importHref('/io2016/elements/elements.html', function() {
+    IOWA.Elements.onElementsBundleLoaded();
+    removeSplashScreen();
 
-  });
-
-}, 1000);
+    var fp = IOWA.Util.getFPInChrome();
+    if (fp) {
+      debugLog('first paint:', fp, 'ms');
+      IOWA.Analytics.trackPerf('load', 'firstpaint', fp);
+    }
+  }, null, true);
 
 })();
 </script>

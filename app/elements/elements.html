@@ -11,13 +11,25 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
+<!--
+Copyright 2016 Google Inc. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+    http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
-<!-- <link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
-<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
-<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
-<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
- -->
+<link rel="import" href="io-schedule-subnav.html">
+
+<!-- Main app shell and components -->
 <link rel="import" href="../bower_components/paper-toolbar/paper-toolbar.html">
 <link rel="import" href="io-icons.html">
 
@@ -30,6 +42,11 @@ limitations under the License.
 
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
 
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+
 <link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 
@@ -37,7 +54,6 @@ limitations under the License.
 <link rel="import" href="io-toast.html">
 
 <!-- Pages -->
-<link rel="import" href="shared-app-styles.html">
 <link rel="import" href="lazy-pages.html">
 <link rel="import" href="io-home-page.html">
 <link rel="import" href="io-attend-page.html">
@@ -46,33 +62,3 @@ limitations under the License.
 <link rel="import" href="io-schedule-page.html">
 <link rel="import" href="io-faq-page.html">
 <link rel="import" href="io-widget-page.html">
-
-<style is="custom-style" include="shared-app-styles">
-  .masthead {
-    --app-header-shadow: {
-      box-shadow: inset 0px 5px 2px -3px rgba(0, 0, 0, 0.2);
-    };
-    --app-header-background-rear-layer: {
-      background-color: var(--paper-grey-50);
-    };
-  }
-
-  paper-dropdown-menu.white {
-    --paper-input-container-color: inherit;
-    --paper-dropdown-menu-icon: {
-      color: inherit;
-    };
-    --paper-input-container: {
-      padding: 0;
-    };
-  }
-
-  #navbar paper-tabs {
-    --paper-tabs-selection-bar-color: var(--paper-blue-grey-100);
-  }
-  #navbar.scrolled paper-tabs {
-    --paper-tabs-selection-bar-color: var(--paper-blue-grey-600);
-  }
-
-</style>
-

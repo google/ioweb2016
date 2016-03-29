@@ -119,12 +119,12 @@
   }
 
   function afterImports() {
+    initWorker();
+
     IOWA.Router = IOWA.Router_(window); // eslint-disable-line new-cap
     IOWA.Elements.init();
     IOWA.Router.init(IOWA.Elements.Template);
     IOWA.Notifications.init();
-
-    initWorker();
 
     IOWA.Schedule.loadCachedUserSchedule();
   }
@@ -171,6 +171,7 @@
 
   lazyLoadWCPolyfillsIfNecessary();
 
+  // Wait for critical.html to load if we don't have native HTML imports.
   if (IOWA.Util.supportsHTMLImports) {
     afterImports();
   } else {

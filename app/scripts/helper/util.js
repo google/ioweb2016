@@ -246,6 +246,20 @@ IOWA.Util = IOWA.Util || (function() {
     return target;
   };
 
+  /**
+   * Returns the first paint metric (if in Chrome)
+   * @return {number} The first paint time in ms.
+   */
+  const getFPInChrome = function() {
+    if (!(window.chrome && window.chrome.loadTimes)) {
+      return null;
+    }
+
+    let load = window.chrome.loadTimes();
+    let fp = (load.firstPaintTime - load.startLoadTime) * 1000;
+    return Math.round(fp);
+  };
+
   return {
     createDeferred,
     isFF,
@@ -257,6 +271,7 @@ IOWA.Util = IOWA.Util || (function() {
     setMetaThemeColor,
     supportsHTMLImports: 'import' in document.createElement('link'),
     shortenURL,
+    getFPInChrome,
     getURLParameter,
     getStaticBaseURL,
     setSearchParam,

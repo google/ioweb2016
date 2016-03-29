@@ -47,7 +47,9 @@ body {
   transition: opacity 300ms cubic-bezier(0,0,0.2,1);
   opacity: 0;
   will-change: opacity;
-  // background: url(...) no-repeat;
+  background: url(../images/io-logo-white.png) no-repeat 50% 50%;
+  background-size: 200px;
+  background-color: $color-bluegrey-600;
  }
 
 .anchor-like {
