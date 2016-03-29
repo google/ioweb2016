@@ -335,7 +335,9 @@ limitations under the License.
     <template is="dom-if" if="[[_isPage('schedule', selectedPage)]]" restamp>
       <io-schedule-subnav selected-subpage="{{selectedSubpage}}" app="[[app]]"
                           show-filters="{{showFilters}}"
-                          class="header_subnav offscreen"></io-schedule-subnav>
+                          class="header_subnav offscreen"
+                          filters="[[_filters]]"
+                          on-filters-clear="_onClearFilters"></io-schedule-subnav>
     </template>
     <template is="dom-if" if="[[_isPage('attend', selectedPage)]]" restamp>
       <div class="header_subnav offscreen subpage__nav bg-cyan-400" layout horizontal justified>
@@ -381,7 +383,8 @@ limitations under the License.
       <template is="dom-if" name="schedule" restamp>
         <io-schedule-page app="{{app}}" date="{% .StartDateStr %}"
                           selected-subpage="{{selectedSubpage}}"
-                          show-filters="{{showFilters}}"></io-schedule-page>
+                          show-filters="{{showFilters}}"
+                          filters="{{_filters}}"></io-schedule-page>
       </template>
       <template is="dom-if" name="faq" restamp>
         <io-faq-page app="[[app]]"></io-faq-page>

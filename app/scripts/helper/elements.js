@@ -458,6 +458,13 @@ IOWA.Elements = (function() {
       this.$.appdrawer.close();
     };
 
+    template._onClearFilters = function(e) {
+      e.stopPropagation();
+
+      var selectedPageEl = IOWA.Elements.LazyPages.selectedPage;
+      selectedPageEl.clearFilters();
+    };
+
     template.addEventListener('dom-change', updateElements);
 
     template.addEventListener('page-transition-done', function() {

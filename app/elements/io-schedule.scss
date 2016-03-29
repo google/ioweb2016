@@ -23,6 +23,8 @@
 $color-section-border: #eaeaea;
 $color-session-row-hover: rgba($color-bluegrey-50, 0.4);
 
+$filterBannerHeight: 72px;
+
 :host {
   display: block;
   position: relative;
@@ -246,17 +248,8 @@ $color-session-row-hover: rgba($color-bluegrey-50, 0.4);
   font-size: 14px;
 }
 
-.filters-banner {
-  font-size: 12px;
-  padding-top: 24px !important;
-  padding-bottom: 24px !important;
-  padding-right: $tabletKeyline !important;
-  cursor: pointer;
-  color: rgba(0,0,0,0.54);
-
-  iron-icon {
-    margin-left: $mobileKeyline / 2;
-  }
+.has-filtering-banner {
+  margin-top: $filterBannerHeight;
 }
 
 paper-radio-button {
@@ -301,10 +294,19 @@ paper-radio-button {
 
     &:not(.fixed) {
       top: -($subnavHeight - $mobileKeyline / 2) !important;
+
+      &[filtering] {
+        top: -($subnavHeight + $filterBannerHeight - $mobileKeyline / 2) !important;
+      }
     }
 
-    &.fixed.down {
-      top: 0 !important;
+    &.fixed {
+      position: fixed;
+      top: $navbarHeight;
+
+      &.down {
+        top: 0 !important;
+      }
     }
 
     .filters_toggle_button {
@@ -380,6 +382,14 @@ paper-radio-button {
 
   #filters {
     padding: $tabletKeyline;
+  }
+
+  .filters__panel {
+    &.fixed {
+      &[filtering] {
+        margin-top: $filterBannerHeight;
+      }
+    }
   }
 }
 
