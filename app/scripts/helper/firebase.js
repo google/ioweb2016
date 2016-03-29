@@ -36,30 +36,11 @@ class IOFirebase {
      */
     this.clockOffset = 0;
 
-    /**
-     * Stores references to SimpleDB wrappers around IndexedDB.
-     * @type {Object}
-     */
-    this.simpleDbInstances = {};
-
     // Disconnect Firebase while the focus is off the page to save battery.
     if (typeof document.hidden !== 'undefined') {
       document.addEventListener('visibilitychange',
           () => document.hidden ? IOFirebase.goOffline() : IOFirebase.goOnline());
     }
-  }
-
-  /**
-   * List of SimpleDB names used for offline reads/updates.
-   * @static
-   * @constant
-   * @type {Object}
-   */
-  static get DB_NAMES() {
-    return {
-      READS: 'firebase-reads',
-      UPDATES: 'firebase-updates'
-    };
   }
 
   /**
@@ -136,33 +117,6 @@ class IOFirebase {
   }
 
   /**
-   * Returns a SimpleDB wrapper around IndexedDB used for queueing Firebase
-   * write operations.
-   *
-   * @private
-   * @param {string} name The name of the SimpleDB database.
-   * @return {Promise} Fulfills with the SimpleDB instance.
-   */
-  _simpleDbInstance(name) {
-    if (window.simpleDB) {
-      if (this.simpleDbInstances[name]) {
-        // Resolve immediately if we already have an open instance.
-        return Promise.resolve(this.simpleDbInstances[name]);
-      }
-
-      return window.simpleDB.open(name).then(db => {
-        // Stash the instance away for reuse next time.
-        this.simpleDbInstances[name] = db;
-        return this.simpleDbInstances[name];
-      });
-    }
-
-    // window.simpleDB will be undefined if we detected that there was no
-    // IndexedDB support in the current browser.
-    return Promise.reject('SimpleDB is not supported.');
-  }
-
-  /**
    * Retries all queued Firebase set() operations that were previously queued
    * in IndexedDB.
    *
@@ -172,7 +126,7 @@ class IOFirebase {
   _replayQueuedOperations() {
     let queuedOperations = {};
 
-    return this._simpleDbInstance(IOFirebase.DB_NAMES.UPDATES).then(db => {
+    return IOWA.SimpleDB.instance(IOWA.SimpleDB.NAMES.UPDATES).then(db => {
       // Let's read in all the queued values before we do anything else, to
       // make sure we're not confused by additional queued values that get
       // added asynchronously.
@@ -266,7 +220,7 @@ class IOFirebase {
    * @returns {Promise} Fulfills when the IndexedDB data is cleared.
    */
   clearCachedReads() {
-    return this._simpleDbInstance(IOFirebase.DB_NAMES.READS).then(db => db.clear());
+    return IOWA.SimpleDB.clearData(IOWA.SimpleDB.NAMES.READS);
   }
 
   /**
@@ -275,7 +229,7 @@ class IOFirebase {
    * @returns {Promise} Fulfills when the IndexedDB data is cleared.
    */
   clearCachedUpdates() {
-    return this._simpleDbInstance(IOFirebase.DB_NAMES.UPDATES).then(db => db.clear());
+    return IOWA.SimpleDB.clearData(IOWA.SimpleDB.NAMES.UPDATES);
   }
 
   /**
@@ -307,7 +261,7 @@ class IOFirebase {
    * @returns {Promise} Fulfills when the replay is complete
    */
   _replayCachedData(refSubstring, callback) {
-    return this._simpleDbInstance(IOFirebase.DB_NAMES.READS).then(db => {
+    return IOWA.SimpleDB.instance(IOWA.SimpleDB.NAMES.READS).then(db => {
       let firebaseUrlRegexp = new RegExp(`${refSubstring}.*?([^/]+)$`);
       return db.forEach((cacheKey, cachedValue) => {
         if (cachedValue) {
@@ -349,7 +303,7 @@ class IOFirebase {
       // callback to allow that data to be consumed.
       let wrappedCallback = (key, freshValue) => {
         // Lexical this ftw!
-        return this._simpleDbInstance(IOFirebase.DB_NAMES.READS).then(db => {
+        return IOWA.SimpleDB.instance(IOWA.SimpleDB.NAMES.READS).then(db => {
           return db.set(`${refString}/${key}`, freshValue);
         }).catch(error => {
           debugLog('SimpleDB error in wrappedCallback:', error);
@@ -478,7 +432,7 @@ class IOFirebase {
    * @return {Promise} Promise that fulfills once IDB is updated.
    */
   _queueOperation(attribute, value) {
-    return this._simpleDbInstance(IOFirebase.DB_NAMES.UPDATES).then(db => {
+    return IOWA.SimpleDB.instance(IOWA.SimpleDB.NAMES.UPDATES).then(db => {
       return db.set(attribute, value);
     }).catch(error => {
       // This might have rejected if IndexedDB is unavailable in the current
@@ -499,7 +453,7 @@ class IOFirebase {
    * @return {Promise} Promise that fulfills once IDB is updated.
    */
   _dequeueOperation(attribute) {
-    return this._simpleDbInstance(IOFirebase.DB_NAMES.UPDATES).then(db => {
+    return IOWA.SimpleDB.instance(IOWA.SimpleDB.NAMES.UPDATES).then(db => {
       return db.delete(attribute);
     }).catch(error => {
       // This might have rejected if IndexedDB is unavailable in the current
