@@ -106,9 +106,11 @@ Fired when sign in fails for some reason.
             this.cookiePolicy = location.protocol + '//' + location.host;
           }
           this.signinChangedHandler_ = this.signinChangedHandler.bind(this);
+
+          this.loadCachedUserInfo();
         },
 
-        onLoadAuth: function(e, detail) {
+        onLoadAuth: function() {
           gapi.load('auth2', function () {
             // Init auth.
             this.auth2 = gapi.auth2.init({
@@ -126,11 +128,37 @@ Fired when sign in fails for some reason.
             return;
           }
           // Starts the client side sign-in popup flow.
-          this.auth2.signIn().then(undefined, this.onSignInError);
+          // Note: This isn't a real promise! You can't use catch().
+          this.auth2.signIn().then(undefined, function(error) {
+            debugLog('auth2.signIn error:', error);
+          });
         },
 
-        signOut: function () {
-          this.auth2.signOut().then(undefined, this.onSignInError.bind(this));
+        signOut: function() {
+          // Note: This isn't a real promise! You can't use catch().
+          this.auth2.signOut().then(function() {
+            this.clearCachedUserInfo();
+          }.bind(this), function(error) {
+            debugLog('auth2.signOut error:', error);
+          });
+        },
+
+        loadCachedUserInfo: function() {
+          IOWA.SimpleDB.instance(IOWA.SimpleDB.NAMES.USER).then(function(db) {
+            db.get(IOWA.SimpleDB.NAMES.USER).then(function(cachedUser) {
+              // Check to make sure this.user wasn't already populated with real
+              // data due to a successful asynchronous sign-in.
+              if (cachedUser && !this.user) {
+                this.user = cachedUser;
+              }
+            }.bind(this));
+          }.bind(this)).catch(function(error) {
+            debugLog('Unable to load cached user info:', error);
+          });
+        },
+
+        clearCachedUserInfo: function() {
+          return IOWA.SimpleDB.clearData(IOWA.SimpleDB.NAMES.USER);
         },
 
         loadUserInfo: function () {
@@ -145,24 +173,36 @@ Fired when sign in fails for some reason.
                 email: e.result.emails && e.result.emails.length ? e.result.emails[0].value : null
               };
               this.fire('signin-change', {signedIn: true, user: this.user});
+
+              IOWA.SimpleDB.instance(IOWA.SimpleDB.NAMES.USER).then(function(db) {
+                // We only want to cache a subset of the user data so that we
+                // can display a profile picture while starting up offline.
+                db.set(IOWA.SimpleDB.NAMES.USER, {
+                  picture: this.user.picture
+                });
+              }.bind(this)).catch(function(error) {
+                debugLog('Unable to cache user info:', error);
+              });
             }.bind(this));
           }.bind(this));
         },
 
         signinChangedHandler: function(signedIn) {
+          // Reset user to null to overwrite any cached user data.
+          this.user = null;
+
           this.signedIn = signedIn;
           this.currentUser = this.auth2.currentUser.get();
           if (this.signedIn) {
             this.loadUserInfo();
           } else {
-            this.user = null;
             this.signedIn = false;
             this.fire('signin-change', {signedIn: false, user: null});
           }
         },
 
-        onSignInError: function (error) {
-          console.error(error);
+        onSignInError: function(error) {
+          debugLog(error);
         }
       });
     }());
