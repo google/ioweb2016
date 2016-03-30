@@ -71,6 +71,18 @@ function createReloadServer() {
   });
 }
 
+function minifyHtml() {
+  return $.minifyHtml({
+    quotes: true,
+    empty: true,
+    spare: true
+  });
+}
+
+function uglifyJS() {
+  return $.uglify({preserveComments: 'some'});
+}
+
 // Default task that builds everything.
 // The output can be found in IOWA.distDir.
 gulp.task('default', ['clean'], function(done) {
@@ -223,8 +235,7 @@ gulp.task('concat-and-uglify-js', 'Crush JS', ['eslint', 'generate-page-metadata
     .pipe($.concat('sw-toolbox-scripts.js'));
 
   return merge(siteScriptStream, siteLibStream).add(analyticsScriptStream).add(serviceWorkerScriptStream)
-    .pipe($.uglify({preserveComments: 'some'})
-    .on('error', function(error) {
+    .pipe(uglifyJS().on('error', function(error) {
       $.util.log(error);
     }))
     .pipe(gulp.dest(IOWA.distDir + '/' + IOWA.appDir + '/scripts'))
@@ -245,7 +256,9 @@ gulp.task('generate-data-worker-dist', 'Generate data-worker.js for /dist.', fun
     }))
     .pipe(ownScriptsFilter.restore)
     .pipe($.concat('data-worker-scripts.js'))
-    .pipe($.uglify({preserveComments: 'some'}).on('error', function() {}))
+    .pipe(uglifyJS().on('error', function(error) {
+      $.util.log(error);
+    }))
     .pipe(gulp.dest(IOWA.distDir + '/' + IOWA.appDir))
     .pipe($.size({title: 'data-worker-dist'}));
 });
@@ -305,6 +318,10 @@ gulp.task('vulcanize-elements', false, ['sass'], function() {
       dest: IOWA.appDir + '/elements'
     }))
     .pipe($.crisper({scriptInHead: true}))
+    // Minify html output
+    .pipe($.if('*.html', minifyHtml()))
+    // Minifiy js output
+    .pipe($.if('*.js', uglifyJS()))
     .pipe(gulp.dest(IOWA.distDir + '/' + IOWA.appDir + '/elements/'));
 });
 
@@ -320,6 +337,10 @@ gulp.task('vulcanize-gadget-elements', false, ['sass'], function() {
       dest: IOWA.appDir + '/elements'
     }))
     .pipe($.crisper({scriptInHead: true}))
+    // Minify html output
+    .pipe($.if('*.html', minifyHtml()))
+    // Minifiy js output
+    .pipe($.if('*.js', uglifyJS()))
     .pipe(gulp.dest(IOWA.distDir + '/' + IOWA.appDir + '/elements/'));
 });
 
@@ -342,6 +363,10 @@ gulp.task('vulcanize-extended-elements', false, ['sass'], function() {
       ]
     }))
     .pipe($.crisper({scriptInHead: true}))
+    // Minify html output
+    .pipe($.if('*.html', minifyHtml()))
+    // Minifiy js output
+    .pipe($.if('*.js', uglifyJS()))
     .pipe(gulp.dest(IOWA.distDir + '/' + IOWA.appDir + '/elements/'));
 });
 
