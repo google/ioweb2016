@@ -192,7 +192,7 @@ gulp.task('concat-and-uglify-js', 'Crush JS', ['eslint', 'generate-page-metadata
   // This order needs to match the order in templates/layout_full.html
   var siteScripts = [
     // The SimpleDB polyfill needs to be run through Babel, so include it here.
-    'bower_components/simpledb_polyfill/index.js',
+    '../bower_components/simpledb_polyfill/index.js',
     'main.js',
     'pages.js',
     'helper/util.js',
