@@ -147,6 +147,9 @@ IOWA.Router_ = function(window) {
       history.pushState({
         path: this.state.current.path + this.state.current.hash
       }, '', this.state.current.href);
+
+      // Track new subpage as a pageview.
+      IOWA.Analytics.trackPageView(location.pathname + location.hash);
     }
   };
 
