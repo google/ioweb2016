@@ -199,10 +199,6 @@ Fired when sign in fails for some reason.
             this.signedIn = false;
             this.fire('signin-change', {signedIn: false, user: null});
           }
-        },
-
-        onSignInError: function(error) {
-          debugLog(error);
         }
       });
     }());
