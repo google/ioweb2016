@@ -126,10 +126,7 @@
 
     initWorker();
 
-    // TODO: Is this the best place to call loadUserSchedule()?
-    // It waits on a promise for the master schedule to load, so it doesn't
-    // *hurt* to call it early.
-    IOWA.Schedule.loadUserSchedule();
+    IOWA.Schedule.loadCachedUserSchedule();
   }
 
   // TODO: fix when new page elements have these hooks.

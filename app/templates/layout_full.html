@@ -286,9 +286,15 @@ limitations under the License.
              blocked. Needs user gesture. -->
         <span class="anchor-like button-link" role="button" tabindex="0"
               data-track-link="nav-signin" on-click="signIn"
-              hidden="[[app.currentUser]]" layout center>Sign in</span>
-        <template is="dom-if" if="{{app.currentUser}}" restamp>
-          <img src$="{{app.currentUser.picture}}" class="profilepic">
+              hidden="[[app.currentUser.picture]]" layout center>Sign in</span>
+        <!-- This image might be set based on cached data. -->
+        <img src$="{{app.currentUser.picture}}"
+             class="profilepic"
+             hidden="[[!app.currentUser.picture]]">
+        <!-- Stamp this out when app.currentUser.id is set rather than just
+             app.currentUser, since a subset of app.currentUser might be
+             populated by cached data. -->
+        <template is="dom-if" if="{{app.currentUser.id}}" restamp>
           <paper-menu-button horizontal-align="right" vertical-align="top"
                              on-paper-dropdown-open="getNotificationState">
             <paper-icon-button icon="io:more-vert"

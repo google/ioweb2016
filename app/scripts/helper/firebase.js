@@ -79,20 +79,22 @@ class IOFirebase {
     this.firebaseRef = new Firebase(firebaseShardUrl);
 
     return this._setClockOffset()
-        .then(() => this.firebaseRef.authWithOAuthToken('google', accessToken))
-        .then(() => {
-          this._bumpLastActivityTimestamp();
+      .then(() => this.firebaseRef.authWithOAuthToken('google', accessToken))
+      .then(() => {
+        this._bumpLastActivityTimestamp();
 
-          IOWA.Analytics.trackEvent('login', 'success', firebaseShardUrl);
-          debugLog('Authenticated successfully to Firebase shard', firebaseShardUrl);
+        IOWA.Analytics.trackEvent('login', 'success', firebaseShardUrl);
+        debugLog('Authenticated successfully to Firebase shard', firebaseShardUrl);
 
-          // Check to see if there are any failed session modification requests,
-          // and if so, replay them before fetching the user schedule.
-          return this._replayQueuedOperations();
-        }).catch(error => {
-          IOWA.Analytics.trackError('firebaseRef.authWithOAuthToken(...)', error);
-          debugLog('Login to Firebase Failed!', error);
+        // Check to see if there are any failed session modification requests,
+        // and if so, replay them before fetching the user schedule.
+        return this._replayQueuedOperations().then(() => {
+          IOWA.Schedule.loadUserSchedule();
         });
+      }).catch(error => {
+        IOWA.Analytics.trackError('firebaseRef.authWithOAuthToken(...)', error);
+        debugLog('Login to Firebase Failed!', error);
+      });
   }
 
   /**
