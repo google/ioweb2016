@@ -21,7 +21,8 @@
       "end": "11:30 AM",
       "filters": {
         "Live streamed": true
-      }
+      },
+      "duration": "1 hour"
     },
     {
       "id": "ac8d5cc7-36e5-e411-b87f-00155d5066d7",
@@ -44,7 +45,8 @@
       "filters": {
         "Code labs": true,
         "Live streamed": false
-      }
+      },
+      "duration": "1 hour"
     },
     {
       "id": "9259a197-b6d4-e411-b87f-00155d5066d7",
@@ -77,7 +79,8 @@
         "Live streamed": true,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "48151e67-aedc-e411-b87f-00155d5066d7",
@@ -110,7 +113,8 @@
         "Live streamed": false,
         "Play": true,
         "Sandbox talks": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "7959a197-b6d4-e411-b87f-00155d5066d7",
@@ -144,7 +148,8 @@
         "Sandbox talks": true,
         "Tools & APIs": true,
         "Wearables": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "0759a197-b6d4-e411-b87f-00155d5066d7",
@@ -175,7 +180,8 @@
         "Live streamed": false,
         "Location": true,
         "Sandbox talks": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "df58a197-b6d4-e411-b87f-00155d5066d7",
@@ -205,7 +211,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "4759a197-b6d4-e411-b87f-00155d5066d7",
@@ -235,7 +242,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "c058a197-b6d4-e411-b87f-00155d5066d7",
@@ -270,7 +278,8 @@
         "b58c9f91-b6d4-e411-b87f-00155d5066d7": true,
         "f37a6899-89e4-e411-b87f-00155d5066d7": true,
         "fa7d85ce-89e4-e411-b87f-00155d5066d7": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "ab8c9f91-b6d4-e411-b87f-00155d5066d7",
@@ -299,7 +308,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "99d22eb6-acdc-e411-b87f-00155d5066d7",
@@ -328,7 +338,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "538c9f91-b6d4-e411-b87f-00155d5066d7",
@@ -362,7 +373,8 @@
         "Sandbox talks": true,
         "TV & Living Room": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "f98b9f91-b6d4-e411-b87f-00155d5066d7",
@@ -392,7 +404,8 @@
         "Engage & Earn": true,
         "Live streamed": false,
         "Sandbox talks": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "a18c9f91-b6d4-e411-b87f-00155d5066d7",
@@ -430,7 +443,8 @@
         "ac58a197-b6d4-e411-b87f-00155d5066d7": true,
         "c058a197-b6d4-e411-b87f-00155d5066d7": true,
         "f37a6899-89e4-e411-b87f-00155d5066d7": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "6559a197-b6d4-e411-b87f-00155d5066d7",
@@ -464,7 +478,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "d08fd15c-aadc-e411-b87f-00155d5066d7",
@@ -494,7 +509,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "74718f8b-b6d4-e411-b87f-00155d5066d7",
@@ -527,7 +543,8 @@
         "Live streamed": true,
         "Sessions": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "99803163-e1f4-e411-b87f-00155d5066d7",
@@ -554,7 +571,8 @@
         "Develop & Design": true,
         "Live streamed": false,
         "Misc": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "6d760d25-37e5-e411-b87f-00155d5066d7",
@@ -577,7 +595,8 @@
       "filters": {
         "Code labs": true,
         "Live streamed": false
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "ea96312e-e3d3-e411-b87f-00155d5066d7",
@@ -611,7 +630,8 @@
         "Live streamed": true,
         "Sessions": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "0c59a197-b6d4-e411-b87f-00155d5066d7",
@@ -644,7 +664,8 @@
         "Location": true,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "685db05c-56e4-e411-b87f-00155d5066d7",
@@ -675,7 +696,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "6a8c9f91-b6d4-e411-b87f-00155d5066d7",
@@ -709,7 +731,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "a159a197-b6d4-e411-b87f-00155d5066d7",
@@ -739,7 +762,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "fc97bd29-88e4-e411-b87f-00155d5066d7",
@@ -769,7 +793,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "448c9f91-b6d4-e411-b87f-00155d5066d7",
@@ -801,7 +826,8 @@
         "Sandbox talks": true,
         "TV & Living Room": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "1359a197-b6d4-e411-b87f-00155d5066d7",
@@ -835,7 +861,8 @@
         "Location": true,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "c79db5af-10e9-e411-b87f-00155d5066d7",
@@ -865,7 +892,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "1c8c9f91-b6d4-e411-b87f-00155d5066d7",
@@ -901,7 +929,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "5076a94b-cfe3-e411-b87f-00155d5066d7",
@@ -934,7 +963,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "TV & Living Room": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "4e8c9f91-b6d4-e411-b87f-00155d5066d7",
@@ -966,7 +996,8 @@
         "Sandbox talks": true,
         "TV & Living Room": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "9c59a197-b6d4-e411-b87f-00155d5066d7",
@@ -995,7 +1026,8 @@
         "Sandbox talks": true,
         "Tools & APIs": true,
         "What's Next": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "8d8c9f91-b6d4-e411-b87f-00155d5066d7",
@@ -1029,7 +1061,8 @@
         "Sandbox talks": true,
         "Tools & APIs": true,
         "Wearables": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "90d26332-5cdd-e411-b87f-00155d5066d7",
@@ -1062,7 +1095,8 @@
         "Play": true,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "ed63feae-e1f4-e411-b87f-00155d5066d7",
@@ -1089,7 +1123,8 @@
         "Develop & Design": true,
         "Live streamed": false,
         "Misc": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "f85052bc-c9ef-e411-b87f-00155d5066d7",
@@ -1112,7 +1147,8 @@
       "filters": {
         "Code labs": true,
         "Live streamed": false
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "881a8930-f0e2-e411-b87f-00155d5066d7",
@@ -1147,7 +1183,8 @@
         "Live streamed": true,
         "Sessions": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "0c718f8b-b6d4-e411-b87f-00155d5066d7",
@@ -1182,7 +1219,8 @@
         "Live streamed": true,
         "Sessions": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "128c9f91-b6d4-e411-b87f-00155d5066d7",
@@ -1214,7 +1252,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "3759a197-b6d4-e411-b87f-00155d5066d7",
@@ -1245,7 +1284,8 @@
         "Games": true,
         "Live streamed": false,
         "Sandbox talks": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "608c9f91-b6d4-e411-b87f-00155d5066d7",
@@ -1278,7 +1318,8 @@
         "Sandbox talks": true,
         "Tools & APIs": true,
         "Wearables": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "f858a197-b6d4-e411-b87f-00155d5066d7",
@@ -1309,7 +1350,8 @@
         "Location": true,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "86002fe3-87e4-e411-b87f-00155d5066d7",
@@ -1339,7 +1381,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "93cce93c-cce3-e411-b87f-00155d5066d7",
@@ -1374,7 +1417,8 @@
         "Play": true,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "1aa219ee-e1f4-e411-b87f-00155d5066d7",
@@ -1401,7 +1445,8 @@
         "Develop & Design": true,
         "Live streamed": false,
         "Misc": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "1a3da45a-83e7-e411-b87f-00155d5066d7",
@@ -1433,7 +1478,8 @@
         "a18c9f91-b6d4-e411-b87f-00155d5066d7": true,
         "ac58a197-b6d4-e411-b87f-00155d5066d7": true,
         "fa7d85ce-89e4-e411-b87f-00155d5066d7": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "0d8c9f91-b6d4-e411-b87f-00155d5066d7",
@@ -1464,7 +1510,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "32a6f5f6-caef-e411-b87f-00155d5066d7",
@@ -1487,7 +1534,8 @@
       "filters": {
         "Code labs": true,
         "Live streamed": false
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "b08c9f91-b6d4-e411-b87f-00155d5066d7",
@@ -1518,7 +1566,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "8e95e6eb-a2dc-e411-b87f-00155d5066d7",
@@ -1548,7 +1597,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "7a4cf1a9-86e4-e411-b87f-00155d5066d7",
@@ -1582,7 +1632,8 @@
         "Sandbox talks": true,
         "Search": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "da58a197-b6d4-e411-b87f-00155d5066d7",
@@ -1612,7 +1663,8 @@
         "Develop & Design": true,
         "Live streamed": false,
         "Sandbox talks": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "508516fc-81dc-e411-b87f-00155d5066d7",
@@ -1643,7 +1695,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "0259a197-b6d4-e411-b87f-00155d5066d7",
@@ -1675,7 +1728,8 @@
         "Location": true,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "5b59a197-b6d4-e411-b87f-00155d5066d7",
@@ -1708,7 +1762,8 @@
         "Sandbox talks": true,
         "Search": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "2276bd7d-0ee9-e411-b87f-00155d5066d7",
@@ -1737,7 +1792,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "9125a39d-b6d4-e411-b87f-00155d5066d7",
@@ -1769,7 +1825,8 @@
         "Sandbox talks": true,
         "TV & Living Room": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "3a718f8b-b6d4-e411-b87f-00155d5066d7",
@@ -1809,7 +1866,8 @@
         "Live streamed": true,
         "Play": true,
         "Sessions": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "e096312e-e3d3-e411-b87f-00155d5066d7",
@@ -1848,7 +1906,8 @@
         "Search": true,
         "Sessions": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "35718f8b-b6d4-e411-b87f-00155d5066d7",
@@ -1878,7 +1937,8 @@
         "Develop & Design": true,
         "Live streamed": true,
         "Sessions": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "568046bd-cbef-e411-b87f-00155d5066d7",
@@ -1901,7 +1961,8 @@
       "filters": {
         "Code labs": true,
         "Live streamed": false
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "b3171348-82dc-e411-b87f-00155d5066d7",
@@ -1932,7 +1993,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "__afterhours__",
@@ -1955,7 +2017,8 @@
       "filters": {
         "Live streamed": false,
         "Misc": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "358c9f91-b6d4-e411-b87f-00155d5066d7",
@@ -1987,7 +2050,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "6f59a197-b6d4-e411-b87f-00155d5066d7",
@@ -2020,7 +2084,8 @@
         "Sandbox talks": true,
         "TV & Living Room": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "a241b6fd-a9dc-e411-b87f-00155d5066d7",
@@ -2052,7 +2117,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "e1659132-a7dc-e411-b87f-00155d5066d7",
@@ -2082,7 +2148,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "0c484b0c-a4dc-e411-b87f-00155d5066d7",
@@ -2114,7 +2181,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "21718f8b-b6d4-e411-b87f-00155d5066d7",
@@ -2152,7 +2220,8 @@
         "Live streamed": true,
         "Sessions": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "64041bcb-cbef-e411-b87f-00155d5066d7",
@@ -2175,7 +2244,8 @@
       "filters": {
         "Code labs": true,
         "Live streamed": false
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "65718f8b-b6d4-e411-b87f-00155d5066d7",
@@ -2212,7 +2282,8 @@
         "Sessions": true,
         "Tools & APIs": true,
         "What's Next": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "e958a197-b6d4-e411-b87f-00155d5066d7",
@@ -2247,7 +2318,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "9625a39d-b6d4-e411-b87f-00155d5066d7",
@@ -2281,7 +2353,8 @@
         "Sandbox talks": true,
         "TV & Living Room": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "8c25a39d-b6d4-e411-b87f-00155d5066d7",
@@ -2311,7 +2384,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "003e9cff-addc-e411-b87f-00155d5066d7",
@@ -2343,7 +2417,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "498c9f91-b6d4-e411-b87f-00155d5066d7",
@@ -2377,7 +2452,8 @@
         "Sandbox talks": true,
         "Search": true,
         "TV & Living Room": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "5b803e84-82e4-e411-b87f-00155d5066d7",
@@ -2407,7 +2483,8 @@
         "Develop & Design": true,
         "Live streamed": false,
         "Sandbox talks": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "3f8c9f91-b6d4-e411-b87f-00155d5066d7",
@@ -2440,7 +2517,8 @@
         "Live streamed": true,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "f689b728-82dc-e411-b87f-00155d5066d7",
@@ -2471,7 +2549,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "b78c8bc0-69e4-e411-b87f-00155d5066d7",
@@ -2504,7 +2583,8 @@
         "Live streamed": false,
         "Play": true,
         "Sandbox talks": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "2eae5013-addc-e411-b87f-00155d5066d7",
@@ -2538,7 +2618,8 @@
         "Sandbox talks": true,
         "TV & Living Room": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "02aca013-ccef-e411-b87f-00155d5066d7",
@@ -2561,7 +2642,8 @@
       "filters": {
         "Code labs": true,
         "Live streamed": false
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "60718f8b-b6d4-e411-b87f-00155d5066d7",
@@ -2591,7 +2673,8 @@
         "Live streamed": true,
         "Sessions": true,
         "What's Next": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "c453dc9d-aedc-e411-b87f-00155d5066d7",
@@ -2624,7 +2707,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "b58c9f91-b6d4-e411-b87f-00155d5066d7",
@@ -2657,7 +2741,8 @@
         "Tools & APIs": true,
         "c058a197-b6d4-e411-b87f-00155d5066d7": true,
         "f37a6899-89e4-e411-b87f-00155d5066d7": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "d6742a26-84e4-e411-b87f-00155d5066d7",
@@ -2687,7 +2772,8 @@
         "Engage & Earn": true,
         "Live streamed": false,
         "Sandbox talks": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "4259a197-b6d4-e411-b87f-00155d5066d7",
@@ -2724,7 +2810,8 @@
         "Play": true,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "f261b2dd-cce3-e411-b87f-00155d5066d7",
@@ -2754,7 +2841,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "88bca642-9ae4-e411-b87f-00155d5066d7",
@@ -2788,7 +2876,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "78a53e19-9ae4-e411-b87f-00155d5066d7",
@@ -2821,7 +2910,8 @@
         "Live streamed": true,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "5659a197-b6d4-e411-b87f-00155d5066d7",
@@ -2855,7 +2945,8 @@
         "Sandbox talks": true,
         "Search": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "164dc461-9ae4-e411-b87f-00155d5066d7",
@@ -2885,7 +2976,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "c002d2c2-c8e3-e411-b87f-00155d5066d7",
@@ -2916,7 +3008,8 @@
         "Live streamed": false,
         "Location": true,
         "Sandbox talks": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "b158a197-b6d4-e411-b87f-00155d5066d7",
@@ -2946,7 +3039,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "178c9f91-b6d4-e411-b87f-00155d5066d7",
@@ -2980,7 +3074,8 @@
         "Sandbox talks": true,
         "TV & Living Room": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "888c9f91-b6d4-e411-b87f-00155d5066d7",
@@ -3012,7 +3107,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "6f718f8b-b6d4-e411-b87f-00155d5066d7",
@@ -3047,7 +3143,8 @@
         "Sessions": true,
         "Tools & APIs": true,
         "What's Next": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "106c458e-b8dc-e411-b87f-00155d5066d7",
@@ -3079,7 +3176,8 @@
         "Live streamed": true,
         "Sessions": true,
         "What's Next": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "d8c4860c-e2f4-e411-b87f-00155d5066d7",
@@ -3106,7 +3204,8 @@
         "Develop & Design": true,
         "Live streamed": false,
         "Misc": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "bc8b5e25-ccef-e411-b87f-00155d5066d7",
@@ -3129,7 +3228,8 @@
       "filters": {
         "Code labs": true,
         "Live streamed": false
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "860933b9-9ae4-e411-b87f-00155d5066d7",
@@ -3163,7 +3263,8 @@
         "Location": true,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "c81bb1dd-54e4-e411-b87f-00155d5066d7",
@@ -3192,7 +3293,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "b4352201-cde3-e411-b87f-00155d5066d7",
@@ -3226,7 +3328,8 @@
         "Sandbox talks": true,
         "TV & Living Room": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "5871c9bd-98e4-e411-b87f-00155d5066d7",
@@ -3258,7 +3361,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "73a99d81-81e4-e411-b87f-00155d5066d7",
@@ -3290,7 +3394,8 @@
         "Sandbox talks": true,
         "TV & Living Room": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "28ddeae1-8ce4-e411-b87f-00155d5066d7",
@@ -3324,7 +3429,8 @@
         "Sandbox talks": true,
         "Tools & APIs": true,
         "Wearables": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "ac71d648-c9e3-e411-b87f-00155d5066d7",
@@ -3357,7 +3463,8 @@
         "Location": true,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "59e3db9f-cde3-e411-b87f-00155d5066d7",
@@ -3386,7 +3493,8 @@
         "Sandbox talks": true,
         "Tools & APIs": true,
         "What's Next": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "72233db7-8ee4-e411-b87f-00155d5066d7",
@@ -3417,7 +3525,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "6e24e9aa-81e4-e411-b87f-00155d5066d7",
@@ -3450,7 +3559,8 @@
         "Sandbox talks": true,
         "Tools & APIs": true,
         "Wearables": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "1cbcc5dd-9ae4-e411-b87f-00155d5066d7",
@@ -3481,7 +3591,8 @@
         "Location": true,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "f37a6899-89e4-e411-b87f-00155d5066d7",
@@ -3516,7 +3627,8 @@
         "b58c9f91-b6d4-e411-b87f-00155d5066d7": true,
         "c058a197-b6d4-e411-b87f-00155d5066d7": true,
         "fa7d85ce-89e4-e411-b87f-00155d5066d7": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "9651920d-85e4-e411-b87f-00155d5066d7",
@@ -3549,7 +3661,8 @@
         "Play": true,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "981b6234-57e4-e411-b87f-00155d5066d7",
@@ -3578,7 +3691,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "What's Next": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "d889342c-ccef-e411-b87f-00155d5066d7",
@@ -3601,7 +3715,8 @@
       "filters": {
         "Code labs": true,
         "Live streamed": false
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "c20c1380-c9e3-e411-b87f-00155d5066d7",
@@ -3637,7 +3752,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "3f108dd3-8ee4-e411-b87f-00155d5066d7",
@@ -3668,7 +3784,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "94a12773-87e4-e411-b87f-00155d5066d7",
@@ -3699,7 +3816,8 @@
         "Games": true,
         "Live streamed": false,
         "Sandbox talks": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "fa7d85ce-89e4-e411-b87f-00155d5066d7",
@@ -3737,7 +3855,8 @@
         "ac58a197-b6d4-e411-b87f-00155d5066d7": true,
         "c058a197-b6d4-e411-b87f-00155d5066d7": true,
         "f37a6899-89e4-e411-b87f-00155d5066d7": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "97680f9e-6ae4-e411-b87f-00155d5066d7",
@@ -3769,7 +3888,8 @@
         "Sandbox talks": true,
         "TV & Living Room": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "5c713c3a-d3ea-e411-b87f-00155d5066d7",
@@ -3798,7 +3918,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "d806d94d-9be4-e411-b87f-00155d5066d7",
@@ -3830,7 +3951,8 @@
         "Location": true,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "42718f8b-b6d4-e411-b87f-00155d5066d7",
@@ -3862,7 +3984,8 @@
         "Live streamed": true,
         "Play": true,
         "Sessions": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "11718f8b-b6d4-e411-b87f-00155d5066d7",
@@ -3895,7 +4018,8 @@
         "Live streamed": true,
         "Sessions": true,
         "TV & Living Room": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "f7e87a2c-e2f4-e411-b87f-00155d5066d7",
@@ -3922,7 +4046,8 @@
         "Develop & Design": true,
         "Live streamed": false,
         "Misc": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "109cbdbb-ccef-e411-b87f-00155d5066d7",
@@ -3945,7 +4070,8 @@
       "filters": {
         "Code labs": true,
         "Live streamed": false
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "345a687b-6be4-e411-b87f-00155d5066d7",
@@ -3979,7 +4105,8 @@
         "Sandbox talks": true,
         "Search": true,
         "TV & Living Room": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "b0021b0f-65ef-e411-b87f-00155d5066d7",
@@ -4010,7 +4137,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "bda1f9d2-8ae4-e411-b87f-00155d5066d7",
@@ -4040,7 +4168,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "dc7ae77a-acdc-e411-b87f-00155d5066d7",
@@ -4070,7 +4199,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "e7ae5bad-55e4-e411-b87f-00155d5066d7",
@@ -4101,7 +4231,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "0239bec1-97e4-e411-b87f-00155d5066d7",
@@ -4131,7 +4262,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "ec7a9cc7-cae3-e411-b87f-00155d5066d7",
@@ -4161,7 +4293,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "3a97c36a-8ce4-e411-b87f-00155d5066d7",
@@ -4195,7 +4328,8 @@
         "Sandbox talks": true,
         "Tools & APIs": true,
         "Wearables": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "67fa8734-8be4-e411-b87f-00155d5066d7",
@@ -4228,7 +4362,8 @@
         "b58c9f91-b6d4-e411-b87f-00155d5066d7": true,
         "c058a197-b6d4-e411-b87f-00155d5066d7": true,
         "f37a6899-89e4-e411-b87f-00155d5066d7": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "7459a197-b6d4-e411-b87f-00155d5066d7",
@@ -4263,7 +4398,8 @@
         "Play": true,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "16718f8b-b6d4-e411-b87f-00155d5066d7",
@@ -4297,7 +4433,8 @@
         "Live streamed": true,
         "Sessions": true,
         "Wearables": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "2f1c2846-e2f4-e411-b87f-00155d5066d7",
@@ -4324,7 +4461,8 @@
         "Develop & Design": true,
         "Live streamed": false,
         "Misc": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "e0d9ca64-ccef-e411-b87f-00155d5066d7",
@@ -4347,7 +4485,8 @@
       "filters": {
         "Code labs": true,
         "Live streamed": false
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "5d511a05-8de4-e411-b87f-00155d5066d7",
@@ -4379,7 +4518,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "6a59a197-b6d4-e411-b87f-00155d5066d7",
@@ -4412,7 +4552,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "TV & Living Room": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "8ce26177-6ae4-e411-b87f-00155d5066d7",
@@ -4446,7 +4587,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "ac58a197-b6d4-e411-b87f-00155d5066d7",
@@ -4478,7 +4620,8 @@
         "Tools & APIs": true,
         "a18c9f91-b6d4-e411-b87f-00155d5066d7": true,
         "fa7d85ce-89e4-e411-b87f-00155d5066d7": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "ac941757-86e4-e411-b87f-00155d5066d7",
@@ -4510,7 +4653,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "dc297984-98e4-e411-b87f-00155d5066d7",
@@ -4542,7 +4686,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "26481672-97e4-e411-b87f-00155d5066d7",
@@ -4572,7 +4717,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "1d824f9d-cae3-e411-b87f-00155d5066d7",
@@ -4604,7 +4750,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "c46c5d2e-56e4-e411-b87f-00155d5066d7",
@@ -4639,7 +4786,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "56efa79f-cee3-e411-b87f-00155d5066d7",
@@ -4672,7 +4820,8 @@
         "Sandbox talks": true,
         "TV & Living Room": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "29e61362-e2f4-e411-b87f-00155d5066d7",
@@ -4699,7 +4848,8 @@
         "Develop & Design": true,
         "Live streamed": false,
         "Misc": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "1de035c2-80e4-e411-b87f-00155d5066d7",
@@ -4729,7 +4879,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "76de945b-8be4-e411-b87f-00155d5066d7",
@@ -4759,7 +4910,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "8667b919-8ee4-e411-b87f-00155d5066d7",
@@ -4791,7 +4943,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "b7e49d26-86e4-e411-b87f-00155d5066d7",
@@ -4824,7 +4977,8 @@
         "Sandbox talks": true,
         "Search": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "5b718f8b-b6d4-e411-b87f-00155d5066d7",
@@ -4854,7 +5008,8 @@
         "Live streamed": true,
         "Sessions": true,
         "What's Next": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "f48b9f91-b6d4-e411-b87f-00155d5066d7",
@@ -4885,7 +5040,8 @@
         "Live streamed": true,
         "Sessions": true,
         "What's Next": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "b43f8473-ccef-e411-b87f-00155d5066d7",
@@ -4908,7 +5064,8 @@
       "filters": {
         "Code labs": true,
         "Live streamed": false
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "2ae818c9-10e9-e411-b87f-00155d5066d7",
@@ -4938,7 +5095,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "09e008ec-0de9-e411-b87f-00155d5066d7",
@@ -4967,7 +5125,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "96af04e2-abdc-e411-b87f-00155d5066d7",
@@ -4997,7 +5156,8 @@
         "Live streamed": false,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "671610e9-cee3-e411-b87f-00155d5066d7",
@@ -5031,7 +5191,8 @@
         "Sandbox talks": true,
         "TV & Living Room": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "41789d91-cbe3-e411-b87f-00155d5066d7",
@@ -5068,7 +5229,8 @@
         "Play": true,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "6e91ed10-6fe4-e411-b87f-00155d5066d7",
@@ -5102,7 +5264,8 @@
         "Sandbox talks": true,
         "TV & Living Room": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "7619e4f7-cae3-e411-b87f-00155d5066d7",
@@ -5135,7 +5298,8 @@
         "Live streamed": true,
         "Sandbox talks": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "32ecf1c7-cee3-e411-b87f-00155d5066d7",
@@ -5169,7 +5333,8 @@
         "Sandbox talks": true,
         "TV & Living Room": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "0449c34e-cae3-e411-b87f-00155d5066d7",
@@ -5201,7 +5366,8 @@
         "Sandbox talks": true,
         "TV & Living Room": true,
         "Tools & APIs": true
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "a80e15fd-ccef-e411-b87f-00155d5066d7",
@@ -5224,7 +5390,8 @@
       "filters": {
         "Code labs": true,
         "Live streamed": false
-      }
+      },
+      "duration": "30 minutes"
     },
     {
       "id": "ea8b9f91-b6d4-e411-b87f-00155d5066d7",
