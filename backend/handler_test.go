@@ -1539,6 +1539,7 @@ func TestFirstSyncEventData(t *testing.T) {
 		Block:     "3 PM",
 		Start:     "3:00 PM",
 		End:       "4:00 PM",
+		Duration:  "1 hour",
 		Filters: map[string]bool{
 			"Boxtalks":       true,
 			liveStreamedText: true,
