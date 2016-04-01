@@ -52,9 +52,7 @@ limitations under the License.
         <div>[[session.title]]</div>
         <div id="session-{{session.id}}-time" class="schedule-time" layout horizontal center>
           <div>
-            <span>[[session.start]]</span>
-            <span hidden$="{{_sessionIs(session, '__keynote__')}}"> - [[session.end]]</span> /
-            <span>[[session.room]]</span>
+            <span>[[session.duration]]</span> / <span>[[session.room]]</span>
           </div>
           <iron-icon icon="io:videocam" class="schedule-livestream"
                      hidden$="[[!session.isLivestream]]"></iron-icon>
@@ -131,10 +129,6 @@ limitations under the License.
       if (e.keyCode === 13 || e.altKey && e.ctrlKey && e.keyCode === 32) {
         this.selectSession(this.session);
       }
-    },
-
-    _sessionIs: function(session, targetSession) {
-      return session.id === targetSession;
     },
 
     _getMeridiemPart: function(str, part) {

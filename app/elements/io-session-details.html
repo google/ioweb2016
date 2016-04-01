@@ -86,7 +86,7 @@ limitations under the License.
         </div>
         <div class="session__info__section session__details">
           <h3 class="session__title" tabindex="-1">{{selectedSession.title}}</h3>
-          <h5 class="session__time">May <span>{{selectedSession.day}}</span> / <span>{{selectedSession.start}}</span><span hidden$="{{_equal('__keynote__', selectedSession.id)}}"> - {{selectedSession.end}}</span> / <span>{{selectedSession.room}}</span></h5>
+          <h5 class="session__time">May <span>{{selectedSession.day}}</span>, <span>{{selectedSession.start}}</span><span hidden$="{{_equal('__keynote__', selectedSession.id)}}"> - {{selectedSession.end}}</span> / <span>{{selectedSession.room}}</span></h5>
           <div class="session__desc">{{selectedSession.description}}</div>
           <div class="session__categories">
             <div class="session__livestream" hidden$="{{!selectedSession.isLivestream}}">
