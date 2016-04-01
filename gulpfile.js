@@ -309,6 +309,7 @@ gulp.task('vulcanize-elements', false, ['sass'], function() {
       inlineScripts: true,
       dest: IOWA.appDir + '/elements'
     }))
+    .on('error', console.error.bind(console))
     .pipe($.crisper({scriptInHead: true}))
     // Minify html output
     .pipe($.if('*.html', minifyHtml()))

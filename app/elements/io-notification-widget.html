@@ -84,6 +84,12 @@ The `<io-notification-widget>` element renders the notification toggle UI.
             IOWA.IOFirebase.registerToNotificationUpdates(value => {
               this._firebaseChanged(value)
             });
+            document.addEventListener('signin-change', function(e) {
+              if (!e.detail.user) {
+                // We logged out, so unsubscribe
+                propel.unsubscribe();
+              }
+            });
           },
 
           subscribeIfAble: function() {
@@ -100,6 +106,22 @@ The `<io-notification-widget>` element renders the notification toggle UI.
             if (!value) {
               this.checked = false;
               propel.unsubscribe();
+            } else {
+              Promise.all([
+                goog.propel.PropelClient.getPermissionState(),
+                propel.getSubscription()
+              ]).then((perm, sub) => {
+                if (perm.state === 'granted' && !sub) {
+                  // 1. The global notification setting is on
+                  // 2. This client already has permission for notifications
+                  // 3. There is no current local subscription
+                  // So we're going to subscribe locally. This state is most
+                  // likely to come about because the user signed out on this
+                  // device after they enabled notifications.
+                  propel.subscribe()
+                    .catch(IOWA.Util.reportError);;
+                }
+              });
             }
           },
 
@@ -143,7 +165,6 @@ The `<io-notification-widget>` element renders the notification toggle UI.
             // TODO(mscales): Better handling of errors
             return action.catch(IOWA.Util.reportError);
           }
-
         });
       } else {
         document.body.classList.add('nosupport-notifications');

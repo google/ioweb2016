@@ -308,9 +308,10 @@ class Schedule {
    */
   bookmarkSessionNotification(saved, opt_message) {
     let message = opt_message || 'You\'ll get a notification when it starts.';
+    let notificationWidget = document.querySelector('io-notification-widget');
 
     if (saved) {
-      return IOWA.Elements.NotificationWidget.subscribeIfAble().then(subscribed => {
+      return notificationWidget.subscribeIfAble().then(subscribed => {
         if (subscribed) {
           IOWA.Elements.Toast.showMessage('Added to My Schedule. ' + message);
         } else if (Notification.permission === 'denied') {

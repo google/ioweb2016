@@ -56,7 +56,6 @@ IOWA.Elements = (function() {
     var toast = document.getElementById('toast');
     var liveStatus = document.getElementById('live-status');
     var signin = document.querySelector('google-signin');
-    var notificationWidget = document.querySelector('io-notification-widget');
 
     var lazyPages = document.querySelector('lazy-pages');
     lazyPages.selected = IOWA.Elements.Template.selectedPage;
@@ -70,7 +69,6 @@ IOWA.Elements = (function() {
     IOWA.Elements.LiveStatus = liveStatus;
     IOWA.Elements.Footer = footer;
     IOWA.Elements.GoogleSignIn = signin;
-    IOWA.Elements.NotificationWidget = notificationWidget;
     IOWA.Elements.LazyPages = lazyPages;
 
     IOWA.Elements.ScrollContainer = window;
