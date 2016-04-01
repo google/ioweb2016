@@ -15,48 +15,11 @@ limitations under the License.
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="description" content="Google I/O 2015 brings developers together for an immersive, two-day experience focused on exploring the next generation of technology.">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Google I/O 2015 - Notification Permissions</title>
+  <title>Google I/O 2016 - Notification Permissions</title>
 
-  <!-- See http://updates.html5rocks.com/2014/11/Support-for-installable-web-apps-with-webapp-manifest-in-chrome-38-for-Android -->
-  <link rel="manifest" href="manifest.json">
   <!-- See http://updates.html5rocks.com/2014/11/Support-for-theme-color-in-Chrome-39-for-Android -->
   <meta name="theme-color" content="#eceff1">
-
-  <!-- Add to homescreen for Chrome on Android -->
-  <meta name="mobile-web-app-capable" content="yes"> <!-- fallback for manifest.json -->
-  <link rel="icon" sizes="192x192" href="images/touch/homescreen192.png">
-
-  <!-- Add to homescreen for Safari on iOS -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="Google I/O 2015">
-
-  <!-- Homescreen icons. -->
-  <link rel="shortcut icon" href="images/touch/homescreen72-fav.png">
-  <link rel="apple-touch-icon" href="images/touch/homescreen48.png">
-  <link rel="apple-touch-icon" sizes="72x72" href="images/touch/homescreen72.png">
-  <link rel="apple-touch-icon" sizes="96x96" href="images/touch/homescreen96.png">
-  <link rel="apple-touch-icon" sizes="144x144" href="images/touch/homescreen144.png">
-  <link rel="apple-touch-icon" sizes="192x192" href="images/touch/homescreen192.png">
-
-  <!-- Tile icon for Win8 (144x144 + tile color) -->
-  <meta name="msapplication-TileImage" content="images/touch/homescreen144.png">
-  <meta name="msapplication-TileColor" content="#eceff1">
-  <meta name="msapplication-tap-highlight" content="no">
-
-  <!-- G+ and Twitter sharing meta data -->
-  <meta property="og:title" content="Google I/O 2015">
-  <meta property="og:description" content="Google I/O 2015 brings together developers for an immersive, two-day experience focused on exploring the next generation of technology, mobile and beyond. Join us online or in person May 28-29, 2015.">
-  <meta property="og:type" content="Event">
-  <meta property="og:image" content="images/io15-color.png">
-
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:creator" content="@googledevs">
-  <meta name="twitter:title" content="Google I/O 2015">
-  <meta name="twitter:description" content="Google I/O 2015 brings together developers for an immersive, two-day experience focused on exploring the next generation of technology, mobile and beyond. Join us online or in person May 28-29, 2015.">
-  <meta name="twitter:image:src" content="images/io15-color.png">
 
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
   <link rel="stylesheet" href="styles/main.css">
@@ -67,7 +30,7 @@ limitations under the License.
 <div id="permissions">
 
   <section class="page__section">
-    <img src="images/io15.png" class="iologo">
+    <img src="images/io-logo-white.png" class="iologo">
   </section>
 
   <div class="card__container">
@@ -96,7 +59,7 @@ limitations under the License.
 document.addEventListener('click', function(e) {
   // Find the link that was clicked.
   var link = e.target;
-  while (link.localName !== 'a') {
+  while (link && link.localName !== 'a') {
     link = link.parentNode;
   }
 

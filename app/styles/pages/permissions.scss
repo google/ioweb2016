@@ -45,18 +45,15 @@ html, body {
 }
 
 .link-spacing {
-  line-height: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 @media (max-width: $phone-breakpoint-max) {
   .link-spacing {
     a {
       padding-bottom: $desktopKeyline;
-
-      &:not(:last-of-type) {
-        float: left;
-      }
-
     }
   }
 }
