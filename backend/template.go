@@ -90,6 +90,7 @@ type templateData struct {
 	OgTitle      string
 	OgImage      string
 	StartDateStr string
+	FirebaseDbShards []string
 	// livestream youtube video IDs
 	LiveIDs []string
 }
@@ -134,6 +135,7 @@ func renderTemplate(c context.Context, name string, partial bool, data *template
 	data.Slug = name
 	data.Prefix = config.Prefix
 	data.StartDateStr = config.Schedule.Start.In(config.Schedule.Location).Format(time.RFC3339)
+	data.FirebaseDbShards = config.Firebase.DatabaseShardsUrls
 	if v, err := scheduleLiveIDs(c, time.Now()); err == nil {
 		data.LiveIDs = v
 	}
