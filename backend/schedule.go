@@ -333,7 +333,7 @@ func slurpEventDataChunk(c context.Context, hc *http.Client, url string) (*event
 		}
 
 		tzstart := s.StartTime.In(config.Schedule.Location)
-		s.Block = tzstart.Format("3 PM")
+		s.Block = strings.Replace(tzstart.Format("304 PM"), "00 ", " ", 1)
 		s.Start = tzstart.Format("3:04 PM")
 		s.End = s.EndTime.In(config.Schedule.Location).Format("3:04 PM")
 		s.Duration = durationStr(s.EndTime.Sub(s.StartTime))
