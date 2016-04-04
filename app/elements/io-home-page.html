@@ -27,6 +27,8 @@ limitations under the License.
 <link rel="import" href="countdown-timer/countdown-timer.html">
 <link rel="import" href="card-video.html">
 
+<link rel="import" href="io-live.html">
+
 <link rel="import" href="shared-app-styles.html">
 <link rel="import" href="PageBehavior.html">
 
@@ -38,6 +40,20 @@ limitations under the License.
       display: block;
     }
   </style>
+
+  <div id="iolive" class="show" fit>
+    <io-live class="bg-bluegrey-700"
+             mode="{{liveModuleMode}}" date="[[date]]"
+             sessions="[[app.scheduleData.sessions]]"
+             speakers="[[app.scheduleData.speakers]]"
+             user-sessions="{{app.savedSessions}}"
+             social-posts="[[socialPosts]]"
+             live-stream-channel-ids="[[liveStreamChannelIds]]"
+             auto-open-fab="[[app.pageTransitionDone]]" fit>
+      <h2>I/O is starting soon. #io16</h2>
+    </io-live>
+  </div>
+
 
   <div layout horizontal end>
     <div id="countdown-container" class="card__container">

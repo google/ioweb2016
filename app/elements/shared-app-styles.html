@@ -70,6 +70,10 @@ limitations under the License.
         @apply(--layout-scroll);
       }
 
+      .noscroll {
+        overflow: hidden;
+      }
+
       /* Note: paper-tabs needs its parent to have layout in order to calculate
       its selection bar transform. Instead, visibility hide the subnav, set the
       selected tab, then display: none it. */
