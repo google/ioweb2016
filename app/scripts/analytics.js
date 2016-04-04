@@ -19,32 +19,22 @@ window.IOWA = window.IOWA || {};
 IOWA.Analytics = IOWA.Analytics || (function(exports) {
   'use strict';
 
-  var GA_TRACKING_CODE = exports.ENV === 'prod' ? 'UA-58124138-3' : 'UA-58124138-2';
-
   /**
    * Analytics for the I/O Web App.
-   *
    * @constructor
-   * @param {string} trackingCode GA tracking code.
    */
-  function Analytics(trackingCode) {
-    this.loadTrackingCode();
+  function Analytics() {
+    this.initTrackerReadyState();
 
-    var opts = {siteSpeedSampleRate: 50}; // 50% of users.
-    if (exports.ENV === 'dev') {
-      // See https://developers.google.com/analytics/devguides/collection/analyticsjs/advanced#localhost
-      opts.cookieDomain = 'none';
-    } else {
-      opts.cookiePath = window.PREFIX || '/io2016';
-    }
+    // Tracks the initial pageview.
+    this.trackPageView();
 
-    ga('create', trackingCode, opts);
-
-    this.trackPageView(); // Track initial pageview.
-
+    // Tracks perf events that were marked in the template code. Changes here
+    // must also be made in `layout_full.html`.
     this.trackPerfEvent('HTMLImportsLoaded', 'Polymer');
     this.trackPerfEvent('WebComponentsReady', 'Polymer');
 
+    this.trackOnlineStatus();
     this.trackNotificationPermission();
     this.trackServiceWorkerControlled();
 
@@ -62,38 +52,85 @@ IOWA.Analytics = IOWA.Analytics || (function(exports) {
   }
 
   Analytics.prototype.POLYMER_ANALYTICS_TIMEOUT_ = 60 * 1000;
+  Analytics.prototype.READY_STATE_TIMEOUT_ = 5 * 1000;
 
-  // Disable es-lint for this boilerplate GA code.
-  /* eslint-disable */
-  Analytics.prototype.loadTrackingCode = function() {
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  // A map from each custom dimension name to its index in Google Analytics.
+  Analytics.prototype.customDimensions = {
+    SIGNED_IN: 'dimension1',
+    ONLINE: 'dimension2',
+    SERVICE_WORKER_STATUS: 'dimension3',
+    NOTIFICATION_PERMISSION: 'dimension4'
   };
-  /*eslint-enable */
 
   /**
-   * Tracks a page view. Page view tracking is throttled to prevent logging
-   * page redirects by the URL router.
-   * @param {string} opt_path Optional override page path to record.
+   * Creates a ready state promise that will be resolved once all custom
+   * dimensions are set on the tracker. The promise is resolved by calling
+   * `this.resolveReadyState`, which happens in the `updateTracker` method.
+   * Exposing the resolve function outside of the closure is required since
+   * code outside of this module (`<google-signin>`) calls `updateTracker`.
+   * Note: setting custom dimensions needs to happen prior to sending the first
+   * pageview, to ensure all hits can be grouped by these custom dimensions.
+   */
+  Analytics.prototype.initTrackerReadyState = function() {
+    this.readyPromise_ = new Promise(function(resolve) {
+      this.resolveReadyState = resolve;
+      // In the event of an error or a failure in the auth code, we set a
+      // timeout so this promise always resolves. In such cases, some hits
+      // will be sent with missing custom dimension values, but that's better
+      // than them not being sent at all.
+      setTimeout(resolve, this.READY_STATE_TIMEOUT_);
+    }.bind(this));
+  };
+
+  /**
+   * Updates the tracker field with the specified value.
+   * This logic also checks to see if all custom dimension values have been
+   * set and if so, resolves the ready state so future tracking calls happen
+   * right away.
+   * @param {string} field The analytics.js field name.
+   * @param {value} value The field's value.
+   */
+  Analytics.prototype.updateTracker = function(field, value) {
+    ga(function(tracker) {
+      ga('set', field, value); // Use the command queue for easier debugging.
+      var customDimensionKeys = Object.keys(this.customDimensions);
+      if (customDimensionKeys.every(function(key) {
+        return tracker.get(this.customDimensions[key]) !== undefined;
+      }.bind(this))) {
+        this.resolveReadyState();
+      }
+    }.bind(this));
+  };
+
+  /**
+   * Waits until the tracker's ready promise has been resolved. This happens
+   * once all custom dimension values have been set.
+   * @return {Promise}
+   */
+  Analytics.prototype.waitForTrackerReady = function() {
+    return this.readyPromise_;
+  };
+
+  /**
+   * Updates the tracker with the passed page path and sends a pageview.
+   * Page view tracking is throttled to prevent logging page redirects by the
+   * URL router.
+   * @param {string} opt_path The URL path value.
    * @param {function} opt_callback Optional callback to be invoked after the
    *                   hit is recorded.
    */
   Analytics.prototype.trackPageView = function(opt_path, opt_callback) {
-    var obj = {};
-    if (opt_path) {
-      obj.page = opt_path;
-    }
-    if (typeof opt_callback === 'function') {
-      obj.hitCallback = opt_callback;
-    }
-
-    ga('send', 'pageview', obj);
+    this.waitForTrackerReady().then(function() {
+      if (opt_path) {
+        ga('set', 'page', opt_path);
+      }
+      ga('send', 'pageview', {hitCallback: opt_callback});
+    });
   };
 
   /**
    * Tracks a performance timing. See
-   * https://developers.google.com/analytics/devguides/collection/gajs/gaTrackingTiming#settingUp
+   * https://developers.google.com/analytics/devguides/collection/analyticsjs/user-timings
    * @param {string} category Category of timing (e.g. 'Polymer')
    * @param {string} variable Name of the timing (e.g. 'polymer-ready')
    * @param {number} time Time, in milliseconds.
@@ -102,10 +139,12 @@ IOWA.Analytics = IOWA.Analytics || (function(exports) {
    * @param {object=} opt_obj Optional field object for additional params to send to GA.
    */
   Analytics.prototype.trackPerf = function(category, variable, time, opt_label, opt_maxTime, opt_obj) {
-    if (opt_maxTime !== null && time > opt_maxTime) {
-      variable += ' - outliers';
-    }
-    ga('send', 'timing', category, variable, parseInt(time, 10), opt_label, opt_obj);
+    this.waitForTrackerReady().then(function() {
+      if (opt_maxTime !== null && time > opt_maxTime) {
+        variable += ' - outliers';
+      }
+      ga('send', 'timing', category, variable, parseInt(time, 10), opt_label, opt_obj);
+    });
   };
 
   /**
@@ -119,13 +158,15 @@ IOWA.Analytics = IOWA.Analytics || (function(exports) {
    *                   hit is recorded.
    */
   Analytics.prototype.trackEvent = function(category, action, opt_label, opt_value, opt_callback) {
-    ga('send', {
-      hitType: 'event',
-      eventCategory: category,
-      eventAction: action,
-      eventLabel: opt_label,
-      eventValue: opt_value,
-      hitCallback: opt_callback
+    this.waitForTrackerReady().then(function() {
+      ga('send', {
+        hitType: 'event',
+        eventCategory: category,
+        eventAction: action,
+        eventLabel: opt_label,
+        eventValue: opt_value,
+        hitCallback: opt_callback
+      });
     });
   };
 
@@ -136,16 +177,18 @@ IOWA.Analytics = IOWA.Analytics || (function(exports) {
    * @param {string} message
    */
   Analytics.prototype.trackError = function(location, message) {
-    ga('send', 'event', 'error', location, String(message));
+    this.waitForTrackerReady().then(function() {
+      ga('send', 'event', 'error', location, String(message));
 
-    // Note: GA has exception type but it does not show up in realtime so catching
-    // errors would be 24hrs delayed. Stick with an error event until we decide
-    // to switch. It also looks difficult to get this data out later on:
-    // http://stackoverflow.com/questions/21718481/report-for-exceptions-from-google-analytics-analytics-js-exception-tracking
-    // ga('send', 'exception', {
-    //   //'exFatal': true,
-    //   'exDescription': location + ' ' + String(message)
-    // });
+      // Note: GA has exception type but it does not show up in realtime so catching
+      // errors would be 24hrs delayed. Stick with an error event until we decide
+      // to switch. It also looks difficult to get this data out later on:
+      // http://stackoverflow.com/questions/21718481/report-for-exceptions-from-google-analytics-analytics-js-exception-tracking
+      // ga('send', 'exception', {
+      //   //'exFatal': true,
+      //   'exDescription': location + ' ' + String(message)
+      // });
+    });
   };
 
   /**
@@ -156,29 +199,33 @@ IOWA.Analytics = IOWA.Analytics || (function(exports) {
    * @param {string} target
    */
   Analytics.prototype.trackSocial = function(network, action, target) {
-    ga('send', 'social', network, action, target);
+    this.waitForTrackerReady().then(function() {
+      ga('send', 'social', network, action, target);
+    });
   };
 
   /**
    * Log Polymer startup performance numbers.
    */
   Analytics.prototype.trackPerfEvent = function(eventName, categoryName) {
-    // performance.now() is sadly disabled even in some very recent browsers
+    // The User Timing API is not supported in some browsers; we ignore those.
     // TODO(bckenny): for now, only do polymer perf analytics in browsers with it.
-    if (!(exports.performance && exports.performance.now)) {
+    if (!(exports.performance && exports.performance.getEntriesByName)) {
       return;
     }
 
-    document.addEventListener(eventName, function() {
-      var now = exports.performance.now();
-
+    var marks = performance.getEntriesByName(eventName, 'mark');
+    if (marks.length) {
+      var time = marks[0].startTime;
       if (exports.ENV === 'dev') {
-        console.info(eventName, '@', now);
+        console.info(eventName, '@', time);
       }
-
-      this.trackPerf(categoryName, eventName, now, null,
-                     this.POLYMER_ANALYTICS_TIMEOUT_, {page: location.pathname});
-    }.bind(this));
+      this.trackPerf(categoryName, eventName, time, null,
+          this.POLYMER_ANALYTICS_TIMEOUT_);
+    } else {
+      document.addEventListener(eventName,
+          this.trackPerfEvent.bind(this, eventName, categoryName));
+    }
   };
 
   /**
@@ -219,21 +266,41 @@ IOWA.Analytics = IOWA.Analytics || (function(exports) {
   };
 
   /**
-   * Sets up tracking for a notification permissions.
+   * Adds event listeners to track when the network's online/offline status
+   * changes, and updates the tracker with the new status.
+   */
+  Analytics.prototype.trackOnlineStatus = function() {
+    this.updateTracker(this.customDimensions.ONLINE, navigator.onLine);
+
+    var updateOnlineStatus = function(event) {
+      this.updateTracker(this.customDimensions.ONLINE, navigator.onLine);
+      this.trackEvent('network', 'change', event.type);
+    }.bind(this);
+
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+  };
+
+  /**
+   * Sets up tracking for notification permissions.
    * Tracks the current notification state at startup, and for browsers that support the
    * Permissions API, tracks changes to the notification state as well.
    */
   Analytics.prototype.trackNotificationPermission = function() {
-    this.trackEvent('notifications', 'startup',
-      exports.Notification ? exports.Notification.permission : 'unsupported');
+    var notificationPermission = this.getNotificationPermission();
+    this.updateTracker(this.customDimensions.NOTIFICATION_PERMISSION,
+        notificationPermission);
+
+    this.trackEvent('notifications', 'startup', notificationPermission);
 
     if (navigator.permissions) {
-      var thisAnalytics = this;
       navigator.permissions.query({name: 'notifications'}).then(function(p) {
-        p.onchange = function() {
-          thisAnalytics.trackEvent('notifications', 'change', this.status);
-        };
-      });
+        p.onchange = function(event) {
+          this.updateTracker(this.customDimensions.NOTIFICATION_PERMISSION,
+              this.getNotificationPermission());
+          this.trackEvent('notifications', 'change', event.target.state);
+        }.bind(this);
+      }.bind(this));
     }
   };
 
@@ -242,14 +309,40 @@ IOWA.Analytics = IOWA.Analytics || (function(exports) {
    * as well as whether the current page load is controlled by a service worker.
    */
   Analytics.prototype.trackServiceWorkerControlled = function() {
-    if ('serviceWorker' in navigator) {
+    var serviceworkerStatus = this.getServiceWorkerStatus();
+
+    this.updateTracker(this.customDimensions.SERVICE_WORKER_STATUS,
+        serviceworkerStatus);
+
+    if (serviceworkerStatus === 'unsupported') {
+      this.trackEvent('serviceworker', 'supported', false);
+    } else {
       this.trackEvent('serviceworker', 'supported', true);
       this.trackEvent('serviceworker', 'controlled',
-          Boolean(navigator.serviceWorker.controller));
-    } else {
-      this.trackEvent('serviceworker', 'supported', false);
+                      serviceworkerStatus === 'controlled');
     }
   };
 
-  return new Analytics(GA_TRACKING_CODE);
+  /**
+   * Gets the status of the service worker for the page.
+   * @return {string} Either 'unsupported', 'supported', or 'controlled'.
+   */
+  Analytics.prototype.getServiceWorkerStatus = function() {
+    if ('serviceWorker' in navigator) {
+      return navigator.serviceWorker.controller ?
+          'controlled' : 'supported';
+    }
+    return 'unsupported';
+  };
+
+  /**
+   * Gets the notification permission for the page.
+   * @return {string} The current notification permission or 'unsupported'.
+   */
+  Analytics.prototype.getNotificationPermission = function() {
+    return exports.Notification ?
+        exports.Notification.permission : 'unsupported';
+  };
+
+  return new Analytics();
 })(window);
