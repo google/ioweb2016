@@ -40,7 +40,7 @@ class IOFirebase {
      * Stores callbacks that we should call when we become authenticated
      * @type {Set<function>}
      */
-    this.authCallbacks = new Set();
+    this.authCallbacks = [];
 
     // Disconnect Firebase while the focus is off the page to save battery.
     if (typeof document.hidden !== 'undefined') {
@@ -194,7 +194,7 @@ class IOFirebase {
   }
 
   /**
-   * Register to get updates on the notification prefernce. This should also be used to get the initial value.
+   * Register to get updates on the notification preference. This should also be used to get the initial value.
    *
    * @param {IOFirebase~updateCallback} callback A callback function that will be called with the
    *     value when the notification preference changes.
@@ -209,7 +209,7 @@ class IOFirebase {
     if (this.isAuthed()) {
       register();
     } else {
-      this.authCallbacks.add(register);
+      this.authCallbacks.push(register);
     }
   }
 

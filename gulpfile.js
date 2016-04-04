@@ -68,7 +68,7 @@ function minifyHtml() {
     quotes: true,
     empty: true,
     spare: true
-  });
+  }).on('error', console.log.bind(console));
 }
 
 function uglifyJS() {
