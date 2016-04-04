@@ -123,7 +123,7 @@ Useful for browsing original CMS data on staging GCS bucket:
 
 ### Configuring Firebase
 
-// TODO: Centralize Firebase DB shards list in server.config files and automate rules upload with Gulp.
+// TODO: Automate rules upload to all shards with Gulp.
 
 You need to create and configure Firebase databases and configure the app to use them.
 First create one or more (depending on how many shards you need) Firebase databases from

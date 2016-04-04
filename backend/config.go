@@ -127,6 +127,11 @@ type appConfig struct {
 		ManifestURL string `json:"manifest"`
 	} `json:"schedule"`
 
+	// Firebase settings
+	Firebase struct {
+		Shards       []string `json:"shards"`
+	} `json:"firebase"`
+
 	// Feedback survey settings
 	Survey struct {
 		ID       string `json:"id"`
