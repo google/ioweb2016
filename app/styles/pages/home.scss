@@ -147,6 +147,13 @@ h3 a {
     left: 0;
     height: 100%;
     width: 100%;
+
+    @media (min-width: $phone-breakpoint-min-mid-b) and (max-width: $phone-breakpoint-max) {
+      height: auto;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
   }
   .iron-selected {
     opacity: 1;
