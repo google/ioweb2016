@@ -129,24 +129,27 @@
     IOWA.Schedule.loadCachedUserSchedule();
   }
 
-  // TODO: fix when new page elements have these hooks.
-  // window.addEventListener('keydown', function(e) {
-  //   // ESC closes any overlays.
-  //   if (e.keyCode === 27) {
-  //     var template = IOWA.Elements.Template;
-  //     if (template.app.fullscreenVideoActive) {
-  //       if (template.closeVideoCard) {
-  //         template.closeVideoCard();
-  //       }
-  //       if (template.closeVideoSection) {
-  //         template.closeVideoSection();
-  //       }
-  //     }
-  //     if (template.mapGalleryActive) {
-  //       template.closeMapGallery();
-  //     }
-  //   }
-  // });
+  window.addEventListener('keydown', function(e) {
+    // ESC closes any overlays.
+    if (e.keyCode === 27) {
+      // var template = IOWA.Elements.Template;
+      // if (template.app.fullscreenVideoActive) {
+      //   if (template.closeVideoCard) {
+      //     template.closeVideoCard();
+      //   }
+      //   if (template.closeVideoSection) {
+      //     template.closeVideoSection();
+      //   }
+      // }
+      // if (template.mapGalleryActive) {
+      //   template.closeMapGallery();
+      // }
+      var live = document.querySelector('io-live');
+      if (live) {
+        live.openWidget = false;
+      }
+    }
+  });
 
   window.addEventListener('resize', function() {
     // FF mobile sends resize event on page load. Be careful!

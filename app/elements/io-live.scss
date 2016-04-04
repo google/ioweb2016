@@ -15,17 +15,14 @@
  */
 
 @import '_elements';
-@import '../styles/components/_card';
+// @import '../styles/components/_card';
 
 $ytVideoControlsHeight: $desktopKeyline;
 $widgetWidth: 360px;
 
 :host {
-  @include typo-body();
-}
-
-:host(.bg-dark-grey) {
-  background-color: $color-bluegrey-700;
+  // @include typo-body();
+  z-index: 1;
 }
 
 countdown-timer {
@@ -80,6 +77,7 @@ countdown-timer {
     position: relative;
     background-color: #fff;
     z-index: 2;
+    color: inherit;
   }
 }
 
@@ -221,7 +219,7 @@ countdown-timer {
   border-top-left-radius: 2px;
   border-top-right-radius: 2px;
 
-  core-icon {
+  iron-icon {
     margin-right: $mobileKeyline;
     margin-top: $mobileKeyline;
   }
@@ -272,7 +270,7 @@ paper-tabs {
   bottom: 0;
 }
 
-core-animated-pages {
+neon-animated-pages {
   margin-top: $paperTabsHeight * 2;
   overflow: hidden;
   z-index: 1; // force layer so no rendering artifacts.
@@ -385,11 +383,11 @@ paper-progress {
     cursor: default;
 
     &[active] {
-      core-icon {
+      iron-icon {
         opacity: 1;
       }
     }
-    core-icon {
+    iron-icon {
       opacity: 0.32;
     }
   }

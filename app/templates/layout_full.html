@@ -378,7 +378,8 @@ limitations under the License.
       <template is="dom-if" name="home" restamp>
         <io-home-page
             app="[[app]]"
-            date="{% .StartDateStr %}"></io-home-page>
+            date="{% .StartDateStr %}"
+            {% .LiveIDs | json | safeAttr "live-stream-channel-ids" %}></io-home-page>
       </template>
       <template is="dom-if" name="attend" restamp>
         <io-attend-page app="{{app}}"
