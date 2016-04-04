@@ -44,16 +44,6 @@ class IOFirebase {
   }
 
   /**
-   * List of Firebase Database shards.
-   * @static
-   * @constant
-   * @type {Array.<string>}
-   */
-  static get FIREBASE_DATABASES_URL() {
-    return ['https://iowa-2016-dev.firebaseio.com/'];
-  }
-
-  /**
    * Selects the correct Firebase Database shard for the given user.
    *
    * @static
@@ -62,8 +52,8 @@ class IOFirebase {
    * @return {string} The URL of the Firebase Database shard.
    */
   static _selectShard(userId) {
-    let shardIndex = parseInt(crc32(userId), 16) % IOFirebase.FIREBASE_DATABASES_URL.length;
-    return IOFirebase.FIREBASE_DATABASES_URL[shardIndex];
+    let shardIndex = parseInt(crc32(userId), 16) % window.FIREBASE_DB_SHARDS.length;
+    return window.FIREBASE_DB_SHARDS[shardIndex];
   }
 
   /**
