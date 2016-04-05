@@ -44,7 +44,8 @@ limitations under the License.
 <paper-dialog id="venueMap" class="venue__map"
               entry-animation="scale-up-animation"
               exit-animation="fade-out-animation"
-              with-backdrop="[[!app.isIOS]]">
+              with-backdrop="[[!app.isIOS]]"
+              on-iron-overlay-closed="closeMap">
     <div class="dialog-content">
       <paper-icon-button icon="io:close" dialog-dismiss
                          aria-label="Close map" style="color: #ffffff;"></paper-icon-button>
@@ -65,7 +66,6 @@ limitations under the License.
         <li><span class="dot bg-cyan-400"></span>Keynote + Concert</li>
       </ul>
     </div> -->
-
 </paper-dialog>
 
 
@@ -385,6 +385,15 @@ limitations under the License.
     openMap: function(e) {
       e.preventDefault();
       this.$.venueMap.open();
+      if (!this.inline) {
+        Polymer.IronDropdownScrollManager.pushScrollLock(this);
+      }
+    },
+
+    closeMap: function(e) {
+      if (!this.inline) {
+        Polymer.IronDropdownScrollManager.removeScrollLock(this);
+      }
     }
 
   });
