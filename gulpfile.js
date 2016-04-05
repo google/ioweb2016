@@ -523,6 +523,25 @@ gulp.task('serve:dist', 'Serves built app with GAE dev appserver (no file watche
 });
 
 // -----------------------------------------------------------------------------
+// Firebase stuff
+
+gulp.task('deploy:firebaserules', 'Deploys the Firebase security rules', function() {
+  var serverConfigFile = './backend/server.config.' + (argv.env || 'dev');
+  $.util.log('Getting Firebase databases list from ' + serverConfigFile);
+  var config = JSON.parse(fs.readFileSync(serverConfigFile));
+  var firebaseAppsUrls = config.firebase.shards;
+  $.util.log('Found ' + firebaseAppsUrls.length + ' database(s).');
+  return firebaseAppsUrls.reduce(function(task, firebaseUrl) {
+    var appId = firebaseUrl.replace('https://', '').replace('.firebaseio.com/', '');
+    return task.pipe($.shell('node_modules/.bin/firebase deploy:rules -f ' + appId));
+  }, gulp.src('').pipe($.shell('node_modules/.bin/firebase login --non-interactive')));
+}, {
+  options: {
+    env: 'App environment: "dev", "stage" or "prod". Defaults to "dev".'
+  }
+});
+
+// -----------------------------------------------------------------------------
 // Utils
 
 // Watch file changes and reload running server or rebuild stuff.
