@@ -41,22 +41,21 @@ limitations under the License.
 </div>
 
 <!-- backdrop shouldn't be applied on ios - github.com/Polymer/paper-dialog/issues/16 -->
-<paper-dialog id="venueMap" class="venue__map scrollable"
+<paper-dialog id="venueMap" class="venue__map"
               entry-animation="scale-up-animation"
               exit-animation="fade-out-animation"
               with-backdrop="[[!app.isIOS]]">
-  <div class="scrollable">
     <div class="dialog-content">
       <paper-icon-button icon="io:close" dialog-dismiss
                          aria-label="Close map" style="color: #ffffff;"></paper-icon-button>
 
       <h2>Shoreline Amphitheatre</h2>
-      <a class="dialog-download" href="#map">Download map</a>
+      <!-- <a class="dialog-download" href="#map">Download map</a> -->
     </div>
 
-    <img src="../images/attend/map-dialog.svg" alt="Shoreline Amphitheatre map">
+    <div class="venue__image"></div>
 
-    <div class="dialog-content">
+<!--     <div class="dialog-content">
       <ul class="map-legend">
         <li><span class="dot bg-indigo-400"></span>Sandbox + Sessions</li>
         <li><span class="dot bg-amber-400"></span>F&amp;B</li>
@@ -65,9 +64,8 @@ limitations under the License.
         <li><span class="dot bg-bluegrey-200"></span>Production</li>
         <li><span class="dot bg-cyan-400"></span>Keynote + Concert</li>
       </ul>
-    </div>
+    </div> -->
 
-  </div>
 </paper-dialog>
 
 
@@ -109,9 +107,9 @@ limitations under the License.
               </div>
               <a class="card-content box card-map" href="#map" layout vertical on-click="openMap">
                 <div layout flex end>
-                  <span class="card__footerlink" layout horiziontal justified center flex>
+                  <span class="card__footerlink typo-white" layout horiziontal justified center flex>
                     View the map
-                    <iron-icon icon="icons:launch"></iron-icon>
+                    <iron-icon icon="icons:zoom-in"></iron-icon>
                   </span>
                 </div>
               </a>
