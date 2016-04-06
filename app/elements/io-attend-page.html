@@ -79,13 +79,15 @@ limitations under the License.
         <paper-tabs id="subpage-tabs" class="white"
                     attr-for-selected="label"
                     selected="[[selectedSubpage]]">
-          <paper-tab label="event" role="">
+          <paper-tab label="event" link>
             <a href="#event" data-track-link="attending-event" data-ajax-link
-               layout horizontal center-center>Event</a>
+               layout horizontal center-center
+               tabindex="-1">Event</a>
           </paper-tab>
-          <paper-tab label="travel" role="">
+          <paper-tab label="travel" link>
             <a href="#travel" data-track-link="attending-travel" data-ajax-link
-               layout horizontal center-center>Travel</a>
+               layout horizontal center-center
+               tabindex="-1">Travel</a>
           </paper-tab>
         </paper-tabs>
       </div>
