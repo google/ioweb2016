@@ -182,6 +182,7 @@ IOWA.Router_ = function(window) {
 
     exitAnimation(router.state.start.page, router.state.end.page, e, source)
       .then(function() {
+        window.scrollTo(0, 0);
         // Select page in lazy-pages. In its own promise so the router state
         // happens in the next tick.
         IOWA.Elements.LazyPages.selected = router.state.end.page;
