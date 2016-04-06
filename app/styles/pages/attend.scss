@@ -98,7 +98,7 @@ $name: 'page-attend';
     &:last-of-type {
       margin-bottom: 0;
 
-      .detail__text {
+      .detail__text:last-of-type {
         margin-bottom: 0;
       }
     }
