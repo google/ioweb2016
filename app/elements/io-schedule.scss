@@ -23,6 +23,13 @@
 $color-section-border: #eaeaea;
 $color-session-row-hover: rgba($color-bluegrey-50, 0.4);
 
+$filterBannerHeight: 72px;
+
+:host {
+  display: block;
+  position: relative;
+}
+
 .card-content--myscheduleinfo {
   paper-icon-button {
     margin: -8px 0 12px -12px;
@@ -184,6 +191,37 @@ $color-session-row-hover: rgba($color-bluegrey-50, 0.4);
   color: rgba(0,0,0,0.25);
 }
 
+.filters__panel {
+  background: #fff;
+  position: absolute;
+  z-index: 2;
+  width: 100%;
+  box-shadow: 0px 5px 2px -3px rgba(0, 0, 0, 0.2);
+  transition: clip 400ms cubic-bezier(0.4, 0, 0.2, 1),
+              transform 100ms linear;
+  clip: rect(0px, 1600px, 0px, 0px);
+  will-change: transform;
+  padding-left: 0;
+
+  &[showfilters] {
+    clip: rect(0px, 1600px, 800px, 0px);
+  }
+
+  &.fixed {
+    position: fixed;
+    top: $navbarHeight;
+  }
+
+  &.down {
+    transform: translate3d(0, $subnavHeight, 0);
+  }
+
+  .filters_toggle_button {
+    display: none; // Show only on mobile.
+  }
+
+}
+
 #filters {
   padding: $mobileKeyline;
 }
@@ -210,17 +248,8 @@ $color-session-row-hover: rgba($color-bluegrey-50, 0.4);
   font-size: 14px;
 }
 
-.filters-banner {
-  font-size: 12px;
-  padding-top: 24px !important;
-  padding-bottom: 24px !important;
-  padding-right: $tabletKeyline !important;
-  cursor: pointer;
-  color: rgba(0,0,0,0.54);
-
-  iron-icon {
-    margin-left: $mobileKeyline / 2;
-  }
+.has-filtering-banner {
+  margin-top: $filterBannerHeight;
 }
 
 paper-radio-button {
@@ -255,17 +284,44 @@ paper-radio-button {
       line-height: 28px;
     }
   }
-  #filters {
+  .filters__panel {
     width: 224px;
     position: absolute;
-    top: -($subnavHeight - $mobileKeyline / 2);
+    top: $mobileKeyline / 2 !important;
+    z-index: 10;
     right: $mobileKeyline / 2;
-    background: #fff;
-    z-index: 1;
-    flex-direction: column;
     @include shadow-z1();
+
+    &:not(.fixed) {
+      top: -($subnavHeight - $mobileKeyline / 2) !important;
+
+      &[filtering] {
+        top: -($subnavHeight + $filterBannerHeight - $mobileKeyline / 2) !important;
+      }
+    }
+
+    &.fixed {
+      position: fixed;
+      top: $navbarHeight;
+
+      &.down {
+        top: 0 !important;
+      }
+    }
+
+    .filters_toggle_button {
+      display: inline-block;
+      position: absolute;
+      top: 10px;
+      right: $mobileKeyline;
+      z-index: 1;
+    }
+  }
+  #filters {
+    background: #fff;
+    flex-direction: column;
     overflow-y: auto;
-    height: 60vh;
+    height: 75vh;
     -webkit-overflow-scrolling: touch;
   }
   .filter-section {
@@ -275,7 +331,7 @@ paper-radio-button {
       border-top: 0;
     }
     &:not(:last-of-type) {
-      padding-bottom: $tabletKeyline;
+      margin-bottom: $tabletKeyline;
     }
 
     h4 {
@@ -326,6 +382,14 @@ paper-radio-button {
 
   #filters {
     padding: $tabletKeyline;
+  }
+
+  .filters__panel {
+    &.fixed {
+      &[filtering] {
+        margin-top: $filterBannerHeight;
+      }
+    }
   }
 }
 

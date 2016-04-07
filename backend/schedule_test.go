@@ -20,6 +20,24 @@ import (
 	"time"
 )
 
+func TestDurationStr(t *testing.T) {
+	tests := []struct {
+		in  time.Duration
+		out string
+	}{
+		{30 * time.Minute, "30 minutes"},
+		{time.Hour, "1 hour"},
+		{2 * time.Hour, "2 hours"},
+		{time.Hour + 30*time.Minute, "1.5 hour"},
+		{2*time.Hour + 30*time.Minute, "2.5 hours"},
+	}
+	for i, test := range tests {
+		if out := durationStr(test.in); out != test.out {
+			t.Errorf("%d: durationStr(%v) = %q; want %q", i, test.in, out, test.out)
+		}
+	}
+}
+
 func TestSubslice(t *testing.T) {
 	table := []struct{ in, items, out []string }{
 		{[]string{"a", "b", "c"}, []string{"a", "c"}, []string{"b"}},

@@ -244,7 +244,7 @@ limitations under the License.
                 <div class="details--info-block">
                   <h5 class="detail__heading">Shuttle Service</h5>
                   <p class="detail__text">
-                    Event shuttles will be provided to Google I/O attendees at no charge from all Google&ndash;recommended hotels and with select service from San Francisco and other locations along the Peninsula. Please check back in the coming weeks for pick&ndash;up schedules and additional locations.</p><p class="detail__text">Each pick&ndash;up location will have ADA accessible vehicles. Please indicate on your registration form if you have any ADA or special assistance requirements and the planning team will follow up with you directly.
+                    Event shuttles will be provided to Google I/O attendees at no charge from all Google-recommended hotels and with select service from San Francisco and other locations along the Peninsula. Please check back in the coming weeks for pick-up schedules and additional locations.</p><p class="detail__text">Each pick-up location will have ADA accessible vehicles. Please indicate on your registration form if you have any ADA or special assistance requirements and the planning team will follow up with you directly.
                   </p>
                 </div>
                 <div class="details--info-block">
@@ -252,9 +252,9 @@ limitations under the License.
                   <p class="detail__text">Public transportation to the area is accessible via:</p>
                 </div>
                 <div class="details--info-block">
-                  <p class="detail__text no-bottom-margin"><a href="http://www.caltrain.com/" target="_blank">Caltrain: </a>Regional rail system</p>
-                  <p class="detail__text no-bottom-margin"><a href="http://www.vta.org/getting-around/interactive-light-rail-map" target="_blank">VTA: </a>Light rail system servicing the South Bay</p>
-                  <p class="detail__text no-bottom-margin"><a href="https://www.bart.gov/" target="_blank">BART: </a>Bay Area Rapid Transit</p>
+                  <p class="detail__text no-bottom-margin"><a href="http://www.caltrain.com/" target="_blank">Caltrain:</a> Regional rail system</p>
+                  <p class="detail__text no-bottom-margin"><a href="http://www.vta.org/getting-around/interactive-light-rail-map" target="_blank">VTA:</a> Light rail system servicing the South Bay</p>
+                  <p class="detail__text no-bottom-margin"><a href="https://www.bart.gov/" target="_blank">BART:</a> Bay Area Rapid Transit</p>
                 </div>
                 <div class="details--info-block">
                   <p class="detail__text">Public transit does not go directly to Google I/O. Stay tuned over the coming weeks for exact transportation locations serviced by Google I/O event shuttles.</p>
@@ -265,7 +265,7 @@ limitations under the License.
                     Bike parking will be available at Shoreline Amphitheatre. Recommended bike routes will be available in the coming weeks.
                   </p>
                   <p class="detail__text">
-                    Alternatively, the Bay Area Bike Share program provides 24/7 access to shared bicycles in <a class="detail__link" href="http://www.bayareabikeshare.com/stations" target="_blank">five service areas</a> across the Peninsula. The closest location to Shoreline Amphitheatre is at 228 Charleston Road, Mountain View, CA 94043. More information regarding membership and pricing is available via the <a class="detail__link" href="http://www.bayareabikeshare.com/stations" target="_blank">Bay Area Bike Share</a> website.
+                    Alternatively, the <a class="detail__link" href="http://www.bayareabikeshare.com/stations" target="_blank">Bay Area Bike Share</a> program provides 24/7 access to shared bicycles in five service areas across the Peninsula. The closest location to Shoreline Amphitheatre is at 228 Charleston Road, Mountain View, CA 94043. More information regarding membership and pricing is available via the Bay Area Bike Share website.
                   </p>
                 </div>
               </div>
@@ -368,6 +368,8 @@ limitations under the License.
     },
 
     onSubpageTransitionDone: function() {
+      this.set('app.headerReveals', true);
+
       // Reset FAB position after new DOM is set.
       IOWA.Elements.Template.initFabScroll();
     },

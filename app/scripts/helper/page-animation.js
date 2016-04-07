@@ -353,13 +353,13 @@ IOWA.PageAnimation = (function() {
       player.onfinish = function() {
         var main = IOWA.Elements.Main.querySelector('.active .slide-up');
         if (main) {
-          main.style = 'transform: none; opacity: 1';
+          main.setAttribute('style', 'transform: none; opacity: 1');
         }
 
         var mainDelayed = IOWA.Elements.Main.querySelector(
             '.active .slide-up-delay');
         if (mainDelayed) {
-          mainDelayed.style = 'transform: none; opacity: 1';
+          mainDelayed.setAttribute('style', 'transform: none; opacity: 1');
         }
 
         // Removes the effects of the animation b/c we've applied it inline.

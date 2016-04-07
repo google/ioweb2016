@@ -82,6 +82,7 @@ limitations under the License.
     window.ENV = {% .Env %}; // Used in analytics.js
     window.PREFIX = {% .Prefix %};
     window.START_DATE = {% .StartDateStr %};
+    window.FIREBASE_SHARDS = {% .FirebaseShards %};
   </script>
   <script src="scripts/analytics.js"></script>
   <script>
@@ -248,7 +249,8 @@ limitations under the License.
   </div>
 </app-drawer>
 
-  <app-header reveals effects="fade-background waterfall" id="header" class="masthead">
+  <app-header id="header" class="masthead"
+              reveals="[[app.headerReveals]]" effects="fade-background waterfall">
     <app-toolbar id="navbar" role="navigation">
       <paper-icon-button icon="io:menu"
                          on-tap="toggleDrawer"
@@ -285,9 +287,15 @@ limitations under the License.
              blocked. Needs user gesture. -->
         <span class="anchor-like button-link" role="button" tabindex="0"
               data-track-link="nav-signin" on-click="signIn"
-              hidden="[[app.currentUser]]" layout center>Sign in</span>
-        <template is="dom-if" if="{{app.currentUser}}" restamp>
-          <img src$="{{app.currentUser.picture}}" class="profilepic">
+              hidden="[[app.currentUser.picture]]" layout center>Sign in</span>
+        <!-- This image might be set based on cached data. -->
+        <img src$="{{app.currentUser.picture}}"
+             class="profilepic"
+             hidden="[[!app.currentUser.picture]]">
+        <!-- Stamp this out when app.currentUser.id is set rather than just
+             app.currentUser, since a subset of app.currentUser might be
+             populated by cached data. -->
+        <template is="dom-if" if="{{app.currentUser.id}}" restamp>
           <paper-menu-button horizontal-align="right" vertical-align="top"
                              on-paper-dropdown-open="getNotificationState">
             <paper-icon-button icon="io:more-vert"
@@ -334,7 +342,9 @@ limitations under the License.
     <template is="dom-if" if="[[_isPage('schedule', selectedPage)]]" restamp>
       <io-schedule-subnav selected-subpage="{{selectedSubpage}}" app="[[app]]"
                           show-filters="{{showFilters}}"
-                          class="header_subnav offscreen"></io-schedule-subnav>
+                          class="header_subnav offscreen"
+                          filters="[[_filters]]"
+                          on-filters-clear="_onClearFilters"></io-schedule-subnav>
     </template>
     <template is="dom-if" if="[[_isPage('attend', selectedPage)]]" restamp>
       <div class="header_subnav offscreen subpage__nav bg-cyan-400" layout horizontal justified>
@@ -368,7 +378,7 @@ limitations under the License.
             date="{% .StartDateStr %}"></io-home-page>
       </template>
       <template is="dom-if" name="attend" restamp>
-        <io-attend-page app="[[app]]"
+        <io-attend-page app="{{app}}"
                         selected-subpage="{{selectedSubpage}}"></io-attend-page>
       </template>
       <template is="dom-if" name="extended" restamp>
@@ -378,9 +388,10 @@ limitations under the License.
         <io-extended-form-page app="[[app]]"></io-extended-form-page>
       </template>
       <template is="dom-if" name="schedule" restamp>
-        <io-schedule-page app="[[app]]" date="{% .StartDateStr %}"
+        <io-schedule-page app="{{app}}" date="{% .StartDateStr %}"
                           selected-subpage="{{selectedSubpage}}"
-                          show-filters="{{showFilters}}"></io-schedule-page>
+                          show-filters="{{showFilters}}"
+                          filters="{{_filters}}"></io-schedule-page>
       </template>
       <template is="dom-if" name="faq" restamp>
         <io-faq-page app="[[app]]"></io-faq-page>
@@ -439,6 +450,7 @@ limitations under the License.
 <script src="bower_components/es6-promise/dist/es6-promise.min.js"></script>
 <script src="bower_components/firebase/firebase.js"></script>
 <script src="bower_components/js-crc/src/crc.js"></script>
+<script src="bower_components/simpledb_polyfill/index.js"></script>
 <script src="scripts/main.js"></script>
 <script src="scripts/pages.js"></script>
 <script src="scripts/helper/util.js"></script>

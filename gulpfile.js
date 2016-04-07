@@ -71,6 +71,18 @@ function createReloadServer() {
   });
 }
 
+function minifyHtml() {
+  return $.minifyHtml({
+    quotes: true,
+    empty: true,
+    spare: true
+  });
+}
+
+function uglifyJS() {
+  return $.uglify({preserveComments: 'some'});
+}
+
 // Default task that builds everything.
 // The output can be found in IOWA.distDir.
 gulp.task('default', ['clean'], function(done) {
@@ -179,6 +191,8 @@ gulp.task('concat-and-uglify-js', 'Crush JS', ['eslint', 'generate-page-metadata
   // The ordering of the scripts in the gulp.src() array matter!
   // This order needs to match the order in templates/layout_full.html
   var siteScripts = [
+    // The SimpleDB polyfill needs to be run through Babel, so include it here.
+    '../bower_components/simpledb_polyfill/index.js',
     'main.js',
     'pages.js',
     'helper/util.js',
@@ -210,14 +224,20 @@ gulp.task('concat-and-uglify-js', 'Crush JS', ['eslint', 'generate-page-metadata
 
   var serviceWorkerScriptStream = gulp.src([
     IOWA.appDir + '/bower_components/sw-toolbox/sw-toolbox.js',
-    IOWA.appDir + '/scripts/helper/simple-db.js',
+    IOWA.appDir + '/bower_components/simpledb_polyfill/index.js',
     IOWA.appDir + '/scripts/sw-toolbox/*.js'
   ])
     .pipe(reload({stream: true, once: true}))
+    .pipe($.babel({
+      presets: ['es2015'],
+      compact: false
+    }))
     .pipe($.concat('sw-toolbox-scripts.js'));
 
   return merge(siteScriptStream, siteLibStream).add(analyticsScriptStream).add(serviceWorkerScriptStream)
-    .pipe($.uglify({preserveComments: 'some'}).on('error', function() {}))
+    .pipe(uglifyJS().on('error', function(error) {
+      $.util.log(error);
+    }))
     .pipe(gulp.dest(IOWA.distDir + '/' + IOWA.appDir + '/scripts'))
     .pipe($.size({title: 'concat-and-uglify-js'}));
 });
@@ -236,7 +256,9 @@ gulp.task('generate-data-worker-dist', 'Generate data-worker.js for /dist.', fun
     }))
     .pipe(ownScriptsFilter.restore)
     .pipe($.concat('data-worker-scripts.js'))
-    .pipe($.uglify({preserveComments: 'some'}).on('error', function() {}))
+    .pipe(uglifyJS().on('error', function(error) {
+      $.util.log(error);
+    }))
     .pipe(gulp.dest(IOWA.distDir + '/' + IOWA.appDir))
     .pipe($.size({title: 'data-worker-dist'}));
 });
@@ -296,6 +318,10 @@ gulp.task('vulcanize-elements', false, ['sass'], function() {
       dest: IOWA.appDir + '/elements'
     }))
     .pipe($.crisper({scriptInHead: true}))
+    // Minify html output
+    .pipe($.if('*.html', minifyHtml()))
+    // Minifiy js output
+    .pipe($.if('*.js', uglifyJS()))
     .pipe(gulp.dest(IOWA.distDir + '/' + IOWA.appDir + '/elements/'));
 });
 
@@ -311,6 +337,10 @@ gulp.task('vulcanize-gadget-elements', false, ['sass'], function() {
       dest: IOWA.appDir + '/elements'
     }))
     .pipe($.crisper({scriptInHead: true}))
+    // Minify html output
+    .pipe($.if('*.html', minifyHtml()))
+    // Minifiy js output
+    .pipe($.if('*.js', uglifyJS()))
     .pipe(gulp.dest(IOWA.distDir + '/' + IOWA.appDir + '/elements/'));
 });
 
@@ -333,6 +363,10 @@ gulp.task('vulcanize-extended-elements', false, ['sass'], function() {
       ]
     }))
     .pipe($.crisper({scriptInHead: true}))
+    // Minify html output
+    .pipe($.if('*.html', minifyHtml()))
+    // Minifiy js output
+    .pipe($.if('*.js', uglifyJS()))
     .pipe(gulp.dest(IOWA.distDir + '/' + IOWA.appDir + '/elements/'));
 });
 
@@ -364,7 +398,7 @@ gulp.task('generate-data-worker-dev', 'Generate data-worker.js for dev', functio
 gulp.task('generate-service-worker-dev', 'Generate service worker for dev', ['sass'], function(callback) {
   del.sync([IOWA.appDir + '/service-worker.js']);
   var importScripts = glob.sync('scripts/sw-toolbox/*.js', {cwd: IOWA.appDir});
-  importScripts.unshift('scripts/helper/simple-db.js');
+  importScripts.unshift('bower_components/simpledb_polyfill/index.js');
   importScripts.unshift('bower_components/sw-toolbox/sw-toolbox.js');
 
   generateServiceWorker(IOWA.appDir, !!argv['fetch-dev'], importScripts, function(error, serviceWorkerFileContents) {
@@ -485,6 +519,25 @@ gulp.task('serve:dist', 'Serves built app with GAE dev appserver (no file watche
 }, {
   options: {
     open: 'Opens a new browser tab to the app'
+  }
+});
+
+// -----------------------------------------------------------------------------
+// Firebase stuff
+
+gulp.task('deploy:firebaserules', 'Deploys the Firebase security rules', function() {
+  var serverConfigFile = './backend/server.config.' + (argv.env || 'dev');
+  $.util.log('Getting Firebase databases list from ' + serverConfigFile);
+  var config = JSON.parse(fs.readFileSync(serverConfigFile));
+  var firebaseAppsUrls = config.firebase.shards;
+  $.util.log('Found ' + firebaseAppsUrls.length + ' database(s).');
+  return firebaseAppsUrls.reduce(function(task, firebaseUrl) {
+    var appId = firebaseUrl.replace('https://', '').replace('.firebaseio.com/', '');
+    return task.pipe($.shell('node_modules/.bin/firebase deploy:rules -f ' + appId));
+  }, gulp.src('').pipe($.shell('node_modules/.bin/firebase login --non-interactive')));
+}, {
+  options: {
+    env: 'App environment: "dev", "stage" or "prod". Defaults to "dev".'
   }
 });
 

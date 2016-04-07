@@ -85,11 +85,12 @@ type eventSession struct {
 		Id string `json:"id"`
 	} `json:"relatedContent,omitempty"`
 
-	Day     int             `json:"day"`
-	Block   string          `json:"block"`
-	Start   string          `json:"start"`
-	End     string          `json:"end"`
-	Filters map[string]bool `json:"filters"`
+	Day      int             `json:"day"`
+	Block    string          `json:"block"`
+	Start    string          `json:"start"`
+	End      string          `json:"end"`
+	Duration string          `json:"duration"`
+	Filters  map[string]bool `json:"filters"`
 
 	// Update is used only api/user/updates
 	Update string `json:"update,omitempty"`
@@ -332,9 +333,10 @@ func slurpEventDataChunk(c context.Context, hc *http.Client, url string) (*event
 		}
 
 		tzstart := s.StartTime.In(config.Schedule.Location)
-		s.Block = tzstart.Format("3 PM")
+		s.Block = strings.Replace(tzstart.Format("304 PM"), "00 ", " ", 1)
 		s.Start = tzstart.Format("3:04 PM")
 		s.End = s.EndTime.In(config.Schedule.Location).Format("3:04 PM")
+		s.Duration = durationStr(s.EndTime.Sub(s.StartTime))
 		s.Day = tzstart.Day()
 
 		if len(s.Speakers) == 0 {
@@ -673,6 +675,22 @@ func thumbURL(turl string) string {
 	}
 	k += j
 	return turl[:i] + "w" + turl[i+imageURLSizeMarkerLen:j] + turl[k:]
+}
+
+// durationStr returns duration d in a human readable simple format:
+// "2.5 hours", "1 hour", "30 minutes", etc.
+func durationStr(d time.Duration) string {
+	switch {
+	case d < time.Hour:
+		return fmt.Sprintf("%d minutes", int(d.Minutes()))
+	default:
+		v, u := d.Hours(), "hour"
+		if v > 1.5 {
+			u += "s"
+		}
+		return fmt.Sprintf("%g %s", d.Hours(), u)
+	}
+	return d.String()
 }
 
 // sortedSessionsList implements sort.Sort ordering items by:

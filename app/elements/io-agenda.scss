@@ -50,6 +50,18 @@
   vertical-align: top;
 }
 
+.card__container:not(.day-0) {
+  h4 {
+    border-top: 1px solid $color-grey-300;
+    padding-top: 48px;
+  }
+
+  .card-content:first-child {
+    padding-top: 0;
+  }
+}
+
+
 .agenda_time:before {
   content: ' ';
   background: $color-bluegrey-200;

@@ -123,23 +123,36 @@ Useful for browsing original CMS data on staging GCS bucket:
 
 ### Configuring Firebase
 
-// TODO: Centralize Firebase DB shards list in server.config files and automate rules upload with Gulp.
+#### Creating Databases/Shards and setting them up
 
-You need to create and configure Firebase databases and configure the app to use them.
-First create one or more (depending on how many shards you need) Firebase databases from
-http://firebase.com and note their URL and IDs.
-In `scripts/helper/firebase.js` list the Firebase Database URLs in `FIREBASE_DATABASES_URL`.
-Configure these Firebase databases' rules by running for each database:
+When setting up your own version of the Google IO Web app you need to create new Firebase databases,
+set them up and configure the app to use them.
+First, create one or more (depending on how many shards you need) Firebase databases from
+http://firebase.com and note their Databases URLs.
+In the `backend/server.config` file list the Firebase Databases URLs in the `firebase.shards` attribute.
+
+For each Firebase databases you need to configure configure Login and Auth:
+ - Open the Auth settings page: `https://<firebase-app-id>.firebaseio.com/?page=Auth`
+ - If the database is going to be used on prod enter `events.google.com` in the `Authorized Domains for OAuth Redirects` field or whichever domain your app will be served from in prod.
+ - Below click on the `Google` tab then `Enable Google Authentication`
+ - Provide the `Google Client ID` that you are using for auth.
+
+#### Deploy Security rules to Firebase Databases
+
+Run the following command to deploy the Firebase Security rules to all shards:
 
 ```
-firebase login
-firebase deploy:rules -f <firebase-app-id> # e.g. firebase deploy:rules -f iowa-2016-dev
+gulp deploy:firebaserules
 ```
 
-For each Firebase databases, configure Login and Auth on: `https://<firebase-app-id>.firebaseio.com/?page=Auth`
-If the database is going to be used on prod enter `events.google.com` in `Authorized Domains for OAuth Redirects`
-Below click on the `Google` tab then `Enable Google Authentication`
-and provide the `Google Client ID` that you are using for auth.
+> Note: You may be prompted to log in to Firebase if you haven't previously done so.
+
+By default the above will deploy rules to the `dev` Firebase shards.
+To deploy the rules to other environments' shards run:
+
+```
+gulp deploy:firebaserules --env {prod|stage}
+```
 
 
 ### Send GCM push notifications

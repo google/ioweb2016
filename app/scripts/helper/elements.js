@@ -91,6 +91,7 @@ IOWA.Elements = (function() {
     template.app.dontAutoSubscribe = false;
     template.app.currentUser = null;
     template.app.showMySchedulHelp = true;
+    template.app.headerReveals = true;
 
     template.pages = IOWA.PAGES; // defined in auto-generated ../pages.js
     template.selectedPage = IOWA.Router.parseUrl(window.location.href).page;
@@ -428,19 +429,21 @@ IOWA.Elements = (function() {
     };
 
     template._onContentScroll = function() {
-      var scrollTop = IOWA.Elements.Masthead._scrollTop;
+      this.debounce('mainscroll', function() {
+        var scrollTop = IOWA.Elements.Masthead._scrollTop;
 
-      if (scrollTop === 0) {
-        this.$.navbar.classList.remove('scrolled');
-      } else {
-        this.$.navbar.classList.add('scrolled');
-      }
+        if (scrollTop === 0) {
+          this.$.navbar.classList.remove('scrolled');
+        } else {
+          this.$.navbar.classList.add('scrolled');
+        }
 
-      // Note, we should not call this on every scroll event, but scoping
-      // the update to the nav is very cheap (< 1ms).
-      IOWA.Elements.NavPaperTabs.updateStyles();
+        // Note, we should not call this on every scroll event, but scoping
+        // the update to the nav is very cheap (< 1ms).
+        IOWA.Elements.NavPaperTabs.updateStyles();
 
-      this._setFabPosition(scrollTop);
+        this._setFabPosition(scrollTop);
+      }, 25);
     };
 
     template._isPage = function(page, selectedPage) {
@@ -453,6 +456,13 @@ IOWA.Elements = (function() {
 
     template.closeDrawer = function() {
       this.$.appdrawer.close();
+    };
+
+    template._onClearFilters = function(e) {
+      e.stopPropagation();
+
+      var selectedPageEl = IOWA.Elements.LazyPages.selectedPage;
+      selectedPageEl.clearFilters();
     };
 
     template.addEventListener('dom-change', updateElements);

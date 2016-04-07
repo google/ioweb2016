@@ -41,10 +41,6 @@ $name: 'page-extended';
       p {
         @include typo-heading-2();
         line-height: 32px;
-
-        @media (max-width: $tablet-breakpoint-max) {
-          @include typo-mobile-intro-card();
-        }
       }
     }
   }
@@ -95,6 +91,12 @@ $name: 'page-extended';
         margin-bottom: 0;
       }
     }
+  }
+
+  .details--title {
+    font-size: 24px;
+    line-height: 32px;
+    margin-bottom: 8px;
   }
 
   .details--links {
