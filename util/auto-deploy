@@ -35,14 +35,14 @@ fi
 openssl aes-256-cbc -d \
   -in $(dirname $0)/drone.json.enc \
   -out drone.json \
-  -k $SERVICE_PASSPHRASE
+  -k $PASSPHRASE
 gcloud auth activate-service-account --key-file drone.json
 ACCESS_TOKEN=$(gcloud auth print-access-token)
 
 # TODO: remove this and vendor packages instead using GO15VENDOREXPERIMENT.
 gulp godeps
 # decrypt server configs
-gulp decrypt --pass $CFG_PASSPHRASE
+gulp decrypt --pass $PASSPHRASE
 # make sure we have the right config file
 cp backend/server.config.stage dist/backend/server.config
 # deploy the app as a version the original git push was made to

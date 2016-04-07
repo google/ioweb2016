@@ -28,8 +28,7 @@ deploy:
     when:
       repo: GoogleChrome/ioweb2016
     env:
-      - SERVICE_PASSPHRASE=$$SERVICE_PASSPHRASE
-      - CFG_PASSPHRASE=$$CFG_PASSPHRASE
+      - PASSPHRASE=$$PASSPHRASE
     script:
       - cat .state
       - . .state
