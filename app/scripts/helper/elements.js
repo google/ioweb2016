@@ -465,7 +465,11 @@ IOWA.Elements = (function() {
       selectedPageEl.clearFilters();
     };
 
-    template.addEventListener('dom-change', updateElements);
+    template.domStampedPromise = new Promise(resolve => {
+      template.addEventListener('dom-change', resolve);
+    });
+
+    template.domStampedPromise.then(updateElements);
 
     template.addEventListener('page-transition-done', function() {
       this.set('app.pageTransitionDone', true);

@@ -73,10 +73,14 @@ class Schedule {
       this.scheduleData_ = data.scheduleData;
 
       let template = IOWA.Elements.Template;
-      template.set('app.scheduleData', data.scheduleData);
-      template.set('app.filterSessionTypes', data.tags.filterSessionTypes);
-      template.set('app.filterThemes', data.tags.filterThemes);
-      template.set('app.filterTopics', data.tags.filterTopics);
+
+      // Wait until template is stamped before adding schedule data to it.
+      template.domStampedPromise.then(() => {
+        template.set('app.scheduleData', data.scheduleData);
+        template.set('app.filterSessionTypes', data.tags.filterSessionTypes);
+        template.set('app.filterThemes', data.tags.filterThemes);
+        template.set('app.filterTopics', data.tags.filterTopics);
+      });
 
       return this.scheduleData_;
     });
