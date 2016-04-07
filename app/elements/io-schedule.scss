@@ -204,7 +204,7 @@ $filterBannerHeight: 72px;
   padding-left: 0;
 
   &[showfilters] {
-    clip: rect(0px, 1600px, 800px, 0px);
+    clip: rect(0px, 1600px, 76vh, 0px);
   }
 
   &.fixed {
@@ -226,6 +226,10 @@ $filterBannerHeight: 72px;
   padding: $mobileKeyline;
 }
 
+#filters-layout {
+  padding: 0 !important;
+}
+
 .filter-section {
   h4 {
     font-size: 16px;
@@ -239,13 +243,14 @@ $filterBannerHeight: 72px;
   }
 }
 
+.filter-section--clear-wrapper {
+  text-align: right;
+}
+
 .filter-section--clearall {
-  position: absolute;
-  right: 0;
-  top: -3px;
   color: $color-cyan-800;
-  text-transform: uppercase;
   font-size: 14px;
+  text-transform: uppercase;
 }
 
 .has-filtering-banner {
@@ -319,10 +324,12 @@ paper-radio-button {
   }
   #filters {
     background: #fff;
-    flex-direction: column;
     overflow-y: auto;
     height: 75vh;
     -webkit-overflow-scrolling: touch;
+  }
+  #filters-layout[layout][horizontal].io-schedule {
+    flex-direction: column;
   }
   .filter-section {
     border-top: 1px solid $color-bluegrey-100;
