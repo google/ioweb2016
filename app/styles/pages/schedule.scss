@@ -35,6 +35,11 @@ io-schedule {
   }
 }
 
+.meta-filter {
+  font-size: 14px;
+  font-weight: 500;
+}
+
 .meta-filter,
 .meta-myschedue-button {
   transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
