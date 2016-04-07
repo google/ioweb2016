@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package backend
 
 import (
 	"bytes"
@@ -310,7 +310,7 @@ func getSitemap(c context.Context, baseURL *url.URL) (*sitemap, error) {
 		return nil, err
 	}
 	mod := sched.modified.In(time.UTC)
-	for id, _ := range sched.Sessions {
+	for id := range sched.Sessions {
 		u := baseURL.ResolveReference(&url.URL{Path: "schedule"})
 		u.RawQuery = url.Values{"sid": {id}}.Encode()
 		item := &sitemapItem{

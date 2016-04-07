@@ -12,9 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// +build appengine
-
-package main
+package backend
 
 import (
 	"io"
@@ -23,8 +21,8 @@ import (
 	"sync"
 	"testing"
 
-	"appengine/aetest"
-	"appengine/user"
+	"google.golang.org/appengine/aetest"
+	"google.golang.org/appengine/user"
 )
 
 var (

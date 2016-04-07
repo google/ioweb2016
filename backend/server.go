@@ -12,86 +12,136 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// This file is used only when compiled without GAE support.
-// The standalone backend serves both static assets and templates.
-
-// +build !appengine
-
-package main
+package backend
 
 import (
-	"flag"
-	"log"
 	"net/http"
-	"os"
 	"path"
-	"path/filepath"
+	"strings"
+	"time"
 
 	"golang.org/x/net/context"
+
+	"google.golang.org/appengine"
+	"google.golang.org/appengine/log"
+	"google.golang.org/appengine/urlfetch"
+	"google.golang.org/appengine/user"
 )
 
-var (
-	flagConfig = flag.String("c", "server.config", "backend config file path")
-	flagAddr   = flag.String("addr", "", "address to listen on for standalone server")
-)
+// allow requests prefixed with passthruPrefixes to bypass checkWhitelist
+var passthruPrefixes = []string{
+	"/manifest.json",
+	"/sync",
+	"/api/v1/user",
+	"/api/v1/easter-egg",
+}
 
-// main is the entry point of the standalone server.
-func main() {
-	flag.Parse()
-	if err := initConfig(*flagConfig, *flagAddr); err != nil {
+func init() {
+	if err := initConfig("server.config", ""); err != nil {
 		panic("initConfig: " + err.Error())
 	}
-
-	cache = newMemoryCache()
-	wrapHandler = logHandler
-	rootHandleFn = catchAllHandler
-	registerHandlers()
-
-	if err := http.ListenAndServe(config.Addr, nil); err != nil {
-		// don't need context here
-		errorf(nil, "%v", err)
-		os.Exit(1)
+	// prepend config.Prefix to bypass prefixes
+	for i, p := range passthruPrefixes {
+		passthruPrefixes[i] = path.Join(config.Prefix, p)
 	}
+	// use built-in memcache service
+	cache = &gaeMemcache{}
+	// apps hosted on GAE use a different HTTP transport
+	httpTransport = func(c context.Context) http.RoundTripper {
+		c, _ = context.WithTimeout(c, 10*time.Second)
+		return &urlfetch.Transport{Context: c}
+	}
+	// allow access only by whitelisted people/domains if not empty
+	if len(config.Whitelist) > 0 {
+		wrapHandler = checkWhitelist
+	}
+	rootHandleFn = serveTemplate
+	registerHandlers()
+	// site admin stuff, accessible only to config.Admins, only on GAE atm.
+	aroot := path.Join(config.Prefix, "admin") + "/"
+	http.Handle(aroot, checkAdmin(handler(handleAdmin)))
 }
 
-// catchAllHandler serves either static content from rootDir
-// or responds with a rendered template if no static asset found
-// under the in-flight request.
-func catchAllHandler(w http.ResponseWriter, r *http.Request) {
-	p := path.Clean("/" + r.URL.Path)
-	if p == "/" {
-		p += "index"
+// allowPassthrough returns true if the request r can be handled w/o whitelist check.
+// Currently, only GAE Cron and Task Queue jobs are allowed.
+func allowPassthrough(r *http.Request) bool {
+	if r.Header.Get("x-appengine-cron") == "true" || r.Header.Get("x-appengine-taskname") != "" {
+		return true
 	}
-	p = filepath.Join(config.Dir, filepath.FromSlash(p))
+	for _, p := range passthruPrefixes {
+		if strings.HasPrefix(r.URL.Path, p) {
+			return true
+		}
+	}
+	return false
+}
 
-	if _, err := os.Stat(p); os.IsNotExist(err) {
-		serveTemplate(w, r)
+// checkWhitelist checks whether the current user is allowed to access
+// handler h using isWhitelisted() func before handing over in-flight request.
+// It redirects to GAE login URL if no user found or responds with 403
+// (Forbidden) HTTP error code if the current user is not whitelisted.
+func checkWhitelist(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if allowPassthrough(r) {
+			h.ServeHTTP(w, r)
+			return
+		}
+		c := appengine.NewContext(r)
+		u := user.Current(c)
+		switch {
+		case u != nil && isWhitelisted(u.Email):
+			h.ServeHTTP(w, r)
+		case u != nil:
+			errorf(c, "%s is not whitelisted", u.Email)
+			http.Error(w, "Access denied, sorry. Try with a different account.", http.StatusForbidden)
+		default:
+			handleGAEAuth(w, r)
+		}
+	})
+}
+
+// checkAdmin is similar to checkWhitelist with the following exceptions:
+// - doesn't test allowPassthrough()
+// - looks up user emails in config.Admins instead of config.Whitelist.
+func checkAdmin(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		c := appengine.NewContext(r)
+		u := user.Current(c)
+		switch {
+		case u != nil && isAdmin(u.Email):
+			h.ServeHTTP(w, r)
+		case u != nil:
+			errorf(c, "%s is not admin", u.Email)
+			http.Error(w, "Admins only, sorry. Try with a different account.", http.StatusForbidden)
+		default:
+			handleGAEAuth(w, r)
+		}
+	})
+}
+
+// handleGAEAuth sends a redirect to GAE authentication page.
+func handleGAEAuth(w http.ResponseWriter, r *http.Request) {
+	c := appengine.NewContext(r)
+	url, err := user.LoginURL(c, r.URL.String())
+	if err != nil {
+		errorf(c, "user.LoginURL(%q): %v", r.URL.String(), err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
-	http.ServeFile(w, r, p)
-}
-
-// logHandler logs each request before handing it over to the handler h.
-func logHandler(h http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// don't need context in standalone server
-		logf(nil, "%s %s", r.Method, r.URL.Path)
-		h.ServeHTTP(w, r)
-	})
+	http.Redirect(w, r, url, http.StatusFound)
 }
 
 // newContext returns a context of the in-flight request r.
 func newContext(r *http.Request) context.Context {
-	return context.Background()
+	return appengine.NewContext(r)
 }
 
-// logf logs an info message using Go's standard log package.
-func logf(_ context.Context, format string, args ...interface{}) {
-	log.Printf(format, args...)
+// logf logs an info message using appengine's context.
+func logf(c context.Context, format string, args ...interface{}) {
+	log.Infof(c, format, args...)
 }
 
-// errorf logs an error message using Go's standard log package.
-func errorf(_ context.Context, format string, args ...interface{}) {
-	log.Printf("ERROR: "+format, args...)
+// errorf logs an error message using appengine's context.
+func errorf(c context.Context, format string, args ...interface{}) {
+	log.Errorf(c, format, args...)
 }

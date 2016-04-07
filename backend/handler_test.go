@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package backend
 
 import (
 	"crypto/tls"
@@ -278,7 +278,7 @@ func TestServeSessionTemplate(t *testing.T) {
 
 	c := newContext(newTestRequest(t, "GET", "/dummmy", nil))
 	if err := storeEventData(c, &eventData{Sessions: map[string]*eventSession{
-		"123": &eventSession{
+		"123": {
 			Title: "Session",
 			Desc:  "desc",
 			Photo: "http://image.jpg",
@@ -342,24 +342,24 @@ func TestServeEmbed(t *testing.T) {
 	c := newContext(r)
 
 	if err := storeEventData(c, &eventData{Sessions: map[string]*eventSession{
-		"live": &eventSession{
+		"live": {
 			StartTime: now,
 			IsLive:    true,
 			YouTube:   "live",
 			Desc:      "Channel 1",
 		},
-		"recorded": &eventSession{
+		"recorded": {
 			StartTime: now,
 			IsLive:    false,
 			YouTube:   "http://recorded",
 			Desc:      "Channel 1",
 		},
-		keynoteID: &eventSession{
+		keynoteID: {
 			StartTime: now,
 			IsLive:    true,
 			YouTube:   "keynote",
 		},
-		"same-live": &eventSession{
+		"same-live": {
 			StartTime: now,
 			IsLive:    true,
 			YouTube:   "live",
@@ -402,7 +402,7 @@ func TestServeSitemap(t *testing.T) {
 	if err := storeEventData(c, &eventData{
 		modified: time.Now(),
 		Sessions: map[string]*eventSession{
-			"123": &eventSession{Id: "123"},
+			"123": {Id: "123"},
 		},
 	}); err != nil {
 		t.Fatal(err)
@@ -1181,10 +1181,10 @@ func TestSubmitUserSurvey(t *testing.T) {
 		t.Fatal(err)
 	}
 	if err := storeEventData(c, &eventData{Sessions: map[string]*eventSession{
-		"ok":        &eventSession{Id: "ok", StartTime: time.Now().Add(-10 * time.Minute)},
-		"submitted": &eventSession{Id: "submitted", StartTime: time.Now().Add(-10 * time.Minute)},
-		"disabled":  &eventSession{Id: "disabled", StartTime: time.Now().Add(-10 * time.Minute)},
-		"too-early": &eventSession{Id: "too-early", StartTime: time.Now().Add(10 * time.Minute)},
+		"ok":        {Id: "ok", StartTime: time.Now().Add(-10 * time.Minute)},
+		"submitted": {Id: "submitted", StartTime: time.Now().Add(-10 * time.Minute)},
+		"disabled":  {Id: "disabled", StartTime: time.Now().Add(-10 * time.Minute)},
+		"too-early": {Id: "too-early", StartTime: time.Now().Add(10 * time.Minute)},
 	}}); err != nil {
 		t.Fatal(err)
 	}
@@ -1726,7 +1726,7 @@ func TestSyncEventDataWithDiff(t *testing.T) {
 	err = storeChanges(c, &dataChanges{
 		Updated: firstMod,
 		eventData: eventData{
-			Videos: map[string]*eventVideo{"dummy-id": &eventVideo{}},
+			Videos: map[string]*eventVideo{"dummy-id": {}},
 		},
 	})
 	if err != nil {
@@ -1904,7 +1904,7 @@ func TestServeUserUpdates(t *testing.T) {
 		Updated: timeBefore,
 		eventData: eventData{
 			Sessions: map[string]*eventSession{
-				"before": &eventSession{Update: updateDetails},
+				"before": {Update: updateDetails},
 			},
 		},
 	}); err != nil {
@@ -1914,8 +1914,8 @@ func TestServeUserUpdates(t *testing.T) {
 		Updated: timeAfter,
 		eventData: eventData{
 			Sessions: map[string]*eventSession{
-				"after":     &eventSession{Update: updateDetails},
-				"unrelated": &eventSession{Update: updateDetails},
+				"after":     {Update: updateDetails},
+				"unrelated": {Update: updateDetails},
 			},
 		},
 	}); err != nil {
@@ -2413,24 +2413,24 @@ func TestHandleClockNextSessions(t *testing.T) {
 		t.Fatal(err)
 	}
 	if err := storeNextSessions(c, []*eventSession{
-		&eventSession{Id: "already-clocked", Update: updateStart},
+		{Id: "already-clocked", Update: updateStart},
 	}); err != nil {
 		t.Fatal(err)
 	}
 	if err := storeEventData(c, &eventData{Sessions: map[string]*eventSession{
-		"start": &eventSession{
+		"start": {
 			Id:        "start",
 			StartTime: now.Add(timeoutStart - time.Second),
 		},
-		"__keynote__": &eventSession{
+		"__keynote__": {
 			Id:        "__keynote__",
 			StartTime: now.Add(timeoutSoon - time.Second),
 		},
-		"already-clocked": &eventSession{
+		"already-clocked": {
 			Id:        "already-clocked",
 			StartTime: now.Add(timeoutStart - time.Second),
 		},
-		"too-early": &eventSession{ // because it's not in soonSessionIDs
+		"too-early": { // because it's not in soonSessionIDs
 			Id:        "too-early",
 			StartTime: now.Add(timeoutSoon - time.Second),
 		},
@@ -2467,9 +2467,9 @@ func TestHandleClockNextSessions(t *testing.T) {
 	}
 
 	unclocked, err := filterNextSessions(c, []*eventSession{
-		&eventSession{Id: "__keynote__", Update: updateSoon},
-		&eventSession{Id: "start", Update: updateStart},
-		&eventSession{Id: "too-early", Update: "too-early"},
+		{Id: "__keynote__", Update: updateSoon},
+		{Id: "start", Update: updateStart},
+		{Id: "too-early", Update: "too-early"},
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -2541,17 +2541,17 @@ func TestHandleClockSurvey(t *testing.T) {
 		t.Fatal(err)
 	}
 	if err := storeNextSessions(c, []*eventSession{
-		&eventSession{Id: "__keynote__", Update: updateSoon},
-		&eventSession{Id: "__keynote__", Update: updateStart},
+		{Id: "__keynote__", Update: updateSoon},
+		{Id: "__keynote__", Update: updateStart},
 	}); err != nil {
 		t.Fatal(err)
 	}
 	if err := storeEventData(c, &eventData{Sessions: map[string]*eventSession{
-		"random": &eventSession{
+		"random": {
 			Id:        "random",
 			StartTime: now.Add(-timeoutSurvey - time.Minute),
 		},
-		"__keynote__": &eventSession{
+		"__keynote__": {
 			Id:        "__keynote__",
 			StartTime: now.Add(-timeoutSurvey - time.Minute),
 		},
@@ -2587,8 +2587,8 @@ func TestHandleClockSurvey(t *testing.T) {
 	}
 
 	unclocked, err := filterNextSessions(c, []*eventSession{
-		&eventSession{Id: "__keynote__", Update: updateSurvey},
-		&eventSession{Id: "random", Update: updateSurvey},
+		{Id: "__keynote__", Update: updateSurvey},
+		{Id: "random", Update: updateSurvey},
 	})
 	if err != nil {
 		t.Fatal(err)
