@@ -176,41 +176,45 @@ Fired when the user toggles bookmarking/removing a session.
 
     <div class="filters__panel" filtering$="[[_isFiltering(filters.length)]]"
          showfilters$="[[showFilters]]">
-      <div id="filters" class="card-content bg-bluegrey-50-40" layout horizontal justified>
-        <iron-icon class="filters_toggle_button" icon="io:filter-list"
-            aria-label="Filter list" on-tap="toggleFilters"></iron-icon>
-        <div class="filter-section">
-          <h4>Tracks</h4>
-          <paper-radio-group allow-empty-selection
-                             on-paper-radio-group-changed="onApplyFilter"
-                             on-iron-deselect="onApplyFilter">
-            <template is="dom-repeat" items="[[sessionThemes]]" as="theme">
-              <paper-radio-button name="[[theme]]">[[theme]]</paper-radio-button>
-            </template>
-          </paper-radio-group>
+      <div id="filters" class="card-content bg-bluegrey-50-40">
+        <div id="filters-layout" layout horizontal justified>
+          <iron-icon class="filters_toggle_button" icon="io:filter-list"
+              aria-label="Filter list" on-tap="toggleFilters"></iron-icon>
+          <div class="filter-section">
+            <h4>Tracks</h4>
+            <paper-radio-group allow-empty-selection
+                               on-paper-radio-group-changed="onApplyFilter"
+                               on-iron-deselect="onApplyFilter">
+              <template is="dom-repeat" items="[[sessionThemes]]" as="theme">
+                <paper-radio-button name="[[theme]]">[[theme]]</paper-radio-button>
+              </template>
+            </paper-radio-group>
+          </div>
+          <div class="filter-section">
+            <h4>Types</h4>
+            <paper-checkbox id="liveStreamFilter" name="Live streamed"
+                on-tap="onLiveSessionsFilters">Live streamed</paper-checkbox>
+            <paper-radio-group allow-empty-selection
+                               on-paper-radio-group-changed="onApplyFilter"
+                               on-iron-deselect="onApplyFilter">
+              <template is="dom-repeat" items="[[sessionTypes]]" as="type">
+                <paper-radio-button name="[[type]]">[[type]]</paper-radio-button>
+              </template>
+            </paper-radio-group>
+          </div>
+          <div class="filter-section filter-section--types" relative>
+            <h4>Tracks</h4>
+            <paper-radio-group allow-empty-selection
+                               on-paper-radio-group-changed="onApplyFilter"
+                               on-iron-deselect="onApplyFilter">
+              <template is="dom-repeat" items="[[sessionTopics]]" as="track">
+                <paper-radio-button name="[[track]]">[[track]]</paper-radio-button>
+              </template>
+            </paper-radio-group>
+          </div>
         </div>
-        <div class="filter-section">
-          <h4>Types</h4>
-          <paper-checkbox id="liveStreamFilter" name="Live streamed"
-              on-tap="onLiveSessionsFilters">Live streamed</paper-checkbox>
-          <paper-radio-group allow-empty-selection
-                             on-paper-radio-group-changed="onApplyFilter"
-                             on-iron-deselect="onApplyFilter">
-            <template is="dom-repeat" items="[[sessionTypes]]" as="type">
-              <paper-radio-button name="[[type]]">[[type]]</paper-radio-button>
-            </template>
-          </paper-radio-group>
-        </div>
-        <div class="filter-section filter-section--types" relative>
-          <h4>Tracks</h4>
+        <div class="filter-section--clear-wrapper">
           <a href="#" class="filter-section--clearall" on-click="clearFilters">Clear all</a>
-          <paper-radio-group allow-empty-selection
-                             on-paper-radio-group-changed="onApplyFilter"
-                             on-iron-deselect="onApplyFilter">
-            <template is="dom-repeat" items="[[sessionTopics]]" as="track">
-              <paper-radio-button name="[[track]]">[[track]]</paper-radio-button>
-            </template>
-          </paper-radio-group>
         </div>
       </div>
     </div>
