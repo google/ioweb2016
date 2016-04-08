@@ -36,7 +36,6 @@ $color-section-border: #eaeaea;
 
 #sessionDetails {
   max-width: $tablet-breakpoint-min;
-  position: fixed;
 }
 
 #sessionDetails {
@@ -240,6 +239,7 @@ $color-section-border: #eaeaea;
     left: 0 !important;
     top: 0 !important;
     width: 100%;
+    position: fixed !important;
   }
 }
 
