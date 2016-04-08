@@ -4,14 +4,37 @@
 @import '../styles/components/_card';
 
 :host {
-  color: rgba(0,0,0,0.54);
+  color: $color-text;
 }
 
 .lpadding {
   padding: 40px;
 }
 
-survey-rating {
+#content {
+  width: 640px;
+}
+
+.label {
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.margin-b-20 {
+  margin-bottom: 20px;
+}
+
+.hint {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.margin-t-10 {
+  margin-top: 10px;
+}
+
+.border-bottom {
   display: block;
   border-bottom: 1px solid $color-grey-300;
 }
@@ -19,6 +42,11 @@ survey-rating {
 #dialogSurvey {
   max-width: $tablet-breakpoint-min;
   position: fixed;
+}
+
+.margin-v-10 {
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .rate__icon {
