@@ -1,0 +1,45 @@
+@import '_elements';
+
+@import '../styles/components/_app';
+@import '../styles/components/_card';
+
+:host {
+  color: rgba(0,0,0,0.54);
+}
+
+.lpadding {
+  padding: 40px;
+}
+
+survey-rating {
+  display: block;
+  border-bottom: 1px solid $color-grey-300;
+}
+
+#dialogSurvey {
+  max-width: $tablet-breakpoint-min;
+  position: fixed;
+}
+
+.rate__icon {
+  color: #fff;
+  padding: 0;
+  --iron-icon-stroke-color: $color-text;
+  width: 40px;
+  height: 40px;
+  transition: background-color .3s linear .1s, color .3s linear .1s;
+  border-radius: 50%;
+
+  &.selected {
+    color: $color-bluegrey-700;
+  }
+}
+
+@media (max-width: $phone-breakpoint-max) {
+  #dialogSurvey {
+    margin: 0;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100%;
+  }
+}
