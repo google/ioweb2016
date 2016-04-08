@@ -259,7 +259,7 @@ $filterBannerHeight: 72px;
 
 paper-radio-button {
   display: block;
-  padding: $mobileKeyline/2 0;
+  padding: $mobileKeyline/4 0;
 }
 
 @media (max-width: $phone-breakpoint-max) {
@@ -317,7 +317,7 @@ paper-radio-button {
     .filters_toggle_button {
       display: inline-block;
       position: absolute;
-      top: 10px;
+      top: 15px;
       right: $mobileKeyline;
       z-index: 1;
     }
@@ -374,10 +374,18 @@ paper-radio-button {
   }
 
   .filter-section {
+    flex-grow: 1;
+    margin-left: 40px;
+
+    &:first-of-type {
+      margin-left: 0;
+    }
+
     h4 {
       border-bottom: 1px solid $color-bluegrey-100;
-      padding-bottom: $mobileKeyline / 2;
+      font-weight: 500;
       margin-bottom: $mobileKeyline;
+      padding-bottom: $mobileKeyline / 2;
     }
   }
 
