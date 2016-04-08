@@ -12,51 +12,205 @@ limitations under the License.
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
-<link rel="import" href="../bower_components/neon-animation/animations/scale-up-animation.html">
-<link rel="import" href="../bower_components/neon-animation/animations/fade-out-animation.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
-
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="shared-app-styles.html">
 
 <dom-module id="io-survey">
+  <link rel="import" type="css" href="io-survey.css">
   <template>
     <style include="shared-app-styles">
-
     </style>
-    <paper-dialog id="dialog" modal
+    <paper-dialog id="dialogSurvey"
+                  with-backdrop
+                  restore-focus-on-close
+                  no-auto-focus
                   entry-animation="scale-up-animation"
                   exit-animation="fade-out-animation">
-      <section id="header">
-        <h2>Rate this Session</h2>
-        <h3>[[session.title]]</h3>
-        <span>[[_getSpeakers(session.speakers, app.scheduleData.speakers)]]</span>
-      </section>
-      <section id="body"></section>
+      <paper-dialog-scrollable class="bg-bluegrey-50-20">
+
+        <div id="content">
+          <section id="header" class="bg-cyan-200 lpadding">
+            <h2>Rate this Session</h2>
+            <h3>[[session.title]]</h3>
+            <span>[[_sessionSpeakers]]</span>
+          </section>
+          <section id="body" >
+            <template is="dom-repeat" items="[[surveyQuestions]]" as="question">
+              <survey-rating id=[[question.id]]
+                             selected={{question.value}}
+                             question="[[question]]"
+                             class="lpadding"></survey-rating>
+            </template>
+            <paper-input no-label-float="[[!app.isPhoneSize]]"
+                         always-float-label="[[app.isPhoneSize]]"
+                         label="Anything else we should know? (optional)"
+                         class="lpadding"></paper-input>
+          </section>
+        </div>
+      </paper-dialog-scrollable>
+      <div class="buttons">
+        <paper-button dialog-dismiss>Cancel</paper-button>
+        <paper-button dialog-confirm>Submit</paper-button>
+      </div>
     </paper-dialog>
   </template>
   <script>
-    (function() {
+    (function () {
       'use strict';
       Polymer({
         is: 'io-survey',
         properties: {
           session: {
             type: Object,
-            value: function() { return {}; }
+            observer: '_computeSpeakers',
+            value: function () {
+              return {};
+            }
+          },
+          app: {
+            type: Object,
+            value: function () {
+              return {};
+            }
+          },
+          surveyQuestions: {
+            type: Array,
+            value: function() {
+              return[{
+                id: 'relevance',
+                labelText: 'How relevant was this session to your projects?',
+                hintMin: 'Not at all',
+                hintMax: 'Extremely'
+              }, {
+                id: 'content',
+                labelText: 'The content was:',
+                hintMin: 'Too basic',
+                hintMax: 'Too advanced'
+              }, {
+                id: 'speaker',
+                labelText: 'The speaker was:',
+                hintMin: 'Poor',
+                hintMax: 'Outstanding'
+              }];
+            }
+          },
+          _sessionSpeakers: {
+            type: String,
+            notify: false
           }
         },
         open: function() {
-          this.$.dialog.open();
+          this.$.dialogSurvey.open();
         },
-        _getSpeakers: function(speakerIds, speakerHash) {
-          var speakerString = 'by ';
-          if (speakerIds && speakerHash) {
-            for (let i = 0; i < speakerIds.length - 1, i ++;) {
+        _computeSpeakers: function (session) {
+          if (session && session.speakers && this.app.scheduleData) {
+            var speakerString = 'by ';
+            var speakerIds = session.speakers;
+            var speakerHash = this.app.scheduleData.speakers;
+
+
+            for (let i = 0; i < speakerIds.length - 1, i++;) {
               speakerString += speakerHash[speakerId[i]] + ', ';
             }
-            return speakerString.slice(0, speakerString.length - 2)
-                + ' & ' + speakerHash[speakerId[speakerId.length - 1]];
+            this._sessionSpeakers = speakerString.slice(0, speakerString.length - 2)
+              + ' & ' + speakerHash[speakerId[speakerId.length - 1]];
+          }
+        }
+      });
+    })();
+  </script>
+</dom-module>
+
+<dom-module id="survey-rating">
+  <link rel="import" type="css" href="io-survey.css">
+  <template>
+    <style include="shared-app-styles">
+    </style>
+    <label>[[question.labelText]]</label>
+    <div id="rating">
+      <paper-icon-button value="1" icon="stars" class="rate__icon"
+                         on-mouseover="_mouseOverHandler"
+                         on-mouseout="_mouseOutHandler"
+                         on-click="_selectValue"></paper-icon-button>
+      <paper-icon-button value="2" icon="stars" class="rate__icon"
+                         on-mouseover="_mouseOverHandler"
+                         on-mouseout="_mouseOutHandler"
+                         on-click="_selectValue"></paper-icon-button>
+      <paper-icon-button value="3" icon="stars" class="rate__icon"
+                         on-mouseover="_mouseOverHandler"
+                         on-mouseout="_mouseOutHandler"
+                         on-click="_selectValue"></paper-icon-button>
+      <paper-icon-button value="4" icon="stars" class="rate__icon"
+                         on-mouseover="_mouseOverHandler"
+                         on-mouseout="_mouseOutHandler"
+                         on-click="_selectValue"></paper-icon-button>
+      <paper-icon-button value="5" icon="stars" class="rate__icon"
+                         on-mouseover="_mouseOverHandler"
+                         on-mouseout="_mouseOutHandler"
+                         on-click="_selectValue"></paper-icon-button>
+    </div>
+    <div class="rate__hint" layout horizontal justified>
+      <span>[[question.hintMin]]</span>
+      <span>[[question.hintMax]]</span>
+    </div>
+  </template>
+  <script>
+    (function() {
+      'use strict';
+      Polymer({
+        is: 'survey-rating',
+        properties: {
+          selected: {
+            type: Number,
+            notify: true
+          },
+          question: {
+            type: Object,
+            value: function() {
+              return {};
+            }
+          }
+        },
+        _mouseOverHandler: function(event) {
+          var elementIndex = event.currentTarget.getAttribute('value');
+          if (this.selected && this.selected > elementIndex) {
+            this._deselectElements(elementIndex, this.selected);
+          } else {
+            this._selectElements(0, elementIndex);
+          }
+        },
+        _mouseOutHandler: function(event) {
+          var elementIndex = event.currentTarget.getAttribute('value');
+          if (!this.selected) {
+            this._deselectElements(0, elementIndex);
+          } else if (this.selected && elementIndex > this.selected) {
+            this._deselectElements(this.selected, elementIndex);
+          } else if (this.selected && this.selected > elementIndex) {
+            this._selectElements(elementIndex, this.selected);
+          }
+        },
+        _selectElements: function(start, end) {
+          var elements = this.$.rating.children;
+          for (var i = start; i < end; i++) {
+            elements[i].classList.add('selected');
+          }
+        },
+        _deselectElements: function(start, end) {
+          var elements = this.$.rating.children;
+          for (var i = start; i < end; i++) {
+            elements[i].classList.remove('selected');
+          }
+        },
+        _selectValue: function(event) {
+          var elementIndex = parseInt(event.currentTarget.getAttribute('value'), 10);
+          if (elementIndex !== this.selected) {
+            this.selected = elementIndex;
+          } else {
+            this.selected = null;
           }
         }
       });

@@ -22,9 +22,14 @@ limitations under the License.
 <link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
 <link rel="import" href="../bower_components/paper-radio-button/paper-radio-button.html">
 <link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+
+<link rel="import" href="../bower_components/neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="../bower_components/neon-animation/animations/fade-out-animation.html">
 
 <link rel="import" href="io-session-details.html">
-
+<link rel="import" href="io-survey.html">
 <link rel="import" href="UtilBehavior.html">
 <link rel="import" href="shared-app-styles.html">
 
@@ -33,6 +38,7 @@ limitations under the License.
 <link rel="import" type="css" href="io-schedule.css">
 <template>
   <style include="shared-app-styles"></style>
+
   <div layout horizontal
        class$="[[_addClass('session-block', session.firstOfBlock)]]">
     <div class="schedule-block-title">
@@ -173,7 +179,10 @@ Fired when the user toggles bookmarking/removing a session.
         --primary-text-color: inherit;
       }
     </style>
-
+    <io-survey id="ioSurvey"
+               app="[[app]]"
+               session="[[selectedSession]]"></io-survey>
+    <button on-click="showSurvey">Show Survey</button>
     <div class="filters__panel" filtering$="[[_isFiltering(filters.length)]]"
          showfilters$="[[showFilters]]">
       <div id="filters" class="card-content bg-bluegrey-50-40">
@@ -754,6 +763,10 @@ Fired when the user toggles bookmarking/removing a session.
 
         _isFiltering: function(filtersLen) {
           return filtersLen > 0;
+        },
+
+        showSurvey: function() {
+          this.$.ioSurvey.open();
         }
 
       });
