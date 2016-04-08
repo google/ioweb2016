@@ -488,6 +488,7 @@ Fired when the user toggles bookmarking/removing a session.
           this.clearFilters(e);
           this.filters = [detail.tag];
           this.selectedSession = null;
+          this._updateFilterRadioButtons();
         },
 
         onLiveSessionsFilters: function(e) {
