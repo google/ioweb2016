@@ -114,10 +114,10 @@ limitations under the License.
 
 
             for (let i = 0; i < speakerIds.length - 1, i++;) {
-              speakerString += speakerHash[speakerId[i]] + ', ';
+              speakerString += speakerHash[speakerIds[i]] + ', ';
             }
             this._sessionSpeakers = speakerString.slice(0, speakerString.length - 2)
-              + ' & ' + speakerHash[speakerId[speakerId.length - 1]];
+              + ' & ' + speakerHash[speakerIds[speakerIds.length - 1]];
           }
         }
       });

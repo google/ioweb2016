@@ -107,6 +107,7 @@ limitations under the License.
             </template>
           </div>
 
+          <paper-button on-click="_openSurvey" raised>Rate Session</paper-button>
           <paper-menu-button class="session__social"
                              on-iron-activate="openShareWindow"
                              on-iron-overlay-opened="noop"
@@ -469,6 +470,10 @@ limitations under the License.
       // Panel is already open, but force the event handler so the pushState
       // and other code runs.
       this._onSessionDetailsOpen();
+    },
+
+    _openSurvey: function() {
+      this.fire('open-survey');
     },
 
     noop: function(e) {
