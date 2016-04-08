@@ -182,7 +182,6 @@ Fired when the user toggles bookmarking/removing a session.
     <io-survey id="ioSurvey"
                app="[[app]]"
                session="[[selectedSession]]"></io-survey>
-    <button on-click="showSurvey">Show Survey</button>
     <div class="filters__panel" filtering$="[[_isFiltering(filters.length)]]"
          showfilters$="[[showFilters]]">
       <div id="filters" class="card-content bg-bluegrey-50-40">
@@ -229,7 +228,8 @@ Fired when the user toggles bookmarking/removing a session.
     </div>
 
     <div class$="[[_addClass('has-filtering-banner', filters.length)]]"
-         on-session-bookmark="_onToggleSaveSession" relative>
+         on-session-bookmark="_onToggleSaveSession"
+         on-open-survey="_openSurvey" relative>
 
       <io-session-details id="sessionDetails"
                           selected-session="{{selectedSession}}"
@@ -765,7 +765,7 @@ Fired when the user toggles bookmarking/removing a session.
           return filtersLen > 0;
         },
 
-        showSurvey: function() {
+        _openSurvey: function() {
           this.$.ioSurvey.open();
         }
 
