@@ -170,10 +170,15 @@ paper-tabs {
   & > .profilepic {
     margin-left: $mobileKeyline / 2;
   }
+
+  & > paper-menu-button > iron-dropdown {
+    max-width: 90%;
+  }
 }
 
 #signin-settings-panel {
   width: 344px;
+  max-width: 100%;
   color: $color-text;
   font-size: 14px;
   line-height: 18px;
