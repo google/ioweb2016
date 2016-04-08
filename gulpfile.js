@@ -491,7 +491,7 @@ gulp.task('deploy:firebaserules', 'Deploys the Firebase security rules', functio
   return firebaseAppsUrls.reduce(function(task, firebaseUrl) {
     var appId = firebaseUrl.replace('https://', '').replace('.firebaseio.com/', '');
     return task.pipe($.shell('node_modules/.bin/firebase deploy:rules -f ' + appId));
-  }, gulp.src('').pipe($.shell('node_modules/.bin/firebase login --non-interactive')));
+  }, gulp.src('').pipe($.shell('node_modules/.bin/firebase login --interactive')));
 }, {
   options: {
     env: 'App environment: "dev", "stage" or "prod". Defaults to "dev".'
