@@ -41,28 +41,29 @@ limitations under the License.
     }
   </style>
 
-  <div id="iolive" class="show" fit>
-    <io-live class="bg-bluegrey-700"
-             mode="{{liveModuleMode}}" date="[[date]]"
-             sessions="[[app.scheduleData.sessions]]"
-             speakers="[[app.scheduleData.speakers]]"
-             user-sessions="{{app.savedSessions}}"
-             social-posts="[[socialPosts]]"
-             live-stream-channel-ids="[[liveStreamChannelIds]]"
-             auto-open-fab="[[app.pageTransitionDone]]" fit>
-      <h2>I/O is starting soon. #io16</h2>
-    </io-live>
-  </div>
+  <io-live id="iolive"
+           mode="{{liveModuleMode}}"
+           date="[[date]]"
+           sessions="[[app.scheduleData.sessions]]"
+           speakers="[[app.scheduleData.speakers]]"
+           user-sessions="[[app.savedSessions]]"
+           social-posts="[[socialPosts]]"
+           live-stream-channel-ids="[[liveStreamChannelIds]]"
+           auto-open-fab="[[app.pageTransitionDone]]"
+           on-countdown-intro="_onIntro"
+           fit>
+    <h2>I/O is starting soon. #io16</h2>
+  </io-live>
 
-
-  <div layout horizontal end>
+  <!-- TODO: comment out when io-live is up. -->
+  <!-- <div layout horizontal end>
     <div id="countdown-container" class="card__container">
       <countdown-timer id="ctimer" date="[[date]]"
           role="timer"
           on-countdown-intro="_onIntro"
           current-time="{{currentTime}}"></countdown-timer>
     </div>
-  </div>
+  </div> -->
 
   <div id="aria-countdown" role="timer"
        aria-label$="[[currentTime]]">[[currentTime]]</div>
@@ -308,7 +309,12 @@ limitations under the License.
     },
 
     onPageTransitionDone: function() {
-      this.$.ctimer.start(); // Start countdown.
+      if (this.$.ctimer) {
+        this.$.ctimer.start(); // Start countdown.
+      }
+      if (this.$.iolive) {
+        this.$.iolive.startCountdown(); // Start io-live's countdown.
+      }
 
       this.startTweetCycler();
 
@@ -348,11 +354,13 @@ limitations under the License.
     },
 
     _onPageScroll: function() {
-      this.$.ctimer.stop();
+      if (this.$.ctimer) {
+        this.$.ctimer.stop();
 
-      this.debounce('enablecountdown', function() {
-        this.$.ctimer.start();
-      }, 250);
+        this.debounce('enablecountdown', function() {
+          this.$.ctimer.start();
+        }, 250);
+      }
     },
 
     _computeLoadVideo: function(isDesktopSize, pageTransitionDone, scrolledEnough) {
