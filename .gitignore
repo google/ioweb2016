@@ -15,7 +15,6 @@ app/elements/**/*.css
 app/experiment
 
 # backend stuff, keys
-backend/bin
 backend/app.yaml
 backend/cron.yaml
 backend/.gae_datastore

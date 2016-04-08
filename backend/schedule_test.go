@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package backend
 
 import (
 	"reflect"
@@ -203,16 +203,16 @@ func TestScheduleLiveIDs(t *testing.T) {
 
 	c := newContext(newTestRequest(t, "GET", "/dummy", nil))
 	if err := storeEventData(c, &eventData{Sessions: map[string]*eventSession{
-		"live2":      &eventSession{StartTime: now, IsLive: true, YouTube: "live2", Desc: "... channel 2"},
-		"random":     &eventSession{StartTime: now, IsLive: false, YouTube: "random"},
-		"live1":      &eventSession{StartTime: now, IsLive: true, YouTube: "live1", Desc: "... channel 1"},
-		"live2.2":    &eventSession{StartTime: now, IsLive: true, YouTube: "live2", Desc: "... channel 2"},
-		"live3":      &eventSession{StartTime: now, IsLive: true, YouTube: "live3", Desc: "... channel 3"},
-		"no-channel": &eventSession{StartTime: now, IsLive: true, YouTube: "live4"},
-		keynoteID:    &eventSession{StartTime: now, IsLive: true, YouTube: "keynote"},
-		"live1-2":    &eventSession{StartTime: tomorrow, IsLive: true, YouTube: "live1-2", Desc: "... channel 1"},
-		"live2-2":    &eventSession{StartTime: tomorrow, IsLive: true, YouTube: "live2-2", Desc: "... channel 2"},
-		"live3-2":    &eventSession{StartTime: tomorrow, IsLive: true, YouTube: "live3-2", Desc: "... channel 3"},
+		"live2":      {StartTime: now, IsLive: true, YouTube: "live2", Desc: "... channel 2"},
+		"random":     {StartTime: now, IsLive: false, YouTube: "random"},
+		"live1":      {StartTime: now, IsLive: true, YouTube: "live1", Desc: "... channel 1"},
+		"live2.2":    {StartTime: now, IsLive: true, YouTube: "live2", Desc: "... channel 2"},
+		"live3":      {StartTime: now, IsLive: true, YouTube: "live3", Desc: "... channel 3"},
+		"no-channel": {StartTime: now, IsLive: true, YouTube: "live4"},
+		keynoteID:    {StartTime: now, IsLive: true, YouTube: "keynote"},
+		"live1-2":    {StartTime: tomorrow, IsLive: true, YouTube: "live1-2", Desc: "... channel 1"},
+		"live2-2":    {StartTime: tomorrow, IsLive: true, YouTube: "live2-2", Desc: "... channel 2"},
+		"live3-2":    {StartTime: tomorrow, IsLive: true, YouTube: "live3-2", Desc: "... channel 3"},
 	}}); err != nil {
 		t.Fatal(err)
 	}

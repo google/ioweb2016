@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package backend
 
 import (
 	"testing"
@@ -76,7 +76,7 @@ func TestStoreGetChanges(t *testing.T) {
 	if err := storeChanges(c, &dataChanges{
 		Updated: oneTime,
 		eventData: eventData{
-			Sessions: map[string]*eventSession{"one": &eventSession{}},
+			Sessions: map[string]*eventSession{"one": {}},
 		},
 	}); err != nil {
 		t.Fatal(err)
@@ -85,8 +85,8 @@ func TestStoreGetChanges(t *testing.T) {
 		Updated: twoTime,
 		eventData: eventData{
 			Sessions: map[string]*eventSession{
-				"two":   &eventSession{},
-				"three": &eventSession{},
+				"two":   {},
+				"three": {},
 			},
 		},
 	}); err != nil {
@@ -126,9 +126,9 @@ func TestStoreNextSessions(t *testing.T) {
 
 	c := newContext(newTestRequest(t, "GET", "/dummy", nil))
 	sessions := []*eventSession{
-		&eventSession{Id: "one", Update: updateSoon},
-		&eventSession{Id: "one", Update: updateStart},
-		&eventSession{Id: "two", Update: updateStart},
+		{Id: "one", Update: updateSoon},
+		{Id: "one", Update: updateStart},
+		{Id: "two", Update: updateStart},
 	}
 	if err := storeNextSessions(c, sessions); err != nil {
 		t.Fatal(err)
