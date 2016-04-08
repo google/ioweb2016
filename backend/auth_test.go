@@ -26,7 +26,6 @@ import (
 )
 
 func TestVerifyBearerToken(t *testing.T) {
-	defer resetTestState(t)
 	defer preserveConfig()()
 	const (
 		token  = "fake-token"
@@ -60,7 +59,7 @@ func TestVerifyBearerToken(t *testing.T) {
 		config.Google.Auth.Client = client
 		config.Google.VerifyURL = ts.URL
 
-		r := newTestRequest(t, "GET", "/", nil)
+		r, _ := aetestInstance.NewRequest("GET", "/", nil)
 		uid, err := verifyBearerToken(newContext(r), token)
 
 		switch {
@@ -76,7 +75,6 @@ func TestVerifyBearerToken(t *testing.T) {
 
 func TestVerifyIDToken(t *testing.T) {
 	// TODO: test for invalid claims, e.g. iss, aud, azp, exp.
-	defer resetTestState(t)
 	defer preserveConfig()()
 	const certID = "test-cert"
 	key, cert := jwsTestKey(time.Now(), time.Now().Add(24*time.Hour))
@@ -104,8 +102,7 @@ func TestVerifyIDToken(t *testing.T) {
 	defer ts.Close()
 	config.Google.CertURL = ts.URL
 
-	r := newTestRequest(t, "GET", "/", nil)
-	c := newContext(r)
+	c := newTestContext()
 	cache.flush(c)
 	uid, err := verifyIDToken(c, idToken)
 
@@ -142,7 +139,7 @@ func TestAuthUser(t *testing.T) {
 		config.Google.VerifyURL = test.verifyURL
 		config.Google.CertURL = test.certURL
 
-		c := newContext(newTestRequest(t, "GET", "/", nil))
+		c := newTestContext()
 		cache.flush(c)
 		c, err := authUser(c, test.token)
 
@@ -158,13 +155,9 @@ func TestAuthUser(t *testing.T) {
 }
 
 func TestTokenRefresher(t *testing.T) {
-	if !isGAEtest {
-		t.Skipf("not implemented yet; isGAEtest = %v", isGAEtest)
-	}
-	defer resetTestState(t)
 	defer preserveConfig()()
 
-	c := newContext(newTestRequest(t, "GET", "/", nil))
+	c := newTestContext()
 	cred := &oauth2Credentials{
 		userID:       "uid-123",
 		Expiry:       time.Now(),
@@ -228,11 +221,6 @@ func TestTokenRefresher(t *testing.T) {
 		t.Errorf("refresh never happened")
 	}
 
-	// TODO: remove when standalone DB is implemented
-	if !isGAEtest {
-		return
-	}
-
 	cred2, err := getCredentials(c, "uid-123")
 	if err != nil {
 		t.Fatal(err)
@@ -243,13 +231,9 @@ func TestTokenRefresher(t *testing.T) {
 }
 
 func TestTokenRefresherRevoked(t *testing.T) {
-	if !isGAEtest {
-		t.Skipf("not implemented yet; isGAEtest = %v", isGAEtest)
-	}
-	defer resetTestState(t)
 	defer preserveConfig()()
 
-	c := newContext(newTestRequest(t, "GET", "/", nil))
+	c := newTestContext()
 	cred := &oauth2Credentials{
 		userID:       "uid-123",
 		Expiry:       time.Now(),
@@ -283,8 +267,6 @@ func TestTokenRefresherRevoked(t *testing.T) {
 }
 
 func TestTokenRefresherMissing(t *testing.T) {
-	defer resetTestState(t)
-
 	cred := &oauth2Credentials{
 		userID:       "uid-123",
 		Expiry:       time.Now(),
@@ -292,7 +274,7 @@ func TestTokenRefresherMissing(t *testing.T) {
 		RefreshToken: "",
 	}
 
-	c := newContext(newTestRequest(t, "GET", "/dummy", nil))
+	c := newTestContext()
 	tok, err := cred.tokenSource(c).Token()
 
 	if err != errAuthMissing {

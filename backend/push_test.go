@@ -20,6 +20,7 @@ import (
 )
 
 func TestSWToken(t *testing.T) {
+	t.Parallel()
 	u1, t1 := "user-123", time.Now().AddDate(0, 0, -1)
 	token, err := encodeSWToken(u1, t1)
 	if err != nil {

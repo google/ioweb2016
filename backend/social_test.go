@@ -17,6 +17,7 @@ package backend
 import "testing"
 
 func TestIncludesWord(t *testing.T) {
+	t.Parallel()
 	filter := "#io15"
 	table := []struct {
 		in  string

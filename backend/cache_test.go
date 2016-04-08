@@ -22,6 +22,7 @@ import (
 )
 
 func TestMemoryCacheHit(t *testing.T) {
+	t.Parallel()
 	const (
 		key  = "test"
 		data = "dummy"
@@ -44,6 +45,7 @@ func TestMemoryCacheHit(t *testing.T) {
 }
 
 func TestMemoryCacheMiss(t *testing.T) {
+	t.Parallel()
 	const (
 		key  = "test"
 		data = "dummy"
@@ -64,6 +66,7 @@ func TestMemoryCacheMiss(t *testing.T) {
 }
 
 func TestMemoryCacheInc(t *testing.T) {
+	t.Parallel()
 	mc := newMemoryCache()
 	c := context.Background()
 
@@ -87,6 +90,7 @@ func TestMemoryCacheInc(t *testing.T) {
 }
 
 func TestMemoryCacheFlush(t *testing.T) {
+	t.Parallel()
 	mc := newMemoryCache()
 	c := context.Background()
 	err := mc.set(c, "key", []byte("data"), 1*time.Hour)

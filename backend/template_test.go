@@ -17,7 +17,7 @@ package backend
 import "testing"
 
 func TestRenderTemplate(t *testing.T) {
-	defer resetTestState(t)
+	t.Parallel()
 	table := []*struct {
 		tmpl    string
 		partial bool
@@ -28,8 +28,7 @@ func TestRenderTemplate(t *testing.T) {
 		{"about", true},
 	}
 	for i, test := range table {
-		r := newTestRequest(t, "GET", "/dummy", nil)
-		c := newContext(r)
+		c := newTestContext()
 		if _, err := renderTemplate(c, test.tmpl, test.partial, nil); err != nil {
 			t.Fatalf("%d: renderTemplate(%v, %q, %v): %v", i, c, test.tmpl, test.partial, err)
 		}
@@ -38,13 +37,12 @@ func TestRenderTemplate(t *testing.T) {
 
 // Disalbed until https://github.com/GoogleChrome/ioweb2016/issues/22 is fixed.
 //func TestRenderTemplateData(t *testing.T) {
-//	defer resetTestState(t)
 //	defer preserveConfig()()
 //	config.Env = "prod"
 //	config.Prefix = "/root"
 //	config.Google.Auth.Client = "dummy-client-id"
 //
-//	r := newTestRequest(t, "GET", "/about", nil)
+//	r, _ := aetestInstance.NewRequest("GET", "/about", nil)
 //	c := newContext(r)
 //
 //	data := &templateData{
