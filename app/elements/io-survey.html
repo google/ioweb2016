@@ -30,29 +30,29 @@ limitations under the License.
                   no-auto-focus
                   entry-animation="scale-up-animation"
                   exit-animation="fade-out-animation">
-      <paper-dialog-scrollable class="bg-bluegrey-50-20">
+      <paper-dialog-scrollable class="card-content bg-bluegrey-50-20">
 
         <div id="content">
           <section id="header" class="bg-cyan-200 lpadding">
-            <h2>Rate this Session</h2>
+            <h1>Rate this Session</h1>
             <h3>[[session.title]]</h3>
-            <span>[[_sessionSpeakers]]</span>
+            <h5 class="label">[[_sessionSpeakers]]</h5>
           </section>
           <section id="body" >
             <template is="dom-repeat" items="[[surveyQuestions]]" as="question">
               <survey-rating id=[[question.id]]
                              selected={{question.value}}
                              question="[[question]]"
-                             class="lpadding"></survey-rating>
+                             class="border-bottom lpadding"></survey-rating>
             </template>
             <paper-input no-label-float="[[!app.isPhoneSize]]"
                          always-float-label="[[app.isPhoneSize]]"
                          label="Anything else we should know? (optional)"
-                         class="lpadding"></paper-input>
+                         class="border-bottom lpadding"></paper-input>
           </section>
         </div>
       </paper-dialog-scrollable>
-      <div class="buttons">
+      <div class="buttons margin-v-10">
         <paper-button dialog-dismiss>Cancel</paper-button>
         <paper-button dialog-confirm>Submit</paper-button>
       </div>
@@ -130,8 +130,8 @@ limitations under the License.
   <template>
     <style include="shared-app-styles">
     </style>
-    <label>[[question.labelText]]</label>
-    <div id="rating">
+    <h5 class="label margin-b-20">[[question.labelText]]</h5>
+    <div id="rating" layout flex justified>
       <paper-icon-button value="1" icon="stars" class="rate__icon"
                          on-mouseover="_mouseOverHandler"
                          on-mouseout="_mouseOutHandler"
@@ -154,8 +154,8 @@ limitations under the License.
                          on-click="_selectValue"></paper-icon-button>
     </div>
     <div class="rate__hint" layout horizontal justified>
-      <span>[[question.hintMin]]</span>
-      <span>[[question.hintMax]]</span>
+      <span class="hint margin-t-10">[[question.hintMin]]</span>
+      <span class="hint margin-t-10">[[question.hintMax]]</span>
     </div>
   </template>
   <script>
