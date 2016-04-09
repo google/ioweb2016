@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package backend
 
 import (
 	"crypto/tls"
@@ -34,8 +34,8 @@ import (
 )
 
 func TestServeSocialStub(t *testing.T) {
-	defer resetTestState(t)
-	r := newTestRequest(t, "GET", "/api/v1/social", nil)
+	t.Parallel()
+	r, _ := aetestInstance.NewRequest("GET", "/api/v1/social", nil)
 	w := httptest.NewRecorder()
 	serveSocial(w, r)
 
@@ -49,11 +49,10 @@ func TestServeSocialStub(t *testing.T) {
 }
 
 func TestServeScheduleStub(t *testing.T) {
-	defer resetTestState(t)
 	defer preserveConfig()
 	config.Env = "dev"
 
-	r := newTestRequest(t, "GET", "/api/v1/schedule", nil)
+	r, _ := aetestInstance.NewRequest("GET", "/api/v1/schedule", nil)
 	w := httptest.NewRecorder()
 	serveSchedule(w, r)
 
@@ -65,7 +64,7 @@ func TestServeScheduleStub(t *testing.T) {
 		t.Fatalf("etag = %q; want non-empty", etag)
 	}
 
-	r = newTestRequest(t, "GET", "/api/v1/schedule", nil)
+	r, _ = aetestInstance.NewRequest("GET", "/api/v1/schedule", nil)
 	r.Header.Set("if-none-match", etag)
 	w = httptest.NewRecorder()
 	serveSchedule(w, r)
@@ -76,13 +75,9 @@ func TestServeScheduleStub(t *testing.T) {
 }
 
 func TestServeSchedule(t *testing.T) {
-	if !isGAEtest {
-		t.Skipf("not implemented yet; isGAEtest = %v", isGAEtest)
-	}
-	defer resetTestState(t)
 	defer preserveConfig()
 	config.Env = "prod"
-	r := newTestRequest(t, "GET", "/api/v1/schedule", nil)
+	r, _ := aetestInstance.NewRequest("GET", "/api/v1/schedule", nil)
 	c := newContext(r)
 
 	checkRes := func(n int, w *httptest.ResponseRecorder, code int, hasEtag bool) string {
@@ -144,7 +139,6 @@ func TestServeSchedule(t *testing.T) {
 }
 
 func TestServeTemplate(t *testing.T) {
-	defer resetTestState(t)
 	defer preserveConfig()()
 	const ctype = "text/html;charset=utf-8"
 	config.Prefix = "/root"
@@ -164,7 +158,7 @@ func TestServeTemplate(t *testing.T) {
 		{"/form", "form", "http://example.org/root/form"},
 	}
 	for i, test := range table {
-		r := newTestRequest(t, "GET", test.path, nil)
+		r, _ := aetestInstance.NewRequest("GET", test.path, nil)
 		r.Host = "example.org"
 		w := httptest.NewRecorder()
 		serveTemplate(w, r)
@@ -194,7 +188,6 @@ func TestServeTemplate(t *testing.T) {
 }
 
 func TestH2Preload(t *testing.T) {
-	defer resetTestState(t)
 	defer preserveConfig()()
 	// verify we have a h2preload config file
 	var err error
@@ -211,7 +204,7 @@ func TestH2Preload(t *testing.T) {
 	}
 	config.Prefix = "/root"
 
-	r := newTestRequest(t, "GET", "/", nil)
+	r, _ := aetestInstance.NewRequest("GET", "/", nil)
 	r.Host = "example.org"
 	w := httptest.NewRecorder()
 	serveTemplate(w, r)
@@ -233,13 +226,13 @@ func TestH2Preload(t *testing.T) {
 }
 
 func TestServeTemplateRedirect(t *testing.T) {
-	defer resetTestState(t)
+	t.Parallel()
 	table := []struct{ start, redirect string }{
 		{"/about/", "/about"},
 		{"/one/two/", "/one/two"},
 	}
 	for i, test := range table {
-		r := newTestRequest(t, "GET", test.start, nil)
+		r, _ := aetestInstance.NewRequest("GET", test.start, nil)
 		w := httptest.NewRecorder()
 		serveTemplate(w, r)
 
@@ -254,8 +247,8 @@ func TestServeTemplateRedirect(t *testing.T) {
 }
 
 func TestServeTemplate404(t *testing.T) {
-	defer resetTestState(t)
-	r := newTestRequest(t, "GET", "/a-thing-that-is-not-there", nil)
+	t.Parallel()
+	r, _ := aetestInstance.NewRequest("GET", "/a-thing-that-is-not-there", nil)
 	w := httptest.NewRecorder()
 	serveTemplate(w, r)
 	if w.Code != http.StatusNotFound {
@@ -271,14 +264,11 @@ func TestServeTemplate404(t *testing.T) {
 }
 
 func TestServeSessionTemplate(t *testing.T) {
-	if !isGAEtest {
-		t.Skipf("not implemented yet; isGAEtest = %v", isGAEtest)
-	}
+	t.Parallel()
 	defer resetTestState(t)
-
-	c := newContext(newTestRequest(t, "GET", "/dummmy", nil))
+	c := newContext(newTestRequest(t, "GET", "/", nil))
 	if err := storeEventData(c, &eventData{Sessions: map[string]*eventSession{
-		"123": &eventSession{
+		"123": {
 			Title: "Session",
 			Desc:  "desc",
 			Photo: "http://image.jpg",
@@ -326,9 +316,6 @@ func TestServeSessionTemplate(t *testing.T) {
 }
 
 func TestServeEmbed(t *testing.T) {
-	if !isGAEtest {
-		t.Skipf("not implemented yet; isGAEtest = %v", isGAEtest)
-	}
 	defer resetTestState(t)
 	defer preserveConfig()()
 
@@ -342,24 +329,24 @@ func TestServeEmbed(t *testing.T) {
 	c := newContext(r)
 
 	if err := storeEventData(c, &eventData{Sessions: map[string]*eventSession{
-		"live": &eventSession{
+		"live": {
 			StartTime: now,
 			IsLive:    true,
 			YouTube:   "live",
 			Desc:      "Channel 1",
 		},
-		"recorded": &eventSession{
+		"recorded": {
 			StartTime: now,
 			IsLive:    false,
 			YouTube:   "http://recorded",
 			Desc:      "Channel 1",
 		},
-		keynoteID: &eventSession{
+		keynoteID: {
 			StartTime: now,
 			IsLive:    true,
 			YouTube:   "keynote",
 		},
-		"same-live": &eventSession{
+		"same-live": {
 			StartTime: now,
 			IsLive:    true,
 			YouTube:   "live",
@@ -392,17 +379,14 @@ func TestServeEmbed(t *testing.T) {
 }
 
 func TestServeSitemap(t *testing.T) {
-	if !isGAEtest {
-		t.Skipf("not implemented yet; isGAEtest = %v", isGAEtest)
-	}
 	defer resetTestState(t)
 	defer preserveConfig()()
 
-	c := newContext(newTestRequest(t, "GET", "/dummmy", nil))
+	c := newContext(newTestRequest(t, "GET", "/", nil))
 	if err := storeEventData(c, &eventData{
 		modified: time.Now(),
 		Sessions: map[string]*eventSession{
-			"123": &eventSession{Id: "123"},
+			"123": {Id: "123"},
 		},
 	}); err != nil {
 		t.Fatal(err)
@@ -456,7 +440,7 @@ func TestServeManifest(t *testing.T) {
 	defer preserveConfig()()
 	config.Google.GCM.Sender = "sender-123"
 
-	r := newTestRequest(t, "GET", "/manifest.json", nil)
+	r, _ := http.NewRequest("GET", "/manifest.json", nil)
 	w := httptest.NewRecorder()
 	serveManifest(w, r)
 	if w.Code != http.StatusOK {
@@ -480,7 +464,7 @@ func TestHandleAuth(t *testing.T) {
 		token            string
 		doExchange       bool
 		exchangeRespCode int
-		success          bool
+		wantOK           bool
 	}{
 		{"valid", true, http.StatusOK, true},
 		{"valid", true, http.StatusBadRequest, false},
@@ -533,9 +517,9 @@ func TestHandleAuth(t *testing.T) {
 		cache.flush(c)
 		handleAuth(w, r)
 
-		if test.success && w.Code != http.StatusOK {
+		if test.wantOK && w.Code != http.StatusOK {
 			t.Errorf("%d: code = %d; want 200\nbody: %s", i, w.Code, w.Body.String())
-		} else if !test.success && w.Code == http.StatusOK {
+		} else if !test.wantOK && w.Code == http.StatusOK {
 			t.Errorf("%d: code = 200; want > 399\nbody: %s", i, w.Body)
 		}
 
@@ -550,8 +534,7 @@ func TestHandleAuth(t *testing.T) {
 			}
 		}
 
-		// TODO: remove !isGAEtest when standalone DB is implemented
-		if !test.success || !isGAEtest {
+		if !test.wantOK {
 			continue
 		}
 
@@ -573,7 +556,6 @@ func TestHandleAuth(t *testing.T) {
 }
 
 func TestHandleAuthNoRefresh(t *testing.T) {
-	defer resetTestState(t)
 	defer preserveConfig()()
 
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -587,7 +569,7 @@ func TestHandleAuthNoRefresh(t *testing.T) {
 	defer ts.Close()
 	config.Google.TokenURL = ts.URL
 
-	r := newTestRequest(t, "POST", "/api/v1/auth", strings.NewReader(`{"code": "one-off"}`))
+	r, _ := aetestInstance.NewRequest("POST", "/api/v1/auth", strings.NewReader(`{"code": "one-off"}`))
 	r.Header.Set("Authorization", "Bearer "+testIDToken)
 	w := httptest.NewRecorder()
 
@@ -601,13 +583,10 @@ func TestHandleAuthNoRefresh(t *testing.T) {
 }
 
 func TestServeUserScheduleExpired(t *testing.T) {
-	if !isGAEtest {
-		t.Skipf("not implemented yet; isGAEtest = %v", isGAEtest)
-	}
-	defer resetTestState(t)
 	defer preserveConfig()()
 
-	c := newContext(newTestRequest(t, "GET", "/dummy", nil))
+	r, _ := aetestInstance.NewRequest("GET", "/dummy", nil)
+	c := newContext(r)
 	if err := storeCredentials(c, &oauth2Credentials{
 		userID:       testUserID,
 		Expiry:       time.Now().Add(-1 * time.Hour),
@@ -674,7 +653,7 @@ func TestServeUserScheduleExpired(t *testing.T) {
 	config.Google.Drive.Filename = "user_data.json"
 
 	w := httptest.NewRecorder()
-	r := newTestRequest(t, "GET", "/api/v1/user/schedule", nil)
+	r, _ = aetestInstance.NewRequest("GET", "/api/v1/user/schedule", nil)
 	r.Header.Set("Authorization", "Bearer "+testIDToken)
 
 	handleUserSchedule(w, r)
@@ -706,10 +685,6 @@ func TestServeUserScheduleExpired(t *testing.T) {
 }
 
 func TestHandleUserSchedulePut(t *testing.T) {
-	if !isGAEtest {
-		t.Skipf("not implemented yet; isGAEtest = %v", isGAEtest)
-	}
-	defer resetTestState(t)
 	defer preserveConfig()()
 
 	checkAutHeader := func(who, ah string) {
@@ -816,7 +791,7 @@ func TestHandleUserSchedulePut(t *testing.T) {
 	config.Google.Drive.UploadURL = up.URL + "/"
 	config.Google.Drive.Filename = "user_data.json"
 
-	c := newContext(newTestRequest(t, "GET", "/", nil))
+	c := newTestContext()
 	cred := &oauth2Credentials{
 		userID:      testUserID,
 		Expiry:      time.Now().Add(2 * time.Hour),
@@ -827,7 +802,7 @@ func TestHandleUserSchedulePut(t *testing.T) {
 	}
 
 	w := httptest.NewRecorder()
-	r := newTestRequest(t, "PUT", "/api/v1/user/schedule/new-session-id", strings.NewReader(""))
+	r, _ := aetestInstance.NewRequest("PUT", "/api/v1/user/schedule/new-session-id", strings.NewReader(""))
 	r.Header.Set("Authorization", "Bearer "+testIDToken)
 
 	handleUserSchedule(w, r)
@@ -863,9 +838,6 @@ func TestHandleUserSchedulePut(t *testing.T) {
 }
 
 func TestHandleUserScheduleDelete(t *testing.T) {
-	if !isGAEtest {
-		t.Skipf("not implemented yet; isGAEtest = %v", isGAEtest)
-	}
 	defer resetTestState(t)
 	defer preserveConfig()()
 
@@ -923,9 +895,9 @@ func TestHandleUserScheduleDelete(t *testing.T) {
 		t.Fatalf("storeCredentials: %v", err)
 	}
 
-	w := httptest.NewRecorder()
 	r := newTestRequest(t, "DELETE", "/api/v1/user/schedule/one-session", strings.NewReader(""))
 	r.Header.Set("Authorization", "Bearer "+testIDToken)
+	w := httptest.NewRecorder()
 
 	handleUserSchedule(w, r)
 
@@ -960,10 +932,6 @@ func TestHandleUserScheduleDelete(t *testing.T) {
 }
 
 func TestHandleUserScheduleConflict(t *testing.T) {
-	if !isGAEtest {
-		t.Skipf("not implemented yet; isGAEtest = %v", isGAEtest)
-	}
-	defer resetTestState(t)
 	defer preserveConfig()()
 
 	// drive search files server
@@ -1020,7 +988,7 @@ func TestHandleUserScheduleConflict(t *testing.T) {
 	config.Google.Drive.UploadURL = up.URL + "/"
 	config.Google.Drive.Filename = "user_data.json"
 
-	c := newContext(newTestRequest(t, "GET", "/", nil))
+	c := newTestContext()
 	if err := storeCredentials(c, &oauth2Credentials{
 		userID:      testUserID,
 		Expiry:      time.Now().Add(2 * time.Hour),
@@ -1036,7 +1004,7 @@ func TestHandleUserScheduleConflict(t *testing.T) {
 	}
 
 	w := httptest.NewRecorder()
-	r := newTestRequest(t, "PUT", "/api/v1/user/schedule", strings.NewReader(`["b", "c"]`))
+	r, _ := aetestInstance.NewRequest("PUT", "/api/v1/user/schedule", strings.NewReader(`["b", "c"]`))
 	r.Header.Set("Authorization", "Bearer "+testIDToken)
 
 	handleUserSchedule(w, r)
@@ -1069,9 +1037,6 @@ func TestHandleUserScheduleConflict(t *testing.T) {
 }
 
 func TestServeUserScheduleDefault(t *testing.T) {
-	if !isGAEtest {
-		t.Skipf("not implemented yet; isGAEtest = %v", isGAEtest)
-	}
 	defer resetTestState(t)
 	defer preserveConfig()()
 
@@ -1111,10 +1076,6 @@ func TestServeUserScheduleDefault(t *testing.T) {
 }
 
 func TestServeUserSurvey(t *testing.T) {
-	if !isGAEtest {
-		t.Skipf("not implemented yet; isGAEtest = %v", isGAEtest)
-	}
-	defer resetTestState(t)
 	defer preserveConfig()()
 
 	gdrive := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -1124,7 +1085,7 @@ func TestServeUserSurvey(t *testing.T) {
 	defer gdrive.Close()
 	config.Google.Drive.FilesURL = gdrive.URL
 
-	r := newTestRequest(t, "GET", "/api/v1/user/survey", nil)
+	r, _ := aetestInstance.NewRequest("GET", "/api/v1/user/survey", nil)
 	r.Header.Set("authorization", bearerHeader+testIDToken)
 	c := newContext(r)
 
@@ -1160,9 +1121,6 @@ func TestServeUserSurvey(t *testing.T) {
 }
 
 func TestSubmitUserSurvey(t *testing.T) {
-	if !isGAEtest {
-		t.Skipf("not implemented yet; isGAEtest = %v", isGAEtest)
-	}
 	defer resetTestState(t)
 	defer preserveConfig()()
 
@@ -1181,10 +1139,10 @@ func TestSubmitUserSurvey(t *testing.T) {
 		t.Fatal(err)
 	}
 	if err := storeEventData(c, &eventData{Sessions: map[string]*eventSession{
-		"ok":        &eventSession{Id: "ok", StartTime: time.Now().Add(-10 * time.Minute)},
-		"submitted": &eventSession{Id: "submitted", StartTime: time.Now().Add(-10 * time.Minute)},
-		"disabled":  &eventSession{Id: "disabled", StartTime: time.Now().Add(-10 * time.Minute)},
-		"too-early": &eventSession{Id: "too-early", StartTime: time.Now().Add(10 * time.Minute)},
+		"ok":        {Id: "ok", StartTime: time.Now().Add(-10 * time.Minute)},
+		"submitted": {Id: "submitted", StartTime: time.Now().Add(-10 * time.Minute)},
+		"disabled":  {Id: "disabled", StartTime: time.Now().Add(-10 * time.Minute)},
+		"too-early": {Id: "too-early", StartTime: time.Now().Add(10 * time.Minute)},
 	}}); err != nil {
 		t.Fatal(err)
 	}
@@ -1318,9 +1276,7 @@ func TestSubmitUserSurvey(t *testing.T) {
 }
 
 func TestGetUserDefaultPushConfig(t *testing.T) {
-	if !isGAEtest {
-		t.Skipf("not implemented yet; isGAEtest = %v", isGAEtest)
-	}
+	t.Parallel()
 	defer resetTestState(t)
 
 	w := httptest.NewRecorder()
@@ -1337,7 +1293,7 @@ func TestGetUserDefaultPushConfig(t *testing.T) {
 		t.Fatalf("json.Unmarshal: %v", err)
 	}
 	if v, ok := body["notify"].(bool); !ok || v != false {
-		t.Errorf("body.notify = %+v, ok = %v; want notify = false", body["notify"], ok)
+		t.Errorf("body.notify = %+v; want false", body["notify"])
 	}
 	if v := body["subscribers"]; v != nil {
 		t.Errorf("body.subscribers = %+v; want nil", v)
@@ -1348,9 +1304,6 @@ func TestGetUserDefaultPushConfig(t *testing.T) {
 }
 
 func TestStoreUserPushConfigV1(t *testing.T) {
-	if !isGAEtest {
-		t.Skipf("not implemented yet; isGAEtest = %v", isGAEtest)
-	}
 	defer resetTestState(t)
 	defer preserveConfig()()
 	config.Google.GCM.Endpoint = "https://gcm"
@@ -1385,11 +1338,8 @@ func TestStoreUserPushConfigV1(t *testing.T) {
 		}
 	}
 }
+
 func TestStoreUserPushConfigV2(t *testing.T) {
-	if !isGAEtest {
-		t.Skipf("not implemented yet; isGAEtest = %v", isGAEtest)
-	}
-	defer resetTestState(t)
 	defer preserveConfig()()
 
 	config.Google.GCM.Endpoint = "https://gcm"
@@ -1418,7 +1368,7 @@ func TestStoreUserPushConfigV2(t *testing.T) {
 	expected.Pext = &expected.Ext
 
 	w := httptest.NewRecorder()
-	r := newTestRequest(t, "PUT", "/api/v1/user/notify", body)
+	r, _ := aetestInstance.NewRequest("PUT", "/api/v1/user/notify", body)
 	r.Header.Set("Authorization", "Bearer "+testIDToken)
 
 	handleUserNotifySettings(w, r)
@@ -1457,9 +1407,6 @@ func TestStoreUserPushConfigV2(t *testing.T) {
 }
 
 func TestFirstSyncEventData(t *testing.T) {
-	if !isGAEtest {
-		t.Skipf("not implemented yet; isGAEtest = %v", isGAEtest)
-	}
 	defer resetTestState(t)
 	defer preserveConfig()()
 
@@ -1539,6 +1486,7 @@ func TestFirstSyncEventData(t *testing.T) {
 		Block:     "3 PM",
 		Start:     "3:00 PM",
 		End:       "4:00 PM",
+		Duration:  "1 hour",
 		Filters: map[string]bool{
 			"Boxtalks":       true,
 			liveStreamedText: true,
@@ -1614,9 +1562,6 @@ func TestFirstSyncEventData(t *testing.T) {
 }
 
 func TestSyncEventDataEmtpyDiff(t *testing.T) {
-	if !isGAEtest {
-		t.Skipf("not implemented yet; isGAEtest = %v", isGAEtest)
-	}
 	defer resetTestState(t)
 	defer preserveConfig()()
 
@@ -1681,9 +1626,6 @@ func TestSyncEventDataEmtpyDiff(t *testing.T) {
 }
 
 func TestSyncEventDataWithDiff(t *testing.T) {
-	if !isGAEtest {
-		t.Skipf("not implemented yet; isGAEtest = %v", isGAEtest)
-	}
 	defer resetTestState(t)
 	defer preserveConfig()()
 
@@ -1725,7 +1667,7 @@ func TestSyncEventDataWithDiff(t *testing.T) {
 	err = storeChanges(c, &dataChanges{
 		Updated: firstMod,
 		eventData: eventData{
-			Videos: map[string]*eventVideo{"dummy-id": &eventVideo{}},
+			Videos: map[string]*eventVideo{"dummy-id": {}},
 		},
 	})
 	if err != nil {
@@ -1820,9 +1762,8 @@ func TestSyncEventDataWithDiff(t *testing.T) {
 }
 
 func TestServeSWToken(t *testing.T) {
-	defer resetTestState(t)
-
-	r := newTestRequest(t, "GET", "/api/v1/user/updates", nil)
+	t.Parallel()
+	r, _ := aetestInstance.NewRequest("GET", "/api/v1/user/updates", nil)
 	r.Header.Set("authorization", "bearer "+testIDToken)
 	w := httptest.NewRecorder()
 	serveUserUpdates(w, r)
@@ -1851,10 +1792,6 @@ func TestServeSWToken(t *testing.T) {
 }
 
 func TestServeUserUpdates(t *testing.T) {
-	if !isGAEtest {
-		t.Skipf("not implemented yet; isGAEtest = %v", isGAEtest)
-	}
-	defer resetTestState(t)
 	defer preserveConfig()()
 
 	// gdrive stub
@@ -1877,8 +1814,7 @@ func TestServeUserUpdates(t *testing.T) {
 	config.Google.Drive.FilesURL = gdrive.URL + "/list"
 	config.Google.Drive.Filename = "user_data.json"
 
-	c := newContext(newTestRequest(t, "GET", "/dummy", nil))
-
+	c := newTestContext()
 	if err := storeCredentials(c, &oauth2Credentials{
 		userID:      testUserID,
 		Expiry:      time.Now().Add(2 * time.Hour),
@@ -1903,7 +1839,7 @@ func TestServeUserUpdates(t *testing.T) {
 		Updated: timeBefore,
 		eventData: eventData{
 			Sessions: map[string]*eventSession{
-				"before": &eventSession{Update: updateDetails},
+				"before": {Update: updateDetails},
 			},
 		},
 	}); err != nil {
@@ -1913,8 +1849,8 @@ func TestServeUserUpdates(t *testing.T) {
 		Updated: timeAfter,
 		eventData: eventData{
 			Sessions: map[string]*eventSession{
-				"after":     &eventSession{Update: updateDetails},
-				"unrelated": &eventSession{Update: updateDetails},
+				"after":     {Update: updateDetails},
+				"unrelated": {Update: updateDetails},
 			},
 		},
 	}); err != nil {
@@ -1933,7 +1869,7 @@ func TestServeUserUpdates(t *testing.T) {
 	}
 
 	for i, test := range table {
-		r := newTestRequest(t, "GET", "/api/v1/user/updates", nil)
+		r, _ := aetestInstance.NewRequest("GET", "/api/v1/user/updates", nil)
 		r.Header.Set("authorization", test.token)
 		w := httptest.NewRecorder()
 		serveUserUpdates(w, r)
@@ -1977,7 +1913,6 @@ func TestServeUserUpdates(t *testing.T) {
 }
 
 func TestHandlePingExt(t *testing.T) {
-	defer resetTestState(t)
 	defer preserveConfig()()
 
 	done := make(chan struct{}, 1)
@@ -2004,7 +1939,7 @@ func TestHandlePingExt(t *testing.T) {
 	defer ping.Close()
 	config.ExtPingURL = ping.URL
 
-	r := newTestRequest(t, "POST", "/task/ping-ext?key=a-key", nil)
+	r, _ := aetestInstance.NewRequest("POST", "/task/ping-ext?key=a-key", nil)
 	r.Header.Set("x-appengine-taskexecutioncount", "1")
 	w := httptest.NewRecorder()
 	handlePingExt(w, r)
@@ -2022,14 +1957,10 @@ func TestHandlePingExt(t *testing.T) {
 }
 
 func TestHandlePingUserUpgradeSubscribers(t *testing.T) {
-	if !isGAEtest {
-		t.Skipf("not implemented yet; isGAEtest = %v", isGAEtest)
-	}
-	defer resetTestState(t)
 	defer preserveConfig()()
 
 	config.Google.GCM.Endpoint = "http://gcm"
-	r := newTestRequest(t, "POST", "/task/ping-user", nil)
+	r, _ := aetestInstance.NewRequest("POST", "/task/ping-user", nil)
 	r.Form = url.Values{
 		"uid":      {testUserID},
 		"sessions": {"s-123"},
@@ -2066,9 +1997,6 @@ func TestHandlePingUserUpgradeSubscribers(t *testing.T) {
 }
 
 func TestHandlePingUserMissingToken(t *testing.T) {
-	if !isGAEtest {
-		t.Skipf("not implemented yet; isGAEtest = %v", isGAEtest)
-	}
 	defer resetTestState(t)
 	defer preserveConfig()()
 
@@ -2105,9 +2033,6 @@ func TestHandlePingUserMissingToken(t *testing.T) {
 }
 
 func TestHandlePingUserRefokedToken(t *testing.T) {
-	if !isGAEtest {
-		t.Skipf("not implemented yet; isGAEtest = %v", isGAEtest)
-	}
 	defer resetTestState(t)
 	defer preserveConfig()()
 
@@ -2149,10 +2074,6 @@ func TestHandlePingUserRefokedToken(t *testing.T) {
 }
 
 func TestHandlePingDeviceGCM(t *testing.T) {
-	if !isGAEtest {
-		t.Skipf("not implemented yet; isGAEtest = %v", isGAEtest)
-	}
-	defer resetTestState(t)
 	defer preserveConfig()()
 
 	count := 0
@@ -2172,7 +2093,7 @@ func TestHandlePingDeviceGCM(t *testing.T) {
 	config.Google.GCM.Endpoint = ts.URL
 	endpoint := ts.URL + "/reg-123"
 
-	r := newTestRequest(t, "POST", "/task/ping-device", nil)
+	r, _ := aetestInstance.NewRequest("POST", "/task/ping-device", nil)
 	r.Form = url.Values{
 		"uid":      {testUserID},
 		"endpoint": {endpoint},
@@ -2207,10 +2128,6 @@ func TestHandlePingDeviceGCM(t *testing.T) {
 }
 
 func TestHandlePingDeviceGCMDelete(t *testing.T) {
-	if !isGAEtest {
-		t.Skipf("not implemented yet; isGAEtest = %v", isGAEtest)
-	}
-	defer resetTestState(t)
 	defer preserveConfig()()
 
 	// GCM server
@@ -2220,7 +2137,7 @@ func TestHandlePingDeviceGCMDelete(t *testing.T) {
 	defer ts.Close()
 	config.Google.GCM.Endpoint = ts.URL
 
-	r := newTestRequest(t, "POST", "/task/ping-device", nil)
+	r, _ := aetestInstance.NewRequest("POST", "/task/ping-device", nil)
 	r.Form = url.Values{
 		"uid":      {testUserID},
 		"endpoint": {ts.URL + "/reg-123"},
@@ -2251,10 +2168,6 @@ func TestHandlePingDeviceGCMDelete(t *testing.T) {
 }
 
 func TestHandlePingDeviceGCMReplace(t *testing.T) {
-	if !isGAEtest {
-		t.Skipf("not implemented yet; isGAEtest = %v", isGAEtest)
-	}
-	defer resetTestState(t)
 	defer preserveConfig()()
 
 	// GCM server
@@ -2264,7 +2177,7 @@ func TestHandlePingDeviceGCMReplace(t *testing.T) {
 	defer ts.Close()
 	config.Google.GCM.Endpoint = ts.URL
 
-	r := newTestRequest(t, "POST", "/task/ping-device", nil)
+	r, _ := aetestInstance.NewRequest("POST", "/task/ping-device", nil)
 	r.Form = url.Values{
 		"uid":      {testUserID},
 		"endpoint": {ts.URL + "/reg-123"},
@@ -2298,7 +2211,6 @@ func TestHandlePingDeviceGCMReplace(t *testing.T) {
 }
 
 func TestHandlePingDevice(t *testing.T) {
-	defer resetTestState(t)
 	defer preserveConfig()()
 
 	count := 0
@@ -2311,7 +2223,7 @@ func TestHandlePingDevice(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	r := newTestRequest(t, "POST", "/task/ping-device", nil)
+	r, _ := aetestInstance.NewRequest("POST", "/task/ping-device", nil)
 	r.Form = url.Values{
 		"uid":      {testUserID},
 		"endpoint": {ts.URL + "/reg-123"},
@@ -2329,10 +2241,6 @@ func TestHandlePingDevice(t *testing.T) {
 }
 
 func TestHandlePingDeviceDelete(t *testing.T) {
-	if !isGAEtest {
-		t.Skipf("not implemented yet; isGAEtest = %v", isGAEtest)
-	}
-	defer resetTestState(t)
 	defer preserveConfig()()
 
 	// a push server
@@ -2341,7 +2249,7 @@ func TestHandlePingDeviceDelete(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	r := newTestRequest(t, "POST", "/task/ping-device", nil)
+	r, _ := aetestInstance.NewRequest("POST", "/task/ping-device", nil)
 	r.Form = url.Values{
 		"uid":      {testUserID},
 		"endpoint": {ts.URL + "/reg-123"},
@@ -2373,9 +2281,6 @@ func TestHandlePingDeviceDelete(t *testing.T) {
 }
 
 func TestHandleClockNextSessions(t *testing.T) {
-	if !isGAEtest {
-		t.Skipf("not implemented yet; isGAEtest = %v", isGAEtest)
-	}
 	defer resetTestState(t)
 	defer preserveConfig()()
 
@@ -2412,24 +2317,24 @@ func TestHandleClockNextSessions(t *testing.T) {
 		t.Fatal(err)
 	}
 	if err := storeNextSessions(c, []*eventSession{
-		&eventSession{Id: "already-clocked", Update: updateStart},
+		{Id: "already-clocked", Update: updateStart},
 	}); err != nil {
 		t.Fatal(err)
 	}
 	if err := storeEventData(c, &eventData{Sessions: map[string]*eventSession{
-		"start": &eventSession{
+		"start": {
 			Id:        "start",
 			StartTime: now.Add(timeoutStart - time.Second),
 		},
-		"__keynote__": &eventSession{
+		"__keynote__": {
 			Id:        "__keynote__",
 			StartTime: now.Add(timeoutSoon - time.Second),
 		},
-		"already-clocked": &eventSession{
+		"already-clocked": {
 			Id:        "already-clocked",
 			StartTime: now.Add(timeoutStart - time.Second),
 		},
-		"too-early": &eventSession{ // because it's not in soonSessionIDs
+		"too-early": { // because it's not in soonSessionIDs
 			Id:        "too-early",
 			StartTime: now.Add(timeoutSoon - time.Second),
 		},
@@ -2466,9 +2371,9 @@ func TestHandleClockNextSessions(t *testing.T) {
 	}
 
 	unclocked, err := filterNextSessions(c, []*eventSession{
-		&eventSession{Id: "__keynote__", Update: updateSoon},
-		&eventSession{Id: "start", Update: updateStart},
-		&eventSession{Id: "too-early", Update: "too-early"},
+		{Id: "__keynote__", Update: updateSoon},
+		{Id: "start", Update: updateStart},
+		{Id: "too-early", Update: "too-early"},
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -2501,9 +2406,6 @@ func TestHandleClockNextSessions(t *testing.T) {
 }
 
 func TestHandleClockSurvey(t *testing.T) {
-	if !isGAEtest {
-		t.Skipf("not implemented yet; isGAEtest = %v", isGAEtest)
-	}
 	defer resetTestState(t)
 	defer preserveConfig()()
 
@@ -2540,17 +2442,17 @@ func TestHandleClockSurvey(t *testing.T) {
 		t.Fatal(err)
 	}
 	if err := storeNextSessions(c, []*eventSession{
-		&eventSession{Id: "__keynote__", Update: updateSoon},
-		&eventSession{Id: "__keynote__", Update: updateStart},
+		{Id: "__keynote__", Update: updateSoon},
+		{Id: "__keynote__", Update: updateStart},
 	}); err != nil {
 		t.Fatal(err)
 	}
 	if err := storeEventData(c, &eventData{Sessions: map[string]*eventSession{
-		"random": &eventSession{
+		"random": {
 			Id:        "random",
 			StartTime: now.Add(-timeoutSurvey - time.Minute),
 		},
-		"__keynote__": &eventSession{
+		"__keynote__": {
 			Id:        "__keynote__",
 			StartTime: now.Add(-timeoutSurvey - time.Minute),
 		},
@@ -2586,8 +2488,8 @@ func TestHandleClockSurvey(t *testing.T) {
 	}
 
 	unclocked, err := filterNextSessions(c, []*eventSession{
-		&eventSession{Id: "__keynote__", Update: updateSurvey},
-		&eventSession{Id: "random", Update: updateSurvey},
+		{Id: "__keynote__", Update: updateSurvey},
+		{Id: "random", Update: updateSurvey},
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -2620,10 +2522,6 @@ func TestHandleClockSurvey(t *testing.T) {
 }
 
 func TestHandleEasterEgg(t *testing.T) {
-	if !isGAEtest {
-		t.Skipf("not implemented yet; isGAEtest = %v", isGAEtest)
-	}
-	defer resetTestState(t)
 	defer preserveConfig()()
 
 	const link = "http://example.org/egg"
@@ -2647,7 +2545,7 @@ func TestHandleEasterEgg(t *testing.T) {
 			"link": %q,
 			"expires": %q
 		}`, test.inLink, test.expires.Format(time.RFC3339))
-		r := newTestRequest(t, "POST", "/api/v1/easter-egg", strings.NewReader(body))
+		r, _ := aetestInstance.NewRequest("POST", "/api/v1/easter-egg", strings.NewReader(body))
 		r.Header.Set("authorization", test.auth)
 		w := httptest.NewRecorder()
 		handleEasterEgg(w, r)
@@ -2671,7 +2569,7 @@ func TestHandleEasterEgg(t *testing.T) {
 }
 
 func fetchFirstSWToken(t *testing.T, auth string) string {
-	r := newTestRequest(t, "GET", "/api/v1/user/updates", nil)
+	r, _ := aetestInstance.NewRequest("GET", "/api/v1/user/updates", nil)
 	r.Header.Set("authorization", bearerHeader+auth)
 	w := httptest.NewRecorder()
 	serveSWToken(w, r)

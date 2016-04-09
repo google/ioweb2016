@@ -12,14 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package backend
 
 import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-
-	"golang.org/x/net/context"
 )
 
 const testXmlFeed = `
@@ -27,26 +25,28 @@ const testXmlFeed = `
 <feed xmlns='http://www.w3.org/2005/Atom' xmlns:gsx='http://schemas.google.com/spreadsheets/2006/extended'>
 	<entry>
 		<gsx:eventname>Google I/O extended Nyeri</gsx:eventname>
-		<gsx:eventlink>https://plus.google.com/events/event-1</gsx:googleeventlink>
+		<gsx:eventlink>https://plus.google.com/events/event-1</gsx:eventlink>
     <gsx:latitude>n/a</gsx:latitude>
 		<gsx:longitude></gsx:longitude>
 	</entry>
 	<entry>
 		<gsx:eventname>I/O Extended Madrid</gsx:eventname>
-		<gsx:eventlink>https://plus.google.com/events/event-2</gsx:googleeventlink>
+		<gsx:eventlink>https://plus.google.com/events/event-2</gsx:eventlink>
 		<gsx:latitude>40.401982</gsx:latitude>
 		<gsx:longitude>-3.608424</gsx:longitude>
 	</entry>
 </feed>
 `
 
-func TextFetchIOExtEntries(t *testing.T) {
+func TestFetchIOExtEntries(t *testing.T) {
+	t.Parallel()
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(testXmlFeed))
 	}))
 	defer ts.Close()
 
-	items, err := fetchIOExtEntries(context.Background(), ts.URL)
+	c := newTestContext()
+	items, err := fetchIOExtEntries(c, ts.URL)
 	if err != nil {
 		t.Fatalf("fetchIOExtEntries(%q): %v", ts.URL, err)
 	}

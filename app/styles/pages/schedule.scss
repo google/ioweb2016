@@ -35,6 +35,11 @@ io-schedule {
   }
 }
 
+.meta-filter {
+  font-size: 14px;
+  font-weight: 500;
+}
+
 .meta-filter,
 .meta-myschedue-button {
   transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -189,12 +194,6 @@ iron-icon[icon="schedule"] {
     }
   }
 
-  .meta-filter {
-    paper-icon-button {
-      z-index: 2; // Filter icon appears over dropdown on mobile.
-    }
-  }
-
   .session__rate {
     margin: 0;
     left: 0 !important;
@@ -202,7 +201,7 @@ iron-icon[icon="schedule"] {
     width: 100%;
     height: 100%;
   }
-  .card-content:first-child {
+  .card-content > div:first-child {
     padding: 16px;
     border-bottom: 1px solid $color-light-grey-border;
   }

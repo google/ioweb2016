@@ -73,10 +73,14 @@ class Schedule {
       this.scheduleData_ = data.scheduleData;
 
       let template = IOWA.Elements.Template;
-      template.set('app.scheduleData', data.scheduleData);
-      template.set('app.filterSessionTypes', data.tags.filterSessionTypes);
-      template.set('app.filterThemes', data.tags.filterThemes);
-      template.set('app.filterTopics', data.tags.filterTopics);
+
+      // Wait until template is stamped before adding schedule data to it.
+      template.domStampedPromise.then(() => {
+        template.set('app.scheduleData', data.scheduleData);
+        template.set('app.filterSessionTypes', data.tags.filterSessionTypes);
+        template.set('app.filterThemes', data.tags.filterThemes);
+        template.set('app.filterTopics', data.tags.filterTopics);
+      });
 
       return this.scheduleData_;
     });
@@ -153,12 +157,31 @@ class Schedule {
   }
 
   /**
+   * Sets up Firebase listeners to load the initial user schedule and keep it
+   * up to date as the Firebase data changes.
+   */
+  loadUserSchedule() {
+    this._loadUserSchedule(false);
+  }
+
+  /**
+   * Reads cached schedule data from IndexedDB and uses it to populate the
+   * initial user schedule.
+   */
+  loadCachedUserSchedule() {
+    this._loadUserSchedule(true);
+  }
+
+  /**
    * Wait for the master schedule to have loaded, then use `IOFirebase.registerToSessionUpdates()`
    * to fetch the initial user's schedule, bind it for display and listen for further updates.
    * registerToSessionUpdates() doesn't wait for the user to be signed in, so ensure that there is a
    * signed-in user before calling this function.
+   *
+   * @private
+   * @param {Boolean} replayFromCache true for cached data, false for Firebase
    */
-  loadUserSchedule() {
+  _loadUserSchedule(replayFromCache) {
     let sessionUpdatesCallback = (sessionId, data) => {
       let template = IOWA.Elements.Template;
 
@@ -195,29 +218,22 @@ class Schedule {
       }
     };
 
-    // Only fetch their schedule if the worker has responded with the master schedule.
+    // We can't do anything until the master schedule has been fetched.
     this.schedulePromise().then(() => {
-      // This will read cached my_schedule and feedback data from IndexedDB
-      // locally, and use it to initially populate the schedule page.
-      return Promise.all([
-        IOWA.IOFirebase.replayCachedSavedSessions(sessionUpdatesCallback),
-        IOWA.IOFirebase.replayCachedSessionFeedback(sessionFeedbackUpdatesCallback)
-      ]);
-    }).then(() => {
-      IOWA.Auth.waitForSignedIn().then(() => {
-        return IOWA.IOFirebase.clearCachedReads();
-      }).then(() => {
-        // // Get entire initial list of user's saved sessions.
-        // IOWA.IOFirebase.getUserSchedule().then(savedSessions => {
-        //   IOWA.Elements.Template.set('app.savedSessions', savedSessions);
-        // });
-
-        // Listen to session bookmark updates.
-        IOWA.IOFirebase.registerToSessionUpdates(sessionUpdatesCallback);
-
-        // Listen to feedback updates.
-        IOWA.IOFirebase.registerToFeedbackUpdates(sessionFeedbackUpdatesCallback);
-      });
+      if (replayFromCache) {
+        // This will read cached my_schedule and feedback data from IndexedDB
+        // locally, and use it to initially populate the schedule page.
+        IOWA.IOFirebase.replayCachedSavedSessions(sessionUpdatesCallback);
+        IOWA.IOFirebase.replayCachedSessionFeedback(sessionFeedbackUpdatesCallback);
+      } else {
+        // If replayFromCache is false, then set up the live Firebase listeners.
+        IOWA.IOFirebase.clearCachedReads().then(() => {
+          // Listen to session bookmark updates.
+          IOWA.IOFirebase.registerToSessionUpdates(sessionUpdatesCallback);
+          // Listen to feedback updates.
+          IOWA.IOFirebase.registerToFeedbackUpdates(sessionFeedbackUpdatesCallback);
+        });
+      }
     });
   }
 

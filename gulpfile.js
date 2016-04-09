@@ -63,12 +63,16 @@ var dataWorkerScripts = [
   IOWA.appDir + '/scripts/data-worker.js'
 ];
 
-function createReloadServer() {
-  browserSync.init({
-    notify: true,
-    open: !!argv.open
-    // proxy: 'localhost:8080' // proxy serving through app engine.
+function minifyHtml() {
+  return $.minifyHtml({
+    quotes: true,
+    empty: true,
+    spare: true
   });
+}
+
+function uglifyJS() {
+  return $.uglify({preserveComments: 'some'});
 }
 
 // Default task that builds everything.
@@ -179,6 +183,8 @@ gulp.task('concat-and-uglify-js', 'Crush JS', ['eslint', 'generate-page-metadata
   // The ordering of the scripts in the gulp.src() array matter!
   // This order needs to match the order in templates/layout_full.html
   var siteScripts = [
+    // The SimpleDB polyfill needs to be run through Babel, so include it here.
+    '../bower_components/simpledb_polyfill/index.js',
     'main.js',
     'pages.js',
     'helper/util.js',
@@ -210,14 +216,20 @@ gulp.task('concat-and-uglify-js', 'Crush JS', ['eslint', 'generate-page-metadata
 
   var serviceWorkerScriptStream = gulp.src([
     IOWA.appDir + '/bower_components/sw-toolbox/sw-toolbox.js',
-    IOWA.appDir + '/scripts/helper/simple-db.js',
+    IOWA.appDir + '/bower_components/simpledb_polyfill/index.js',
     IOWA.appDir + '/scripts/sw-toolbox/*.js'
   ])
     .pipe(reload({stream: true, once: true}))
+    .pipe($.babel({
+      presets: ['es2015'],
+      compact: false
+    }))
     .pipe($.concat('sw-toolbox-scripts.js'));
 
   return merge(siteScriptStream, siteLibStream).add(analyticsScriptStream).add(serviceWorkerScriptStream)
-    .pipe($.uglify({preserveComments: 'some'}).on('error', function() {}))
+    .pipe(uglifyJS().on('error', function(error) {
+      $.util.log(error);
+    }))
     .pipe(gulp.dest(IOWA.distDir + '/' + IOWA.appDir + '/scripts'))
     .pipe($.size({title: 'concat-and-uglify-js'}));
 });
@@ -236,7 +248,9 @@ gulp.task('generate-data-worker-dist', 'Generate data-worker.js for /dist.', fun
     }))
     .pipe(ownScriptsFilter.restore)
     .pipe($.concat('data-worker-scripts.js'))
-    .pipe($.uglify({preserveComments: 'some'}).on('error', function() {}))
+    .pipe(uglifyJS().on('error', function(error) {
+      $.util.log(error);
+    }))
     .pipe(gulp.dest(IOWA.distDir + '/' + IOWA.appDir))
     .pipe($.size({title: 'data-worker-dist'}));
 });
@@ -296,6 +310,10 @@ gulp.task('vulcanize-elements', false, ['sass'], function() {
       dest: IOWA.appDir + '/elements'
     }))
     .pipe($.crisper({scriptInHead: true}))
+    // Minify html output
+    .pipe($.if('*.html', minifyHtml()))
+    // Minifiy js output
+    .pipe($.if('*.js', uglifyJS()))
     .pipe(gulp.dest(IOWA.distDir + '/' + IOWA.appDir + '/elements/'));
 });
 
@@ -311,6 +329,10 @@ gulp.task('vulcanize-gadget-elements', false, ['sass'], function() {
       dest: IOWA.appDir + '/elements'
     }))
     .pipe($.crisper({scriptInHead: true}))
+    // Minify html output
+    .pipe($.if('*.html', minifyHtml()))
+    // Minifiy js output
+    .pipe($.if('*.js', uglifyJS()))
     .pipe(gulp.dest(IOWA.distDir + '/' + IOWA.appDir + '/elements/'));
 });
 
@@ -333,6 +355,10 @@ gulp.task('vulcanize-extended-elements', false, ['sass'], function() {
       ]
     }))
     .pipe($.crisper({scriptInHead: true}))
+    // Minify html output
+    .pipe($.if('*.html', minifyHtml()))
+    // Minifiy js output
+    .pipe($.if('*.js', uglifyJS()))
     .pipe(gulp.dest(IOWA.distDir + '/' + IOWA.appDir + '/elements/'));
 });
 
@@ -364,7 +390,7 @@ gulp.task('generate-data-worker-dev', 'Generate data-worker.js for dev', functio
 gulp.task('generate-service-worker-dev', 'Generate service worker for dev', ['sass'], function(callback) {
   del.sync([IOWA.appDir + '/service-worker.js']);
   var importScripts = glob.sync('scripts/sw-toolbox/*.js', {cwd: IOWA.appDir});
-  importScripts.unshift('scripts/helper/simple-db.js');
+  importScripts.unshift('bower_components/simpledb_polyfill/index.js');
   importScripts.unshift('bower_components/sw-toolbox/sw-toolbox.js');
 
   generateServiceWorker(IOWA.appDir, !!argv['fetch-dev'], importScripts, function(error, serviceWorkerFileContents) {
@@ -394,37 +420,47 @@ gulp.task('generate-page-metadata', false, function(done) {
 // -----------------------------------------------------------------------------
 // Backend stuff
 
-gulp.task('backend:test', 'Run backend tests', ['backend:config'], function(done) {
-  var opts = {gae: argv.gae, watch: argv.watch, test: argv.test};
-  backend.test(opts, done);
+gulp.task('serve', 'Run the app locally', ['backend:config', 'sass', 'generate-page-metadata', 'generate-data-worker-dev', 'generate-service-worker-dev'], function(done) {
+  var url = backend.serve({dir: IOWA.backendDir, reload: argv.reload}, done);
+  // give GAE server some time to start
+  setTimeout(openUrl.bind(null, url, null, null), 1000);
+  if (argv.watch !== false) {
+    watch();
+  }
 }, {
   options: {
-    'watch': 'watch for changes and run tests in an infinite loop',
-    'gae': 'test GAE version',
-    'test TestMethodPattern': 'run specific tests provide'
+    'no-watch': 'Disable file watchers',
+    'reload': 'Enable live-reload (makes --no-watch a noop)',
+    'env': 'App environment: "dev", "stage" or "prod". Defaults to "dev".',
+    'open': 'Opens a new browser tab to the app'
   }
 });
 
-gulp.task('backend:build', 'Build self-sufficient backend server binary w/o GAE support', backend.build);
+gulp.task('serve:dist', 'Serves built app with GAE dev appserver (no file watchers, like production)', ['default'], function(done) {
+  var backendDir = path.join(IOWA.distDir, IOWA.backendDir);
+  var url = backend.serve({dir: backendDir}, done);
+  // give GAE server some time to start
+  setTimeout(openUrl.bind(null, url, null, null), 1000);
+}, {
+  options: {
+    open: 'Opens a new browser tab to the app'
+  }
+});
 
-gulp.task('backend:dist', 'Copy backend files to dist', function(done) {
-  backend.copy(argv.env || 'prod', done);
+gulp.task('backend:dist', 'Create prod version of the backend', function(done) {
+  backend.dist(argv.env || 'prod', done);
 }, {
   options: {
     env: 'App environment: "dev", "stage" or "prod". Defaults to "prod".'
   }
 });
 
-gulp.task('backend:config', 'Generates server.config', function() {
-  backend.generateServerConfig(IOWA.backendDir, argv.env || 'dev');
+gulp.task('backend:config', 'Generates server.config and GAE config files like app.yaml', function(done) {
+  backend.generateConfig(IOWA.backendDir, argv.env || 'dev', done);
 }, {
   options: {
     env: 'App environment: "dev", "stage" or "prod". Defaults to "dev".'
   }
-});
-
-gulp.task('backend:gaeconfig', 'Generates GAE config files like app.yaml', function(done) {
-  backend.generateGAEConfig(IOWA.backendDir, done);
 });
 
 gulp.task('decrypt', 'Decrypt backend/server.config.enc into backend/server.config', function(done) {
@@ -443,48 +479,22 @@ gulp.task('encrypt', 'Encrypt backend/server.config into backend/server.config.e
   }
 });
 
-// Start a standalone server (no GAE SDK needed) serving both front-end and backend,
-// watch for file changes and live-reload when needed.
-// If you don't want file watchers and live-reload, use '--no-watch' option.
-// App environment is 'dev' by default. Change with '--env=prod'.
-gulp.task('serve', 'Starts a standalone server with live-reload', ['backend:build', 'backend:config', 'sass', 'generate-page-metadata', 'generate-data-worker-dev', 'generate-service-worker-dev'], function(done) {
-  var opts = {dir: IOWA.backendDir, watch: argv.watch !== false, reload: argv.reload};
-  var url = backend.serve(opts, done);
-  openUrl(url);
-  if (argv.watch) {
-    watch();
-  }
-}, {
-  options: {
-    'no-watch': 'Starts the server w/o file watchers and live-reload',
-    'env': 'App environment: "dev", "stage" or "prod". Defaults to "dev".',
-    'open': 'Opens a new browser tab to the app'
-  }
-});
+// -----------------------------------------------------------------------------
+// Firebase stuff
 
-gulp.task('serve:gae', 'Same as the "serve" task but uses GAE dev appserver', ['backend:config', 'backend:gaeconfig', 'sass', 'generate-page-metadata', 'generate-data-worker-dev', 'generate-service-worker-dev'], function(done) {
-  var url = backend.serveGAE({dir: IOWA.backendDir, reload: argv.reload}, done);
-  // give GAE server some time to start
-  setTimeout(openUrl.bind(null, url, null, null), 1000);
-  if (argv.watch !== false) {
-    watch();
-  }
+gulp.task('deploy:firebaserules', 'Deploys the Firebase security rules', function() {
+  var serverConfigFile = IOWA.backendDir + '/server.config.' + (argv.env || 'dev');
+  $.util.log('Getting Firebase databases list from ' + serverConfigFile);
+  var config = JSON.parse(fs.readFileSync(serverConfigFile));
+  var firebaseAppsUrls = config.firebase.shards;
+  $.util.log('Found ' + firebaseAppsUrls.length + ' database(s).');
+  return firebaseAppsUrls.reduce(function(task, firebaseUrl) {
+    var appId = firebaseUrl.replace('https://', '').replace('.firebaseio.com/', '');
+    return task.pipe($.shell('node_modules/.bin/firebase deploy:rules -f ' + appId));
+  }, gulp.src('').pipe($.shell('node_modules/.bin/firebase login --interactive')));
 }, {
   options: {
-    'no-watch': 'Starts the server w/o file watchers and live-reload',
-    'env': 'App environment: "dev", "stage" or "prod". Defaults to "dev".',
-    'open': 'Opens a new browser tab to the app'
-  }
-});
-
-gulp.task('serve:dist', 'Serves built app with GAE dev appserver (no file watchers, like production)', ['default'], function(done) {
-  var backendDir = path.join(IOWA.distDir, IOWA.backendDir);
-  var url = backend.serveGAE({dir: backendDir}, done);
-  // give GAE server some time to start
-  setTimeout(openUrl.bind(null, url, null, null), 1000);
-}, {
-  options: {
-    open: 'Opens a new browser tab to the app'
+    env: 'App environment: "dev", "stage" or "prod". Defaults to "dev".'
   }
 });
 
@@ -493,10 +503,9 @@ gulp.task('serve:dist', 'Serves built app with GAE dev appserver (no file watche
 
 // Watch file changes and reload running server or rebuild stuff.
 function watch() {
-  createReloadServer();
   gulp.watch([IOWA.appDir + '/**/*.html'], reload);
   gulp.watch([IOWA.appDir + '/{elements,styles}/**/*.{scss,css}'], ['sass', reload]);
-  gulp.watch([IOWA.appDir + '/scripts/**/*.js'], ['jshint']);
+  gulp.watch([IOWA.appDir + '/scripts/**/*.js'], ['eslint']);
   gulp.watch([IOWA.appDir + '/images/**/*'], reload);
   gulp.watch([IOWA.appDir + '/bower.json'], ['bower']);
   gulp.watch(dataWorkerScripts, ['generate-data-worker-dev']);

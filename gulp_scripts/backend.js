@@ -23,12 +23,12 @@ var browserSync = require('browser-sync');
 
 var IOWA = require('../package.json').iowa;
 
-/** Copy backend files, including GAE and server configs.
+/** Prepare backend for deployment.
  *
  * @param {string} appenv App environment: 'dev', 'stage' or 'prod'.
  * @param {function} callback Callback function.
  */
-function copy(appenv, callback) {
+function dist(appenv, callback) {
   gulp.src([
     IOWA.backendDir + '/**/*.go',
     IOWA.backendDir + '/*.yaml',
@@ -40,112 +40,9 @@ function copy(appenv, callback) {
     var destBackend = [IOWA.distDir, IOWA.backendDir].join('/');
     // ../app <= dist/backend/app
     fs.symlinkSync('../' + IOWA.appDir, destBackend + '/' + IOWA.appDir);
-    // create server config for the right env
-    generateServerConfig(destBackend, appenv);
-    // create GAE config from backend/app.yaml.template
-    generateGAEConfig(destBackend, callback);
+    // create server and GAE config files for the right env
+    generateConfig(destBackend, appenv, callback);
   });
-}
-
-/** Run backend tests.
- *
- * @param {Object} opts Test options.
- * @param {bool} opts.gae Run GAE tests.
- * @param {bool} opts.watch Watch for changes and re-run tests.
- * @param {string} opts.test Test method names pattern.
- * @param {function} callback Callback function.
- */
-function test(opts, callback) {
-  var cmd = opts.gae ? 'goapp' : 'go';
-  var run = singleTestRound.bind(null, cmd, opts.test);
-  var proc = run();
-  if (opts.watch) {
-    gulp.watch([IOWA.backendDir + '/**/*.go'], run);
-    gulp.watch([IOWA.appDir + '/templates/*'], run);
-    callback();
-    return;
-  }
-  proc.on('close', callback);
-}
-
-/**
- * Run a single round of tests.
- *
- * @param {string} cmd Command to start the tests; 'go' or 'goapp'.
- * @param {string} testPattern Test method names pattern.
- * @return {ChildProcess} Process object of the spawn cmd.
- */
-function singleTestRound(cmd, testPattern) {
-  var args = ['test'];
-  if (testPattern) {
-    args.push('-test.run=' + testPattern);
-  }
-  return spawn(cmd, args, {cwd: IOWA.backendDir, stdio: 'inherit'});
-}
-
-/**
- * Start a standalone server (no GAE SDK needed) serving both front-end and backend.
- *
- * @param {Object} opts Server options.
- * @param {number=} opts.port The port number to bind internal server to.
- * @param {string} opts.dir CWD of the spawning server process.
- * @param {bool} opts.watch Watch for *.go file changes and restart the server.
- * @param {bool} opts.reload Use BrowserSync to reload page on file changes. Implies opts.watch.
- * @param {function} callback Callback function.
- * @return {string} URL of the externally facing server.
- */
-function serve(opts, callback) {
-  if (opts.reload) {
-    // reload doesn't make sense w/o watch
-    opts.watch = true;
-  }
-  var port = opts.port || (opts.reload ? '8080' : '3000');
-  var serverAddr = 'localhost:' + port;
-  var url = 'http://' + serverAddr + IOWA.urlPrefix;
-
-  var proc;
-  var spawnBackend = function() {
-    var env = process.env;
-    env.RUN_WITH_DEVAPPSERVER = '1';
-    proc = spawn('bin/server', ['-addr', serverAddr],
-                 {cwd: opts.dir, stdio: 'inherit', env: env});
-  };
-
-  spawnBackend();
-
-  if (!opts.watch) {
-    proc.on('close', callback);
-    console.log('The app should now be available at: ' + url);
-    return url;
-  }
-
-  gulp.watch([IOWA.backendDir + '/**/*.go'], function() {
-    build(function(code) {
-      if (code !== 0) {
-        return;
-      }
-      console.log('Restarting backend');
-      proc.on('close', spawnBackend);
-      proc.kill();
-    });
-  });
-
-  if (!opts.reload) {
-    proc.on('close', function(code, signal) {
-      if (signal === 'SIGINT') {
-        callback(code);
-      }
-    });
-    console.log('The app should now be available at: ' + url);
-    return url;
-  }
-
-  browserSync.emitter.on('service:exit', function() {
-    proc.kill('SIGKILL');
-    callback();
-  });
-  browserSync({notify: false, open: false, port: 3000, proxy: serverAddr});
-  return 'http://localhost:3000' + IOWA.urlPrefix;
 }
 
 /**
@@ -158,7 +55,7 @@ function serve(opts, callback) {
  * @param {function} callback Callback function.
  * @return {string} URL of the externally facing server.
  */
-function serveGAE(opts, callback) {
+function serve(opts, callback) {
   var port = opts.port || (opts.reload ? '8080' : '3000');
   var serverAddr = 'localhost:' + port;
   var url = 'http://' + serverAddr + IOWA.urlPrefix;
@@ -176,9 +73,21 @@ function serveGAE(opts, callback) {
   }
 
   browserSync.emitter.on('service:exit', callback);
-  // give GAE server some time to start
-  setTimeout(browserSync.bind(null, {notify: false, open: false, port: 3000, proxy: serverAddr}), 2000);
+  browserSync({notify: false, open: false, port: 3000, proxy: serverAddr});
   return 'http://localhost:3000' + IOWA.urlPrefix;
+}
+
+/**
+ * Create both app (server) and GAE config files.
+ * A handy wrapper for generateServerConfig and generateGAEConfig.
+ *
+ * @param {string} dest Output directory.
+ * @param {string} appenv App environment: 'dev', 'stage' or 'prod'.
+ * @param {function} callback Callback function.
+ */
+function generateConfig(dest, appenv, callback) {
+  generateServerConfig(dest, appenv);
+  generateGAEConfig(dest, callback);
 }
 
 /**
@@ -228,17 +137,6 @@ function generateGAEConfig(dest, callback) {
     .pipe($.rename({extname: ''}))
     .pipe(gulp.dest(dest))
     .on('end', callback);
-}
-
-/**
- * Build standalone backend server.
- *
- * @param {function} callback Callback function.
- */
-function build(callback) {
-  var args = ['build', '-o', 'bin/server'];
-  var build = spawn('go', args, {cwd: IOWA.backendDir, stdio: 'inherit'});
-  build.on('exit', callback);
 }
 
 /**
@@ -304,14 +202,10 @@ function encrypt(passphrase, callback) {
 }
 
 module.exports = {
-  test: test,
-  build: build,
-  copy: copy,
   serve: serve,
-  serveGAE: serveGAE,
+  dist: dist,
   decrypt: decrypt,
   encrypt: encrypt,
   installDeps: installDeps,
-  generateServerConfig: generateServerConfig,
-  generateGAEConfig: generateGAEConfig
+  generateConfig: generateConfig
 };

@@ -57,6 +57,15 @@ limitations under the License.
         @apply(--layout-inline);
       }
 
+      paper-dialog-scrollable {
+        padding: 0;
+        margin: 0;
+
+        --paper-dialog-scrollable: {
+          padding: 0;
+        };
+      }
+
       .scrollable {
         @apply(--layout-scroll);
       }
@@ -92,6 +101,18 @@ limitations under the License.
         --paper-tab-content: {
           opacity: 1 !important;
         };
+      }
+
+      paper-tab[link] {
+        padding: 0;
+      }
+
+      paper-tab[link] a {
+        padding: 0 12px;
+      }
+
+      paper-tab[focused] a {
+        background: rgba(0, 0, 0, 0.1);
       }
 
       paper-dialog {

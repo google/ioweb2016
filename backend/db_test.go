@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package backend
 
 import (
 	"testing"
@@ -20,20 +20,13 @@ import (
 )
 
 func TestStoreGetCredentials(t *testing.T) {
-	if !isGAEtest {
-		t.Skipf("not implemented yet; isGAEtest = %v", isGAEtest)
-	}
-	defer resetTestState(t)
-
+	c := newTestContext()
 	cred1 := &oauth2Credentials{
 		userID:       "user-123",
 		AccessToken:  "atoken",
 		RefreshToken: "rtoken",
 		Expiry:       time.Now(),
 	}
-
-	r := newTestRequest(t, "GET", "/", nil)
-	c := newContext(r)
 	if err := storeCredentials(c, cred1); err != nil {
 		t.Fatalf("storeCredentials: %v", err)
 	}
@@ -64,19 +57,14 @@ func TestStoreGetCredentials(t *testing.T) {
 }
 
 func TestStoreGetChanges(t *testing.T) {
-	if !isGAEtest {
-		t.Skipf("not implemented yet; isGAEtest = %v", isGAEtest)
-	}
-	defer resetTestState(t)
-
-	c := newContext(newTestRequest(t, "GET", "/dummy", nil))
+	c := newTestContext()
 	oneTime := time.Now()
 	twoTime := oneTime.AddDate(0, 0, 1)
 
 	if err := storeChanges(c, &dataChanges{
 		Updated: oneTime,
 		eventData: eventData{
-			Sessions: map[string]*eventSession{"one": &eventSession{}},
+			Sessions: map[string]*eventSession{"one": {}},
 		},
 	}); err != nil {
 		t.Fatal(err)
@@ -85,8 +73,8 @@ func TestStoreGetChanges(t *testing.T) {
 		Updated: twoTime,
 		eventData: eventData{
 			Sessions: map[string]*eventSession{
-				"two":   &eventSession{},
-				"three": &eventSession{},
+				"two":   {},
+				"three": {},
 			},
 		},
 	}); err != nil {
@@ -119,16 +107,11 @@ func TestStoreGetChanges(t *testing.T) {
 }
 
 func TestStoreNextSessions(t *testing.T) {
-	if !isGAEtest {
-		t.Skipf("not implemented yet; isGAEtest = %v", isGAEtest)
-	}
-	defer resetTestState(t)
-
-	c := newContext(newTestRequest(t, "GET", "/dummy", nil))
+	c := newTestContext()
 	sessions := []*eventSession{
-		&eventSession{Id: "one", Update: updateSoon},
-		&eventSession{Id: "one", Update: updateStart},
-		&eventSession{Id: "two", Update: updateStart},
+		{Id: "one", Update: updateSoon},
+		{Id: "one", Update: updateStart},
+		{Id: "two", Update: updateStart},
 	}
 	if err := storeNextSessions(c, sessions); err != nil {
 		t.Fatal(err)

@@ -26,7 +26,7 @@ $name: 'page-permissions';
 html, body {
   height: 100%;
   width: 100%;
-  background-color: $color-cyan-A400;
+  background-color: $color-bluegrey-50;
   overflow: auto;
 }
 
@@ -45,18 +45,15 @@ html, body {
 }
 
 .link-spacing {
-  line-height: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 @media (max-width: $phone-breakpoint-max) {
   .link-spacing {
     a {
       padding-bottom: $desktopKeyline;
-
-      &:not(:last-of-type) {
-        float: left;
-      }
-
     }
   }
 }

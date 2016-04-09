@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package backend
 
 import (
 	"testing"
@@ -20,6 +20,7 @@ import (
 )
 
 func TestSWToken(t *testing.T) {
+	t.Parallel()
 	u1, t1 := "user-123", time.Now().AddDate(0, 0, -1)
 	token, err := encodeSWToken(u1, t1)
 	if err != nil {

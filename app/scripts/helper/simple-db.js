@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Google Inc. All rights reserved.
+ * Copyright 2016 Google Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,166 +14,67 @@
  * limitations under the License.
  */
 
-// From https://gist.github.com/inexorabletash/c8069c042b734519680c (Joshua Bell)
+'use strict';
 
-(function(global) {
-  var SECRET = Object.create(null);
-  var DB_PREFIX = '$SimpleDB$';
-  var STORE = 'store';
+/**
+ * A class that wraps the SimpleDB library to make it easier to manage
+ * open instances of the underlying IndexedDB connection.
+ */
+class SimpleDB {
+  constructor() {
+    /**
+     * Stores references to SimpleDB wrappers around IndexedDB.
+     * @type {Object}
+     */
+    this.simpleDbInstances = {};
 
-  // Chrome iOS has window.indexeDB, but it is null.
-  if (!(global.indexedDB && indexedDB.open)) {
-    return;
+    /**
+     * List of SimpleDB names used for offline reads/updates.
+     * @constant
+     * @type {Object}
+     */
+    this.NAMES = {
+      READS: 'firebase-reads',
+      UPDATES: 'firebase-updates',
+      USER: 'user-info'
+    };
   }
 
-  function SimpleDBFactory(secret) {
-    if (secret !== SECRET) throw TypeError('Invalid constructor');
-  }
-  SimpleDBFactory.prototype = {
-    open: function(name) {
-      return new Promise(function(resolve, reject) {
-        var request = indexedDB.open(DB_PREFIX + name);
-        request.onupgradeneeded = function() {
-          var db = request.result;
-          db.createObjectStore(STORE);
-        };
-        request.onsuccess = function() {
-          var db = request.result;
-          resolve(new SimpleDB(SECRET, name, db));
-        };
-        request.onerror = function() {
-          reject(request.error);
-        };
-      });
-    },
-    delete: function(name) {
-      return new Promise(function(resolve, reject) {
-        var request = indexedDB.deleteDatabase(DB_PREFIX + name);
-        request.onsuccess = function() {
-          resolve(undefined);
-        };
-        request.onerror = function() {
-          reject(request.error);
-        };
+  /**
+   * Returns a SimpleDB instance with a given name.
+   *
+   * @param {string} name The name of the SimpleDB database.
+   * @return {Promise} Fulfills with the SimpleDB instance.
+   */
+  instance(name) {
+    if (window.indexedDB && window.indexedDB.open && window.simpleDB) {
+      if (this.simpleDbInstances[name]) {
+        // Resolve immediately if we already have an open instance.
+        return Promise.resolve(this.simpleDbInstances[name]);
+      }
+
+      return window.simpleDB.open(name).then(db => {
+        // Stash the instance away for reuse next time.
+        this.simpleDbInstances[name] = db;
+        return this.simpleDbInstances[name];
       });
     }
-  };
 
-  function SimpleDB(secret, name, db) {
-    if (secret !== SECRET) throw TypeError('Invalid constructor');
-    this._name = name;
-    this._db = db;
+    // window.simpleDB will be undefined if we detected that there was no
+    // IndexedDB support in the current browser.
+    return Promise.reject('SimpleDB is not supported.');
   }
-  SimpleDB.cmp = indexedDB.cmp;
-  SimpleDB.prototype = {
-    get name() {
-      return this._name;
-    },
-    get: function(key) {
-      var that = this;
-      return new Promise(function(resolve, reject) {
-        var tx = that._db.transaction(STORE, 'readwrite');
-        var store = tx.objectStore(STORE);
-        var req = store.get(key);
-        // NOTE: Could also use req.onsuccess/onerror
-        tx.oncomplete = function() { resolve(req.result); };
-        tx.onabort = function() { reject(tx.error); };
-      });
-    },
-    set: function(key, value) {
-      var that = this;
-      return new Promise(function(resolve, reject) {
-        var tx = that._db.transaction(STORE, 'readwrite');
-        var store = tx.objectStore(STORE);
-        var req = store.put(value, key);
-        tx.oncomplete = function() { resolve(undefined); };
-        tx.onabort = function() { reject(tx.error); };
-      });
-    },
-    delete: function(key) {
-      var that = this;
-      return new Promise(function(resolve, reject) {
-        var tx = that._db.transaction(STORE, 'readwrite');
-        var store = tx.objectStore(STORE);
-        var req = store.delete(key);
-        tx.oncomplete = function() { resolve(undefined); };
-        tx.onabort = function() { reject(tx.error); };
-      });
-    },
-    clear: function() {
-      var that = this;
-      return new Promise(function(resolve, reject) {
-        var tx = that._db.transaction(STORE, 'readwrite');
-        var store = tx.objectStore(STORE);
-        var request = store.clear();
-        tx.oncomplete = function() { resolve(undefined); };
-        tx.onabort = function() { reject(tx.error); };
-      });
-    },
-    forEach: function(callback, options) {
-      var that = this;
-      return new Promise(function(resolve, reject) {
-        options = options || {};
-        var tx = that._db.transaction(STORE, 'readwrite');
-        var store = tx.objectStore(STORE);
-        var request = store.openCursor(
-          options.range,
-          options.direction === 'reverse' ? 'prev' : 'next');
-        request.onsuccess = function() {
-          var cursor = request.result;
-          if (!cursor) return;
-          try {
-            var terminate = callback(cursor.key, cursor.value);
-            if (!terminate) cursor.continue();
-          } catch (ex) {
-            tx.abort(); // ???
-          }
-        };
-        tx.oncomplete = function() { resolve(undefined); };
-        tx.onabort = function() { reject(tx.error); };
-      });
-    },
-    getMany: function(keys) {
-      var that = this;
-      return new Promise(function(resolve, reject) {
-        var tx = that._db.transaction(STORE, 'readwrite');
-        var store = tx.objectStore(STORE);
-        var results = [];
-        keys.forEach(function(key) {
-          store.get(key).onsuccess(function(result) {
-            results.push(result);
-          });
-        });
-        tx.oncomplete = function() { resolve(results); };
-        tx.onabort = function() { reject(tx.error); };
-      });
-    },
-    setMany: function(entries) {
-      var that = this;
-      return new Promise(function(resolve, reject) {
-        var tx = that._db.transaction(STORE, 'readwrite');
-        var store = tx.objectStore(STORE);
-        entries.forEach(function(entry) {
-          store.put(entry.value, entry.key);
-        });
-        tx.oncomplete = function() { resolve(undefined); };
-        tx.onabort = function() { reject(tx.error); };
-      });
-    },
-    deleteMany: function(keys) {
-      var that = this;
-      return new Promise(function(resolve, reject) {
-        var tx = that._db.transaction(STORE, 'readwrite');
-        var store = tx.objectStore(STORE);
-        keys.forEach(function(key) {
-          store.delete(key);
-        });
-        tx.oncomplete = function() { resolve(undefined); };
-        tx.onabort = function() { reject(tx.error); };
-      });
-    }
-  };
 
-  global.simpleDB = new SimpleDBFactory(SECRET);
-  global.SimpleDBKeyRange = IDBKeyRange;
-}(self));
+  /**
+   * Clears out the data stored in the SimpleDB instance with a given name.
+   *
+   * @param name The name of the SimpleDB database.
+   * @returns {Promise} Fulfills when the data is cleared.
+   */
+  clearData(name) {
+    return this.instance(name).then(db => db.clear());
+  }
+}
+
+window.IOWA = window.IOWA || {};
+IOWA.SimpleDB = IOWA.SimpleDB || new SimpleDB();

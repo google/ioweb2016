@@ -27,7 +27,7 @@
   display: block;
 
   .card-content {
-    padding: 24px 32px 24px 16px;
+    padding: 24px;
 
     &.box {
       height: 105vw;
@@ -125,7 +125,11 @@
 @media (min-width: $tablet-breakpoint-min) {
   .card {
     .card-content {
-      padding: 24px 48px 24px 24px;
+      padding: 24px;
+
+      h5 {
+        padding-right: 24px;
+      }
 
       &.box {
         width: 50%;
@@ -159,7 +163,7 @@
     h3,
     .card__title p,
     .card__sub-title {
-      @include typo-card-large();
+      @include typo-card();
     }
   }
 }
@@ -180,10 +184,14 @@
     border-radius: 3px;
 
     .card-content {
-      padding: 32px 64px 32px 32px;
+      padding: 32px;
 
       h2 {
         @include typo-card-large();
+      }
+
+      h5 {
+        padding-right: 32px;
       }
 
       &.box {
@@ -213,7 +221,12 @@
 
   .card {
     .card-content {
-      padding: 40px 80px 40px 40px;
+      padding: 40px;
+
+      h5 {
+        padding-right: 40px;
+      }
+
       &.box {
         height: 580px;
       }
@@ -235,7 +248,12 @@
 
   .card {
     .card-content {
-      padding: 48px 96px 48px 48px;
+      padding: 48px;
+
+      h5 {
+        padding-right: 48px;
+      }
+
       &.box {
         height: 640px;
       }
@@ -290,7 +308,7 @@
     .card-content {
       padding-bottom: $desktopKeyline;
       padding-top: $desktopKeyline;
-      padding-right: $largeKeyline;
+      padding-right: $desktopKeyline;
 
       h2 {
         @include typo-card();
@@ -305,6 +323,7 @@
     p {
       font-size: 20px;
       line-height: 28px;
+      padding-right: $desktopKeyline;
     }
     h5 p {
       margin-bottom: 12px;

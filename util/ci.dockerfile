@@ -14,11 +14,10 @@
 
 # Docker environment for the webapp used in CI.
 # For CI to pick it up, use the following build command:
-#     docker build --rm -t gcr.io/io-webapp-staging/ci-node4-go15 -f ci.dockerfile .
+# docker build --rm -t gcr.io/io-webapp-staging/ci-node4-go16 - < ci.dockerfile
 
 FROM node:4
 
-# gcc for cgo in case we need it
 # docker-py seems to be needed by gcloud
 RUN apt-get update && apt-get install -y --no-install-recommends \
 		g++ gcc libc6-dev make \
@@ -30,9 +29,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	&& npm install -qq -g gulp bower
 
 # Go language
-ENV GOLANG_VERSION 1.5.3
+ENV GOLANG_VERSION 1.6
 ENV GOLANG_DOWNLOAD_URL https://golang.org/dl/go$GOLANG_VERSION.linux-amd64.tar.gz
-ENV GOLANG_DOWNLOAD_SHA256 43afe0c5017e502630b1aea4d44b8a7f059bf60d7f29dfd58db454d4e4e0ae53
+ENV GOLANG_DOWNLOAD_SHA256 5470eac05d273c74ff8bac7bef5bad0b5abbd1c4052efbdbc8db45332e836b0b
 RUN curl -fsSL "$GOLANG_DOWNLOAD_URL" -o golang.tar.gz \
 	&& echo "$GOLANG_DOWNLOAD_SHA256  golang.tar.gz" | sha256sum -c - \
 	&& tar -C /usr/local -xzf golang.tar.gz \
@@ -48,7 +47,7 @@ RUN mkdir /gcloud \
   && rm -f /gcloud.tar.gz
 
 # Standalone App Engine SDK for Go
-RUN curl -sSLo /sdk.zip https://storage.googleapis.com/appengine-sdks/featured/go_appengine_sdk_linux_amd64-1.9.31.zip \
+RUN curl -sSLo /sdk.zip https://storage.googleapis.com/appengine-sdks/featured/go_appengine_sdk_linux_amd64-1.9.35.zip \
 	&& unzip -q /sdk.zip \
 	&& rm /sdk.zip
 

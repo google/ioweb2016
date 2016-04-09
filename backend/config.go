@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package backend
 
 import (
 	"encoding/json"
@@ -126,6 +126,11 @@ type appConfig struct {
 		Location    *time.Location
 		ManifestURL string `json:"manifest"`
 	} `json:"schedule"`
+
+	// Firebase settings
+	Firebase struct {
+		Shards       []string `json:"shards"`
+	} `json:"firebase"`
 
 	// Feedback survey settings
 	Survey struct {

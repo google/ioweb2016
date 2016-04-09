@@ -4,11 +4,11 @@
 
 Prerequisites
 
-* [Go 1.4](https://golang.org/dl/).
-* Optional: [Google App Engine SDK for Go](https://cloud.google.com/appengine/downloads).
+* [Go 1.6](https://golang.org/dl/).
+* [Google App Engine SDK for Go 1.9.35+](https://cloud.google.com/appengine/downloads).
   Once installed, make sure the SDK root dir is in `$PATH`. You can verify it's been setup
   correctly by running `goapp version`, which should output something like
-  `go version go1.4.2 (appengine-1.9.30) darwin/amd64`.
+  `go version go1.6 (appengine-1.9.35)`.
 
 Setup
 
@@ -25,8 +25,7 @@ If you plan on modifying source code, be a good citizen and:
 
 ### Running
 
-Run `gulp serve` to start a standalone backend, while still enjoying live-reload.
-You'll need Go for that.
+Run `gulp serve` to start the app.
 
 Normally the app is running in "dev" environment but you can change that
 by providing `--env` argument to the gulp task:
@@ -46,19 +45,6 @@ which the app takes into account when rendering a page or responding to a reques
 
 Running in `stage` or `prod` requires real credentials when accessing external services.
 You'll need to run a one-off `gulp decrypt` which will decrypt a service account private key.
-
-You can also use GAE dev appserver by running `gulp serve:gae`. This is closer to what
-we're using in our webapp environment but a bit slower on startup.
-You'll need Google App Engine SDK for Go to do this.
-
-To change the app environment when using GAE SDK, provide `--env` argument:
-
-    # run in dev mode, default:
-    gulp serve:gae
-    # set app environment to production:
-    gulp serve:gae --env prod
-    # or run as if we were in staging:
-    gulp serve:gae --env stage
 
 Other arguments are:
 
@@ -85,22 +71,17 @@ by providing the `--env` argument as with other `serve` tasks. For instance:
 
 To deploy complete application on App Engine:
 
-1. Run `gulp` which will build both frontend and backend in `dist` directory.
+1. Run `gulp serve:dist` which will build the app in `dist` directory
+   and start local server.
+2. Perform any necessary manual checks.
 2. Run `GAE_SDK/goapp deploy -application <app-id> -version <v> dist/backend/`.
 
 ## Backend
 
-Backend is written in Go. It can run on either Google App Engine or any other platform as a standalone
-binary program.
+Backend is written in Go, hosted on Google App Engine.
 
-`gulp backend` will build a self-sufficient backend server and place the binary in `backend/bin/server`.
-
-`gulp backend:test` will run backend server tests. If, while working on the backend, you feel tired
-of running the command again and again, use `gulp backend:test --watch` to watch for file changes
-and re-run tests automatically.
-
-Add `--gae` cmd line argument to the test task to run GAE-based tests.
-
+`go test ./backend` will run backend server tests. You'll need to make sure
+there's a `server.config` file in `./backend` dir.
 
 ## Debugging
 
@@ -123,23 +104,36 @@ Useful for browsing original CMS data on staging GCS bucket:
 
 ### Configuring Firebase
 
-// TODO: Centralize Firebase DB shards list in server.config files and automate rules upload with Gulp.
+#### Creating Databases/Shards and setting them up
 
-You need to create and configure Firebase databases and configure the app to use them.
-First create one or more (depending on how many shards you need) Firebase databases from
-http://firebase.com and note their URL and IDs.
-In `scripts/helper/firebase.js` list the Firebase Database URLs in `FIREBASE_DATABASES_URL`.
-Configure these Firebase databases' rules by running for each database:
+When setting up your own version of the Google IO Web app you need to create new Firebase databases,
+set them up and configure the app to use them.
+First, create one or more (depending on how many shards you need) Firebase databases from
+http://firebase.com and note their Databases URLs.
+In the `backend/server.config` file list the Firebase Databases URLs in the `firebase.shards` attribute.
+
+For each Firebase databases you need to configure configure Login and Auth:
+ - Open the Auth settings page: `https://<firebase-app-id>.firebaseio.com/?page=Auth`
+ - If the database is going to be used on prod enter `events.google.com` in the `Authorized Domains for OAuth Redirects` field or whichever domain your app will be served from in prod.
+ - Below click on the `Google` tab then `Enable Google Authentication`
+ - Provide the `Google Client ID` that you are using for auth.
+
+#### Deploy Security rules to Firebase Databases
+
+Run the following command to deploy the Firebase Security rules to all shards:
 
 ```
-firebase login
-firebase deploy:rules -f <firebase-app-id> # e.g. firebase deploy:rules -f iowa-2016-dev
+gulp deploy:firebaserules
 ```
 
-For each Firebase databases, configure Login and Auth on: `https://<firebase-app-id>.firebaseio.com/?page=Auth`
-If the database is going to be used on prod enter `events.google.com` in `Authorized Domains for OAuth Redirects`
-Below click on the `Google` tab then `Enable Google Authentication`
-and provide the `Google Client ID` that you are using for auth.
+> Note: You may be prompted to log in to Firebase if you haven't previously done so.
+
+By default the above will deploy rules to the `dev` Firebase shards.
+To deploy the rules to other environments' shards run:
+
+```
+gulp deploy:firebaserules --env {prod|stage}
+```
 
 
 ### Send GCM push notifications
@@ -162,7 +156,7 @@ http://HOST/io2016/debug/sync
 * dev server: [localhost:3000/io2016/debug/sync](http://localhost:3000/io2016/debug/sync)
 * staging: [go/iowastaging/debug/sync](http://go/iowastaging/debug/sync)
 
-## Testing
+## Frontend Testing
 
 Frontend tests are run via https://github.com/Polymer/web-component-tester
 

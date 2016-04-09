@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package backend
 
 import (
 	"reflect"
@@ -20,7 +20,27 @@ import (
 	"time"
 )
 
+func TestDurationStr(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		in  time.Duration
+		out string
+	}{
+		{30 * time.Minute, "30 minutes"},
+		{time.Hour, "1 hour"},
+		{2 * time.Hour, "2 hours"},
+		{time.Hour + 30*time.Minute, "1.5 hour"},
+		{2*time.Hour + 30*time.Minute, "2.5 hours"},
+	}
+	for i, test := range tests {
+		if out := durationStr(test.in); out != test.out {
+			t.Errorf("%d: durationStr(%v) = %q; want %q", i, test.in, out, test.out)
+		}
+	}
+}
+
 func TestSubslice(t *testing.T) {
+	t.Parallel()
 	table := []struct{ in, items, out []string }{
 		{[]string{"a", "b", "c"}, []string{"a", "c"}, []string{"b"}},
 		{[]string{"a", "b", "c"}, []string{"a", "c", "b"}, []string{}},
@@ -38,6 +58,7 @@ func TestSubslice(t *testing.T) {
 }
 
 func TestUnique(t *testing.T) {
+	t.Parallel()
 	table := []struct{ in, out []string }{
 		{[]string{"a", "b", "c"}, []string{"a", "b", "c"}},
 		{[]string{"a", "b", "b", "a", "d"}, []string{"a", "b", "d"}},
@@ -53,6 +74,7 @@ func TestUnique(t *testing.T) {
 }
 
 func TestDiffEventData(t *testing.T) {
+	t.Parallel()
 	a := &eventSession{
 		Title:     "Keynote",
 		StartTime: time.Date(2015, 5, 28, 9, 30, 0, 0, time.UTC),
@@ -76,6 +98,7 @@ func TestDiffEventData(t *testing.T) {
 }
 
 func TestDiffEventDataVideo(t *testing.T) {
+	t.Parallel()
 	date := time.Now().Round(time.Second)
 	past := date.Add(-time.Hour)
 	future := date.Add(time.Hour)
@@ -157,6 +180,7 @@ func TestDiffEventDataVideo(t *testing.T) {
 }
 
 func TestThumbURL(t *testing.T) {
+	t.Parallel()
 	table := []struct{ in, out string }{
 		{"http://example.org/image.jpg", "http://example.org/image.jpg"},
 		{"http://example.org/images/__w/img.jpg", "http://example.org/images/__w/img.jpg"},
@@ -172,9 +196,6 @@ func TestThumbURL(t *testing.T) {
 }
 
 func TestScheduleLiveIDs(t *testing.T) {
-	if !isGAEtest {
-		t.Skipf("not implemented yet; isGAEtest = %v", isGAEtest)
-	}
 	defer resetTestState(t)
 	defer preserveConfig()()
 
@@ -183,18 +204,18 @@ func TestScheduleLiveIDs(t *testing.T) {
 	config.Schedule.Location = time.UTC
 	config.Schedule.Start = now
 
-	c := newContext(newTestRequest(t, "GET", "/dummy", nil))
+	c := newContext(newTestRequest(t, "GET", "/", nil))
 	if err := storeEventData(c, &eventData{Sessions: map[string]*eventSession{
-		"live2":      &eventSession{StartTime: now, IsLive: true, YouTube: "live2", Desc: "... channel 2"},
-		"random":     &eventSession{StartTime: now, IsLive: false, YouTube: "random"},
-		"live1":      &eventSession{StartTime: now, IsLive: true, YouTube: "live1", Desc: "... channel 1"},
-		"live2.2":    &eventSession{StartTime: now, IsLive: true, YouTube: "live2", Desc: "... channel 2"},
-		"live3":      &eventSession{StartTime: now, IsLive: true, YouTube: "live3", Desc: "... channel 3"},
-		"no-channel": &eventSession{StartTime: now, IsLive: true, YouTube: "live4"},
-		keynoteID:    &eventSession{StartTime: now, IsLive: true, YouTube: "keynote"},
-		"live1-2":    &eventSession{StartTime: tomorrow, IsLive: true, YouTube: "live1-2", Desc: "... channel 1"},
-		"live2-2":    &eventSession{StartTime: tomorrow, IsLive: true, YouTube: "live2-2", Desc: "... channel 2"},
-		"live3-2":    &eventSession{StartTime: tomorrow, IsLive: true, YouTube: "live3-2", Desc: "... channel 3"},
+		"live2":      {StartTime: now, IsLive: true, YouTube: "live2", Desc: "... channel 2"},
+		"random":     {StartTime: now, IsLive: false, YouTube: "random"},
+		"live1":      {StartTime: now, IsLive: true, YouTube: "live1", Desc: "... channel 1"},
+		"live2.2":    {StartTime: now, IsLive: true, YouTube: "live2", Desc: "... channel 2"},
+		"live3":      {StartTime: now, IsLive: true, YouTube: "live3", Desc: "... channel 3"},
+		"no-channel": {StartTime: now, IsLive: true, YouTube: "live4"},
+		keynoteID:    {StartTime: now, IsLive: true, YouTube: "keynote"},
+		"live1-2":    {StartTime: tomorrow, IsLive: true, YouTube: "live1-2", Desc: "... channel 1"},
+		"live2-2":    {StartTime: tomorrow, IsLive: true, YouTube: "live2-2", Desc: "... channel 2"},
+		"live3-2":    {StartTime: tomorrow, IsLive: true, YouTube: "live3-2", Desc: "... channel 3"},
 	}}); err != nil {
 		t.Fatal(err)
 	}

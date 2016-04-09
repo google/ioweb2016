@@ -23,6 +23,11 @@ limitations under the License.
 <!--
 The `<io-schedule-subnav>` implements the schedule pages sub navigation.
 -->
+<!--
+Fired when the clears filter "x" is clicked.
+
+@event filters-clear
+-->
 <dom-module id="io-schedule-subnav">
 <template>
 <style include="shared-app-styles">
@@ -45,32 +50,62 @@ The `<io-schedule-subnav>` implements the schedule pages sub navigation.
       display: none;
     };
   }
+
+  .filters-banner-wrapper {
+    background-color: #fff;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 69px; /* subnav height */
+    font-size: 12px;
+    cursor: pointer;
+    color: rgba(0,0,0,0.54);
+  }
+  .filters-banner {
+    padding-top: 24px !important;
+    padding-bottom: 24px !important;
+    padding-right: 16px !important;
+  }
+  .filters-banner iron-icon {
+    margin-left: 8px;
+  }
 </style>
 
-<div class="subpage__nav bg-cyan-400" layout horizontal center justified>
+<nav class="subpage__nav bg-cyan-400" layout horizontal center justified relative>
   <template is="dom-if" if="[[!app.isPhoneSize]]">
     <paper-tabs id="subpage-tabs" class="white"
                 attr-for-selected="label"
-                selected="[[selectedSubpage]]">
-      <paper-tab label="agenda" role="">
+                selected="[[selectedSubpage]]"
+                activate-event="">
+      <paper-tab label="agenda" link>
         <a href="#agenda" data-track-link="schedule-agenda" data-ajax-link
-                          layout horizontal center-center>Agenda</a>
+                          layout horizontal center-center
+                          aria-label="agenda"
+                          tabindex="-1">Agenda</a>
       </paper-tab>
-      <paper-tab label="day1" role="">
+      <paper-tab label="day1" link>
         <a href="#day1" data-track-link="schedule-day1" data-ajax-link
-                        layout horizontal center-center>May 18</a>
+                        layout horizontal center-center
+                        aria-label="may eighteenth"
+                        tabindex="-1">May 18</a>
       </paper-tab>
-      <paper-tab label="day2" role="">
+      <paper-tab label="day2" link>
         <a href="#day2" data-track-link="schedule-day2" data-ajax-link
-                        layout horizontal center-center>May 19</a>
+                        layout horizontal center-center
+                        aria-label="may nineteenth"
+                        tabindex="-1">May 19</a>
       </paper-tab>
-      <paper-tab label="day3" role="">
+      <paper-tab label="day3" link>
         <a href="#day3" data-track-link="schedule-day3" data-ajax-link
-                        layout horizontal center-center>May 20</a>
+                        layout horizontal center-center
+                        aria-label="may twentieth"
+                        tabindex="-1">May 20</a>
       </paper-tab>
-      <paper-tab label="myschedule" role="">
+      <paper-tab label="myschedule" link>
         <a href="#myschedule" data-track-link="schedule-mysched" data-ajax-link
-                              layout horizontal center-center>My Schedule</a>
+                              layout horizontal center-center
+                              aria-label="my schedule"
+                              tabindex="-1">My Schedule</a>
       </paper-tab>
     </paper-tabs>
   </template>
@@ -126,11 +161,24 @@ The `<io-schedule-subnav>` implements the schedule pages sub navigation.
       <paper-icon-button icon="io:filter-list" aria-label="Filter list"></paper-icon-button>
     </div>
   </div>
-</div>
+
+  <div class="filters-banner-wrapper" hidden$="[[!filters.length]]">
+    <div class="filters-banner card-content bg-bluegrey-50-60" layout horizontal center justified>
+      <span>filtering by [[_prettifyFilters(filters.length)]]</span>
+      <span layout horizontal center on-click="clearFilters">
+        clear <iron-icon icon="io:close"></iron-icon>
+      </span>
+    </div>
+  </div>
+
+</nav>
 
 </template>
 <script>
 (function() {
+
+  var SUBTAB_SELECTOR = '#subpage-tabs a';
+
   Polymer({
     is: 'io-schedule-subnav',
 
@@ -158,7 +206,25 @@ The `<io-schedule-subnav>` implements the schedule pages sub navigation.
         type: Boolean,
         value: false,
         notify: true
+      },
+
+      /**
+       * Array of applied filters.
+       */
+      filters: {
+        type: Array
       }
+    },
+
+    attached: function() {
+      // Wait till after subnav effects to look for focusable items
+      this.async(function() {
+        IOWA.A11y.addFocusStates(SUBTAB_SELECTOR);
+      });
+    },
+
+    detached: function() {
+      IOWA.A11y.removeFocusStates(SUBTAB_SELECTOR);
     },
 
     _disableFiltering: function(selectedSubpage) {
@@ -189,6 +255,14 @@ The `<io-schedule-subnav>` implements the schedule pages sub navigation.
 
     toggleFilters: function() {
       this.showFilters = !this.showFilters;
+    },
+
+    _prettifyFilters: function(filters) {
+      return this.filters.join(', ');
+    },
+
+    clearFilters: function() {
+      this.fire('filters-clear');
     }
 
   })

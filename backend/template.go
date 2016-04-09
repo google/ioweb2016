@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package backend
 
 import (
 	"bytes"
@@ -90,6 +90,7 @@ type templateData struct {
 	OgTitle      string
 	OgImage      string
 	StartDateStr string
+	FirebaseShards []string
 	// livestream youtube video IDs
 	LiveIDs []string
 }
@@ -134,6 +135,7 @@ func renderTemplate(c context.Context, name string, partial bool, data *template
 	data.Slug = name
 	data.Prefix = config.Prefix
 	data.StartDateStr = config.Schedule.Start.In(config.Schedule.Location).Format(time.RFC3339)
+	data.FirebaseShards = config.Firebase.Shards
 	if v, err := scheduleLiveIDs(c, time.Now()); err == nil {
 		data.LiveIDs = v
 	}
@@ -308,7 +310,7 @@ func getSitemap(c context.Context, baseURL *url.URL) (*sitemap, error) {
 		return nil, err
 	}
 	mod := sched.modified.In(time.UTC)
-	for id, _ := range sched.Sessions {
+	for id := range sched.Sessions {
 		u := baseURL.ResolveReference(&url.URL{Path: "schedule"})
 		u.RawQuery = url.Values{"sid": {id}}.Encode()
 		item := &sitemapItem{

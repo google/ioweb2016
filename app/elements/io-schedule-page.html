@@ -148,14 +148,16 @@ limitations under the License.
 
       <io-schedule-subnav id="subnav"
           selected-subpage="[[selectedSubpage]]" app="[[app]]"
-          show-filters="{{showFilters}}"></io-schedule-subnav>
+          show-filters="{{showFilters}}"
+          filters="[[filters]]"
+          on-filters-clear="clearFilters"></io-schedule-subnav>
 
       <section class$="subpage-agenda subpage__content bg-bluegrey-50-20 {{_applyActiveClassWhenSubpage(selectedSubpage, 'agenda')}}">
         <section class="slide-up">
           <div class="card__container bg-cyan-200">
             <div class="card">
               <div class="card-content max-width-800 text-justified">
-                I/O'16 takes place over the course of 3 days in May, from the 18th-20th. On-site
+                I/O 2016 takes place over the course of 3 days in May, from the 18th-20th. On-site
                 badge pick-up is available Wednesday, May 18 from 9-10AM. Below is an overview of the
                 activities taking place over the course of the conference.
               </div>
@@ -169,7 +171,8 @@ limitations under the License.
                          start="[[day.start]]"
                          end="[[day.end]]"
                          color="[[day.color]]"
-                         events="[[day.events]]"></io-agenda>
+                         events="[[day.events]]"
+                         index="[[index]]"></io-agenda>
             </template>
           </template>
         </section>
@@ -188,7 +191,8 @@ limitations under the License.
               session-topics="[[app.filterTopics]]"
               session-types="[[app.filterSessionTypes]]"
               gmt-day-one="[[date]]"
-              show-filters="{{showFilters}}"></io-schedule>
+              show-filters="{{showFilters}}"
+              filters="{{filters}}"></io-schedule>
           </section>
         </div>
       </section>
@@ -204,8 +208,6 @@ limitations under the License.
 <script>
 (function () {
   'use strict';
-
-  var SUBTAB_SELECTOR = '#subpage-tabs a';
 
   Polymer({
 
@@ -242,6 +244,14 @@ limitations under the License.
        showFilters: {
         type: Boolean,
         value: false,
+        notify: true
+      },
+
+      /**
+       * Array of applied filters.
+       */
+      filters: {
+        type: Array,
         notify: true
       },
 
@@ -350,15 +360,6 @@ limitations under the License.
       }
     },
 
-    attached: function() {
-      // TODO: check that this is still needed in paper-tabs.
-      IOWA.A11y.addFocusStates(SUBTAB_SELECTOR);
-    },
-
-    detached: function() {
-      IOWA.A11y.removeFocusStates(SUBTAB_SELECTOR);
-    },
-
     onPageTransitionDone: function(e) {
       this.$.scheduleEl.deepLinkFromURL();
 
@@ -368,12 +369,18 @@ limitations under the License.
     },
 
     onSubpageTransitionDone: function() {
+      this.set('app.headerReveals', true);
+
       // Reset FAB position after new DOM is set.
       IOWA.Elements.Template.initFabScroll();
     },
 
     toggleFilters: function() {
       this.$.scheduleEl.showFilters = !this.$.scheduleEl.showFilters;
+    },
+
+    clearFilters: function(e) {
+      this.$.scheduleEl.clearFilters();
     },
 
     _computeDisableRateSession: function(answersRecord) {
