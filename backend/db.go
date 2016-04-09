@@ -19,7 +19,6 @@ import (
 	"crypto/md5"
 	"encoding/gob"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"math/rand"
 	"strings"
@@ -31,13 +30,10 @@ import (
 )
 
 const (
-	kindCredentials = "Cred"
-	kindUserPush    = "Push"
-	kindEventData   = "EventData"
-	kindChanges     = "Changes"
-	kindAppFolder   = "AppFolder"
-	kindNext        = "Next"
-	kindEgg         = "Egg"
+	kindEventData = "EventData"
+	kindChanges   = "Changes"
+	kindNext      = "Next"
+	kindEgg       = "Egg"
 )
 
 type eventDataCache struct {
@@ -70,60 +66,46 @@ func runInTransaction(c context.Context, f func(context.Context) error) error {
 	return datastore.RunInTransaction(c, f, opts)
 }
 
-// storeCredentials saves OAuth2 credentials cred in a presistent DB.
-// cred must have userID set to a non-zero value.
-func storeCredentials(c context.Context, cred *oauth2Credentials) error {
-	if cred.userID == "" {
-		return errors.New("storeCredentials: userID is not set")
-	}
-
-	key := datastore.NewKey(c, kindCredentials, cred.userID, 0, nil)
-	_, err := datastore.Put(c, key, cred)
-	return err
-}
-
-// updateCredentials patches existing Cred entity with the provided new ncred credentials
-// in a transaction.
-func updateCredentials(c context.Context, ncred *oauth2Credentials) error {
-	return runInTransaction(c, func(c context.Context) error {
-		cred, err := getCredentials(c, ncred.userID)
-		if err != nil {
-			return fmt.Errorf("updateCredentials: %v", err)
-		}
-		cred.AccessToken = ncred.AccessToken
-		cred.Expiry = ncred.Expiry
-		cred.RefreshToken = ncred.RefreshToken
-		err = storeCredentials(c, cred)
-		if err != nil {
-			err = fmt.Errorf("updateCredentials: %v", err)
-		}
-		return err
-	})
-}
-
-// getCredentials fetches user credentials from a persistent DB.
-func getCredentials(c context.Context, uid string) (*oauth2Credentials, error) {
-	key := datastore.NewKey(c, kindCredentials, uid, 0, nil)
-	cred := &oauth2Credentials{userID: uid}
-	err := datastore.Get(c, key, cred)
-	if err != nil {
-		err = fmt.Errorf("getCredentials: %v", err)
-	}
-	return cred, err
-}
-
+// TODO: port to firebase
+//
 // storeUserPushInfo saves user push configuration in a persistent DB.
 // info must have userID set to a non-zero value.
 func storeUserPushInfo(c context.Context, p *userPush) error {
-	if p.userID == "" {
-		return errors.New("storeUserPushInfo: userID is not set")
-	}
+	return nil
+	//if p.userID == "" {
+	//	return errors.New("storeUserPushInfo: userID is not set")
+	//}
 
-	key := datastore.NewKey(c, kindUserPush, p.userID, 0, nil)
-	_, err := datastore.Put(c, key, p)
-	return err
+	//key := datastore.NewKey(c, kindUserPush, p.userID, 0, nil)
+	//_, err := datastore.Put(c, key, p)
+	//return err
 }
 
+// TODO: port to firebase
+//
+// getUserPushInfo fetches user push configuration from a persistent DB.
+// If the configuration does not exist yet, a default one is returned.
+// Default configuration has all notification settings disabled.
+func getUserPushInfo(c context.Context, uid string) (*userPush, error) {
+	return &userPush{userID: uid}, nil
+	//key := datastore.NewKey(c, kindUserPush, uid, 0, nil)
+	//p := &userPush{userID: uid}
+	//err := datastore.Get(c, key, p)
+	//if err == datastore.ErrNoSuchEntity {
+	//	err = nil
+	//}
+	//if err != nil {
+	//	return nil, err
+	//}
+
+	//if p.Ext.Enabled {
+	//	p.Pext = &p.Ext
+	//}
+	//return p, err
+}
+
+// TODO: port to firebase
+//
 // updatePushEndpoint replaces old endpoint with the new URL nurl.
 // It must be run in a transactional context.
 func updatePushEndpoint(c context.Context, uid, endpoint, nurl string) error {
@@ -140,6 +122,8 @@ func updatePushEndpoint(c context.Context, uid, endpoint, nurl string) error {
 	return nil
 }
 
+// TODO: port to firebase
+//
 // deletePushEndpoint removes endpoint from the list of push endpoints of user uid.
 // It must be run in a transactional context.
 func deletePushEndpoint(c context.Context, uid, endpoint string) error {
@@ -159,57 +143,26 @@ func deletePushEndpoint(c context.Context, uid, endpoint string) error {
 	return nil
 }
 
-// getUserPushInfo fetches user push configuration from a persistent DB.
-// If the configuration does not exist yet, a default one is returned.
-// Default configuration has all notification settings disabled.
-func getUserPushInfo(c context.Context, uid string) (*userPush, error) {
-	key := datastore.NewKey(c, kindUserPush, uid, 0, nil)
-	p := &userPush{userID: uid}
-	err := datastore.Get(c, key, p)
-	if err == datastore.ErrNoSuchEntity {
-		err = nil
-	}
-	if err != nil {
-		return nil, err
-	}
-
-	if p.Ext.Enabled {
-		p.Pext = &p.Ext
-	}
-	return p, err
-}
-
+// TODO: port to firebase
+//
 // listUsersWithPush returns user IDs which have userPush.Enabled == true.
 // It might not return most recent result because of the datastore eventual consistency.
 func listUsersWithPush(c context.Context) ([]string, error) {
-	users := make([]string, 0)
-	q := datastore.NewQuery(kindUserPush).Filter("on =", true).KeysOnly()
-	c, _ = context.WithTimeout(c, time.Minute)
-	for t := q.Run(c); ; {
-		k, err := t.Next(nil)
-		if err == datastore.Done {
-			break
-		}
-		if err != nil {
-			return nil, fmt.Errorf("listUsersWithPush: %v", err)
-		}
-		users = append(users, k.StringID())
-	}
-	return users, nil
-}
-
-// storeLocalAppFolderMeta saves data.FileID and data.Etag in a local db under key of user uid.
-func storeLocalAppFolderMeta(c context.Context, uid string, data *appFolderData) error {
-	key := datastore.NewKey(c, kindAppFolder, uid, 0, nil)
-	_, err := datastore.Put(c, key, data)
-	return err
-}
-
-// getLocalAppFolderMeta returns appFolderData of user uid with only FileID and Etag set.
-func getLocalAppFolderMeta(c context.Context, uid string) (*appFolderData, error) {
-	key := datastore.NewKey(c, kindAppFolder, uid, 0, nil)
-	data := &appFolderData{}
-	return data, datastore.Get(c, key, data)
+	return nil, nil
+	//users := make([]string, 0)
+	//q := datastore.NewQuery(kindUserPush).Filter("on =", true).KeysOnly()
+	//c, _ = context.WithTimeout(c, time.Minute)
+	//for t := q.Run(c); ; {
+	//	k, err := t.Next(nil)
+	//	if err == datastore.Done {
+	//		break
+	//	}
+	//	if err != nil {
+	//		return nil, fmt.Errorf("listUsersWithPush: %v", err)
+	//	}
+	//	users = append(users, k.StringID())
+	//}
+	//return users, nil
 }
 
 // storeEventData saves d in the datastore with auto-generated ID
@@ -395,7 +348,7 @@ func storeNextSessions(c context.Context, items []*eventSession) error {
 	pkey := nextSessionParent(c)
 	keys := make([]*datastore.Key, len(items))
 	for i, s := range items {
-		id := s.Id + ":" + s.Update
+		id := s.ID + ":" + s.Update
 		keys[i] = datastore.NewKey(c, kindNext, id, 0, pkey)
 	}
 	zeros := make([]struct{}, len(keys))
@@ -410,7 +363,7 @@ func filterNextSessions(c context.Context, items []*eventSession) ([]*eventSessi
 	pkey := nextSessionParent(c)
 	keys := make([]*datastore.Key, len(items))
 	for i, s := range items {
-		id := s.Id + ":" + s.Update
+		id := s.ID + ":" + s.Update
 		keys[i] = datastore.NewKey(c, kindNext, id, 0, pkey)
 	}
 	zeros := make([]struct{}, len(keys))

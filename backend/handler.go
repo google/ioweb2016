@@ -20,7 +20,6 @@ import (
 	"fmt"
 	"html/template"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
@@ -60,30 +59,18 @@ func registerHandlers() {
 	handle("/", rootHandleFn)
 	handle("/sitemap.xml", serveSitemap)
 	handle("/manifest.json", serveManifest)
-	// API v0 - pre-phase2
-	handle("/api/extended", serveIOExtEntries)
-	handle("/api/social", serveSocial)
 	// API v1
 	handle("/api/v1/extended", serveIOExtEntries)
 	handle("/api/v1/social", serveSocial)
-	handle("/api/v1/auth", handleAuth)
 	handle("/api/v1/schedule", serveSchedule)
 	handle("/api/v1/easter-egg", handleEasterEgg)
 	handle("/api/v1/photoproxy", servePhotosProxy)
-	handle("/api/v1/user/schedule", handleUserSchedule)
-	handle("/api/v1/user/schedule/", handleUserSchedule)
-	handle("/api/v1/user/notify", handleUserNotifySettings)
-	handle("/api/v1/user/updates", serveUserUpdates)
-	handle("/api/v1/user/survey", handleUserSurvey)
-	handle("/api/v1/user/survey/", handleUserSurvey)
-	// API v2
-	handle("/api/v2/user/notify", handleUserNotifySettings)
+	handle("/api/v1/user/survey/", submitUserSurvey)
 	// background jobs
 	handle("/sync/gcs", syncEventData)
 	handle("/task/notify-subscribers", handleNotifySubscribers)
 	handle("/task/ping-user", handlePingUser)
 	handle("/task/ping-device", handlePingDevice)
-	handle("/task/ping-ext", handlePingExt)
 	handle("/task/clock", handleClock)
 	// debug handlers; not available in prod
 	if !isProd() {
@@ -316,47 +303,6 @@ func serveSocial(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// handleAuth is the main authentication handler.
-// It expects the following request header and body:
-//
-//     Authorization: Bearer <ID or access token>
-//     Content-Type: application/json
-//     {"code": "one-time authorization code from hybrid server-side flow"}
-//
-// which will result in a 200 OK empty response upon successful ID/access token
-// and code verifications. The client can count it as "fully logged in" confirmation.
-//
-// ID token is prefered over access token.
-func handleAuth(w http.ResponseWriter, r *http.Request) {
-	// TODO: don't propagate error messages for security reasons
-	w.Header().Set("Content-Type", "application/json;charset=utf-8")
-	c := newContext(r)
-	ah := r.Header.Get("authorization")
-
-	c, err := authUser(c, ah)
-	if err != nil {
-		writeJSONError(c, w, errStatus(err), err)
-		return
-	}
-	var flow struct {
-		Code string `json:"code"`
-	}
-	if err := json.NewDecoder(r.Body).Decode(&flow); err != nil {
-		writeJSONError(c, w, http.StatusBadRequest, err)
-		return
-	}
-	err = runInTransaction(c, func(c context.Context) error {
-		creds, err := fetchCredentials(c, flow.Code)
-		if err != nil {
-			return err
-		}
-		return storeCredentials(c, creds)
-	})
-	if err != nil {
-		writeJSONError(c, w, errStatus(err), err)
-	}
-}
-
 func serveSchedule(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;charset=utf-8")
 	c := newContext(r)
@@ -391,184 +337,6 @@ func serveSchedule(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("etag", `"`+data.etag+`"`)
 	w.Write(b)
-}
-
-func handleUserSchedule(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "GET" {
-		serveUserSchedule(w, r)
-		return
-	}
-	handleUserBookmarks(w, r)
-}
-
-func serveUserSchedule(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json;charset=utf-8")
-	c, err := authUser(newContext(r), r.Header.Get("authorization"))
-	if err != nil {
-		writeJSONError(c, w, errStatus(err), err)
-		return
-	}
-
-	bookmarks, err := userSchedule(c, contextUser(c))
-	if err != nil {
-		writeJSONError(c, w, http.StatusInternalServerError, err)
-		return
-	}
-	if bookmarks == nil {
-		bookmarks = []string{}
-	}
-	if err := json.NewEncoder(w).Encode(bookmarks); err != nil {
-		errorf(c, "encode(%v): %v", bookmarks, err)
-	}
-}
-
-func handleUserBookmarks(w http.ResponseWriter, r *http.Request) {
-	if m := r.Header.Get("x-http-method-override"); m != "" {
-		r.Method = strings.ToUpper(m)
-	}
-	w.Header().Set("Content-Type", "application/json;charset=utf-8")
-	c, err := authUser(newContext(r), r.Header.Get("authorization"))
-	if err != nil {
-		writeJSONError(c, w, errStatus(err), err)
-		return
-	}
-	user := contextUser(c)
-
-	// get session IDs from either request body or URL path
-	// the former has precedence
-	var ids []string
-	err = json.NewDecoder(r.Body).Decode(&ids)
-	if err != nil || len(ids) == 0 {
-		ids = []string{path.Base(r.URL.Path)}
-	}
-	for _, id := range ids {
-		if id == "" || id == "schedule" {
-			writeJSONError(c, w, http.StatusBadRequest, "invalid session ID")
-			return
-		}
-		// TODO: check whether the session ID actually exists?
-	}
-
-	var bookmarks []string
-	switch r.Method {
-	case "PUT":
-		bookmarks, err = bookmarkSessions(c, user, ids...)
-	case "DELETE":
-		bookmarks, err = unbookmarkSessions(c, user, ids...)
-	default:
-		writeJSONError(c, w, http.StatusBadRequest, "invalid request method")
-		return
-	}
-
-	if err != nil {
-		writeJSONError(c, w, http.StatusInternalServerError, err)
-		return
-	}
-
-	if err := json.NewEncoder(w).Encode(bookmarks); err != nil {
-		errorf(c, "handleUserBookmarks: encode(%v): %v", bookmarks, err)
-	}
-}
-
-// handleUserNotifySettings calls either serves or patches user push config
-// based on HTTP method of request r.
-func handleUserNotifySettings(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case "GET":
-		serveUserNotifySettings(w, r)
-	case "PUT":
-		patchUserNotifySettings(w, r)
-	}
-}
-
-// serveUserNotifySettings responds with the current user push configuration.
-func serveUserNotifySettings(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json;charset=utf-8")
-	c, err := authUser(newContext(r), r.Header.Get("authorization"))
-	if err != nil {
-		writeJSONError(c, w, errStatus(err), err)
-		return
-	}
-	data, err := getUserPushInfo(c, contextUser(c))
-	if err != nil {
-		writeJSONError(c, w, errStatus(err), err)
-		return
-	}
-	if err := json.NewEncoder(w).Encode(data); err != nil {
-		errorf(c, "serveUserNotifySettings: %v", err)
-	}
-}
-
-// patchUserNotifySettings updates user push configuration.
-// It doesn't modify existing parameters not present in the payload of r.
-func patchUserNotifySettings(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json;charset=utf-8")
-	c, err := authUser(newContext(r), r.Header.Get("authorization"))
-	if err != nil {
-		writeJSONError(c, w, errStatus(err), err)
-		return
-	}
-
-	// decode request payload into a flexible map
-	var body map[string]interface{}
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		writeJSONError(c, w, http.StatusBadRequest, err)
-		return
-	}
-
-	var data *userPush
-	terr := runInTransaction(c, func(c context.Context) error {
-		// get current settings
-		data, err = getUserPushInfo(c, contextUser(c))
-		if err != nil {
-			return err
-		}
-
-		// patch settings according to the payload
-		if v, ok := body["notify"].(bool); ok {
-			data.Enabled = v
-		}
-		if v, ok := body["iostart"].(bool); ok {
-			data.IOStart = v
-		}
-		if v, ok := body["ioext"]; ok {
-			if v == nil {
-				data.Ext.Enabled = false
-				data.Pext = nil
-			} else if v, ok := v.(map[string]interface{}); ok {
-				data.Ext.Enabled = true
-				data.Ext.Name, _ = v["name"].(string)
-				data.Ext.Lat, _ = v["lat"].(float64)
-				data.Ext.Lng, _ = v["lng"].(float64)
-				data.Pext = &data.Ext
-			}
-		}
-		regid, _ := body["subscriber"].(string)
-		endpoint, _ := body["endpoint"].(string)
-		endpoint = pushEndpointURL(regid, endpoint)
-		if endpoint == config.Google.GCM.Endpoint {
-			return &apiError{msg: "invalid endpoint", code: http.StatusBadRequest}
-		}
-		var exists bool
-		for _, e := range data.Endpoints {
-			if e == endpoint {
-				exists = true
-				break
-			}
-		}
-		if !exists && endpoint != "" {
-			data.Endpoints = append(data.Endpoints, endpoint)
-		}
-
-		// store user configuration
-		return storeUserPushInfo(c, data)
-	})
-
-	if terr != nil {
-		writeJSONError(c, w, errStatus(terr), err)
-		return
-	}
-	json.NewEncoder(w).Encode(data)
 }
 
 // syncEventData updates event data stored in a persistent DB,
@@ -635,199 +403,145 @@ func syncEventData(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// serverUserUpdates responds with a dataChanges containing a diff
+// TODO: web push payload will be similar to what the handler's response looks like.
+//
+// serveUserUpdates responds with a dataChanges containing a diff
 // between provided timestamp and current time.
 // Timestamp is encoded in the Authorization token which the client
 // must know beforehand.
-func serveUserUpdates(w http.ResponseWriter, r *http.Request) {
-	ah := r.Header.Get("authorization")
-	// first request to get SW token
-	if strings.HasPrefix(strings.ToLower(ah), bearerHeader) {
-		serveSWToken(w, r)
-		return
-	}
+//func serveUserUpdates(w http.ResponseWriter, r *http.Request) {
+//	ah := r.Header.Get("authorization")
+//	// first request to get SW token
+//	if strings.HasPrefix(strings.ToLower(ah), bearerHeader) {
+//		serveSWToken(w, r)
+//		return
+//	}
+//
+//	// handle a request with SW token
+//	c := newContext(r)
+//	w.Header().Set("Content-Type", "application/json;charset=utf-8")
+//	user, ts, err := decodeSWToken(ah)
+//	if err != nil {
+//		writeJSONError(c, w, http.StatusForbidden, err)
+//		return
+//	}
+//	c = context.WithValue(c, ctxKeyUser, user)
+//
+//	// fetch user data in parallel with dataChanges
+//	var (
+//		bookmarks []string
+//		pushInfo  *userPush
+//		userErr   error
+//	)
+//	done := make(chan struct{})
+//	go func() {
+//		defer close(done)
+//		if bookmarks, userErr = userSchedule(c, user); userErr != nil {
+//			return
+//		}
+//		pushInfo, userErr = getUserPushInfo(c, user)
+//	}()
+//
+//	dc, err := getChangesSince(c, ts)
+//	if err != nil {
+//		writeJSONError(c, w, errStatus(err), err)
+//		return
+//	}
+//
+//	select {
+//	case <-time.After(10 * time.Second):
+//		errorf(c, "userSchedule/getUserPushInfo timed out")
+//		writeJSONError(c, w, http.StatusInternalServerError, "timeout")
+//		return
+//	case <-done:
+//		// user data goroutine finished
+//	}
+//
+//	// userErr indicates any error in the user data retrieval
+//	if userErr != nil {
+//		errorf(c, "userErr: %v", userErr)
+//		writeJSONError(c, w, http.StatusInternalServerError, userErr)
+//		return
+//	}
+//
+//	filterUserChanges(dc, bookmarks, pushInfo.Pext)
+//	dc.Token, err = encodeSWToken(user, dc.Updated.Add(1*time.Second))
+//	if err != nil {
+//		writeJSONError(c, w, http.StatusInternalServerError, err)
+//	}
+//	logsess := make([]string, 0, len(dc.Sessions))
+//	for k := range dc.Sessions {
+//		logsess = append(logsess, k)
+//	}
+//	logf(c, "sending %d updated sessions to user %s: %s", len(logsess), user, strings.Join(logsess, ", "))
+//	if err := json.NewEncoder(w).Encode(dc); err != nil {
+//		errorf(c, "serveUserUpdates: encode resp: %v", err)
+//	}
+//}
 
-	// handle a request with SW token
-	c := newContext(r)
-	w.Header().Set("Content-Type", "application/json;charset=utf-8")
-	user, ts, err := decodeSWToken(ah)
-	if err != nil {
-		writeJSONError(c, w, http.StatusForbidden, err)
-		return
-	}
-	c = context.WithValue(c, ctxKeyUser, user)
-
-	// fetch user data in parallel with dataChanges
-	var (
-		bookmarks []string
-		pushInfo  *userPush
-		userErr   error
-	)
-	done := make(chan struct{})
-	go func() {
-		defer close(done)
-		if bookmarks, userErr = userSchedule(c, user); userErr != nil {
-			return
-		}
-		pushInfo, userErr = getUserPushInfo(c, user)
-	}()
-
-	dc, err := getChangesSince(c, ts)
-	if err != nil {
-		writeJSONError(c, w, errStatus(err), err)
-		return
-	}
-
-	select {
-	case <-time.After(10 * time.Second):
-		errorf(c, "userSchedule/getUserPushInfo timed out")
-		writeJSONError(c, w, http.StatusInternalServerError, "timeout")
-		return
-	case <-done:
-		// user data goroutine finished
-	}
-
-	// userErr indicates any error in the user data retrieval
-	if userErr != nil {
-		errorf(c, "userErr: %v", userErr)
-		writeJSONError(c, w, http.StatusInternalServerError, userErr)
-		return
-	}
-
-	filterUserChanges(dc, bookmarks, pushInfo.Pext)
-	dc.Token, err = encodeSWToken(user, dc.Updated.Add(1*time.Second))
-	if err != nil {
-		writeJSONError(c, w, http.StatusInternalServerError, err)
-	}
-	logsess := make([]string, 0, len(dc.Sessions))
-	for k := range dc.Sessions {
-		logsess = append(logsess, k)
-	}
-	logf(c, "sending %d updated sessions to user %s: %s", len(logsess), user, strings.Join(logsess, ", "))
-	if err := json.NewEncoder(w).Encode(dc); err != nil {
-		errorf(c, "serveUserUpdates: encode resp: %v", err)
-	}
-}
-
-// serveSWToken responds with an SW authorization token used by the client
-// in subsequent serveUserUpdates requests.
-func serveSWToken(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json;charset=utf-8")
-	c, err := authUser(newContext(r), r.Header.Get("authorization"))
-	if err != nil {
-		writeJSONError(c, w, errStatus(err), err)
-		return
-	}
-
-	now := time.Now()
-	token, err := encodeSWToken(contextUser(c), now)
-	if err != nil {
-		writeJSONError(c, w, errStatus(err), err)
-		return
-	}
-	dc := &dataChanges{Token: token, Updated: now}
-	if err := json.NewEncoder(w).Encode(dc); err != nil {
-		errorf(c, "serveSWToke: encode resp: %v", err)
-	}
-}
-
-// handleUserSurvey is the entry point for /api/v1/user/survey
-func handleUserSurvey(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "GET" {
-		serveUserSurvey(w, r)
-		return
-	}
-	submitUserSurvey(w, r)
-}
-
-// serveUserSurvey responds with the session IDs
-// a user has already submitted feedback for.
-func serveUserSurvey(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json;charset=utf-8")
-	c, err := authUser(newContext(r), r.Header.Get("authorization"))
-	if err != nil {
-		writeJSONError(c, w, errStatus(err), err)
-		return
-	}
-	if isDev() {
-		w.Write([]byte(`["__keynote__"]`))
-		return
-	}
-	sessions, err := submittedSurveySessions(c, contextUser(c))
-	if err != nil {
-		writeJSONError(c, w, http.StatusInternalServerError, err)
-		return
-	}
-	if sessions == nil {
-		sessions = []string{}
-	}
-	if err := json.NewEncoder(w).Encode(sessions); err != nil {
-		errorf(c, "encode(%v): %v", sessions, err)
-	}
-}
-
+// TODO: port to 2016
+//
 // submitUserSurvey submits survey responses for a specific session or a batch.
 func submitUserSurvey(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json;charset=utf-8")
-	c, err := authUser(newContext(r), r.Header.Get("authorization"))
-	if err != nil {
-		writeJSONError(c, w, errStatus(err), err)
-		return
-	}
+	//c, err := authUser(newContext(r), r.Header.Get("authorization"))
+	//if err != nil {
+	//	writeJSONError(c, w, errStatus(err), err)
+	//	return
+	//}
 
-	survey := &sessionSurvey{}
-	if err := json.NewDecoder(r.Body).Decode(survey); err != nil {
-		writeJSONError(c, w, http.StatusBadRequest, err)
-		return
-	}
-	if !survey.valid() {
-		writeJSONError(c, w, http.StatusBadRequest, "invalid data")
-		return
-	}
+	//survey := &sessionSurvey{}
+	//if err := json.NewDecoder(r.Body).Decode(survey); err != nil {
+	//	writeJSONError(c, w, http.StatusBadRequest, err)
+	//	return
+	//}
+	//if !survey.valid() {
+	//	writeJSONError(c, w, http.StatusBadRequest, "invalid data")
+	//	return
+	//}
 
-	sid := path.Base(r.URL.Path)
-	if isDev() {
-		w.Write([]byte(`["` + sid + `"]`))
-		return
-	}
+	//sid := path.Base(r.URL.Path)
+	//if isDev() {
+	//	w.Write([]byte(`["` + sid + `"]`))
+	//	return
+	//}
 
-	// we don't accept feedback for certain sessions
-	if disabledSurvey(sid) {
-		writeJSONError(c, w, http.StatusBadRequest, "survey feedback not allowed for this session")
-		return
-	}
-	// accept only for existing sessions
-	s, err := getSessionByID(c, sid)
-	if err != nil {
-		writeJSONError(c, w, http.StatusNotFound, err)
-		return
-	}
-	// don't allow early submissions on prod
-	if isProd() && time.Now().Before(s.StartTime) {
-		writeJSONError(c, w, http.StatusBadRequest, "too early")
-		return
-	}
+	//// we don't accept feedback for certain sessions
+	//if disabledSurvey(sid) {
+	//	writeJSONError(c, w, http.StatusBadRequest, "survey feedback not allowed for this session")
+	//	return
+	//}
+	//// accept only for existing sessions
+	//s, err := getSessionByID(c, sid)
+	//if err != nil {
+	//	writeJSONError(c, w, http.StatusNotFound, err)
+	//	return
+	//}
+	//// don't allow early submissions on prod
+	//if isProd() && time.Now().Before(s.StartTime) {
+	//	writeJSONError(c, w, http.StatusBadRequest, "too early")
+	//	return
+	//}
 
-	data, err := addSessionSurvey(c, contextUser(c), sid)
-	if err != nil {
-		writeJSONError(c, w, errStatus(err), err)
-		return
-	}
-	err = submitSessionSurvey(c, sid, survey)
-	if err != nil {
-		errorf(c, err.Error())
-		// try async if it didn't work right away; at most 3 retries
-		for i := 0; i < 4 && err != nil; i += 1 {
-			time.Sleep(time.Duration(i) * time.Second)
-			err = submitSessionSurveyAsync(c, sid, survey)
-		}
-	}
-	if err != nil {
-		// we could still recover feedback data from the logs in the worst case
-		errorf(c, "could not submit feedback for %s: %s", sid, survey)
-	}
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(data)
+	//data, err := addSessionSurvey(c, contextUser(c), sid)
+	//if err != nil {
+	//	writeJSONError(c, w, errStatus(err), err)
+	//	return
+	//}
+	//err = submitSessionSurvey(c, sid, survey)
+	//if err != nil {
+	//	errorf(c, err.Error())
+	//	// try async if it didn't work right away; at most 3 retries
+	//	for i := 0; i < 4 && err != nil; i += 1 {
+	//		time.Sleep(time.Duration(i) * time.Second)
+	//		err = submitSessionSurveyAsync(c, sid, survey)
+	//	}
+	//}
+	//if err != nil {
+	//	// we could still recover feedback data from the logs in the worst case
+	//	errorf(c, "could not submit feedback for %s: %s", sid, survey)
+	//}
+	//w.WriteHeader(http.StatusCreated)
+	//json.NewEncoder(w).Encode(data)
 }
 
 // TODO: add ioext params
@@ -891,7 +605,9 @@ func handlePingUser(w http.ResponseWriter, r *http.Request) {
 		if len(pi.Subscribers) > 0 {
 			pi.Endpoints = upgradeSubscribers(pi.Subscribers, pi.Endpoints)
 			pi.Subscribers = nil
-			return storeUserPushInfo(c, pi)
+			// TODO: what do we do with updated push endpoints?
+			//return storeUserPushInfo(c, pi)
+			return nil
 		}
 		return nil
 	})
@@ -1007,47 +723,6 @@ func handlePingDevice(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// handlePingExt sends a "ping" POST request to config.ExtPingURL.
-func handlePingExt(w http.ResponseWriter, r *http.Request) {
-	c := newContext(r)
-	retry, err := taskRetryCount(r)
-	if err != nil || retry > maxTaskRetry {
-		errorf(c, "retry = %d, err: %v", retry, err)
-		return
-	}
-
-	key := r.FormValue("key")
-	if key == "" {
-		errorf(c, "handlePingExt: key value is zero")
-		return
-	}
-	p := strings.NewReader(`{"sync_jitter": 0}`)
-	req, err := http.NewRequest("POST", config.ExtPingURL, p)
-	if err != nil {
-		errorf(c, "handlePingExt: %v", err)
-		return
-	}
-
-	req.Header.Set("content-type", "application/json")
-	req.Header.Set("authorization", "key="+key)
-	res, err := httpClient(c).Do(req)
-
-	if err != nil {
-		errorf(c, "handlePingExt: %v", err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	defer res.Body.Close()
-	if res.StatusCode == http.StatusOK {
-		return
-	}
-	b, _ := ioutil.ReadAll(res.Body)
-	errorf(c, "handlePingExt: remote says %q\nResponse: %s", res.Status, b)
-	if res.StatusCode > 499 {
-		w.WriteHeader(http.StatusInternalServerError)
-	}
-}
-
 // handleClock compares time.Now() to each session and notifies users about starting sessions.
 // It must be run frequently, every minute or so.
 func handleClock(w http.ResponseWriter, r *http.Request) {
@@ -1086,7 +761,7 @@ func handleClock(w http.ResponseWriter, r *http.Request) {
 			eventData: eventData{Sessions: make(map[string]*eventSession, len(allsess))},
 		}
 		for _, s := range allsess {
-			dc.Sessions[s.Id] = s
+			dc.Sessions[s.ID] = s
 		}
 		if err := storeNextSessions(c, allsess); err != nil {
 			return err
@@ -1163,30 +838,6 @@ func servePhotosProxy(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;charset=utf-8")
 	w.WriteHeader(res.StatusCode)
 	io.Copy(w, res.Body)
-}
-
-// handleAdmin renders admin home page on 'GET' requests,
-// and modifies config otherwise.
-// It is accessible only to config.Admins.
-func handleAdmin(w http.ResponseWriter, r *http.Request) {
-	c := newContext(r)
-
-	if r.Method == "GET" {
-		w.Header().Set("Content-Type", "text/html;charset=utf-8")
-		tfile := "home"
-		if r.URL.Path[len(r.URL.Path)-1] != '/' {
-			tfile = path.Base(r.URL.Path)
-		}
-		t, err := template.ParseFiles(filepath.Join(config.Dir, templatesDir, "admin", tfile+".html"))
-		if err != nil {
-			writeError(w, err)
-			return
-		}
-		if err := t.Execute(w, nil); err != nil {
-			errorf(c, "handleAdmin: %v", err)
-		}
-		return
-	}
 }
 
 // debugGetURL fetches a URL with service account credentials.
@@ -1423,15 +1074,4 @@ func h2preload(h http.Header, host, tplname string) {
 		s = "http"
 	}
 	http2preload.AddHeader(h, s, path.Join(host, config.Prefix), a)
-}
-
-// ctxKey is a custom type for context.Context values.
-// See below for specific keys.
-type ctxKey int
-
-const ctxKeyUser ctxKey = iota
-
-func contextUser(c context.Context) string {
-	user, _ := c.Value(ctxKeyUser).(string)
-	return user
 }

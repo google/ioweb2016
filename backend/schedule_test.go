@@ -168,13 +168,13 @@ func TestDiffEventDataVideo(t *testing.T) {
 			}
 		}
 		if b.EndTime != test.end2 {
-			t.Errorf("%d: b.EndTime = %v; want %v", b.EndTime, test.end2)
+			t.Errorf("%d: b.EndTime = %v; want %v", i, b.EndTime, test.end2)
 		}
 		if b.IsLive != test.live2 {
-			t.Errorf("%d: b.IsLive = %v; want %v", b.IsLive, test.live2)
+			t.Errorf("%d: b.IsLive = %v; want %v", i, b.IsLive, test.live2)
 		}
 		if b.YouTube != test.yt2 {
-			t.Errorf("%d: b.YouTube = %v; want %v", b.YouTube, test.yt2)
+			t.Errorf("%d: b.YouTube = %v; want %v", i, b.YouTube, test.yt2)
 		}
 	}
 }

@@ -62,53 +62,22 @@ func disabledSurvey(sid string) bool {
 	return i < len(config.Survey.Disabled) && config.Survey.Disabled[i] == sid
 }
 
+// TODO: port to firebase
+//
 // submittedSurveySessions returns a slice of session IDs which user uid
 // has already submitted a feedback survey for.
 // It fetches data from Google Drive AppData folder.
 func submittedSurveySessions(c context.Context, uid string) ([]string, error) {
-	cred, err := getCredentials(c, uid)
-	if err != nil {
-		return nil, err
-	}
-	var data *appFolderData
-	if data, err = getAppFolderData(c, cred, false); err != nil {
-		return nil, err
-	}
-	return data.Survey, nil
-}
-
-// addSessionSurvey adds session sid to the feedback survey list of user uid.
-// It returns a list of all sessions the user has submitted a feedback for, including sid.
-// If the user has already submitted a feedback for sid, errBadData is returned.
-func addSessionSurvey(c context.Context, uid, sid string) ([]string, error) {
-	perr := prefixedErr("addSessionSurvey")
-	cred, err := getCredentials(c, uid)
-	if err != nil {
-		return nil, perr(err)
-	}
-
-	var data *appFolderData
-	for _, fresh := range []bool{false, true} {
-		if data, err = getAppFolderData(c, cred, fresh); err != nil {
-			break
-		}
-		// prevent double submission
-		sort.Strings(data.Survey)
-		i := sort.SearchStrings(data.Survey, sid)
-		if i < len(data.Survey) && data.Survey[i] == sid {
-			return nil, errBadData
-		}
-		data.Survey = append(data.Survey, sid)
-		err = storeAppFolderData(c, cred, data)
-		if err != errConflict {
-			break
-		}
-	}
-
-	if err != nil {
-		return nil, perr(err)
-	}
-	return data.Survey, nil
+	return nil, nil
+	//cred, err := getCredentials(c, uid)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//var data *appFolderData
+	//if data, err = getAppFolderData(c, cred, false); err != nil {
+	//	return nil, err
+	//}
+	//return data.Survey, nil
 }
 
 // submitSessionSurvey sends a request to config.Survey.Endpoint with s data
@@ -133,7 +102,6 @@ func submitSessionSurvey(c context.Context, sid string, s *sessionSurvey) error 
 	q.Set("objectid", sid)
 	r.URL.RawQuery = q.Encode()
 	r.Header.Set("apikey", config.Survey.Key)
-	r.Header.Set("code", config.Survey.Code)
 	res, err := httpClient(c).Do(r)
 	if err != nil {
 		return perr(err)

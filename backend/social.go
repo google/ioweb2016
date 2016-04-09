@@ -58,13 +58,13 @@ func socialEntries(c context.Context, refresh bool) ([]*socEntry, error) {
 		}
 	}
 
-	entries := make([]*socEntry, 0)
 	tc := make(chan *tweetEntry)
 	go fetchTweets(c, config.Twitter.Account, tc)
+	var entries []*socEntry
 	for t := range tc {
 		e := &socEntry{
 			Kind:   "tweet",
-			URL:    fmt.Sprintf(tweetURL, config.Twitter.Account, t.Id),
+			URL:    fmt.Sprintf(tweetURL, config.Twitter.Account, t.ID),
 			Text:   html.UnescapeString(t.Text),
 			Author: "@" + t.User.ScreenName,
 			When:   time.Time(t.CreatedAt),
@@ -167,7 +167,7 @@ func includesWord(s, w string) (ret bool) {
 
 // tweetEntry is the entry format of Twitter API endpoint.
 type tweetEntry struct {
-	Id        string      `json:"id_str"`
+	ID        string      `json:"id_str"`
 	CreatedAt twitterTime `json:"created_at"`
 	Text      string      `json:"text"`
 	User      struct {
