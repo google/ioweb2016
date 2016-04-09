@@ -7,20 +7,28 @@
         "last_activity_timestamp": {
           ".validate": "!data.exists() || newData.val() > data.val()"
         },
+        "web_notifications_enabled": {
+          ".validate": "newData.val() === true || newData.val() === false"
+        }
+      }
+    },
+    "data": {
+      "$user_id": {
+        ".read": "$user_id === auth.uid",
+        ".write": "$user_id === auth.uid",
         "viewed_videos": {
           "$viewed_video_id": {
             ".validate": "newData.val() === true"
           }
         },
         "my_sessions": {
-          ".indexOn": "bookmarked",
           "$session_id": {
             ".validate": "!data.exists() || newData.child('timestamp').val() > data.child('timestamp').val()"
           }
         },
-        "feedback": {
+        "feedback_submitted_sessions": {
           "$session_id": {
-            ".validate": "newData.val() === true"
+            ".validate": "!data.exists() && newData.val() === true"
           }
         }
       }
