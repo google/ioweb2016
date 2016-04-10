@@ -131,6 +131,7 @@ gulp.task('clean', 'Remove built app', ['clear'], function() {
 gulp.task('vulcanize', 'Vulcanize all polymer elements', [
   'vulcanize-elements',
   // 'vulcanize-extended-elements',
+  'vulcanize-critical-elements',
   'vulcanize-gadget-elements'
 ]);
 
@@ -307,6 +308,16 @@ gulp.task('vulcanize-elements', false, ['sass'], function() {
       stripComments: true,
       inlineCss: true,
       inlineScripts: true,
+      excludes: [
+
+      ],
+      stripExcludes: [
+        'roboto.html', // Web fonts are loaded in the main page.
+        'iron-selector.html',
+        'paper-tabs.html',
+        'polymer.html',
+        'shared-app-styles.html'
+      ],
       dest: IOWA.appDir + '/elements'
     }))
     .pipe($.crisper({scriptInHead: true}))
@@ -314,6 +325,22 @@ gulp.task('vulcanize-elements', false, ['sass'], function() {
     .pipe($.if('*.html', minifyHtml()))
     // Minifiy js output
     .pipe($.if('*.js', uglifyJS()))
+    .pipe(gulp.dest(IOWA.distDir + '/' + IOWA.appDir + '/elements/'));
+});
+
+// vulcanize main site elements separately.
+gulp.task('vulcanize-critical-elements', false, ['sass'], function() {
+  return gulp.src([
+    IOWA.appDir + '/elements/critical.html'
+  ])
+    .pipe($.vulcanize({
+      stripComments: true,
+      inlineCss: true,
+      inlineScripts: true,
+      dest: IOWA.appDir + '/elements'
+    }))
+    // Minify html output
+    .pipe($.if('*.html', minifyHtml()))
     .pipe(gulp.dest(IOWA.distDir + '/' + IOWA.appDir + '/elements/'));
 });
 
