@@ -26,7 +26,7 @@ IOWA.Elements = (function() {
 
       // Load auth after initial page is setup. This helps do less upfront work
       // until the main schedule data is returned by the worker.
-      IOWA.Elements.GoogleSignIn.load = true;
+      // IOWA.Elements.GoogleSignIn.load = true;
 
       // Deep link into a subpage.
       var selectedPageEl = IOWA.Elements.LazyPages.selectedPage;
