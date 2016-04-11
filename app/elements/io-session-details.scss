@@ -34,6 +34,10 @@ $color-section-border: #eaeaea;
   box-shadow: none !important;
 }
 
+#scrollable {
+  overflow-y: scroll;
+}
+
 #sessionDetails {
   max-width: $tablet-breakpoint-min;
   position: fixed;

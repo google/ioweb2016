@@ -29,7 +29,6 @@ limitations under the License.
 <link rel="import" href="../bower_components/neon-animation/animations/fade-out-animation.html">
 
 <link rel="import" href="io-session-details.html">
-<link rel="import" href="io-survey.html">
 <link rel="import" href="UtilBehavior.html">
 <link rel="import" href="shared-app-styles.html">
 
@@ -179,9 +178,6 @@ Fired when the user toggles bookmarking/removing a session.
         --primary-text-color: inherit;
       }
     </style>
-    <io-survey id="ioSurvey"
-               app="[[app]]"
-               session="[[selectedSession]]"></io-survey>
     <div class="filters__panel" filtering$="[[_isFiltering(filters.length)]]"
          showfilters$="[[showFilters]]">
       <div id="filters" class="card-content bg-bluegrey-50-40" layout horizontal justified>
@@ -225,7 +221,7 @@ Fired when the user toggles bookmarking/removing a session.
 
     <div class$="[[_addClass('has-filtering-banner', filters.length)]]"
          on-session-bookmark="_onToggleSaveSession"
-         on-open-survey="_openSurvey" relative>
+         relative>
 
       <io-session-details id="sessionDetails"
                           selected-session="{{selectedSession}}"
@@ -750,11 +746,6 @@ Fired when the user toggles bookmarking/removing a session.
         _isFiltering: function(filtersLen) {
           return filtersLen > 0;
         },
-
-        _openSurvey: function() {
-          this.$.ioSurvey.open();
-        }
-
       });
     }());
   </script>

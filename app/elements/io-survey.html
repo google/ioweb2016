@@ -17,6 +17,9 @@ limitations under the License.
 <link rel="import" href="../bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+
+<link rel="import" href="../bower_components/neon-animation/neon-animation-runner-behavior.html">
+
 <link rel="import" href="shared-app-styles.html">
 
 <dom-module id="io-survey">
@@ -24,45 +27,38 @@ limitations under the License.
   <template>
     <style include="shared-app-styles">
     </style>
-    <paper-dialog id="dialogSurvey"
-                  with-backdrop
-                  restore-focus-on-close
-                  no-auto-focus
-                  entry-animation="scale-up-animation"
-                  exit-animation="fade-out-animation">
-      <paper-dialog-scrollable class="card-content bg-bluegrey-50-20">
-
-        <div id="content">
-          <section id="header" class="bg-cyan-200 lpadding">
-            <h1>Rate this Session</h1>
-            <h3>[[session.title]]</h3>
-            <h5 class="label">[[_sessionSpeakers]]</h5>
-          </section>
-          <section id="body" >
-            <template is="dom-repeat" items="[[surveyQuestions]]" as="question">
-              <survey-rating id=[[question.id]]
-                             selected={{question.value}}
-                             question="[[question]]"
-                             class="border-bottom lpadding"></survey-rating>
-            </template>
-            <paper-input no-label-float="[[!app.isPhoneSize]]"
-                         always-float-label="[[app.isPhoneSize]]"
-                         label="Anything else we should know? (optional)"
-                         class="border-bottom lpadding"></paper-input>
-          </section>
-        </div>
-      </paper-dialog-scrollable>
+    <div id="dialog" class="bg-grey-50">
+      <section id="header" class="bg-cyan-200 lpadding">
+        <h1>Rate this Session</h1>
+        <h3>[[session.title]]</h3>
+        <h5 class="label">[[_sessionSpeakers]]</h5>
+      </section>
+      <section id="body" >
+        <template is="dom-repeat" items="[[surveyQuestions]]" as="question">
+          <survey-rating id=[[question.id]]
+                         selected={{question.value}}
+                         question="[[question]]"
+                         class="border-bottom lpadding"></survey-rating>
+        </template>
+        <paper-input no-label-float="[[!app.isPhoneSize]]"
+                     always-float-label="[[app.isPhoneSize]]"
+                     label="Anything else we should know? (optional)"
+                     class="border-bottom lpadding"></paper-input>
+      </section>
       <div class="buttons margin-v-10">
-        <paper-button dialog-dismiss>Cancel</paper-button>
-        <paper-button dialog-confirm>Submit</paper-button>
+        <paper-button on-tap="_cancel">Cancel</paper-button>
+        <paper-button on-tap="_submit">Submit</paper-button>
       </div>
-    </paper-dialog>
+    </div>
   </template>
   <script>
     (function () {
       'use strict';
       Polymer({
         is: 'io-survey',
+        behaviors: [
+          Polymer.NeonAnimationRunnerBehavior
+        ],
         properties: {
           session: {
             type: Object,
@@ -98,13 +94,38 @@ limitations under the License.
               }];
             }
           },
+          ready: function() {
+            this.style.display = 'none';
+          },
           _sessionSpeakers: {
             type: String,
             notify: false
+          },
+          opened: {
+            type: Boolean
+          },
+          animationConfig: {
+            value: function() {
+              return {
+                'entry': {
+                  name: 'slide-from-bottom-animation',
+                  node: this
+                },
+                'exit': {
+                  name: 'slide-from-bottom-animation',
+                  node: this
+                }
+              }
+            }
           }
         },
+        listeners: {
+          'neon-animation-finish': '_onNeonAnimationFinish'
+        },
         open: function() {
-          this.$.dialogSurvey.open();
+          this.opened = true;
+          this.style.display = 'block';
+          this.playAnimation('entry');
         },
         _computeSpeakers: function (session) {
           if (session && session.speakers && this.app.scheduleData) {
@@ -118,6 +139,22 @@ limitations under the License.
             }
             this._sessionSpeakers = speakerString.slice(0, speakerString.length - 2)
               + ' & ' + speakerHash[speakerIds[speakerIds.length - 1]];
+          }
+        },
+        _close: function() {
+          this.opened = false;
+          this.playAnimation('exit');
+        },
+        _cancel: function() {
+          this._close();
+        },
+        _submit: function() {
+          //TODO(pying): submit stuff
+          this._close();
+        },
+        _onNeonAnimationFinish: function() {
+          if (!this.opened) {
+            this.style.display = 'none';
           }
         }
       });
@@ -135,23 +172,23 @@ limitations under the License.
       <paper-icon-button value="1" icon="stars" class="rate__icon"
                          on-mouseover="_mouseOverHandler"
                          on-mouseout="_mouseOutHandler"
-                         on-click="_selectValue"></paper-icon-button>
+                         on-tap="_selectValue"></paper-icon-button>
       <paper-icon-button value="2" icon="stars" class="rate__icon"
                          on-mouseover="_mouseOverHandler"
                          on-mouseout="_mouseOutHandler"
-                         on-click="_selectValue"></paper-icon-button>
+                         on-tap="_selectValue"></paper-icon-button>
       <paper-icon-button value="3" icon="stars" class="rate__icon"
                          on-mouseover="_mouseOverHandler"
                          on-mouseout="_mouseOutHandler"
-                         on-click="_selectValue"></paper-icon-button>
+                         on-tap="_selectValue"></paper-icon-button>
       <paper-icon-button value="4" icon="stars" class="rate__icon"
                          on-mouseover="_mouseOverHandler"
                          on-mouseout="_mouseOutHandler"
-                         on-click="_selectValue"></paper-icon-button>
+                         on-tap="_selectValue"></paper-icon-button>
       <paper-icon-button value="5" icon="stars" class="rate__icon"
                          on-mouseover="_mouseOverHandler"
                          on-mouseout="_mouseOutHandler"
-                         on-click="_selectValue"></paper-icon-button>
+                         on-tap="_selectValue"></paper-icon-button>
     </div>
     <div class="rate__hint" layout horizontal justified>
       <span class="hint margin-t-10">[[question.hintMin]]</span>
