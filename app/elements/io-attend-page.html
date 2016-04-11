@@ -13,7 +13,6 @@ limitations under the License.
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
-<link rel="import" href="../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
 <link rel="import" href="../bower_components/paper-toolbar/paper-toolbar.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
@@ -343,9 +342,6 @@ limitations under the License.
   </div> <!-- .card -->
 </div> <!-- .card__container -->
 
-<iron-scroll-threshold id="threshold" hidden
-      lower-triggered="{{_scrolledToMapSection}}"></iron-scroll-threshold>
-
 </template>
 <script>
 (function () {
@@ -373,16 +369,16 @@ limitations under the License.
         type: String,
         value: 'event',
         notify: true
-      }
+      },
+
+      _scrolledToMapSection: false
     },
 
     attached: function() {
       this.listen(IOWA.Elements.ScrollContainer, 'scroll', '_onPageScroll');
 
-      this.$.threshold.scrollTarget = IOWA.Elements.ScrollContainer;
-
       // Calculate top of tweet cycler / hashtag video section.
-      this.$.threshold.lowerThreshold = IOWA.Elements.Footer.clientHeight +
+      this._lowerScrollThreshold = IOWA.Elements.Footer.clientHeight +
           parseInt(getComputedStyle(IOWA.Elements.Footer).height) +
           Polymer.dom(this.root).querySelector('.io__hash').clientHeight;
     },
@@ -399,6 +395,9 @@ limitations under the License.
     },
 
     _onPageScroll: function() {
+      var scrollY = IOWA.Elements.ScrollContainer.scrollY;
+      this._scrolledToMapSection = scrollY > this._lowerScrollThreshold;
+
       this.disableElementOnScroll(this.$.mapContainer);
     },
 
