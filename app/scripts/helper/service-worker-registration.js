@@ -36,7 +36,6 @@ IOWA.ServiceWorkerRegistration = (function() {
             // https://slightlyoff.github.io/ServiceWorker/spec/service_worker/index.html#service-worker-container-updatefound-event
             const installingWorker = registration.installing;
             installingWorker.onstatechange = function() {
-              // TODO: How do we handle i18n of these strings?
               switch (installingWorker.state) {
                 case 'installed':
                   if (!navigator.serviceWorker.controller) {

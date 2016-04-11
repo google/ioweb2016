@@ -24,7 +24,7 @@ The `<io-notification-widget>` element renders the notification toggle UI.
 <dom-module id="io-notification-widget">
   <template>
     <style include="shared-app-styles"></style>
-    <div class="card-content">
+    <div class="card-content notification__feature">
       <h4>Notifications</h4>
       <iron-pages id="pages" selected="0">
         <div>
@@ -54,136 +54,171 @@ The `<io-notification-widget>` element renders the notification toggle UI.
   (function() {
     "use strict";
 
-    // If the browser doesn't support push then we don't even have to instantiate the element
-    if (goog.propel.PropelClient.supported()) {
-      var propel;
+    var propel;
 
-      Polymer({
+    Polymer({
 
-        is: 'io-notification-widget',
+      is: 'io-notification-widget',
 
-        properties: {
-          checked: {
-            type: Boolean,
-            observer: '_checkedChanged'
-          },
-          disabled: {
-            type: Boolean,
-            value: true
-          },
-          autoSubscribe: {
-            type: Boolean,
-            value: true
-          }
+      properties: {
+        /**
+         * Whether or not the checkbox is checked
+         */
+        checked: {
+          type: Boolean,
+          observer: '_checkedChanged',
+          value: false
         },
 
-        ready: function() {
-          if (!propel) {
-            propel = new goog.propel.PropelClient(IOWA.ServiceWorkerRegistration.URL, IOWA.ServiceWorkerRegistration.SCOPE);
-          }
+        /**
+         * Whether or not the checkbox is disabled
+         */
+        disabled: {
+          type: Boolean,
+          value: true
         },
 
-        attached: function() {
-          propel.addEventListener('statuschange', function(status) {
-            this._statusChanged(status)
-          }.bind(this));
-          IOWA.IOFirebase.registerToNotificationUpdates(function(value) {
-            this._firebaseChanged(value)
-          }.bind(this));
-          document.addEventListener('signin-change', function(e) {
-            if (!e.detail.user) {
-              // We logged out, so unsubscribe
-              propel.unsubscribe();
+        /**
+         * If the user adds an item to their schedule we can try to subscribe
+         * them for push notifications. Setting this flag to false turns off the
+         * prompting, for example when they have previously declined or have
+         * explicitly turned notifications off.
+         */
+        autoSubscribe: {
+          type: Boolean,
+          value: true
+        },
+
+        /**
+         * Tracks the status of the Propel client
+         */
+        _propelStatus: {
+          readOnly: true,
+          type: Object,
+          observer: '_propelStatusChanged'
+        },
+
+        /**
+         * Tracks the value of the notifications enabled property in Firebase
+         */
+        _firebaseStatus: {
+          readOnly: true,
+          type: Boolean,
+          observer: '_firebaseStatusChanged'
+        }
+      },
+
+      ready: function() {
+        if (goog.propel.PropelClient.isSupported()) {
+          propel = new goog.propel.PropelClient(IOWA.ServiceWorkerRegistration.URL, IOWA.ServiceWorkerRegistration.SCOPE);
+        } else {
+          document.body.classList.add('nosupport-notifications');
+        }
+      },
+
+      attached: function() {
+        propel.addEventListener('statuschange', function(status) {
+          this._set_propelStatus(status);
+        }.bind(this));
+        IOWA.IOFirebase.registerToNotificationUpdates(function(value) {
+          this._set_firebaseStatus(value);
+        }.bind(this));
+        document.addEventListener('signin-change', function(e) {
+          if (!e.detail.user) {
+            // We logged out, so unsubscribe
+            propel.unsubscribe();
+          }
+        });
+      },
+
+      /**
+       * If autoSubscribe is true then try to subscribe for push messages
+       * @return {Boolean} Whether subscribing succeeded
+       */
+      subscribeIfAble: function() {
+        if (this.autoSubscribe) {
+          return propel.subscribe()
+            .then(function(sub) {
+              // Did we successfully subscribe?
+              return sub ? true : false;
+            })
+            .catch(function(err) {
+              IOWA.Util.reportError(err);
+              // Failed to subscribe :(
+              return false;
+            });
+        }
+        return Promise.resolve(false);
+      },
+
+      _firebaseStatusChanged: function(value) {
+        // Feature turned off on another client, so turn off here too
+        if (!value) {
+          this.checked = false;
+          propel.unsubscribe();
+        } else {
+          Promise.all([
+            goog.propel.PropelClient.getPermissionState(),
+            propel.getSubscription()
+          ]).then(function(perm, sub) {
+            if (perm.state === 'granted' && !sub) {
+              // 1. The global notification setting is on
+              // 2. This client already has permission for notifications
+              // 3. There is no current local subscription
+              // So we're going to subscribe locally. This state is most
+              // likely to come about because the user signed out on this
+              // device after they enabled notifications.
+              propel.subscribe().catch(IOWA.Util.reportError);
             }
           });
-        },
+        }
+      },
 
-        subscribeIfAble: function() {
-          if (this.autoSubscribe) {
-            return propel.subscribe()
-              .then(function(sub) {
-                // Did we successfully subscribe?
-                return sub ? true : false;
-              })
-              .catch(function(err) {
-                IOWA.Util.reportError(err);
-                // Failed to subscribe :(
-                return false;
+      _propelStatusChanged: function(status) {
+        if (status.permissionState === 'granted') {
+          this.$.pages.select(0);
+          this.checked = status.isSubscribed;
+          this.disabled = false;
+          IOWA.IOFirebase.setNotificationsEnabled(status.isSubscribed);
+          if (status.isSubscribed) {
+            IOWA.IOFirebase.addPushSubscription(status.currentSubscription);
+          } else {
+            // TODO(mscales): Remove the existing subscription from FB
+          }
+        } else if (status.permissionState === 'denied') {
+          this.$.pages.select(1);
+          // Were we actually trying to turn notifications on?
+          if (this.checked) {
+            IOWA.Elements.Toast.showMessage('Please update your notification permissions', null, 'Learn how', function() {
+                return window.open('permissions', '_blank');
               });
           }
-          return Promise.resolve(false);
-        },
-
-        _firebaseChanged: function(value) {
-          // Feature turned off on another client, so turn off here too
-          if (!value) {
-            this.checked = false;
-            propel.unsubscribe();
-          } else {
-            Promise.all([
-              goog.propel.PropelClient.getPermissionState(),
-              propel.getSubscription()
-            ]).then(function(perm, sub) {
-              if (perm.state === 'granted' && !sub) {
-                // 1. The global notification setting is on
-                // 2. This client already has permission for notifications
-                // 3. There is no current local subscription
-                // So we're going to subscribe locally. This state is most
-                // likely to come about because the user signed out on this
-                // device after they enabled notifications.
-                propel.subscribe()
-                  .catch(IOWA.Util.reportError);;
-              }
-            });
-          }
-        },
-
-        _statusChanged: function(status) {
-          if (status.permissionState === 'granted') {
-            this.$.pages.select(0);
-            this.checked = status.isSubscribed;
-            this.disabled = false;
-            IOWA.IOFirebase.setNotificationsEnabled(status.isSubscribed);
-            if (status.isSubscribed) {
-              IOWA.IOFirebase.addPushSubscription(status.currentSubscription);
-            } else {
-              // TODO(mscales): Remove the exisiting subscription from FB
-            }
-          } else if (status.permissionState === 'denied') {
-            this.$.pages.select(1);
-            // Were we actually trying to turn notifications on
-            if (this.checked) {
-              IOWA.Elements.Toast.showMessage('Please update your notification permissions', null, 'Learn how', function() {
-                  return window.open('permissions', '_blank');
-                });
-            }
-            this.disabled = true;
-            this.checked = false;
-            this.autoSubscribe = false;
-          } else {
-            // permission dialog was dismissed without answering, can still prompt again
-            this.$.pages.select(0);
-            this.disabled = false;
-            this.checked = false;
-          }
-        },
-
-        _checkedChanged: function() {
-          if (this.disabled) {
-            return;
-          }
-
           this.disabled = true;
-          this.autoSubscribe = this.checked;
-          const action = this.checked ? propel.subscribe() : propel.unsubscribe();
-
-          // TODO(mscales): Better handling of errors
-          return action.catch(IOWA.Util.reportError);
+          this.checked = false;
+          this.autoSubscribe = false;
+        } else {
+          // permission dialog was dismissed without answering, can still prompt again
+          this.$.pages.select(0);
+          this.disabled = false;
+          this.checked = false;
         }
-      });
-    } else {
-      document.body.classList.add('nosupport-notifications');
-    }
+      },
+
+      _checkedChanged: function() {
+        // Need to catch the case where disabled has not yet been set to it's
+        // default value, as happens when checked is initialized and set to it's
+        // initial value first.
+        if (this.disabled || this.disabled === undefined) {
+          return;
+        }
+
+        this.disabled = true;
+        this.autoSubscribe = this.checked;
+        var action = this.checked ? propel.subscribe() : propel.unsubscribe();
+
+        return action.catch(IOWA.Util.reportError);
+      }
+    });
   })();
   </script>
 </dom-module>

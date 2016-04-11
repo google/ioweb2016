@@ -79,7 +79,7 @@
     "gsap": "^1.18.2",
     "iron-autogrow-textarea": "PolymerElements/iron-autogrow-textarea#^1.0.11",
     "google-map-markerclusterer": "^1.0.0",
-    "propel-web-push": "GoogleChrome/Propel#^0.1.0"
+    "propel-web-push": "GoogleChrome/Propel#^0.1.1"
   },
   "resolutions": {
     "web-animations-js": "^2.1.4"

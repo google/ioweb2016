@@ -173,8 +173,7 @@ gulp.task('concat-and-uglify-js', 'Crush JS', ['eslint', 'generate-page-metadata
     'bower_components/moment-timezone/builds/moment-timezone-with-data.min.js',
     'bower_components/es6-promise/dist/es6-promise.min.js',
     'bower_components/firebase/firebase.js',
-    'bower_components/js-crc/src/crc.js',
-    'bower_components/propel-web-push/dist/propel-client.js'
+    'bower_components/js-crc/src/crc.js'
   ].map(script => `${IOWA.appDir}/${script}`);
 
   var siteLibStream = gulp.src(siteLibs)
