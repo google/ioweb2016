@@ -57,9 +57,6 @@ func init() {
 	}
 	rootHandleFn = serveTemplate
 	registerHandlers()
-	// site admin stuff, accessible only to config.Admins, only on GAE atm.
-	aroot := path.Join(config.Prefix, "admin") + "/"
-	http.Handle(aroot, checkAdmin(handler(handleAdmin)))
 }
 
 // allowPassthrough returns true if the request r can be handled w/o whitelist check.
@@ -94,25 +91,6 @@ func checkWhitelist(h http.Handler) http.Handler {
 		case u != nil:
 			errorf(c, "%s is not whitelisted", u.Email)
 			http.Error(w, "Access denied, sorry. Try with a different account.", http.StatusForbidden)
-		default:
-			handleGAEAuth(w, r)
-		}
-	})
-}
-
-// checkAdmin is similar to checkWhitelist with the following exceptions:
-// - doesn't test allowPassthrough()
-// - looks up user emails in config.Admins instead of config.Whitelist.
-func checkAdmin(h http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		c := appengine.NewContext(r)
-		u := user.Current(c)
-		switch {
-		case u != nil && isAdmin(u.Email):
-			h.ServeHTTP(w, r)
-		case u != nil:
-			errorf(c, "%s is not admin", u.Email)
-			http.Error(w, "Admins only, sorry. Try with a different account.", http.StatusForbidden)
 		default:
 			handleGAEAuth(w, r)
 		}

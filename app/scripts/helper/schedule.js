@@ -189,13 +189,13 @@ class Schedule {
       let savedSessionsListIndex = savedSessions.indexOf(sessionId);
       let sessionsListIndex = template.app.scheduleData.sessions.findIndex(
         session => session.id === sessionId);
-      if (data && data.bookmarked && savedSessions.indexOf(sessionId) === -1) {
+      if (data && data.in_schedule && savedSessions.indexOf(sessionId) === -1) {
         // Add session to bookmarked sessions.
         template.push('app.savedSessions', sessionId);
         template.set(`app.scheduleData.sessions.${sessionsListIndex}.saved`, true);
 
         debugLog(`Session ${sessionId} bookmarked!`);
-      } else if (data && !data.bookmarked && savedSessionsListIndex !== -1) {
+      } else if (data && !data.in_schedule && savedSessionsListIndex !== -1) {
         // Remove the session from the bookmarks if present.
         template.splice('app.savedSessions', savedSessionsListIndex, 1);
         template.set(`app.scheduleData.sessions.${sessionsListIndex}.saved`, false);

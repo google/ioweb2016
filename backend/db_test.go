@@ -19,43 +19,6 @@ import (
 	"time"
 )
 
-func TestStoreGetCredentials(t *testing.T) {
-	c := newTestContext()
-	cred1 := &oauth2Credentials{
-		userID:       "user-123",
-		AccessToken:  "atoken",
-		RefreshToken: "rtoken",
-		Expiry:       time.Now(),
-	}
-	if err := storeCredentials(c, cred1); err != nil {
-		t.Fatalf("storeCredentials: %v", err)
-	}
-
-	cred2, err := getCredentials(c, cred1.userID)
-	if err != nil {
-		t.Fatalf("getCredentials: %v", err)
-	}
-
-	if cred2.userID != "user-123" {
-		t.Errorf("cred2.userID = %q; want 'user-123'", cred2.userID)
-	}
-	if cred2.AccessToken != cred1.AccessToken {
-		t.Errorf("cred2.AccessToken = %q; want %q", cred2.AccessToken, cred1.AccessToken)
-	}
-	if cred2.RefreshToken != cred1.RefreshToken {
-		t.Errorf("cred2.RefreshToken = %q; want %q", cred2.RefreshToken, cred1.RefreshToken)
-	}
-	// nanosec may differ a bit
-	if cred2.Expiry.Unix() != cred1.Expiry.Unix() {
-		t.Errorf("cred2.Expiry = %s; want %s", cred2.Expiry, cred1.Expiry)
-	}
-
-	v, err := getCredentials(c, "random-user")
-	if err == nil {
-		t.Errorf("getCredentials: %+v; want error", v)
-	}
-}
-
 func TestStoreGetChanges(t *testing.T) {
 	c := newTestContext()
 	oneTime := time.Now()
@@ -109,19 +72,19 @@ func TestStoreGetChanges(t *testing.T) {
 func TestStoreNextSessions(t *testing.T) {
 	c := newTestContext()
 	sessions := []*eventSession{
-		{Id: "one", Update: updateSoon},
-		{Id: "one", Update: updateStart},
-		{Id: "two", Update: updateStart},
+		{ID: "one", Update: updateSoon},
+		{ID: "one", Update: updateStart},
+		{ID: "two", Update: updateStart},
 	}
 	if err := storeNextSessions(c, sessions); err != nil {
 		t.Fatal(err)
 	}
-	sessions = append(sessions, &eventSession{Id: "new", Update: updateStart})
+	sessions = append(sessions, &eventSession{ID: "new", Update: updateStart})
 	items, err := filterNextSessions(c, sessions)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(items) != 1 || items[0].Id != "new" {
+	if len(items) != 1 || items[0].ID != "new" {
 		t.Errorf("items = %v; want 'new'", items)
 	}
 }

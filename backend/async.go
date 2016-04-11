@@ -83,7 +83,7 @@ func pingDevicesAsync(c context.Context, uid string, endpoints []string, d time.
 		return nil, err
 	}
 
-	errEndpoints := make([]string, 0)
+	var errEndpoints []string
 	for i, e := range merr {
 		if e == nil {
 			continue
@@ -94,19 +94,6 @@ func pingDevicesAsync(c context.Context, uid string, endpoints []string, d time.
 		return nil, nil
 	}
 	return errEndpoints, fmt.Errorf("pingDevicesAsync: %v", err)
-}
-
-// pingExtPartyAsync notifies extra parties at config.ExtPingURL about data updates.
-func pingExtPartyAsync(c context.Context, key string) error {
-	if key == "" || config.ExtPingURL == "" {
-		return nil
-	}
-	p := path.Join(config.Prefix, "/task/ping-ext")
-	t := taskqueue.NewPOSTTask(p, url.Values{
-		"key": {key},
-	})
-	_, err := taskqueue.Add(c, t, "")
-	return err
 }
 
 // submitSessionSurveyAsync schedules an async job to submit feedback survey s for session sid.

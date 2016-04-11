@@ -94,8 +94,8 @@ class IOFirebase {
     if (this.firebaseRef) {
       // Make sure to detach any callbacks.
       let userId = this.firebaseRef.getAuth().uid;
-      this.firebaseRef.child(`users/${userId}/my_sessions`).off();
-      this.firebaseRef.child(`users/${userId}/feedback`).off();
+      this.firebaseRef.child(`data/${userId}/my_sessions`).off();
+      this.firebaseRef.child(`data/${userId}/feedback_submitted_sessions`).off();
       // Unauthorize the Firebase reference.
       this.firebaseRef.unauth();
       debugLog('Unauthorized Firebase');
@@ -161,9 +161,9 @@ class IOFirebase {
   _bumpLastActivityTimestamp() {
     let userId = this.firebaseRef.getAuth().uid;
     this.firebaseRef.child(`users/${userId}/last_activity_timestamp`)
-      .onDisconnect().set(Firebase.ServerValue.TIMESTAMP);
-    return this._setFirebaseUserData('last_activity_timestamp',
-      Firebase.ServerValue.TIMESTAMP);
+        .onDisconnect().set(Firebase.ServerValue.TIMESTAMP);
+    return this._setFirebaseUserData('users', 'last_activity_timestamp',
+        Firebase.ServerValue.TIMESTAMP);
   }
 
   /**
@@ -192,7 +192,7 @@ class IOFirebase {
    *     data for each sessions when they get updated.
    */
   registerToSessionUpdates(callback) {
-    this._registerToUpdates('my_sessions', callback);
+    this._registerToUpdates('data', 'my_sessions', callback);
   }
 
   /**
@@ -203,7 +203,7 @@ class IOFirebase {
    *     data for each saved session feedback when they get updated.
    */
   registerToFeedbackUpdates(callback) {
-    this._registerToUpdates('feedback', callback);
+    this._registerToUpdates('data', 'feedback_submitted_sessions', callback);
   }
 
   /**
@@ -241,7 +241,7 @@ class IOFirebase {
    * @returns {Promise} Fulfills when the replay is complete
    */
   replayCachedSessionFeedback(callback) {
-    return this._replayCachedData('feedback', callback);
+    return this._replayCachedData('feedback_submitted_sessions', callback);
   }
 
   /**
@@ -279,15 +279,16 @@ class IOFirebase {
    * current value to IndexedDB.
    *
    * @private
+   * @param {string} subtree The top level subtree `data` or `users`.
    * @param {string} attribute The Firebase user data attribute for which updated will trigger the
    *     callback.
    * @param {IOFirebase~updateCallback} callback A callback function that will be called for each
    *     updates/deletion/addition of an item in the given attribute.
    */
-  _registerToUpdates(attribute, callback) {
+  _registerToUpdates(subtree, attribute, callback) {
     if (this.isAuthed()) {
       let userId = this.firebaseRef.getAuth().uid;
-      let ref = this.firebaseRef.child(`users/${userId}/${attribute}`);
+      let ref = this.firebaseRef.child(`${subtree}/${userId}/${attribute}`);
       let refString = ref.toString();
 
       // wrappedCallback takes care of storing a "shadow" IndexedDB  copy of
@@ -331,13 +332,13 @@ class IOFirebase {
    * Adds or remove the given session to the user's schedule.
    *
    * @param {string} sessionUUID The session's UUID.
-   * @param {boolean} bookmarked `true` if the user has bookmarked the session.
+   * @param {boolean} inSchedule `true` if the user has bookmarked the session.
    * @return {Promise} Promise to track completion.
    */
-  toggleSession(sessionUUID, bookmarked) {
-    return this._setFirebaseUserData(`my_sessions/${sessionUUID}`, {
+  toggleSession(sessionUUID, inSchedule) {
+    return this._setFirebaseUserData('data', `my_sessions/${sessionUUID}`, {
       timestamp: Date.now() + this.clockOffset,
-      bookmarked: bookmarked
+      in_schedule: inSchedule
     });
   }
 
@@ -348,7 +349,7 @@ class IOFirebase {
    * @return {Promise} Promise to track completion.
    */
   markSessionRated(sessionUUID) {
-    return this._setFirebaseUserData(`feedback/${sessionUUID}`, true);
+    return this._setFirebaseUserData('data', `feedback_submitted_sessions/${sessionUUID}`, true);
   }
 
   /**
@@ -361,7 +362,7 @@ class IOFirebase {
     // Making sure we save the ID of the video and not the full Youtube URL.
     let match = videoIdOrUrl.match(/.*(?:youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/);
     let videoId = match ? videoIdOrUrl : match[1];
-    return this._setFirebaseUserData(`viewed_videos/${videoId}`, true);
+    return this._setFirebaseUserData('data', `viewed_videos/${videoId}`, true);
   }
 
   /**
@@ -384,7 +385,7 @@ class IOFirebase {
         auth: clone.keys.auth
       }
     };
-    return this._setFirebaseUserData(`web_push_subscriptions/${key}`, value);
+    return this._setFirebaseUserData('users', `web_push_subscriptions/${key}`, value);
   }
 
   /**
@@ -394,13 +395,13 @@ class IOFirebase {
    * @return {Promise} A promise that resolves when the update completes
    */
   setNotificationsEnabled(value) {
-    return this._setFirebaseUserData('web_notifications_enabled', !!value);
+    return this._setFirebaseUserData('users', 'web_notifications_enabled', !!value);
   }
 
   /**
    * Checks if the user has enabled notifications on any device
    *
-   * @return {boolean}
+   * @return {Promise} Promise that fullfils when the value is available.
    */
   hasNotificationsEnabled() {
     if (this.isAuthed()) {
@@ -458,14 +459,15 @@ class IOFirebase {
    * Sets the given attribute of Firebase user data to the given value.
    *
    * @private
+   * @param {string} subtree The top level subtree `data` or `user`.
    * @param {string} attribute The attribute to update in the user's data.
    * @param {Object} value The value to give to the attribute.
    * @return {Promise} Promise to track set() success or failure.
    */
-  _setFirebaseUserData(attribute, value) {
+  _setFirebaseUserData(subtree, attribute, value) {
     if (this.isAuthed()) {
       let userId = this.firebaseRef.getAuth().uid;
-      return this._setFirebaseData(`users/${userId}/${attribute}`, value);
+      return this._setFirebaseData(`${subtree}/${userId}/${attribute}`, value);
     }
 
     return Promise.reject('Not currently authorized with Firebase.');
@@ -504,19 +506,6 @@ class IOFirebase {
    */
   isAuthed() {
     return this.firebaseRef && this.firebaseRef.getAuth();
-  }
-
-  /**
-   * Returns the user's list of bookmarked sessions.
-   *
-   * @return {Promise} Fulfills when the user's sessions are available.
-   */
-  getUserSchedule() {
-    let userId = this.firebaseRef.getAuth().uid;
-    return this.firebaseRef.child(`users/${userId}/my_sessions`)
-        .orderByChild('bookmarked')
-        .equalTo(true)
-        .once('value').then(data => Object.keys(data.val() || {}));
   }
 }
 

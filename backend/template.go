@@ -80,16 +80,16 @@ type templateCache struct {
 
 // templateData is the templates context
 type templateData struct {
-	Env          string
-	ClientID     string
-	Prefix       string
-	Slug         string
-	Canonical    string
-	Title        string
-	Desc         string
-	OgTitle      string
-	OgImage      string
-	StartDateStr string
+	Env            string
+	ClientID       string
+	Prefix         string
+	Slug           string
+	Canonical      string
+	Title          string
+	Desc           string
+	OgTitle        string
+	OgImage        string
+	StartDateStr   string
 	FirebaseShards []string
 	// livestream youtube video IDs
 	LiveIDs []string
@@ -270,7 +270,7 @@ func safeHTMLAttr(k, v string) html.HTMLAttr {
 // getSitemap returns a sitemap containing both templated pages
 // and schedule session details.
 func getSitemap(c context.Context, baseURL *url.URL) (*sitemap, error) {
-	items := make([]*sitemapItem, 0)
+	var items []*sitemapItem
 
 	// templated pages
 	root := filepath.Join(config.Dir, templatesDir)

@@ -16,33 +16,20 @@
     ]
   },
   "ioExtFeedUrl": "https://spreadsheets.google.com/feeds/list/SHEET/WORKSHEET/private/full",
-  "extPingUrl": "",
-  "secret": "a very long secret used in /api/v1/user/updates",
   "synct": "any-secure-random-string-will-do",
   "google": {
     "tokenUrl": "https://accounts.google.com/o/oauth2/token",
-    "verifyUrl": "https://www.googleapis.com/oauth2/v2/tokeninfo",
-    "certUrl": "https://www.googleapis.com/oauth2/v1/certs",
     "serviceAccount": {
-      "private_key_id": "ignored",
       "private_key": "-----BEGIN PRIVATE KEY----- content -----END PRIVATE KEY-----\n",
-      "client_email": "example@developer.gserviceaccount.com",
-      "client_id": "example.apps.googleusercontent.com",
-      "type": "service_account"
+      "client_email": "example@developer.gserviceaccount.com"
     },
     "auth": {
-      "client": "web-app client ID",
-      "secret": "web-app client secret"
+      "client": "web-app client ID"
     },
     "gcm": {
       "sender": "GCP project *number*",
       "key": "key-for-server-applications",
       "endpoint": "https://android.googleapis.com/gcm/send"
-    },
-    "drive": {
-      "filename": "user_data.json",
-      "files_url": "https://www.googleapis.com/drive/v2/files",
-      "upload_url": "https://www.googleapis.com/upload/drive/v2/files"
     }
   },
   "twitter": {
@@ -53,13 +40,11 @@
     "tokenUrl": "https://api.twitter.com/oauth2/token",
     "timelineUrl": "https://api.twitter.com/1.1/statuses/user_timeline.json"
   },
-  "admins": [],
   "whitelist": [],
   "survey": {
     "id": "survey-id",
     "reg": "registrant-id",
     "key": "api-key",
-    "code": "event-code",
     "endpoint": "https://api.eventpoint.com/2.3/eval/submitsurvey",
     "disabled": ["__afterhours__"],
     "smap": {},
@@ -110,4 +95,3 @@
     }
   }
 }
-
