@@ -26,6 +26,7 @@ limitations under the License.
 <link rel="import" href="../bower_components/neon-animation/animations/fade-out-animation.html">
 
 <link rel="import" href="../bower_components/google-youtube/google-youtube.html">
+<link rel="import" href="io-survey.html">
 
 <link rel="import" href="UtilBehavior.html">
 <link rel="import" href="shared-app-styles.html">
@@ -54,6 +55,10 @@ limitations under the License.
 
     <paper-dialog-scrollable id="scrollable">
 
+      <io-survey id="ioSurvey"
+                 app="[[app]]"
+                 session="[[selectedSession]]">
+      </io-survey>
       <div class="bg-bluegrey-50-20">
 
         <div class="card__photo" relative>
@@ -468,7 +473,7 @@ limitations under the License.
     },
 
     _openSurvey: function() {
-      this.fire('open-survey');
+      this.$.ioSurvey.open();
     },
 
     noop: function(e) {

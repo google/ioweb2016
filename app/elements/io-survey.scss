@@ -3,25 +3,44 @@
 @import '../styles/components/_app';
 @import '../styles/components/_card';
 
-:host {
+#dialog {
   color: $color-text;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 100%;
+  z-index: 2 !important;
+  box-shadow: none !important;
 }
 
 .lpadding {
   padding: 40px;
 }
 
-#content {
-  width: 640px;
+.border-bottom {
+  display: block;
+  border-bottom: 1px solid $color-grey-300;
+}
+
+.margin-v-10 {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+@media (max-width: $phone-breakpoint-max) {
+  #dialogSurvey {
+    margin: 0;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100%;
+  }
 }
 
 .label {
   font-size: 16px;
   font-weight: 400;
-}
-
-.margin-b-20 {
-  margin-bottom: 20px;
 }
 
 .hint {
@@ -34,19 +53,8 @@
   margin-top: 10px;
 }
 
-.border-bottom {
-  display: block;
-  border-bottom: 1px solid $color-grey-300;
-}
-
-#dialogSurvey {
-  max-width: $tablet-breakpoint-min;
-  position: fixed;
-}
-
-.margin-v-10 {
-  margin-top: 10px;
-  margin-bottom: 10px;
+.margin-b-20 {
+  margin-bottom: 20px;
 }
 
 .rate__icon {
@@ -60,14 +68,5 @@
 
   &.selected {
     color: $color-bluegrey-700;
-  }
-}
-
-@media (max-width: $phone-breakpoint-max) {
-  #dialogSurvey {
-    margin: 0;
-    left: 0 !important;
-    top: 0 !important;
-    width: 100%;
   }
 }
