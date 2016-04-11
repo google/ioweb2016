@@ -18,9 +18,6 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
-	"io"
-	"mime"
-	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -95,7 +92,7 @@ func TestServeSchedule(t *testing.T) {
 	}
 
 	// 0: cache miss; 1: cache hit
-	for i := 0; i < 2; i += 1 {
+	for i := 0; i < 2; i++ {
 		// no etag, unless cached
 		w := httptest.NewRecorder()
 		serveSchedule(w, r)
@@ -306,7 +303,7 @@ func TestServeSessionTemplate(t *testing.T) {
 		for _, s := range lookup {
 			if !strings.Contains(w.Body.String(), s) {
 				t.Errorf("%d: missing %s", i, s)
-				miss += 1
+				miss++
 			}
 		}
 		if miss > 0 {
@@ -386,7 +383,7 @@ func TestServeSitemap(t *testing.T) {
 	if err := storeEventData(c, &eventData{
 		modified: time.Now(),
 		Sessions: map[string]*eventSession{
-			"123": {Id: "123"},
+			"123": {ID: "123"},
 		},
 	}); err != nil {
 		t.Fatal(err)
@@ -455,956 +452,162 @@ func TestServeManifest(t *testing.T) {
 	}
 }
 
-func TestHandleAuth(t *testing.T) {
-	defer resetTestState(t)
-	defer preserveConfig()()
-	const code = "fake-auth-code"
-
-	table := []struct {
-		token            string
-		doExchange       bool
-		exchangeRespCode int
-		wantOK           bool
-	}{
-		{"valid", true, http.StatusOK, true},
-		{"valid", true, http.StatusBadRequest, false},
-		{"", false, http.StatusOK, false},
-		{testIDToken, true, http.StatusOK, true},
-		{testIDToken, true, http.StatusBadRequest, false},
-	}
-
-	for i, test := range table {
-		resetTestState(t)
-
-		done := make(chan struct{}, 1)
-		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if v := r.FormValue("code"); v != code {
-				t.Errorf("code = %q; want %q", v, code)
-			}
-			if v := r.FormValue("client_id"); v != testClientID {
-				t.Errorf("client_id = %q; want %q", v, testClientID)
-			}
-			if v := r.FormValue("client_secret"); v != testClientSecret {
-				t.Errorf("client_secret = %q; want %q", v, testClientSecret)
-			}
-			if v := r.FormValue("redirect_uri"); v != "postmessage" {
-				t.Errorf("redirect_uri = %q; want postmessage", v)
-			}
-			if v := r.FormValue("grant_type"); v != "authorization_code" {
-				t.Errorf("grant_type = %q; want authorization_code", v)
-			}
-
-			w.WriteHeader(test.exchangeRespCode)
-			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprintf(w, `{
-				"access_token": "new-access-token",
-				"refresh_token": "new-refresh-token",
-				"id_token": %q,
-				"expires_in": 3600
-			}`, testIDToken)
-
-			done <- struct{}{}
-		}))
-		defer ts.Close()
-		config.Google.TokenURL = ts.URL
-
-		p := strings.NewReader(`{"code": "` + code + `"}`)
-		r := newTestRequest(t, "POST", "/api/v1/auth", p)
-		r.Header.Set("Authorization", "Bearer "+test.token)
-		w := httptest.NewRecorder()
-		c := newContext(r)
-
-		cache.flush(c)
-		handleAuth(w, r)
-
-		if test.wantOK && w.Code != http.StatusOK {
-			t.Errorf("%d: code = %d; want 200\nbody: %s", i, w.Code, w.Body.String())
-		} else if !test.wantOK && w.Code == http.StatusOK {
-			t.Errorf("%d: code = 200; want > 399\nbody: %s", i, w.Body)
-		}
-
-		select {
-		case <-done:
-			if !test.doExchange {
-				t.Errorf("%d: should not have done code exchange", i)
-			}
-		default:
-			if test.doExchange {
-				t.Errorf("%d: code exchange never happened", i)
-			}
-		}
-
-		if !test.wantOK {
-			continue
-		}
-
-		cred, err := getCredentials(c, testUserID)
-
-		if err != nil {
-			t.Errorf("%d: getCredentials: %v", i, err)
-		}
-		if cred.AccessToken != "new-access-token" {
-			t.Errorf("%d: cred.AccessToken = %q; want 'new-access-token'", i, cred.AccessToken)
-		}
-		if cred.RefreshToken != "new-refresh-token" {
-			t.Errorf("%d: cred.RefreshToken = %q; want 'new-refresh-token'", i, cred.RefreshToken)
-		}
-		if cred.Expiry.Before(time.Now()) {
-			t.Errorf("%d: cred.Expiry is in the past: %s", i, cred.Expiry)
-		}
-	}
-}
-
-func TestHandleAuthNoRefresh(t *testing.T) {
-	defer preserveConfig()()
-
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		fmt.Fprintf(w, `{
-			"access_token": "new-access-token",
-			"id_token": %q,
-			"expires_in": 3600
-		}`, testIDToken)
-	}))
-	defer ts.Close()
-	config.Google.TokenURL = ts.URL
-
-	r, _ := aetestInstance.NewRequest("POST", "/api/v1/auth", strings.NewReader(`{"code": "one-off"}`))
-	r.Header.Set("Authorization", "Bearer "+testIDToken)
-	w := httptest.NewRecorder()
-
-	c := newContext(r)
-	cache.flush(c)
-	handleAuth(w, r)
-
-	if w.Code != 498 {
-		t.Errorf("w.Code = %d; want 498\nResponse: %s", w.Code, w.Body.String())
-	}
-}
-
-func TestServeUserScheduleExpired(t *testing.T) {
-	defer preserveConfig()()
-
-	r, _ := aetestInstance.NewRequest("GET", "/dummy", nil)
-	c := newContext(r)
-	if err := storeCredentials(c, &oauth2Credentials{
-		userID:       testUserID,
-		Expiry:       time.Now().Add(-1 * time.Hour),
-		AccessToken:  "access-token",
-		RefreshToken: "refresh-token",
-	}); err != nil {
-		t.Fatal(err)
-	}
-
-	// Refresh token server stub
-	tokens := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{
-      "access_token":"new-access",
-      "expires_in":3600,
-      "token_type":"Bearer"
-    }`))
-	}))
-	defer tokens.Close()
-	config.Google.TokenURL = tokens.URL
-
-	// Google Drive stub
-	var gdrive *httptest.Server
-	gdrive = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ah := r.Header.Get("authorization")
-		if ah == "" || !strings.HasPrefix(strings.ToLower(ah), "bearer ") {
-			t.Errorf("gdrive %s: bad authorization header: %q", r.URL.Path, ah)
-		} else if ah = ah[7:]; ah != "new-access" {
-			t.Errorf("gdrive %s: authorization = %q; want new-access", r.URL.Path, ah)
-		}
-
-		if r.URL.Path == "/file-id" {
-			if r.FormValue("alt") != "media" {
-				t.Errorf("alt = %q; want 'media'", r.FormValue("alt"))
-			}
-			w.Header().Set("Content-Type", "application/json")
-			w.Write([]byte(`{"starred_sessions": ["dummy-session-id"]}`))
-			return
-		}
-
-		if r.URL.Path != "/" {
-			t.Errorf("r.URL.Path = %q; want '/'", r.URL.Path)
-		}
-
-		q := "'appfolder' in parents and title = 'user_data.json'"
-		if r.FormValue("q") != q {
-			t.Errorf("q = %q; want %q\nForm: %v", r.FormValue("q"), q, r.Form)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		fmt.Fprintf(w, `{"items": [
-			{
-				"id": "not-this-one",
-				"modifiedDate": "2015-04-10T12:12:46.034Z"
-			},
-			{
-				"id": "file-id",
-				"modifiedDate": "2015-04-11T12:12:46.034Z"
-			}
-		]}`)
-	}))
-	defer gdrive.Close()
-	config.Google.Drive.FilesURL = gdrive.URL + "/"
-	config.Google.Drive.Filename = "user_data.json"
-
-	w := httptest.NewRecorder()
-	r, _ = aetestInstance.NewRequest("GET", "/api/v1/user/schedule", nil)
-	r.Header.Set("Authorization", "Bearer "+testIDToken)
-
-	handleUserSchedule(w, r)
-
-	if w.Code != http.StatusOK {
-		t.Errorf("w.Code = %d; want 200", w.Code)
-	}
-	var list []string
-	if err := json.Unmarshal(w.Body.Bytes(), &list); err != nil {
-		t.Fatalf("json.Unmarshal: %v\nResponse: %s", err, w.Body.String())
-	}
-	if len(list) != 1 || list[0] != "dummy-session-id" {
-		t.Errorf("list = %v; want ['dummy-session-id']\nResponse: %s", list, w.Body.String())
-	}
-
-	cred, err := getCredentials(c, testUserID)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if cred.AccessToken != "new-access" {
-		t.Errorf("cred.AccessToken = %q; want 'new-access'", cred.AccessToken)
-	}
-	if cred.RefreshToken == "" {
-		t.Errorf("cred.RefreshToken is empty")
-	}
-	if !cred.Expiry.After(time.Now()) {
-		t.Errorf("cred is expired: %s", cred.Expiry)
-	}
-}
-
-func TestHandleUserSchedulePut(t *testing.T) {
-	defer preserveConfig()()
-
-	checkAutHeader := func(who, ah string) {
-		if ah == "" || !strings.HasPrefix(strings.ToLower(ah), "bearer ") {
-			t.Errorf("%s: bad authorization header: %q", who, ah)
-		} else if ah = ah[7:]; ah != "dummy-access" {
-			t.Errorf("%s: authorization = %q; want dummy-access", who, ah)
-		}
-	}
-
-	checkMetadata := func(r io.Reader) {
-		var data struct {
-			Title    string `json:"title"`
-			MimeType string `json:"mimeType"`
-			Parents  []struct {
-				Id string `json:"id"`
-			}
-		}
-		if err := json.NewDecoder(r).Decode(&data); err != nil {
-			t.Errorf("checkMetadata: %v", err)
-			return
-		}
-		if data.Title != "user_data.json" {
-			t.Errorf("checkMetadata: data.Title = %q; want user_data.json", data.Title)
-		}
-		if data.MimeType != "application/json" {
-			t.Errorf("checkMetadata: data.MimeType = %q; want application/json", data.MimeType)
-		}
-		if len(data.Parents) != 1 || data.Parents[0].Id != "appfolder" {
-			t.Errorf(`checkMetadata: data.Parents = %+v; want [{"id":"appfolder"}]`, data.Parents)
-		}
-	}
-
-	expBookmarks := append(defaultBookmarks, "new-session-id")
-	checkMedia := func(r io.Reader) {
-		var data appFolderData
-		if err := json.NewDecoder(r).Decode(&data); err != nil {
-			t.Errorf("checkMedia: %v", err)
-			return
-		}
-		if !compareStringSlices(data.Bookmarks, expBookmarks) {
-			t.Errorf("checkMedia: data.Bookmarks = %v; want %v", data.Bookmarks, expBookmarks)
-		}
-	}
-
-	// drive search files server
-	files := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		checkAutHeader("files", r.Header.Get("authorization"))
-		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"items":[]}`))
-	}))
-	defer files.Close()
-
-	// drive upload server
-	upload := make(chan struct{}, 1)
-	up := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		checkAutHeader("upload", r.Header.Get("authorization"))
-
-		if v, ok := r.Header["If-Match"]; ok {
-			t.Errorf("if-match = %q; want none", v)
-		}
-
-		mediaType, params, err := mime.ParseMediaType(r.Header.Get("Content-Type"))
-		if err != nil {
-			t.Fatalf("mime.ParseMediaType: %v", err)
-		}
-		if mediaType != "multipart/related" {
-			t.Errorf("mediaType = %q; want multipart/related", mediaType)
-		}
-
-		mr := multipart.NewReader(r.Body, params["boundary"])
-		count := 0
-		for {
-			p, err := mr.NextPart()
-			if err == io.EOF {
-				break
-			}
-			if err != nil {
-				t.Fatalf("%d: mr.NextPart: %v", count, err)
-			}
-			if v := p.Header.Get("Content-Type"); !strings.HasPrefix(v, "application/json") {
-				t.Errorf("%d: content-type = %q; want application/json", count, v)
-			}
-			switch count {
-			case 0:
-				checkMetadata(p)
-			case 1:
-				checkMedia(p)
-			}
-			count += 1
-		}
-		if count != 2 {
-			t.Errorf("num. of parts = %d; want 2", count)
-		}
-
-		w.Header().Set("etag", `"new-etag"`)
-		fmt.Fprint(w, `{"id": "new-file-id"}`)
-
-		upload <- struct{}{}
-	}))
-	defer up.Close()
-
-	config.Google.Drive.FilesURL = files.URL + "/"
-	config.Google.Drive.UploadURL = up.URL + "/"
-	config.Google.Drive.Filename = "user_data.json"
-
-	c := newTestContext()
-	cred := &oauth2Credentials{
-		userID:      testUserID,
-		Expiry:      time.Now().Add(2 * time.Hour),
-		AccessToken: "dummy-access",
-	}
-	if err := storeCredentials(c, cred); err != nil {
-		t.Fatalf("storeCredentials: %v", err)
-	}
-
-	w := httptest.NewRecorder()
-	r, _ := aetestInstance.NewRequest("PUT", "/api/v1/user/schedule/new-session-id", strings.NewReader(""))
-	r.Header.Set("Authorization", "Bearer "+testIDToken)
-
-	handleUserSchedule(w, r)
-
-	if w.Code != http.StatusOK {
-		t.Errorf("w.Code = %d; want 200", w.Code)
-	}
-	select {
-	case <-upload:
-		// passed
-	default:
-		t.Errorf("upload never happened")
-	}
-
-	var list []string
-	if err := json.Unmarshal(w.Body.Bytes(), &list); err != nil {
-		t.Fatalf("Unmarshal(response): %v", err)
-	}
-	if !compareStringSlices(list, expBookmarks) {
-		t.Errorf("list = %v; want %v", list, expBookmarks)
-	}
-
-	data, err := getLocalAppFolderMeta(c, testUserID)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if data.FileID != "new-file-id" {
-		t.Errorf("data.FileID = %q; want 'new-file-id'", data.FileID)
-	}
-	if data.Etag != "new-etag" {
-		t.Errorf("data.Etag = %q; want 'new-etag'", data.Etag)
-	}
-}
-
-func TestHandleUserScheduleDelete(t *testing.T) {
-	defer resetTestState(t)
-	defer preserveConfig()()
-
-	// drive search files server
-	files := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-
-		if r.URL.Path == "/file-id" {
-			w.Write([]byte(`{"starred_sessions": ["one-session", "two-session"]}`))
-			return
-		}
-
-		q := "'appfolder' in parents and title = 'user_data.json'"
-		if v := r.FormValue("q"); v != q {
-			t.Errorf("q = %q; want %q\nForm: %v", v, q, r.Form)
-		}
-		fmt.Fprintf(w, `{"items": [{
-			"etag": "\"some-etag\"",
-      "id": "file-id",
-      "modifiedDate": "2015-04-11T12:12:46.034Z"
-    }]}`)
-	}))
-	defer files.Close()
-
-	// drive upload server
-	upload := make(chan struct{}, 1)
-	up := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		defer func() { upload <- struct{}{} }()
-		if v := r.Header.Get("if-match"); v != `"some-etag"` {
-			t.Errorf(`if-match = %q; want "\"some-etag\""`, v)
-		}
-		var data appFolderData
-		if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
-			t.Fatal(err)
-		}
-		if len(data.Bookmarks) != 1 || data.Bookmarks[0] != "two-session" {
-			t.Errorf("data.Bookmarks = %v; want ['two-session']", data.Bookmarks)
-		}
-		w.Header().Set("etag", `"new-etag"`)
-		w.WriteHeader(http.StatusOK)
-	}))
-	defer up.Close()
-
-	config.Google.Drive.FilesURL = files.URL + "/"
-	config.Google.Drive.UploadURL = up.URL + "/"
-	config.Google.Drive.Filename = "user_data.json"
-
-	c := newContext(newTestRequest(t, "GET", "/", nil))
-	cred := &oauth2Credentials{
-		userID:      testUserID,
-		Expiry:      time.Now().Add(2 * time.Hour),
-		AccessToken: "dummy-access",
-	}
-	if err := storeCredentials(c, cred); err != nil {
-		t.Fatalf("storeCredentials: %v", err)
-	}
-
-	r := newTestRequest(t, "DELETE", "/api/v1/user/schedule/one-session", strings.NewReader(""))
-	r.Header.Set("Authorization", "Bearer "+testIDToken)
-	w := httptest.NewRecorder()
-
-	handleUserSchedule(w, r)
-
-	if w.Code != http.StatusOK {
-		t.Errorf("w.Code = %d; want 200", w.Code)
-	}
-	select {
-	case <-upload:
-		// passed
-	default:
-		t.Errorf("upload never happened")
-	}
-
-	var list []string
-	if err := json.Unmarshal(w.Body.Bytes(), &list); err != nil {
-		t.Fatalf("Unmarshal(response): %v", err)
-	}
-	if len(list) != 1 || list[0] != "two-session" {
-		t.Errorf("list = %v; want ['two-session']", list)
-	}
-
-	data, err := getLocalAppFolderMeta(c, testUserID)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if data.FileID != "file-id" {
-		t.Errorf("data.FileID = %q; want 'file-id'", data.FileID)
-	}
-	if data.Etag != "new-etag" {
-		t.Errorf("data.Etag = %q; want 'new-etag'", data.Etag)
-	}
-}
-
-func TestHandleUserScheduleConflict(t *testing.T) {
-	defer preserveConfig()()
-
-	// drive search files server
-	files := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path == "/" {
-			fmt.Fprintf(w, `{"items": [
-				{
-					"etag": "\"new-etag\"",
-					"id": "new-file-id",
-					"modifiedDate": "2015-04-11T12:12:46.034Z"
-				}
-			]}`)
-			return
-		}
-
-		if r.URL.Path == "/file-id" {
-			w.Write([]byte(`{"starred_sessions": ["a"]}`))
-			return
-		}
-
-		if r.URL.Path != "/new-file-id" {
-			t.Errorf("r.URL.Path = %q; want /new-file-id", r.URL.Path)
-		}
-		w.Write([]byte(`{"starred_sessions": ["a", "b"]}`))
-	}))
-	defer files.Close()
-
-	// drive upload server
-	upcount := 0
-	up := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		defer func() { upcount += 1 }()
-
-		if r.Header.Get("if-match") == `"some-etag"` {
-			w.WriteHeader(http.StatusPreconditionFailed)
-			return
-		}
-
-		if v := r.Header.Get("if-match"); v != `"new-etag"` {
-			t.Errorf("if-match = %q; want new-etag", v)
-		}
-		var data appFolderData
-		if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
-			t.Fatal(err)
-		}
-		if v := []string{"a", "b", "c"}; !reflect.DeepEqual(data.Bookmarks, v) {
-			t.Errorf("data.Bookmarks = %v; want %v", data.Bookmarks, v)
-		}
-		w.Header().Set("etag", `"even-newer-etag"`)
-		w.WriteHeader(http.StatusOK)
-	}))
-	defer up.Close()
-
-	config.Google.Drive.FilesURL = files.URL + "/"
-	config.Google.Drive.UploadURL = up.URL + "/"
-	config.Google.Drive.Filename = "user_data.json"
-
-	c := newTestContext()
-	if err := storeCredentials(c, &oauth2Credentials{
-		userID:      testUserID,
-		Expiry:      time.Now().Add(2 * time.Hour),
-		AccessToken: "dummy-access",
-	}); err != nil {
-		t.Fatal(err)
-	}
-	if err := storeLocalAppFolderMeta(c, testUserID, &appFolderData{
-		FileID: "file-id",
-		Etag:   "some-etag",
-	}); err != nil {
-		t.Fatal(err)
-	}
-
-	w := httptest.NewRecorder()
-	r, _ := aetestInstance.NewRequest("PUT", "/api/v1/user/schedule", strings.NewReader(`["b", "c"]`))
-	r.Header.Set("Authorization", "Bearer "+testIDToken)
-
-	handleUserSchedule(w, r)
-
-	if w.Code != http.StatusOK {
-		t.Errorf("w.Code = %d; want 200", w.Code)
-	}
-	if upcount != 2 {
-		t.Errorf("upcount = %d; want 2", upcount)
-	}
-
-	var list []string
-	if err := json.Unmarshal(w.Body.Bytes(), &list); err != nil {
-		t.Fatalf("Unmarshal(%s): %v", w.Body.String(), err)
-	}
-	if v := []string{"a", "b", "c"}; !reflect.DeepEqual(list, v) {
-		t.Errorf("list = %v; want %v", list, v)
-	}
-
-	data, err := getLocalAppFolderMeta(c, testUserID)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if data.FileID != "new-file-id" {
-		t.Errorf("data.FileID = %q; want new-file-id", data.FileID)
-	}
-	if data.Etag != "even-newer-etag" {
-		t.Errorf("data.Etag = %q; want even-newer-etag", data.Etag)
-	}
-}
-
-func TestServeUserScheduleDefault(t *testing.T) {
-	defer resetTestState(t)
-	defer preserveConfig()()
-
-	gdrive := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"items":[]}`))
-	}))
-	defer gdrive.Close()
-	config.Google.Drive.FilesURL = gdrive.URL + "/"
-
-	r := newTestRequest(t, "GET", "/api/v1/user/schedule", nil)
-	r.Header.Set("authorization", bearerHeader+testIDToken)
-	c := newContext(r)
-
-	if err := storeCredentials(c, &oauth2Credentials{
-		userID:      testUserID,
-		Expiry:      time.Now().Add(2 * time.Hour),
-		AccessToken: "dummy-access",
-	}); err != nil {
-		t.Fatalf("storeCredentials: %v", err)
-	}
-
-	w := httptest.NewRecorder()
-	handleUserSchedule(w, r)
-
-	if w.Code != http.StatusOK {
-		t.Fatalf("w.Code = %d; want 200\nResponse: %s", w.Code, w.Body.String())
-	}
-
-	var list []string
-	if err := json.Unmarshal(w.Body.Bytes(), &list); err != nil {
-		t.Fatalf("Unmarshal(response): %v", err)
-	}
-	if !compareStringSlices(list, defaultBookmarks) {
-		t.Errorf("list = %v; want %v", list, defaultBookmarks)
-	}
-}
-
-func TestServeUserSurvey(t *testing.T) {
-	defer preserveConfig()()
-
-	gdrive := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"feedback_submitted_sessions": ["id-1", "id-2"]}`))
-	}))
-	defer gdrive.Close()
-	config.Google.Drive.FilesURL = gdrive.URL
-
-	r, _ := aetestInstance.NewRequest("GET", "/api/v1/user/survey", nil)
-	r.Header.Set("authorization", bearerHeader+testIDToken)
-	c := newContext(r)
-
-	if err := storeCredentials(c, &oauth2Credentials{
-		userID:      testUserID,
-		Expiry:      time.Now().Add(2 * time.Hour),
-		AccessToken: "dummy-access",
-	}); err != nil {
-		t.Fatal(err)
-	}
-	if err := storeLocalAppFolderMeta(c, testUserID, &appFolderData{
-		FileID: "file-123",
-		Etag:   "xxx",
-	}); err != nil {
-		t.Fatal(err)
-	}
-
-	w := httptest.NewRecorder()
-	handleUserSurvey(w, r)
-
-	if w.Code != http.StatusOK {
-		t.Fatalf("w.Code = %d; want 200\nResponse: %s", w.Code, w.Body.String())
-	}
-
-	var list []string
-	if err := json.Unmarshal(w.Body.Bytes(), &list); err != nil {
-		t.Fatal(err)
-	}
-	ids := []string{"id-1", "id-2"}
-	if !compareStringSlices(list, ids) {
-		t.Errorf("list = %v; want %v", list, ids)
-	}
-}
-
-func TestSubmitUserSurvey(t *testing.T) {
-	defer resetTestState(t)
-	defer preserveConfig()()
-
-	c := newContext(newTestRequest(t, "GET", "/dummy", nil))
-	if err := storeCredentials(c, &oauth2Credentials{
-		userID:      testUserID,
-		Expiry:      time.Now().Add(2 * time.Hour),
-		AccessToken: "dummy-access",
-	}); err != nil {
-		t.Fatal(err)
-	}
-	if err := storeLocalAppFolderMeta(c, testUserID, &appFolderData{
-		FileID: "file-123",
-		Etag:   "xxx",
-	}); err != nil {
-		t.Fatal(err)
-	}
-	if err := storeEventData(c, &eventData{Sessions: map[string]*eventSession{
-		"ok":        {Id: "ok", StartTime: time.Now().Add(-10 * time.Minute)},
-		"submitted": {Id: "submitted", StartTime: time.Now().Add(-10 * time.Minute)},
-		"disabled":  {Id: "disabled", StartTime: time.Now().Add(-10 * time.Minute)},
-		"too-early": {Id: "too-early", StartTime: time.Now().Add(10 * time.Minute)},
-	}}); err != nil {
-		t.Fatal(err)
-	}
-
-	// Google Drive API endpoint
-	feedbackIDs := []string{"submitted", "ok"}
-	gdrive := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		if r.Method == "GET" {
-			w.Write([]byte(`{
-				"starred_sessions": ["submitted", "too-early", "disabled"],
-				"feedback_submitted_sessions": ["submitted"]
-			}`))
-			return
-		}
-		data := &appFolderData{}
-		if err := json.NewDecoder(r.Body).Decode(data); err != nil {
-			t.Error(err)
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
-		if v := []string{"submitted", "too-early", "disabled"}; !compareStringSlices(data.Bookmarks, v) {
-			t.Errorf("data.Bookmarks = %v; want %v", data.Bookmarks, v)
-		}
-		if !compareStringSlices(data.Survey, feedbackIDs) {
-			t.Errorf("data.Survey = %v; want %v", data.Survey, feedbackIDs)
-		}
-	}))
-	defer gdrive.Close()
-
-	// Survey API endpoint
-	submitted := false
-	ep := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		defer func() { submitted = true }()
-		if h := r.Header.Get("code"); h != "ep-code" {
-			t.Errorf("code = %q; want 'ep-code'", h)
-		}
-		if h := r.Header.Get("apikey"); h != "ep-key" {
-			t.Errorf("apikey = %q; want 'ep-key'", h)
-		}
-		if err := r.ParseForm(); err != nil {
-			t.Errorf("r.ParseForm: %v", err)
-			return
-		}
-		params := url.Values{
-			"surveyId":      {"io-survey"},
-			"objectid":      {"ok-mapped"},
-			"registrantKey": {"registrant"},
-			"q1-param":      {"five"},
-			"q2-param":      {"four"},
-			"q3-param":      {"three"},
-			"q4-param":      {"two"},
-			"q5-param":      {""},
-		}
-		if !reflect.DeepEqual(r.Form, params) {
-			t.Errorf("r.Form = %v; want %v", r.Form, params)
-		}
-	}))
-	defer ep.Close()
-
-	config.Env = "prod"
-	config.Google.Drive.FilesURL = gdrive.URL
-	config.Google.Drive.UploadURL = gdrive.URL
-	config.Survey.Endpoint = ep.URL + "/"
-	config.Survey.ID = "io-survey"
-	config.Survey.Reg = "registrant"
-	config.Survey.Key = "ep-key"
-	config.Survey.Code = "ep-code"
-	config.Survey.Disabled = []string{"disabled"}
-	config.Survey.Smap = map[string]string{
-		"ok": "ok-mapped",
-	}
-	config.Survey.Qmap.Q1.Name = "q1-param"
-	config.Survey.Qmap.Q1.Answers = map[string]string{"5": "five"}
-	config.Survey.Qmap.Q2.Name = "q2-param"
-	config.Survey.Qmap.Q2.Answers = map[string]string{"4": "four"}
-	config.Survey.Qmap.Q3.Name = "q3-param"
-	config.Survey.Qmap.Q3.Answers = map[string]string{"3": "three"}
-	config.Survey.Qmap.Q4.Name = "q4-param"
-	config.Survey.Qmap.Q4.Answers = map[string]string{"2": "two"}
-	config.Survey.Qmap.Q5.Name = "q5-param"
-
-	const feedback = `{
-		"overall": "5",
-		"relevance": "4",
-		"content": "3",
-		"speaker": "2"
-	}`
-
-	table := []*struct {
-		sid  string
-		code int
-	}{
-		{"ok", http.StatusCreated},
-		{"not-there", http.StatusNotFound},
-		{"submitted", http.StatusBadRequest},
-		{"disabled", http.StatusBadRequest},
-		{"too-early", http.StatusBadRequest},
-		{"", http.StatusNotFound},
-	}
-
-	for i, test := range table {
-		submitted = false
-		r := newTestRequest(t, "PUT", "/api/v1/user/survey/"+test.sid, strings.NewReader(feedback))
-		r.Header.Set("authorization", bearerHeader+testIDToken)
-		w := httptest.NewRecorder()
-		handleUserSurvey(w, r)
-
-		if w.Code != test.code {
-			t.Errorf("%d: w.Code = %d; want %d\nResponse: %s", i, w.Code, test.code, w.Body.String())
-		}
-		if test.code > 299 {
-			if submitted {
-				t.Errorf("%d: submitted = true; want false", i)
-			}
-			continue
-		}
-
-		var list []string
-		if err := json.Unmarshal(w.Body.Bytes(), &list); err != nil {
-			t.Fatalf("%d: %v", i, err)
-		}
-		if !compareStringSlices(list, feedbackIDs) {
-			t.Errorf("%d: list = %v; want %v", i, list, feedbackIDs)
-		}
-
-		if !submitted {
-			t.Errorf("%d: submitted = false; want true", i)
-		}
-	}
-}
-
-func TestGetUserDefaultPushConfig(t *testing.T) {
-	t.Parallel()
-	defer resetTestState(t)
-
-	w := httptest.NewRecorder()
-	r := newTestRequest(t, "GET", "/api/v1/user/notify", nil)
-	r.Header.Set("Authorization", "Bearer "+testIDToken)
-
-	handleUserNotifySettings(w, r)
-
-	if w.Code != http.StatusOK {
-		t.Errorf("w.Code = %d; want 200", w.Code)
-	}
-	var body map[string]interface{}
-	if err := json.Unmarshal(w.Body.Bytes(), &body); err != nil {
-		t.Fatalf("json.Unmarshal: %v", err)
-	}
-	if v, ok := body["notify"].(bool); !ok || v != false {
-		t.Errorf("body.notify = %+v; want false", body["notify"])
-	}
-	if v := body["subscribers"]; v != nil {
-		t.Errorf("body.subscribers = %+v; want nil", v)
-	}
-	if v := body["ioext"]; v != nil {
-		t.Errorf("body.ioext = %+v; want nil", v)
-	}
-}
-
-func TestStoreUserPushConfigV1(t *testing.T) {
-	defer resetTestState(t)
-	defer preserveConfig()()
-	config.Google.GCM.Endpoint = "https://gcm"
-
-	table := []*struct{ body, endpoint string }{
-		{`{"subscriber": "reg-123", "endpoint": "https://push"}`, "https://push/reg-123"},
-		{`{"subscriber": "reg-123", "endpoint": ""}`, "https://gcm/reg-123"},
-		{`{"subscriber": "reg-123"}`, "https://gcm/reg-123"},
-	}
-
-	for i, test := range table {
-		resetTestState(t)
-		r := newTestRequest(t, "PUT", "/api/v1/user/notify", strings.NewReader(test.body))
-		r.Header.Set("Authorization", "Bearer "+testIDToken)
-		w := httptest.NewRecorder()
-
-		handleUserNotifySettings(w, r)
-
-		if w.Code != http.StatusOK {
-			t.Errorf("%d: w.Code = %d; want 200\nResponse: %s", i, w.Code, w.Body.String())
-		}
-		pi, err := getUserPushInfo(newContext(r), testUserID)
-		if err != nil {
-			t.Errorf("%d: %v", i, err)
-			continue
-		}
-		if len(pi.Endpoints) != 1 || pi.Endpoints[0] != test.endpoint {
-			t.Errorf("%d: pi.Endpoints = %v; want [%q]", i, pi.Endpoints, test.endpoint)
-		}
-		if len(pi.Subscribers) != 0 {
-			t.Errorf("%d: pi.Subscribers = %v; want []", i, pi.Subscribers)
-		}
-	}
-}
-
-func TestStoreUserPushConfigV2(t *testing.T) {
-	defer preserveConfig()()
-
-	config.Google.GCM.Endpoint = "https://gcm"
-	body := strings.NewReader(`{
-		"notify": true,
-		"endpoint": "https://gcm/reg-id",
-		"iostart": true,
-		"ioext": {
-			"name": "Amsterdam",
-			"lat": 52.37607,
-			"lng": 4.886114
-		}
-	}`)
-	expected := &userPush{
-		userID:    testUserID,
-		Enabled:   true,
-		Endpoints: []string{"https://gcm/reg-id"},
-		IOStart:   true,
-		Ext: ioExtPush{
-			Enabled: true,
-			Name:    "Amsterdam",
-			Lat:     52.37607,
-			Lng:     4.886114,
-		},
-	}
-	expected.Pext = &expected.Ext
-
-	w := httptest.NewRecorder()
-	r, _ := aetestInstance.NewRequest("PUT", "/api/v1/user/notify", body)
-	r.Header.Set("Authorization", "Bearer "+testIDToken)
-
-	handleUserNotifySettings(w, r)
-
-	if w.Code != http.StatusOK {
-		t.Errorf("w.Code = %d; want 200\nResponse: %s", w.Code, w.Body.String())
-	}
-
-	var p1 userPush
-	if err := json.Unmarshal(w.Body.Bytes(), &p1); err != nil {
-		t.Errorf("json.Unmarshal: %v", err)
-	}
-	if p1.Pext != nil {
-		p1.Pext.Enabled = true
-	}
-	if !reflect.DeepEqual(p1.Pext, expected.Pext) {
-		t.Errorf("p1.Pext = %+v; want %+v\nResponse: %s", p1.Pext, expected.Pext, w.Body.String())
-	}
-	p1.userID = expected.userID
-	p1.Pext = expected.Pext
-	p1.Ext = expected.Ext
-	if !reflect.DeepEqual(&p1, expected) {
-		t.Errorf("p1 = %+v; want %+v\nResponse: %s", p1, expected, w.Body.String())
-	}
-
-	p2, err := getUserPushInfo(newContext(r), testUserID)
-	if err != nil {
-		t.Errorf("getUserPushInfo: %v", err)
-	}
-	if !reflect.DeepEqual(p2, expected) {
-		t.Errorf("p2 = %+v; want %+v", p2, expected)
-	}
-	if !reflect.DeepEqual(p2.Pext, expected.Pext) {
-		t.Errorf("p2.Pext = %+v; want %+v", p2.Pext, expected.Pext)
-	}
-}
+// TODO: refactor when ported to firebase and 2016 eventpoint.
+//
+//func TestSubmitUserSurvey(t *testing.T) {
+//	defer resetTestState(t)
+//	defer preserveConfig()()
+//
+//	c := newContext(newTestRequest(t, "GET", "/dummy", nil))
+//	if err := storeCredentials(c, &oauth2Credentials{
+//		userID:      testUserID,
+//		Expiry:      time.Now().Add(2 * time.Hour),
+//		AccessToken: "dummy-access",
+//	}); err != nil {
+//		t.Fatal(err)
+//	}
+//	if err := storeLocalAppFolderMeta(c, testUserID, &appFolderData{
+//		FileID: "file-123",
+//		Etag:   "xxx",
+//	}); err != nil {
+//		t.Fatal(err)
+//	}
+//	if err := storeEventData(c, &eventData{Sessions: map[string]*eventSession{
+//		"ok":        {Id: "ok", StartTime: time.Now().Add(-10 * time.Minute)},
+//		"submitted": {Id: "submitted", StartTime: time.Now().Add(-10 * time.Minute)},
+//		"disabled":  {Id: "disabled", StartTime: time.Now().Add(-10 * time.Minute)},
+//		"too-early": {Id: "too-early", StartTime: time.Now().Add(10 * time.Minute)},
+//	}}); err != nil {
+//		t.Fatal(err)
+//	}
+//
+//	// Google Drive API endpoint
+//	feedbackIDs := []string{"submitted", "ok"}
+//	gdrive := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+//		w.Header().Set("Content-Type", "application/json")
+//		if r.Method == "GET" {
+//			w.Write([]byte(`{
+//				"starred_sessions": ["submitted", "too-early", "disabled"],
+//				"feedback_submitted_sessions": ["submitted"]
+//			}`))
+//			return
+//		}
+//		data := &appFolderData{}
+//		if err := json.NewDecoder(r.Body).Decode(data); err != nil {
+//			t.Error(err)
+//			http.Error(w, err.Error(), http.StatusBadRequest)
+//			return
+//		}
+//		if v := []string{"submitted", "too-early", "disabled"}; !compareStringSlices(data.Bookmarks, v) {
+//			t.Errorf("data.Bookmarks = %v; want %v", data.Bookmarks, v)
+//		}
+//		if !compareStringSlices(data.Survey, feedbackIDs) {
+//			t.Errorf("data.Survey = %v; want %v", data.Survey, feedbackIDs)
+//		}
+//	}))
+//	defer gdrive.Close()
+//
+//	// Survey API endpoint
+//	submitted := false
+//	ep := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+//		defer func() { submitted = true }()
+//		if h := r.Header.Get("code"); h != "ep-code" {
+//			t.Errorf("code = %q; want 'ep-code'", h)
+//		}
+//		if h := r.Header.Get("apikey"); h != "ep-key" {
+//			t.Errorf("apikey = %q; want 'ep-key'", h)
+//		}
+//		if err := r.ParseForm(); err != nil {
+//			t.Errorf("r.ParseForm: %v", err)
+//			return
+//		}
+//		params := url.Values{
+//			"surveyId":      {"io-survey"},
+//			"objectid":      {"ok-mapped"},
+//			"registrantKey": {"registrant"},
+//			"q1-param":      {"five"},
+//			"q2-param":      {"four"},
+//			"q3-param":      {"three"},
+//			"q4-param":      {"two"},
+//			"q5-param":      {""},
+//		}
+//		if !reflect.DeepEqual(r.Form, params) {
+//			t.Errorf("r.Form = %v; want %v", r.Form, params)
+//		}
+//	}))
+//	defer ep.Close()
+//
+//	config.Env = "prod"
+//	config.Google.Drive.FilesURL = gdrive.URL
+//	config.Google.Drive.UploadURL = gdrive.URL
+//	config.Survey.Endpoint = ep.URL + "/"
+//	config.Survey.ID = "io-survey"
+//	config.Survey.Reg = "registrant"
+//	config.Survey.Key = "ep-key"
+//	config.Survey.Code = "ep-code"
+//	config.Survey.Disabled = []string{"disabled"}
+//	config.Survey.Smap = map[string]string{
+//		"ok": "ok-mapped",
+//	}
+//	config.Survey.Qmap.Q1.Name = "q1-param"
+//	config.Survey.Qmap.Q1.Answers = map[string]string{"5": "five"}
+//	config.Survey.Qmap.Q2.Name = "q2-param"
+//	config.Survey.Qmap.Q2.Answers = map[string]string{"4": "four"}
+//	config.Survey.Qmap.Q3.Name = "q3-param"
+//	config.Survey.Qmap.Q3.Answers = map[string]string{"3": "three"}
+//	config.Survey.Qmap.Q4.Name = "q4-param"
+//	config.Survey.Qmap.Q4.Answers = map[string]string{"2": "two"}
+//	config.Survey.Qmap.Q5.Name = "q5-param"
+//
+//	const feedback = `{
+//		"overall": "5",
+//		"relevance": "4",
+//		"content": "3",
+//		"speaker": "2"
+//	}`
+//
+//	table := []*struct {
+//		sid  string
+//		code int
+//	}{
+//		{"ok", http.StatusCreated},
+//		{"not-there", http.StatusNotFound},
+//		{"submitted", http.StatusBadRequest},
+//		{"disabled", http.StatusBadRequest},
+//		{"too-early", http.StatusBadRequest},
+//		{"", http.StatusNotFound},
+//	}
+//
+//	for i, test := range table {
+//		submitted = false
+//		r := newTestRequest(t, "PUT", "/api/v1/user/survey/"+test.sid, strings.NewReader(feedback))
+//		r.Header.Set("authorization", bearerHeader+testIDToken)
+//		w := httptest.NewRecorder()
+//		handleUserSurvey(w, r)
+//
+//		if w.Code != test.code {
+//			t.Errorf("%d: w.Code = %d; want %d\nResponse: %s", i, w.Code, test.code, w.Body.String())
+//		}
+//		if test.code > 299 {
+//			if submitted {
+//				t.Errorf("%d: submitted = true; want false", i)
+//			}
+//			continue
+//		}
+//
+//		var list []string
+//		if err := json.Unmarshal(w.Body.Bytes(), &list); err != nil {
+//			t.Fatalf("%d: %v", i, err)
+//		}
+//		if !compareStringSlices(list, feedbackIDs) {
+//			t.Errorf("%d: list = %v; want %v", i, list, feedbackIDs)
+//		}
+//
+//		if !submitted {
+//			t.Errorf("%d: submitted = false; want true", i)
+//		}
+//	}
+//}
 
 func TestFirstSyncEventData(t *testing.T) {
 	defer resetTestState(t)
@@ -1465,15 +668,15 @@ func TestFirstSyncEventData(t *testing.T) {
 	}`
 
 	video := &eventVideo{
+		ID:       "video-id",
 		Thumb:    "http://img.youtube.com/test.jpg",
-		Id:       "video-id",
 		Title:    "Map Up your Apps!",
 		Desc:     "video desc",
 		Topic:    "Tools",
 		Speakers: "Some Dude",
 	}
 	session := &eventSession{
-		Id:        "session-id",
+		ID:        "session-id",
 		Title:     "Introduction to Classroom",
 		Desc:      "session desc",
 		IsLive:    true,
@@ -1493,7 +696,7 @@ func TestFirstSyncEventData(t *testing.T) {
 		},
 	}
 	speaker := &eventSpeaker{
-		Id:      "speaker-id",
+		ID:      "speaker-id",
 		Name:    "Google Devs",
 		Bio:     "speaker bio",
 		Company: "Google",
@@ -1590,11 +793,11 @@ func TestSyncEventDataEmtpyDiff(t *testing.T) {
 		if r.URL.Path == "/manifest.json" {
 			w.Header().Set("last-modified", times[mcount].Format(http.TimeFormat))
 			w.Write([]byte(`{"data_files": ["schedule.json"]}`))
-			mcount += 1
+			mcount++
 			return
 		}
 		w.Write([]byte(scheduleFile))
-		scount += 1
+		scount++
 	}))
 	defer ts.Close()
 
@@ -1606,7 +809,7 @@ func TestSyncEventDataEmtpyDiff(t *testing.T) {
 	w := httptest.NewRecorder()
 	c := newContext(r)
 
-	for i := 1; i < 3; i += 1 {
+	for i := 1; i < 3; i++ {
 		syncEventData(w, r)
 		if w.Code != http.StatusOK {
 			t.Errorf("w.Code = %d; want 200", w.Code)
@@ -1634,7 +837,7 @@ func TestSyncEventDataWithDiff(t *testing.T) {
 
 	startDate := time.Date(2015, 5, 28, 22, 0, 0, 0, time.UTC)
 	session := &eventSession{
-		Id:        "test-session",
+		ID:        "test-session",
 		Title:     "Introduction to Classroom",
 		Desc:      "session desc",
 		IsLive:    true,
@@ -1659,7 +862,7 @@ func TestSyncEventDataWithDiff(t *testing.T) {
 
 	err := storeEventData(c, &eventData{
 		modified: firstMod,
-		Sessions: map[string]*eventSession{session.Id: session},
+		Sessions: map[string]*eventSession{session.ID: session},
 	})
 	if err != nil {
 		t.Fatalf("storeEventData: %v", err)
@@ -1737,9 +940,9 @@ func TestSyncEventDataWithDiff(t *testing.T) {
 		t.Errorf("data.modified = %s; want %s", data.modified, lastMod)
 	}
 
-	s := data.Sessions[session.Id]
+	s := data.Sessions[session.ID]
 	if s == nil {
-		t.Fatalf("%q session not found in %+v", session.Id, data.Sessions)
+		t.Fatalf("%q session not found in %+v", session.ID, data.Sessions)
 	}
 	if v := "CHANGED DESCRIPTION"; s.Desc != v {
 		t.Errorf("s.Desc = %q; want %q", s.Desc, v)
@@ -1756,376 +959,108 @@ func TestSyncEventDataWithDiff(t *testing.T) {
 		t.Errorf("len(dc.Videos) = %d; want 0", l)
 	}
 	s.Update = updateDetails
-	if s2 := dc.Sessions[session.Id]; !reflect.DeepEqual(s2, s) {
+	if s2 := dc.Sessions[session.ID]; !reflect.DeepEqual(s2, s) {
 		t.Errorf("s2 = %+v\nwant %+v", s2, s)
 	}
 }
 
-func TestServeSWToken(t *testing.T) {
-	t.Parallel()
-	r, _ := aetestInstance.NewRequest("GET", "/api/v1/user/updates", nil)
-	r.Header.Set("authorization", "bearer "+testIDToken)
-	w := httptest.NewRecorder()
-	serveUserUpdates(w, r)
+// TODO: refactor when ported to firebase
+//
+//func TestHandlePingUserUpgradeSubscribers(t *testing.T) {
+//	defer preserveConfig()()
+//
+//	config.Google.GCM.Endpoint = "http://gcm"
+//	r, _ := aetestInstance.NewRequest("POST", "/task/ping-user", nil)
+//	r.Form = url.Values{
+//		"uid":      {testUserID},
+//		"sessions": {"s-123"},
+//	}
+//	r.Header.Set("x-appengine-taskexecutioncount", "1")
+//	c := newContext(r)
+//
+//	if err := storeUserPushInfo(c, &userPush{
+//		userID:      testUserID,
+//		Subscribers: []string{"gcm-1", "gcm-2"},
+//		Endpoints:   []string{"http://gcm", "http://gcm/gcm-2", "http://push/endpoint"},
+//	}); err != nil {
+//		t.Fatal(err)
+//	}
+//
+//	w := httptest.NewRecorder()
+//	handlePingUser(w, r)
+//
+//	if w.Code != http.StatusOK {
+//		t.Errorf("w.Code = %d; want 200", w.Code)
+//	}
+//
+//	pi, err := getUserPushInfo(c, testUserID)
+//	if err != nil {
+//		t.Fatal(err)
+//	}
+//	if len(pi.Subscribers) != 0 {
+//		t.Errorf("pi.Subscribers = %v; want []", pi.Subscribers)
+//	}
+//	endpoints := []string{"http://gcm/gcm-1", "http://gcm/gcm-2", "http://push/endpoint"}
+//	if !reflect.DeepEqual(pi.Endpoints, endpoints) {
+//		t.Errorf("pi.Endpoints = %v; want %v", pi.Endpoints, endpoints)
+//	}
+//}
 
-	if w.Code != http.StatusOK {
-		t.Errorf("w.Code = %d; want 200", w.Code)
-	}
-
-	var body struct {
-		Token string `json:"token"`
-	}
-	if err := json.Unmarshal(w.Body.Bytes(), &body); err != nil {
-		t.Fatalf("json.Unmarshal(%q): %v", w.Body.String(), err)
-	}
-
-	user, ts, err := decodeSWToken(body.Token)
-	if err != nil {
-		t.Fatalf("decodeSWToken(%q): %v", body.Token, err)
-	}
-	if user != testUserID {
-		t.Errorf("user = %q; want %q", user, testUserID)
-	}
-	if now := time.Now(); now.Unix()-ts.Unix() > 3 {
-		t.Errorf("ts = %s; want around %s", ts, now)
-	}
-}
-
-func TestServeUserUpdates(t *testing.T) {
-	defer preserveConfig()()
-
-	// gdrive stub
-	var gdrive *httptest.Server
-	gdrive = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path == "/list" {
-			fmt.Fprintf(w, `{"items": [
-        {
-          "id": "file-id",
-          "modifiedDate": "2015-04-11T12:12:46.034Z",
-          "downloadUrl": %q
-        }
-      ]}`, gdrive.URL+"/download")
-			return
-		}
-		w.Write([]byte(`{"starred_sessions": ["before", "after"]}`))
-	}))
-	defer gdrive.Close()
-
-	config.Google.Drive.FilesURL = gdrive.URL + "/list"
-	config.Google.Drive.Filename = "user_data.json"
-
-	c := newTestContext()
-	if err := storeCredentials(c, &oauth2Credentials{
-		userID:      testUserID,
-		Expiry:      time.Now().Add(2 * time.Hour),
-		AccessToken: "access-token",
-	}); err != nil {
-		t.Fatal(err)
-	}
-	if err := storeUserPushInfo(c, &userPush{userID: testUserID}); err != nil {
-		t.Fatal(err)
-	}
-
-	swToken := fetchFirstSWToken(t, testIDToken)
-	_, swTime, err := decodeSWToken(swToken)
-	if err != nil {
-		t.Fatal(err)
-	}
-	timeBefore, timeAfter := swTime.AddDate(0, 0, -1), swTime.AddDate(0, 0, 1)
-	swTokenBefore, _ := encodeSWToken(testUserID, timeBefore.Add(-1*time.Second))
-	swTokenAfter, _ := encodeSWToken(testUserID, timeAfter)
-
-	if err = storeChanges(c, &dataChanges{
-		Updated: timeBefore,
-		eventData: eventData{
-			Sessions: map[string]*eventSession{
-				"before": {Update: updateDetails},
-			},
-		},
-	}); err != nil {
-		t.Fatal(err)
-	}
-	if err = storeChanges(c, &dataChanges{
-		Updated: timeAfter,
-		eventData: eventData{
-			Sessions: map[string]*eventSession{
-				"after":     {Update: updateDetails},
-				"unrelated": {Update: updateDetails},
-			},
-		},
-	}); err != nil {
-		t.Fatal(err)
-	}
-
-	table := []struct {
-		token    string
-		sessions []string
-		updated  time.Time
-		next     time.Time
-	}{
-		{swToken, []string{"after"}, timeAfter, timeAfter.Add(1 * time.Second)},
-		{swTokenBefore, []string{"before", "after"}, timeAfter, timeAfter.Add(1 * time.Second)},
-		{swTokenAfter, []string{}, timeAfter, timeAfter.Add(1 * time.Second)},
-	}
-
-	for i, test := range table {
-		r, _ := aetestInstance.NewRequest("GET", "/api/v1/user/updates", nil)
-		r.Header.Set("authorization", test.token)
-		w := httptest.NewRecorder()
-		serveUserUpdates(w, r)
-
-		if w.Code != http.StatusOK {
-			t.Errorf("%d: w.Code = %d; want 200\nResponse: %s", i, w.Code, w.Body.String())
-		}
-
-		res := &dataChanges{}
-		if err := json.Unmarshal(w.Body.Bytes(), res); err != nil {
-			t.Errorf("%d: json.Unmarshal: %v", i, err)
-			continue
-		}
-		if res.Updated.Unix() != test.updated.Unix() {
-			t.Errorf("%d: res.Updated = %s; want %s", i, res.Updated, test.updated)
-		}
-		if len(res.Sessions) != len(test.sessions) {
-			t.Errorf("%d: len(res.Sessions) = %d; want %d", i, len(res.Sessions), len(test.sessions))
-		}
-		for _, id := range test.sessions {
-			s, ok := res.Sessions[id]
-			if !ok {
-				t.Errorf("%d: want session %q", i, id)
-				break
-			}
-			if s.Update != updateDetails {
-				t.Errorf("%d: res.Sessions[%q].Update = %q; want %q", i, id, s.Update, updateDetails)
-			}
-		}
-		user, next, err := decodeSWToken(res.Token)
-		if err != nil {
-			t.Errorf("%d: decodeSWToken(%q): %v", i, res.Token, err)
-		}
-		if user != testUserID {
-			t.Errorf("%d: user = %q; want %q", i, user, testUserID)
-		}
-		if next.Unix() != test.next.Unix() {
-			t.Errorf("%d: next = %s; want %s", i, next, test.next)
-		}
-	}
-}
-
-func TestHandlePingExt(t *testing.T) {
-	defer preserveConfig()()
-
-	done := make(chan struct{}, 1)
-	ping := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		defer func() { done <- struct{}{} }()
-		if ah := r.Header.Get("Authorization"); ah != "key=a-key" {
-			t.Errorf("ah = %q; want 'a-key'", ah)
-		}
-		var body map[string]interface{}
-		d := json.NewDecoder(r.Body)
-		d.UseNumber()
-		if err := d.Decode(&body); err != nil {
-			t.Error(err)
-		}
-		v, ok := body["sync_jitter"].(json.Number)
-		if !ok {
-			t.Errorf("body: %+v, sync_jitter: %v (%T); want json.Number", body, v, body["sync_jitter"])
-			return
-		}
-		if n, err := v.Int64(); n != 0 {
-			t.Errorf("v.Int64() = %d, %v; want 0", n, err)
-		}
-	}))
-	defer ping.Close()
-	config.ExtPingURL = ping.URL
-
-	r, _ := aetestInstance.NewRequest("POST", "/task/ping-ext?key=a-key", nil)
-	r.Header.Set("x-appengine-taskexecutioncount", "1")
-	w := httptest.NewRecorder()
-	handlePingExt(w, r)
-
-	if w.Code != http.StatusOK {
-		t.Errorf("w.Code = %d; want 200", w.Code)
-	}
-
-	select {
-	case <-done:
-		// passed
-	default:
-		t.Errorf("ping never happened")
-	}
-}
-
-func TestHandlePingUserUpgradeSubscribers(t *testing.T) {
-	defer preserveConfig()()
-
-	config.Google.GCM.Endpoint = "http://gcm"
-	r, _ := aetestInstance.NewRequest("POST", "/task/ping-user", nil)
-	r.Form = url.Values{
-		"uid":      {testUserID},
-		"sessions": {"s-123"},
-	}
-	r.Header.Set("x-appengine-taskexecutioncount", "1")
-	c := newContext(r)
-
-	if err := storeUserPushInfo(c, &userPush{
-		userID:      testUserID,
-		Subscribers: []string{"gcm-1", "gcm-2"},
-		Endpoints:   []string{"http://gcm", "http://gcm/gcm-2", "http://push/endpoint"},
-	}); err != nil {
-		t.Fatal(err)
-	}
-
-	w := httptest.NewRecorder()
-	handlePingUser(w, r)
-
-	if w.Code != http.StatusOK {
-		t.Errorf("w.Code = %d; want 200", w.Code)
-	}
-
-	pi, err := getUserPushInfo(c, testUserID)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if len(pi.Subscribers) != 0 {
-		t.Errorf("pi.Subscribers = %v; want []", pi.Subscribers)
-	}
-	endpoints := []string{"http://gcm/gcm-1", "http://gcm/gcm-2", "http://push/endpoint"}
-	if !reflect.DeepEqual(pi.Endpoints, endpoints) {
-		t.Errorf("pi.Endpoints = %v; want %v", pi.Endpoints, endpoints)
-	}
-}
-
-func TestHandlePingUserMissingToken(t *testing.T) {
-	defer resetTestState(t)
-	defer preserveConfig()()
-
-	// just in case a request breaks out
-	config.Google.TokenURL = "http://token-should-not-be-used/"
-	config.Google.Drive.FilesURL = "http://drive-should-not-be-used/"
-
-	r := newTestRequest(t, "POST", "/task/ping-user", nil)
-	r.Form = url.Values{
-		"uid":      {testUserID},
-		"sessions": {"one"},
-	}
-	r.Header.Set("x-appengine-taskexecutioncount", "1")
-	c := newContext(r)
-
-	if err := storeUserPushInfo(c, &userPush{userID: testUserID, Enabled: true}); err != nil {
-		t.Fatal(err)
-	}
-	if err := storeCredentials(c, &oauth2Credentials{
-		userID:       testUserID,
-		Expiry:       time.Now(),
-		AccessToken:  "dummy-access",
-		RefreshToken: "",
-	}); err != nil {
-		t.Fatal(err)
-	}
-
-	w := httptest.NewRecorder()
-	handlePingUser(w, r)
-
-	if w.Code != http.StatusOK {
-		t.Errorf("w.Code = %d; want 200\nResponse: %s", w.Code, w.Body.String())
-	}
-}
-
-func TestHandlePingUserRefokedToken(t *testing.T) {
-	defer resetTestState(t)
-	defer preserveConfig()()
-
-	r := newTestRequest(t, "POST", "/task/ping-user", nil)
-	r.Form = url.Values{
-		"uid":      {testUserID},
-		"sessions": {"one"},
-	}
-	r.Header.Set("x-appengine-taskexecutioncount", "1")
-	c := newContext(r)
-
-	if err := storeUserPushInfo(c, &userPush{userID: testUserID, Enabled: true}); err != nil {
-		t.Fatal(err)
-	}
-	if err := storeCredentials(c, &oauth2Credentials{
-		userID:       testUserID,
-		Expiry:       time.Now(),
-		AccessToken:  "dummy-access",
-		RefreshToken: "revoked",
-	}); err != nil {
-		t.Fatal(err)
-	}
-
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`{"error": "invalid_grant"}`))
-	}))
-	defer ts.Close()
-	config.Google.TokenURL = ts.URL
-	config.Google.Drive.FilesURL = "http://example.org/"
-
-	w := httptest.NewRecorder()
-	handlePingUser(w, r)
-
-	if w.Code != http.StatusOK {
-		t.Errorf("w.Code = %d; want 200\nResponse: %s", w.Code, w.Body.String())
-	}
-}
-
-func TestHandlePingDeviceGCM(t *testing.T) {
-	defer preserveConfig()()
-
-	count := 0
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if ah := r.Header.Get("authorization"); ah != "key=test-key" {
-			t.Errorf("ah = %q; want 'key=test-key'", ah)
-		}
-		if reg := r.FormValue("registration_id"); reg != "reg-123" {
-			t.Errorf("reg = %q; want 'reg-123'", reg)
-		}
-		fmt.Fprintf(w, "id=message-id-123")
-		count += 1
-	}))
-	defer ts.Close()
-
-	config.Google.GCM.Key = "test-key"
-	config.Google.GCM.Endpoint = ts.URL
-	endpoint := ts.URL + "/reg-123"
-
-	r, _ := aetestInstance.NewRequest("POST", "/task/ping-device", nil)
-	r.Form = url.Values{
-		"uid":      {testUserID},
-		"endpoint": {endpoint},
-	}
-	r.Header.Set("x-appengine-taskexecutioncount", "1")
-
-	c := newContext(r)
-	if err := storeUserPushInfo(c, &userPush{
-		userID:    testUserID,
-		Enabled:   true,
-		Endpoints: []string{endpoint},
-	}); err != nil {
-		t.Fatal(err)
-	}
-
-	w := httptest.NewRecorder()
-	handlePingDevice(w, r)
-
-	if w.Code != http.StatusOK {
-		t.Errorf("w.Code = %d; want 200", w.Code)
-	}
-	if count != 1 {
-		t.Errorf("req count = %d; want 1", count)
-	}
-	pi, err := getUserPushInfo(c, testUserID)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if !reflect.DeepEqual(pi.Endpoints, []string{endpoint}) {
-		t.Errorf("pi.Endpoints = %v; want [%q]", pi.Endpoints, endpoint)
-	}
-}
+// TODO: refactor when ported to firebase
+//
+//func TestHandlePingDeviceGCM(t *testing.T) {
+//	defer preserveConfig()()
+//
+//	count := 0
+//	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+//		if ah := r.Header.Get("authorization"); ah != "key=test-key" {
+//			t.Errorf("ah = %q; want 'key=test-key'", ah)
+//		}
+//		if reg := r.FormValue("registration_id"); reg != "reg-123" {
+//			t.Errorf("reg = %q; want 'reg-123'", reg)
+//		}
+//		fmt.Fprintf(w, "id=message-id-123")
+//		count += 1
+//	}))
+//	defer ts.Close()
+//
+//	config.Google.GCM.Key = "test-key"
+//	config.Google.GCM.Endpoint = ts.URL
+//	endpoint := ts.URL + "/reg-123"
+//
+//	r, _ := aetestInstance.NewRequest("POST", "/task/ping-device", nil)
+//	r.Form = url.Values{
+//		"uid":      {testUserID},
+//		"endpoint": {endpoint},
+//	}
+//	r.Header.Set("x-appengine-taskexecutioncount", "1")
+//
+//	c := newContext(r)
+//	if err := storeUserPushInfo(c, &userPush{
+//		userID:    testUserID,
+//		Enabled:   true,
+//		Endpoints: []string{endpoint},
+//	}); err != nil {
+//		t.Fatal(err)
+//	}
+//
+//	w := httptest.NewRecorder()
+//	handlePingDevice(w, r)
+//
+//	if w.Code != http.StatusOK {
+//		t.Errorf("w.Code = %d; want 200", w.Code)
+//	}
+//	if count != 1 {
+//		t.Errorf("req count = %d; want 1", count)
+//	}
+//	pi, err := getUserPushInfo(c, testUserID)
+//	if err != nil {
+//		t.Fatal(err)
+//	}
+//	if !reflect.DeepEqual(pi.Endpoints, []string{endpoint}) {
+//		t.Errorf("pi.Endpoints = %v; want [%q]", pi.Endpoints, endpoint)
+//	}
+//}
 
 func TestHandlePingDeviceGCMDelete(t *testing.T) {
 	defer preserveConfig()()
@@ -2167,48 +1102,50 @@ func TestHandlePingDeviceGCMDelete(t *testing.T) {
 	}
 }
 
-func TestHandlePingDeviceGCMReplace(t *testing.T) {
-	defer preserveConfig()()
-
-	// GCM server
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "id=msg-id&registration_id=new-reg-id")
-	}))
-	defer ts.Close()
-	config.Google.GCM.Endpoint = ts.URL
-
-	r, _ := aetestInstance.NewRequest("POST", "/task/ping-device", nil)
-	r.Form = url.Values{
-		"uid":      {testUserID},
-		"endpoint": {ts.URL + "/reg-123"},
-	}
-	r.Header.Set("x-appengine-taskexecutioncount", "1")
-
-	c := newContext(r)
-	storeUserPushInfo(c, &userPush{
-		userID:    testUserID,
-		Enabled:   true,
-		Endpoints: []string{ts.URL + "/reg-123"},
-	})
-
-	w := httptest.NewRecorder()
-	handlePingDevice(w, r)
-
-	if w.Code != http.StatusOK {
-		t.Errorf("w.Code = %d; want 200", w.Code)
-	}
-
-	pi, err := getUserPushInfo(c, testUserID)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if v := []string{ts.URL + "/new-reg-id"}; !reflect.DeepEqual(pi.Endpoints, v) {
-		t.Errorf("pi.Endpoints = %v; want %v", pi.Endpoints, v)
-	}
-	if l := len(pi.Subscribers); l != 0 {
-		t.Errorf("len(pi.Subscribers) = %d; want 0", l)
-	}
-}
+// TODO: refactor when ported to firebase
+//
+//func TestHandlePingDeviceGCMReplace(t *testing.T) {
+//	defer preserveConfig()()
+//
+//	// GCM server
+//	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+//		fmt.Fprintf(w, "id=msg-id&registration_id=new-reg-id")
+//	}))
+//	defer ts.Close()
+//	config.Google.GCM.Endpoint = ts.URL
+//
+//	r, _ := aetestInstance.NewRequest("POST", "/task/ping-device", nil)
+//	r.Form = url.Values{
+//		"uid":      {testUserID},
+//		"endpoint": {ts.URL + "/reg-123"},
+//	}
+//	r.Header.Set("x-appengine-taskexecutioncount", "1")
+//
+//	c := newContext(r)
+//	storeUserPushInfo(c, &userPush{
+//		userID:    testUserID,
+//		Enabled:   true,
+//		Endpoints: []string{ts.URL + "/reg-123"},
+//	})
+//
+//	w := httptest.NewRecorder()
+//	handlePingDevice(w, r)
+//
+//	if w.Code != http.StatusOK {
+//		t.Errorf("w.Code = %d; want 200", w.Code)
+//	}
+//
+//	pi, err := getUserPushInfo(c, testUserID)
+//	if err != nil {
+//		t.Fatal(err)
+//	}
+//	if v := []string{ts.URL + "/new-reg-id"}; !reflect.DeepEqual(pi.Endpoints, v) {
+//		t.Errorf("pi.Endpoints = %v; want %v", pi.Endpoints, v)
+//	}
+//	if l := len(pi.Subscribers); l != 0 {
+//		t.Errorf("len(pi.Subscribers) = %d; want 0", l)
+//	}
+//}
 
 func TestHandlePingDevice(t *testing.T) {
 	defer preserveConfig()()
@@ -2219,7 +1156,7 @@ func TestHandlePingDevice(t *testing.T) {
 			t.Errorf("ah = %q; want ''", ah)
 		}
 		w.WriteHeader(http.StatusOK)
-		count += 1
+		count++
 	}))
 	defer ts.Close()
 
@@ -2240,286 +1177,292 @@ func TestHandlePingDevice(t *testing.T) {
 	}
 }
 
-func TestHandlePingDeviceDelete(t *testing.T) {
-	defer preserveConfig()()
+// TODO: refactor when ported to firebase
+//
+//func TestHandlePingDeviceDelete(t *testing.T) {
+//	defer preserveConfig()()
+//
+//	// a push server
+//	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+//		w.WriteHeader(http.StatusGone)
+//	}))
+//	defer ts.Close()
+//
+//	r, _ := aetestInstance.NewRequest("POST", "/task/ping-device", nil)
+//	r.Form = url.Values{
+//		"uid":      {testUserID},
+//		"endpoint": {ts.URL + "/reg-123"},
+//	}
+//	r.Header.Set("x-appengine-taskexecutioncount", "1")
+//
+//	c := newContext(r)
+//	storeUserPushInfo(c, &userPush{
+//		userID:    testUserID,
+//		Enabled:   true,
+//		Endpoints: []string{"http://one", ts.URL + "/reg-123", "http://two"},
+//	})
+//
+//	w := httptest.NewRecorder()
+//	handlePingDevice(w, r)
+//
+//	if w.Code != http.StatusOK {
+//		t.Errorf("w.Code = %d; want 200", w.Code)
+//	}
+//
+//	pi, err := getUserPushInfo(c, testUserID)
+//	if err != nil {
+//		t.Fatal(err)
+//	}
+//	endpoints := []string{"http://one", "http://two"}
+//	if !reflect.DeepEqual(pi.Endpoints, endpoints) {
+//		t.Errorf("pi.Endpoints=%v; want %v", pi.Endpoints, endpoints)
+//	}
+//}
 
-	// a push server
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusGone)
-	}))
-	defer ts.Close()
+// TODO: refactor when ported to firebase
+//
+//func TestHandleClockNextSessions(t *testing.T) {
+//	defer resetTestState(t)
+//	defer preserveConfig()()
+//
+//	now := time.Now()
+//	swToken := fetchFirstSWToken(t, testIDToken)
+//	if swToken == "" {
+//		t.Fatal("no swToken")
+//	}
+//
+//	// gdrive stub
+//	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+//		if r.URL.Path == "/file-id" {
+//			w.Write([]byte(`{"starred_sessions": ["start", "__keynote__", "too-early"]}`))
+//			return
+//		}
+//		fmt.Fprintf(w, `{"items": [{
+//			"id": "file-id",
+//			"modifiedDate": "2015-04-11T12:12:46.034Z"
+//		}]}`)
+//	}))
+//	defer ts.Close()
+//	config.Google.Drive.FilesURL = ts.URL + "/"
+//	config.Google.Drive.Filename = "user_data.json"
+//
+//	c := newContext(newTestRequest(t, "GET", "/", nil))
+//	if err := storeCredentials(c, &oauth2Credentials{
+//		userID:      testUserID,
+//		Expiry:      time.Now().Add(2 * time.Hour),
+//		AccessToken: "access-token",
+//	}); err != nil {
+//		t.Fatal(err)
+//	}
+//	if err := storeUserPushInfo(c, &userPush{userID: testUserID}); err != nil {
+//		t.Fatal(err)
+//	}
+//	if err := storeNextSessions(c, []*eventSession{
+//		{Id: "already-clocked", Update: updateStart},
+//	}); err != nil {
+//		t.Fatal(err)
+//	}
+//	if err := storeEventData(c, &eventData{Sessions: map[string]*eventSession{
+//		"start": {
+//			Id:        "start",
+//			StartTime: now.Add(timeoutStart - time.Second),
+//		},
+//		"__keynote__": {
+//			Id:        "__keynote__",
+//			StartTime: now.Add(timeoutSoon - time.Second),
+//		},
+//		"already-clocked": {
+//			Id:        "already-clocked",
+//			StartTime: now.Add(timeoutStart - time.Second),
+//		},
+//		"too-early": { // because it's not in soonSessionIDs
+//			Id:        "too-early",
+//			StartTime: now.Add(timeoutSoon - time.Second),
+//		},
+//	}}); err != nil {
+//		t.Fatal(err)
+//	}
+//
+//	upsess := map[string]string{
+//		"start":       updateStart,
+//		"__keynote__": updateSoon,
+//	}
+//	checkUpdates := func(dc *dataChanges, what string) {
+//		if len(dc.Sessions) != len(upsess) {
+//			t.Errorf("%s: dc.Sessions = %v; want %v", what, dc.Sessions, upsess)
+//		}
+//		for id, v := range upsess {
+//			s, ok := dc.Sessions[id]
+//			if !ok {
+//				t.Errorf("%s: %q not in %v", what, id, dc.Sessions)
+//				continue
+//			}
+//			if s.Update != v {
+//				t.Errorf("%s: s.Update = %q; want %q", what, s.Update, v)
+//			}
+//		}
+//	}
+//
+//	r := newTestRequest(t, "POST", "/task/clock", nil)
+//	r.Header.Set("x-appengine-cron", "true")
+//	w := httptest.NewRecorder()
+//	handleClock(w, r)
+//	if w.Code != http.StatusOK {
+//		t.Fatalf("w.Code = %d; want 200", w.Code)
+//	}
+//
+//	unclocked, err := filterNextSessions(c, []*eventSession{
+//		{Id: "__keynote__", Update: updateSoon},
+//		{Id: "start", Update: updateStart},
+//		{Id: "too-early", Update: "too-early"},
+//	})
+//	if err != nil {
+//		t.Fatal(err)
+//	}
+//	if len(unclocked) != 1 {
+//		t.Fatalf("unclocked = %v; want [too-early]", toSessionIDs(unclocked))
+//	}
+//	if unclocked[0].Id != "too-early" {
+//		t.Fatalf("Id = %q; want 'too-early'", unclocked[0].Id)
+//	}
+//
+//	dc, err := getChangesSince(c, now.Add(-time.Second))
+//	if err != nil {
+//		t.Fatal(err)
+//	}
+//	checkUpdates(dc, "getChangesSince")
+//
+//	r = newTestRequest(t, "GET", "/api/v1/user/updates", nil)
+//	r.Header.Set("authorization", swToken)
+//	w = httptest.NewRecorder()
+//	serveUserUpdates(w, r)
+//	if w.Code != http.StatusOK {
+//		t.Fatalf("w.Code = %d; want 200\nResponse: %s", w.Code, w.Body.String())
+//	}
+//	dc = &dataChanges{}
+//	if err := json.Unmarshal(w.Body.Bytes(), dc); err != nil {
+//		t.Fatal(err)
+//	}
+//	checkUpdates(dc, "api")
+//}
 
-	r, _ := aetestInstance.NewRequest("POST", "/task/ping-device", nil)
-	r.Form = url.Values{
-		"uid":      {testUserID},
-		"endpoint": {ts.URL + "/reg-123"},
-	}
-	r.Header.Set("x-appengine-taskexecutioncount", "1")
-
-	c := newContext(r)
-	storeUserPushInfo(c, &userPush{
-		userID:    testUserID,
-		Enabled:   true,
-		Endpoints: []string{"http://one", ts.URL + "/reg-123", "http://two"},
-	})
-
-	w := httptest.NewRecorder()
-	handlePingDevice(w, r)
-
-	if w.Code != http.StatusOK {
-		t.Errorf("w.Code = %d; want 200", w.Code)
-	}
-
-	pi, err := getUserPushInfo(c, testUserID)
-	if err != nil {
-		t.Fatal(err)
-	}
-	endpoints := []string{"http://one", "http://two"}
-	if !reflect.DeepEqual(pi.Endpoints, endpoints) {
-		t.Errorf("pi.Endpoints=%v; want %v", pi.Endpoints, endpoints)
-	}
-}
-
-func TestHandleClockNextSessions(t *testing.T) {
-	defer resetTestState(t)
-	defer preserveConfig()()
-
-	now := time.Now()
-	swToken := fetchFirstSWToken(t, testIDToken)
-	if swToken == "" {
-		t.Fatal("no swToken")
-	}
-
-	// gdrive stub
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path == "/file-id" {
-			w.Write([]byte(`{"starred_sessions": ["start", "__keynote__", "too-early"]}`))
-			return
-		}
-		fmt.Fprintf(w, `{"items": [{
-			"id": "file-id",
-			"modifiedDate": "2015-04-11T12:12:46.034Z"
-		}]}`)
-	}))
-	defer ts.Close()
-	config.Google.Drive.FilesURL = ts.URL + "/"
-	config.Google.Drive.Filename = "user_data.json"
-
-	c := newContext(newTestRequest(t, "GET", "/", nil))
-	if err := storeCredentials(c, &oauth2Credentials{
-		userID:      testUserID,
-		Expiry:      time.Now().Add(2 * time.Hour),
-		AccessToken: "access-token",
-	}); err != nil {
-		t.Fatal(err)
-	}
-	if err := storeUserPushInfo(c, &userPush{userID: testUserID}); err != nil {
-		t.Fatal(err)
-	}
-	if err := storeNextSessions(c, []*eventSession{
-		{Id: "already-clocked", Update: updateStart},
-	}); err != nil {
-		t.Fatal(err)
-	}
-	if err := storeEventData(c, &eventData{Sessions: map[string]*eventSession{
-		"start": {
-			Id:        "start",
-			StartTime: now.Add(timeoutStart - time.Second),
-		},
-		"__keynote__": {
-			Id:        "__keynote__",
-			StartTime: now.Add(timeoutSoon - time.Second),
-		},
-		"already-clocked": {
-			Id:        "already-clocked",
-			StartTime: now.Add(timeoutStart - time.Second),
-		},
-		"too-early": { // because it's not in soonSessionIDs
-			Id:        "too-early",
-			StartTime: now.Add(timeoutSoon - time.Second),
-		},
-	}}); err != nil {
-		t.Fatal(err)
-	}
-
-	upsess := map[string]string{
-		"start":       updateStart,
-		"__keynote__": updateSoon,
-	}
-	checkUpdates := func(dc *dataChanges, what string) {
-		if len(dc.Sessions) != len(upsess) {
-			t.Errorf("%s: dc.Sessions = %v; want %v", what, dc.Sessions, upsess)
-		}
-		for id, v := range upsess {
-			s, ok := dc.Sessions[id]
-			if !ok {
-				t.Errorf("%s: %q not in %v", what, id, dc.Sessions)
-				continue
-			}
-			if s.Update != v {
-				t.Errorf("%s: s.Update = %q; want %q", what, s.Update, v)
-			}
-		}
-	}
-
-	r := newTestRequest(t, "POST", "/task/clock", nil)
-	r.Header.Set("x-appengine-cron", "true")
-	w := httptest.NewRecorder()
-	handleClock(w, r)
-	if w.Code != http.StatusOK {
-		t.Fatalf("w.Code = %d; want 200", w.Code)
-	}
-
-	unclocked, err := filterNextSessions(c, []*eventSession{
-		{Id: "__keynote__", Update: updateSoon},
-		{Id: "start", Update: updateStart},
-		{Id: "too-early", Update: "too-early"},
-	})
-	if err != nil {
-		t.Fatal(err)
-	}
-	if len(unclocked) != 1 {
-		t.Fatalf("unclocked = %v; want [too-early]", toSessionIDs(unclocked))
-	}
-	if unclocked[0].Id != "too-early" {
-		t.Fatalf("Id = %q; want 'too-early'", unclocked[0].Id)
-	}
-
-	dc, err := getChangesSince(c, now.Add(-time.Second))
-	if err != nil {
-		t.Fatal(err)
-	}
-	checkUpdates(dc, "getChangesSince")
-
-	r = newTestRequest(t, "GET", "/api/v1/user/updates", nil)
-	r.Header.Set("authorization", swToken)
-	w = httptest.NewRecorder()
-	serveUserUpdates(w, r)
-	if w.Code != http.StatusOK {
-		t.Fatalf("w.Code = %d; want 200\nResponse: %s", w.Code, w.Body.String())
-	}
-	dc = &dataChanges{}
-	if err := json.Unmarshal(w.Body.Bytes(), dc); err != nil {
-		t.Fatal(err)
-	}
-	checkUpdates(dc, "api")
-}
-
-func TestHandleClockSurvey(t *testing.T) {
-	defer resetTestState(t)
-	defer preserveConfig()()
-
-	now := time.Now()
-	swToken := fetchFirstSWToken(t, testIDToken)
-	if swToken == "" {
-		t.Fatal("no swToken")
-	}
-
-	// gdrive stub
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path == "/file-id" {
-			w.Write([]byte(`{"starred_sessions": ["random"]}`))
-			return
-		}
-		fmt.Fprintf(w, `{"items": [{
-			"id": "file-id",
-			"modifiedDate": "2015-04-11T12:12:46.034Z"
-		}]}`)
-	}))
-	defer ts.Close()
-	config.Google.Drive.FilesURL = ts.URL + "/"
-	config.Google.Drive.Filename = "user_data.json"
-
-	c := newContext(newTestRequest(t, "GET", "/", nil))
-	if err := storeCredentials(c, &oauth2Credentials{
-		userID:      testUserID,
-		Expiry:      time.Now().Add(2 * time.Hour),
-		AccessToken: "access-token",
-	}); err != nil {
-		t.Fatal(err)
-	}
-	if err := storeUserPushInfo(c, &userPush{userID: testUserID}); err != nil {
-		t.Fatal(err)
-	}
-	if err := storeNextSessions(c, []*eventSession{
-		{Id: "__keynote__", Update: updateSoon},
-		{Id: "__keynote__", Update: updateStart},
-	}); err != nil {
-		t.Fatal(err)
-	}
-	if err := storeEventData(c, &eventData{Sessions: map[string]*eventSession{
-		"random": {
-			Id:        "random",
-			StartTime: now.Add(-timeoutSurvey - time.Minute),
-		},
-		"__keynote__": {
-			Id:        "__keynote__",
-			StartTime: now.Add(-timeoutSurvey - time.Minute),
-		},
-	}}); err != nil {
-		t.Fatal(err)
-	}
-
-	upsess := map[string]string{
-		"__keynote__": updateSurvey,
-	}
-	checkUpdates := func(dc *dataChanges, what string) {
-		if len(dc.Sessions) != len(upsess) {
-			t.Errorf("%s: dc.Sessions = %v; want %v", what, dc.Sessions, upsess)
-		}
-		for id, v := range upsess {
-			s, ok := dc.Sessions[id]
-			if !ok {
-				t.Errorf("%s: %q not in %v", what, id, dc.Sessions)
-				continue
-			}
-			if s.Update != v {
-				t.Errorf("%s: s.Update = %q; want %q", what, s.Update, v)
-			}
-		}
-	}
-
-	r := newTestRequest(t, "POST", "/task/clock", nil)
-	r.Header.Set("x-appengine-cron", "true")
-	w := httptest.NewRecorder()
-	handleClock(w, r)
-	if w.Code != http.StatusOK {
-		t.Fatalf("w.Code = %d; want 200", w.Code)
-	}
-
-	unclocked, err := filterNextSessions(c, []*eventSession{
-		{Id: "__keynote__", Update: updateSurvey},
-		{Id: "random", Update: updateSurvey},
-	})
-	if err != nil {
-		t.Fatal(err)
-	}
-	if len(unclocked) != 1 {
-		t.Fatalf("unclocked = %v; want [random]", toSessionIDs(unclocked))
-	}
-	if unclocked[0].Id != "random" {
-		t.Fatalf("Id = %q; want 'random'", unclocked[0].Id)
-	}
-
-	dc, err := getChangesSince(c, now.Add(-time.Second))
-	if err != nil {
-		t.Fatal(err)
-	}
-	checkUpdates(dc, "getChangesSince")
-
-	r = newTestRequest(t, "GET", "/api/v1/user/updates", nil)
-	r.Header.Set("authorization", swToken)
-	w = httptest.NewRecorder()
-	serveUserUpdates(w, r)
-	if w.Code != http.StatusOK {
-		t.Fatalf("w.Code = %d; want 200\nResponse: %s", w.Code, w.Body.String())
-	}
-	dc = &dataChanges{}
-	if err := json.Unmarshal(w.Body.Bytes(), dc); err != nil {
-		t.Fatal(err)
-	}
-	checkUpdates(dc, "api")
-}
+// TODO: refactor when ported to firebase
+//
+//func TestHandleClockSurvey(t *testing.T) {
+//	defer resetTestState(t)
+//	defer preserveConfig()()
+//
+//	now := time.Now()
+//	swToken := fetchFirstSWToken(t, testIDToken)
+//	if swToken == "" {
+//		t.Fatal("no swToken")
+//	}
+//
+//	// gdrive stub
+//	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+//		if r.URL.Path == "/file-id" {
+//			w.Write([]byte(`{"starred_sessions": ["random"]}`))
+//			return
+//		}
+//		fmt.Fprintf(w, `{"items": [{
+//			"id": "file-id",
+//			"modifiedDate": "2015-04-11T12:12:46.034Z"
+//		}]}`)
+//	}))
+//	defer ts.Close()
+//	config.Google.Drive.FilesURL = ts.URL + "/"
+//	config.Google.Drive.Filename = "user_data.json"
+//
+//	c := newContext(newTestRequest(t, "GET", "/", nil))
+//	if err := storeCredentials(c, &oauth2Credentials{
+//		userID:      testUserID,
+//		Expiry:      time.Now().Add(2 * time.Hour),
+//		AccessToken: "access-token",
+//	}); err != nil {
+//		t.Fatal(err)
+//	}
+//	if err := storeUserPushInfo(c, &userPush{userID: testUserID}); err != nil {
+//		t.Fatal(err)
+//	}
+//	if err := storeNextSessions(c, []*eventSession{
+//		{Id: "__keynote__", Update: updateSoon},
+//		{Id: "__keynote__", Update: updateStart},
+//	}); err != nil {
+//		t.Fatal(err)
+//	}
+//	if err := storeEventData(c, &eventData{Sessions: map[string]*eventSession{
+//		"random": {
+//			Id:        "random",
+//			StartTime: now.Add(-timeoutSurvey - time.Minute),
+//		},
+//		"__keynote__": {
+//			Id:        "__keynote__",
+//			StartTime: now.Add(-timeoutSurvey - time.Minute),
+//		},
+//	}}); err != nil {
+//		t.Fatal(err)
+//	}
+//
+//	upsess := map[string]string{
+//		"__keynote__": updateSurvey,
+//	}
+//	checkUpdates := func(dc *dataChanges, what string) {
+//		if len(dc.Sessions) != len(upsess) {
+//			t.Errorf("%s: dc.Sessions = %v; want %v", what, dc.Sessions, upsess)
+//		}
+//		for id, v := range upsess {
+//			s, ok := dc.Sessions[id]
+//			if !ok {
+//				t.Errorf("%s: %q not in %v", what, id, dc.Sessions)
+//				continue
+//			}
+//			if s.Update != v {
+//				t.Errorf("%s: s.Update = %q; want %q", what, s.Update, v)
+//			}
+//		}
+//	}
+//
+//	r := newTestRequest(t, "POST", "/task/clock", nil)
+//	r.Header.Set("x-appengine-cron", "true")
+//	w := httptest.NewRecorder()
+//	handleClock(w, r)
+//	if w.Code != http.StatusOK {
+//		t.Fatalf("w.Code = %d; want 200", w.Code)
+//	}
+//
+//	unclocked, err := filterNextSessions(c, []*eventSession{
+//		{Id: "__keynote__", Update: updateSurvey},
+//		{Id: "random", Update: updateSurvey},
+//	})
+//	if err != nil {
+//		t.Fatal(err)
+//	}
+//	if len(unclocked) != 1 {
+//		t.Fatalf("unclocked = %v; want [random]", toSessionIDs(unclocked))
+//	}
+//	if unclocked[0].Id != "random" {
+//		t.Fatalf("Id = %q; want 'random'", unclocked[0].Id)
+//	}
+//
+//	dc, err := getChangesSince(c, now.Add(-time.Second))
+//	if err != nil {
+//		t.Fatal(err)
+//	}
+//	checkUpdates(dc, "getChangesSince")
+//
+//	r = newTestRequest(t, "GET", "/api/v1/user/updates", nil)
+//	r.Header.Set("authorization", swToken)
+//	w = httptest.NewRecorder()
+//	serveUserUpdates(w, r)
+//	if w.Code != http.StatusOK {
+//		t.Fatalf("w.Code = %d; want 200\nResponse: %s", w.Code, w.Body.String())
+//	}
+//	dc = &dataChanges{}
+//	if err := json.Unmarshal(w.Body.Bytes(), dc); err != nil {
+//		t.Fatal(err)
+//	}
+//	checkUpdates(dc, "api")
+//}
 
 func TestHandleEasterEgg(t *testing.T) {
 	defer preserveConfig()()
@@ -2566,23 +1509,6 @@ func TestHandleEasterEgg(t *testing.T) {
 			t.Errorf("%d: link = %q; want %q", i, link, test.outLink)
 		}
 	}
-}
-
-func fetchFirstSWToken(t *testing.T, auth string) string {
-	r, _ := aetestInstance.NewRequest("GET", "/api/v1/user/updates", nil)
-	r.Header.Set("authorization", bearerHeader+auth)
-	w := httptest.NewRecorder()
-	serveSWToken(w, r)
-	if w.Code != http.StatusOK {
-		t.Fatalf("w.Code = %d; want 200")
-	}
-	var sw struct {
-		Token string `json:"token"`
-	}
-	if err := json.Unmarshal(w.Body.Bytes(), &sw); err != nil {
-		t.Fatal(err)
-	}
-	return sw.Token
 }
 
 func compareStringSlices(a, b []string) bool {

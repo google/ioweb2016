@@ -20,7 +20,7 @@ import (
 	"testing"
 )
 
-const testXmlFeed = `
+const testXMLFeed = `
 <?xml version='1.0' encoding='UTF-8'?>
 <feed xmlns='http://www.w3.org/2005/Atom' xmlns:gsx='http://schemas.google.com/spreadsheets/2006/extended'>
 	<entry>
@@ -41,7 +41,7 @@ const testXmlFeed = `
 func TestFetchIOExtEntries(t *testing.T) {
 	t.Parallel()
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte(testXmlFeed))
+		w.Write([]byte(testXMLFeed))
 	}))
 	defer ts.Close()
 

@@ -24,7 +24,6 @@ import (
 	"io"
 	"math/big"
 	"net/http"
-	"net/http/httptest"
 	"os"
 	"sync"
 	"testing"
@@ -33,22 +32,11 @@ import (
 	"golang.org/x/net/context"
 
 	"google.golang.org/appengine/aetest"
-
-	"github.com/dgrijalva/jwt-go"
 )
 
-const (
-	testUserID       = "user-12345"
-	testClientID     = "test-client-id"
-	testClientSecret = "test-client-secret"
-)
+const testUserID = "user-12345"
 
 var (
-	testIDToken   string
-	testJWSKey    []byte
-	testJWSCert   []byte
-	testJWSCertID = "test-cert"
-
 	aetInstWg sync.WaitGroup // keeps track of instances being shut down preemptively
 	aetInstMu sync.Mutex     // guards aetInst
 	aetInst   = make(map[*testing.T]aetest.Instance)
@@ -58,65 +46,15 @@ var (
 )
 
 func TestMain(m *testing.M) {
-	// GAE tests use gaeMemcache implementation
-	if cache == nil {
-		cache = newMemoryCache()
-	}
-
-	testJWSKey, testJWSCert = jwsTestKey(time.Now(), time.Now().Add(24*time.Hour))
-
-	token := jwt.New(jwt.GetSigningMethod("RS256"))
-	token.Header["kid"] = testJWSCertID
-	token.Claims = map[string]interface{}{
-		"iss": "accounts.google.com",
-		"exp": time.Now().Add(2 * time.Hour).Unix(),
-		"aud": testClientID,
-		"azp": testClientID,
-		"sub": testUserID,
-	}
-	var err error
-	testIDToken, err = token.SignedString(testJWSKey)
-	if err != nil {
-		panic("token.SignedString: " + err.Error())
-	}
-
-	cert := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.Header().Add("Cache-Control", "max-age=86400")
-		w.Header().Set("Age", "0")
-		fmt.Fprintf(w, `{"%s": %q}`, testJWSCertID, testJWSCert)
-	}))
-	defer cert.Close()
-
-	tokeninfo := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.FormValue("access_token") == "" {
-			http.Error(w, "no access token found", http.StatusBadRequest)
-			return
-		}
-		w.Header().Set("Content-Type", "application/json")
-		fmt.Fprintf(w, `{
-			"issued_to": %q,
-			"user_id": %q,
-			"expires_in": 3600
-		}`, config.Google.Auth.Client, testUserID)
-	}))
-	defer tokeninfo.Close()
-
 	config.Dir = "app"
 	config.Env = "dev"
 	config.Prefix = "/myprefix"
-
-	config.Google.Auth.Client = testClientID
-	config.Google.Auth.Secret = testClientSecret
-	config.Google.VerifyURL = tokeninfo.URL
-	config.Google.CertURL = cert.URL
+	config.Google.Auth.Client = "test-client-id"
 	config.Google.ServiceAccount.Key = ""
-	config.Secret = "a-test-secret"
 	config.SyncToken = "sync-token"
-	config.ExtPingURL = ""
-
 	config.Schedule.Start = time.Date(2015, 5, 28, 9, 0, 0, 0, time.UTC)
 	config.Schedule.Timezone = "America/Los_Angeles"
+	var err error
 	config.Schedule.Location, err = time.LoadLocation(config.Schedule.Timezone)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Could not load location %q", config.Schedule.Location)
@@ -236,7 +174,7 @@ func jwsTestKey(notBefore, notAfter time.Time) (pemKey []byte, pemCert []byte) {
 func toSessionIDs(a []*eventSession) []string {
 	res := make([]string, len(a))
 	for i, s := range a {
-		res[i] = s.Id
+		res[i] = s.ID
 	}
 	return res
 }
