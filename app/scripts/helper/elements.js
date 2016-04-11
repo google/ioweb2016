@@ -442,11 +442,9 @@ IOWA.Elements = (function() {
         IOWA.Elements.NavPaperTabs.updateStyles();
       }, 25);
 
-      this.debounce('fab', function() {
-        window.requestAnimationFrame(function() {
-          this._setFabPosition(scrollTop);
-        }.bind(this));
-      });
+      window.requestAnimationFrame(function() {
+        this._setFabPosition(scrollTop);
+      }.bind(this));
     };
 
     template._isPage = function(page, selectedPage) {
