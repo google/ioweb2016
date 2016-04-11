@@ -247,7 +247,7 @@ paper-tabs {
 .card__photo--live {
   background-image: url(../images/hash.png);
   background-size: 50%;
-  height: 150px;
+  min-height: 150px;
 
   img {
     height: 48px;
