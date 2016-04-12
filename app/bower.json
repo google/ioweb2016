@@ -78,9 +78,11 @@
     "web-animations-js": "web-animations/web-animations-js#^2.1.4",
     "gsap": "^1.18.2",
     "iron-autogrow-textarea": "PolymerElements/iron-autogrow-textarea#^1.0.11",
-    "google-map-markerclusterer": "^1.0.0"
+    "google-map-markerclusterer": "^1.0.0",
+    "webcomponentsjs": "0.7.19"
   },
   "resolutions": {
-    "web-animations-js": "^2.1.4"
+    "web-animations-js": "^2.1.4",
+    "webcomponentsjs": "0.7.19"
   }
 }
