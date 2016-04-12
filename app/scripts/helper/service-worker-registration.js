@@ -18,22 +18,24 @@ IOWA.ServiceWorkerRegistration = (function() {
   'use strict';
 
   // Ensure we only attempt to register the SW once.
-  var isAlreadyRegistered = false;
+  let isAlreadyRegistered = false;
 
-  var register = function() {
+  const URL = 'service-worker.js';
+  const SCOPE = './';
+
+  const register = function() {
     if (!isAlreadyRegistered) {
       isAlreadyRegistered = true;
 
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('service-worker.js', {
-          scope: './'
+        navigator.serviceWorker.register(URL, {
+          scope: SCOPE
         }).then(function(registration) {
           registration.onupdatefound = function() {
             // The updatefound event implies that registration.installing is set; see
             // https://slightlyoff.github.io/ServiceWorker/spec/service_worker/index.html#service-worker-container-updatefound-event
-            var installingWorker = registration.installing;
+            const installingWorker = registration.installing;
             installingWorker.onstatechange = function() {
-              // TODO: How do we handle i18n of these strings?
               switch (installingWorker.state) {
                 case 'installed':
                   if (!navigator.serviceWorker.controller) {
@@ -62,7 +64,7 @@ IOWA.ServiceWorkerRegistration = (function() {
       if (event.target.state === 'redundant') {
         // Define a handler that will be used for the next io-toast tap, at which point it
         // be automatically removed.
-        var tapHandler = function() {
+        const tapHandler = function() {
           window.location.reload();
         };
 
@@ -73,6 +75,8 @@ IOWA.ServiceWorkerRegistration = (function() {
   }
 
   return {
-    register: register
+    register,
+    URL,
+    SCOPE
   };
 })();

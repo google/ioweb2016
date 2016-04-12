@@ -51,28 +51,52 @@ limitations under the License.
 
 </div>
 
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 <script>
-  window.ENV = location.host.match('localhost') ? 'dev' : 'prod';
-</script>
-<script src="scripts/analytics.js"></script>
-<script>
+window.ENV = location.host.match('localhost') ? 'dev' : 'prod';
+
+// Initializes the analytics.js command queue.
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+
+// Creates the tracker.
+ga('create', {
+  trackingId: window.ENV === 'prod' ? 'UA-58124138-3' : 'UA-58124138-2',
+  cookieDomain: 'auto',
+  siteSpeedSampleRate: 10, // 10% of users.
+});
+
+ga('send', 'pageview');
+
 document.addEventListener('click', function(e) {
+  var getLinkParent = function(element) {
+    while (element.nodeName.toLowerCase() !== 'a') {
+      if (element === document) {
+        return;
+      }
+      element = element.parentNode;
+    }
+    return element;
+  };
+
+  var redirectToLinkAddress = function() {
+    window.location = link.href;
+  };
+
   // Find the link that was clicked.
-  var link = e.target;
-  while (link && link.localName !== 'a') {
-    link = link.parentNode;
-  }
+  var link = getLinkParent(e.target);
 
   if (link && link.hasAttribute('data-track-link')) {
     e.preventDefault();
 
     // Record outbound link in GA.
-    IOWA.Analytics.trackEvent('link', 'click', link.getAttribute('data-track-link'), null, function() {
-      location.href = link.href;
+    ga('send', 'event', 'link', 'click', link.getAttribute('data-track-link'), {
+      hitCallback: redirectToLinkAddress
     });
+    setTimeout(redirectToLinkAddress, 2000);
   }
 });
 </script>
+
 </body>
 </html>
-
