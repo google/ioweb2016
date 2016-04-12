@@ -286,7 +286,7 @@ limitations under the License.
         <!-- Note: Use on-click instead of on-tap so oauth popup is not
              blocked. Needs user gesture. -->
         <span class="anchor-like button-link" role="button" tabindex="0"
-              data-track-link="nav-signin" on-click="signIn"
+              data-track-link="nav-signin" on-click="signIn" on-keydown="keyboardSignIn"
               hidden="[[app.currentUser.picture]]" layout center>Sign in</span>
         <!-- This image might be set based on cached data. -->
         <img src$="{{app.currentUser.picture}}"
@@ -314,7 +314,8 @@ limitations under the License.
                 <a href="https://www.google.com/intl/en/policies/terms/"
                    data-track-link="login-tos" target="_blank">Terms of Service</a>
                 <span class="anchor-like" data-track-link="login-signout"
-                      on-tap="signOut">Sign out</span>
+                      on-click="signOut" on-keydown="keyboardSignOut" tabindex="0"
+                      role="button">Sign out</span>
               </div>
             </div>
           </paper-menu-button>
