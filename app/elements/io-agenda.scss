@@ -34,6 +34,10 @@
   margin-left: -1px;
 }
 
+.no-bottom-padding {
+  padding-bottom: 0 !important;
+}
+
 .center_text {
   text-align: center;
 }
@@ -60,7 +64,6 @@
     padding-top: 0;
   }
 }
-
 
 .agenda_time:before {
   content: ' ';

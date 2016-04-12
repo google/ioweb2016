@@ -277,8 +277,12 @@ $name: 'page-attend';
       height: 480px;
       background-color: #b3d1ff;
       position: relative;
-      max-width: 90%;
-      margin: 0 auto 0 auto;
+
+      // Ensure that there's room around the map to scroll on touch devices.
+      @media (max-width: $desktop-breakpoint-min + 50) {
+        max-width: 90%;
+        margin: 0 auto 0 auto;
+      }
 
       &::after {
         content: 'Loading...';

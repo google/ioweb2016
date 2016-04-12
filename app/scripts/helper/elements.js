@@ -414,7 +414,6 @@ IOWA.Elements = (function() {
         return; // cut out early.
       }
 
-      this.$.navbar.classList.add('scrolled');
       this.$.fab.classList.add('active'); // Reveal FAB.
       this.debounce('updatefaba11y', function() {
         this.$.fabAnchor.setAttribute('tabindex', 0);
@@ -429,9 +428,9 @@ IOWA.Elements = (function() {
     };
 
     template._onContentScroll = function() {
-      this.debounce('mainscroll', function() {
-        var scrollTop = IOWA.Elements.Masthead._scrollTop;
+      var scrollTop = IOWA.Elements.Masthead._scrollTop;
 
+      this.debounce('mainscroll', function() {
         if (scrollTop === 0) {
           this.$.navbar.classList.remove('scrolled');
         } else {
@@ -441,9 +440,11 @@ IOWA.Elements = (function() {
         // Note, we should not call this on every scroll event, but scoping
         // the update to the nav is very cheap (< 1ms).
         IOWA.Elements.NavPaperTabs.updateStyles();
-
-        this._setFabPosition(scrollTop);
       }, 25);
+
+      window.requestAnimationFrame(function() {
+        this._setFabPosition(scrollTop);
+      }.bind(this));
     };
 
     template._isPage = function(page, selectedPage) {
