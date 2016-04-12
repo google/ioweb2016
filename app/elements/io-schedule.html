@@ -256,9 +256,9 @@ Fired when the user toggles bookmarking/removing a session.
                 <p class="note">
                   Note: Notifications are activated per device. To receive notifications on multiple devices, sign in on each device, enable notifications, and make sure you're online. All device notifications can be turned on/off at any time in the settings panel.
                 </p>
-                <span class="anchor-like" role="link" tabindex="0"
+                <a href="#" class="anchor-like" role="button" tabindex="0"
                       data-track-link="schedule-open-settings"
-                      on-click="openSettings">Settings</span>
+                      on-click="openSettings">Settings</a>
               </div>
             </iron-pages>
           </div>
@@ -631,6 +631,8 @@ Fired when the user toggles bookmarking/removing a session.
 
         openSettings: function(e) {
           e.stopPropagation();
+          e.preventDefault();
+
           // TODO: note global pollution. Consider firing bubbling event.
           IOWA.Elements.Template.openSettings(e);
         },
