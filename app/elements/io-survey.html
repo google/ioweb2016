@@ -19,7 +19,8 @@ limitations under the License.
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 
 <link rel="import" href="../bower_components/neon-animation/neon-animation-runner-behavior.html">
-
+<link rel="import" href="../bower_components/neon-animation/neon-animations.html">
+<link rel="import" href="../bower_components/neon-animation/animations/slide-from-bottom-animation.html">
 <link rel="import" href="shared-app-styles.html">
 
 <dom-module id="io-survey">
@@ -33,7 +34,7 @@ limitations under the License.
         <h3>[[session.title]]</h3>
         <h5 class="label">[[_sessionSpeakers]]</h5>
       </section>
-      <section id="body" >
+      <section id="body">
         <template is="dom-repeat" items="[[surveyQuestions]]" as="question">
           <survey-rating id=[[question.id]]
                          selected={{question.value}}
@@ -94,30 +95,32 @@ limitations under the License.
               }];
             }
           },
-          ready: function() {
-            this.style.display = 'none';
-          },
           _sessionSpeakers: {
             type: String,
             notify: false
           },
           opened: {
-            type: Boolean
+            type: Boolean,
+            value: false
           },
           animationConfig: {
+            type: Object,
             value: function() {
               return {
-                'entry': {
+                'entry': [{
                   name: 'slide-from-bottom-animation',
-                  node: this
-                },
-                'exit': {
-                  name: 'slide-from-bottom-animation',
-                  node: this
-                }
+                  node: this.$.dialog
+                }],
+                'exit': [{
+                  name: 'fade-out-animation',
+                  node: this.$.dialog
+                }]
               }
             }
           }
+        },
+        ready: function() {
+          this.style.display = 'none';
         },
         listeners: {
           'neon-animation-finish': '_onNeonAnimationFinish'
@@ -133,22 +136,30 @@ limitations under the License.
             var speakerIds = session.speakers;
             var speakerHash = this.app.scheduleData.speakers;
 
+            if(speakerIds.length > 1) {
+              for (var i = 0; i < speakerIds.length - 1; i++) {
+                speakerString += speakerHash[speakerIds[i]].name + ', ';
+              }
 
-            for (let i = 0; i < speakerIds.length - 1, i++;) {
-              speakerString += speakerHash[speakerIds[i]] + ', ';
+              speakerString = speakerString.slice(0, speakerString.length - 2) + ' & ';
             }
-            this._sessionSpeakers = speakerString.slice(0, speakerString.length - 2)
-              + ' & ' + speakerHash[speakerIds[speakerIds.length - 1]];
+            speakerString += speakerHash[speakerIds[speakerIds.length - 1]].name;
+
+            this._sessionSpeakers = speakerString;
           }
         },
         _close: function() {
           this.opened = false;
           this.playAnimation('exit');
         },
-        _cancel: function() {
+        closeNoAnimation: function() {
+          this.opened = false;
+          this.style.display = 'none';
+        },
+        _cancel: function(event) {
           this._close();
         },
-        _submit: function() {
+        _submit: function(event) {
           //TODO(pying): submit stuff
           this._close();
         },
