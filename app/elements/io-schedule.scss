@@ -202,9 +202,11 @@ $filterBannerHeight: 72px;
   clip: rect(0px, 1600px, 0px, 0px);
   will-change: transform;
   padding-left: 0;
+  visibility: hidden; // Hide for a11y
 
   &[showfilters] {
     clip: rect(0px, 1600px, 76vh, 0px);
+    visibility: visible; // Display for a11y
   }
 
   &.fixed {
@@ -425,5 +427,3 @@ paper-radio-button {
     padding: 48px;
   }
 }
-
-
