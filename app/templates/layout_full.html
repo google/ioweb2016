@@ -216,7 +216,7 @@ limitations under the License.
     <paper-toolbar class="tall">
       <div class="top io-logo" flex></div>
       <div class="top">
-        <img class="profilepic" hidden>
+        <img class="profilepic" alt="User profile image" hidden>
       </div>
       <div class="bottom">
         <div>May 18 &#8211; 20, 2016</div>
@@ -291,6 +291,7 @@ limitations under the License.
         <!-- This image might be set based on cached data. -->
         <img src$="{{app.currentUser.picture}}"
              class="profilepic"
+             alt="User profile image"
              hidden="[[!app.currentUser.picture]]">
         <!-- Stamp this out when app.currentUser.id is set rather than just
              app.currentUser, since a subset of app.currentUser might be
@@ -303,7 +304,7 @@ limitations under the License.
                                aria-label="Settings"></paper-icon-button>
             <div id="signin-settings-panel" class="dropdown-content">
               <div class="card-content" layout horizontal>
-                <div><img src$="{{app.currentUser.picture}}" class="profilepic"></div>
+                <div><img src$="{{app.currentUser.picture}}" class="profilepic" alt="User profile image"></div>
                 <div>
                   <div>[[app.currentUser.name]]</div>
                   <div class="settings-email">[[app.currentUser.email]]</div>
