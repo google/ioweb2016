@@ -185,10 +185,10 @@ gulp.task('concat-and-uglify-js', 'Crush JS', ['eslint', 'generate-page-metadata
   var siteScripts = [
     // The SimpleDB polyfill needs to be run through Babel, so include it here.
     '../bower_components/simpledb_polyfill/index.js',
+    'helper/util.js',
     'analytics.js',
     'main.js',
     'pages.js',
-    'helper/util.js',
     'helper/auth.js',
     'helper/page-animation.js',
     'helper/elements.js',

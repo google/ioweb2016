@@ -63,23 +63,22 @@ IOWA.Analytics = IOWA.Analytics || (function(exports) {
   };
 
   /**
-   * Creates a ready state promise that will be resolved once all custom
-   * dimensions are set on the tracker. The promise is resolved by calling
-   * `this.resolveReadyState`, which happens in the `updateTracker` method.
+   * Creates a ready state deferred whose promise will be resolved once all
+   * custom dimensions are set on the tracker. The promise is resolved in the
+   * `updateTracker` method.
    * Exposing the resolve function outside of the closure is required since
    * code outside of this module (`<google-signin>`) calls `updateTracker`.
    * Note: setting custom dimensions needs to happen prior to sending the first
    * pageview, to ensure all hits can be grouped by these custom dimensions.
    */
   Analytics.prototype.initTrackerReadyState = function() {
-    this.readyPromise_ = new Promise(function(resolve) {
-      this.resolveReadyState = resolve;
-      // In the event of an error or a failure in the auth code, we set a
-      // timeout so this promise always resolves. In such cases, some hits
-      // will be sent with missing custom dimension values, but that's better
-      // than them not being sent at all.
-      setTimeout(resolve, this.READY_STATE_TIMEOUT_);
-    }.bind(this));
+    this.readyState_ = IOWA.Util.createDeferred();
+
+    // In the event of an error or a failure in the auth code, we set a
+    // timeout so the promise always resolves. In such cases, some hits
+    // will be sent with missing custom dimension values, but that's better
+    // than them not being sent at all.
+    setTimeout(this.readyState_.resolve.bind(this), this.READY_STATE_TIMEOUT_);
   };
 
   /**
@@ -97,18 +96,18 @@ IOWA.Analytics = IOWA.Analytics || (function(exports) {
       if (customDimensionKeys.every(function(key) {
         return tracker.get(this.customDimensions[key]) !== undefined;
       }.bind(this))) {
-        this.resolveReadyState();
+        this.readyState_.resolve();
       }
     }.bind(this));
   };
 
   /**
-   * Waits until the tracker's ready promise has been resolved. This happens
-   * once all custom dimension values have been set.
+   * Waits until the tracker's ready state promise has been resolved.
+   * This happens once all custom dimension values have been set.
    * @return {Promise}
    */
   Analytics.prototype.waitForTrackerReady = function() {
-    return this.readyPromise_;
+    return this.readyState_.promise;
   };
 
   /**
@@ -217,9 +216,7 @@ IOWA.Analytics = IOWA.Analytics || (function(exports) {
     var marks = performance.getEntriesByName(eventName, 'mark');
     if (marks.length) {
       var time = marks[0].startTime;
-      if (exports.ENV === 'dev') {
-        console.info(eventName, '@', time);
-      }
+      debugLog(eventName, '@', time);
       this.trackPerf(categoryName, eventName, time, null,
           this.POLYMER_ANALYTICS_TIMEOUT_);
     } else {

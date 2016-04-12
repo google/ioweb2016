@@ -12,10 +12,22 @@
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700">
   <link rel="stylesheet" href="styles/main.css">
 
+  <script async src='https://www.google-analytics.com/analytics.js'></script>
+
   <script>
-    // Before embed-elements.html because is uses analytics.js inside.
-    window.ENV = {% .Env %};
-    window.PREFIX = {% .Prefix %};
+  window.ENV = location.host.match('localhost') ? 'dev' : 'prod';
+
+  // Initializes the analytics.js command queue.
+  window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+
+  // Creates the tracker.
+  ga('create', {
+    trackingId: window.ENV === 'prod' ? 'UA-58124138-3' : 'UA-58124138-2',
+    cookieDomain: 'auto',
+    siteSpeedSampleRate: 10, // 10% of users.
+  });
+
+  ga('send', 'pageview');
   </script>
 
   <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
@@ -27,7 +39,6 @@
 <io-gadget start-date="{% .StartDateStr %}"
            {% .LiveIDs | json | safeAttr "video-ids" %}></io-gadget>
 
-<script src="scripts/analytics.js"></script>
 <script>
 (function() {
   'use strict';
