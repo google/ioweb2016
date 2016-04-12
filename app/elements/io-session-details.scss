@@ -36,6 +36,7 @@ $color-section-border: #eaeaea;
 
 #scrollable {
   overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
 }
 
 #sessionDetails {
