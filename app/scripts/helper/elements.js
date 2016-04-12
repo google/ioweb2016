@@ -464,7 +464,9 @@ IOWA.Elements = (function() {
     };
 
     template.closeDrawer = function() {
-      this.$.appdrawer.close();
+      if (this.$.appdrawer) {
+        this.$.appdrawer.close();
+      }
     };
 
     template._onClearFilters = function(e) {
