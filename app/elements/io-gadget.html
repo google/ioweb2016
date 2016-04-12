@@ -23,22 +23,6 @@ limitations under the License.
 <script src="../bower_components/moment/min/moment.min.js"></script>
 <script src="../scripts/helper/request.js"></script>
 
-<script>
-window.ENV = location.host.match('localhost') ? 'dev' : 'prod';
-
-// Initializes the analytics.js command queue.
-window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-
-// Creates the tracker.
-ga('create', {
-  trackingId: window.ENV === 'prod' ? 'UA-58124138-3' : 'UA-58124138-2',
-  cookieDomain: 'auto',
-  siteSpeedSampleRate: 10, // 10% of users.
-});
-
-ga('send', 'pageview');
-</script>
-
 <link rel="import" href="shared-app-styles.html">
 
 <!--
@@ -309,7 +293,7 @@ The `<io-gadget>` element renders a youtube video + social feed.
           case YT.PlayerState.PLAYING:
             this._updateVideoInfo();
             if (!this._wasPaused) {
-              ga('send', 'event', 'gadget', 'video', this.selectedVideoId);
+              IOWA.Analytics.trackEvent('gadget', 'video', this.selectedVideoId);
             }
             this._wasPaused = false;
             break;
@@ -324,7 +308,7 @@ The `<io-gadget>` element renders a youtube video + social feed.
         },
 
         _onOpenSchedule: function() {
-          ga('send', 'event', 'gadget', 'link', 'open-schedule-link');
+          IOWA.Analytics.trackEvent('gadget', 'link', 'open-schedule-link');
         },
 
         setView: function () {
