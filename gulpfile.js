@@ -1,4 +1,4 @@
-/* jshint node: true */
+/* eslint-env node */
 
 /**
  * Copyright 2016 Google Inc. All rights reserved.
@@ -185,9 +185,10 @@ gulp.task('concat-and-uglify-js', 'Crush JS', ['eslint', 'generate-page-metadata
   var siteScripts = [
     // The SimpleDB polyfill needs to be run through Babel, so include it here.
     '../bower_components/simpledb_polyfill/index.js',
+    'helper/util.js',
+    'analytics.js',
     'main.js',
     'pages.js',
-    'helper/util.js',
     'helper/auth.js',
     'helper/page-animation.js',
     'helper/elements.js',
@@ -210,9 +211,6 @@ gulp.task('concat-and-uglify-js', 'Crush JS', ['eslint', 'generate-page-metadata
     }))
     .pipe($.concat('site-scripts.js'));
 
-  // analytics.js is loaded separately and shouldn't be concatenated.
-  var analyticsScriptStream = gulp.src([IOWA.appDir + '/scripts/analytics.js']);
-
   var serviceWorkerScriptStream = gulp.src([
     IOWA.appDir + '/bower_components/sw-toolbox/sw-toolbox.js',
     IOWA.appDir + '/bower_components/simpledb_polyfill/index.js',
@@ -225,7 +223,7 @@ gulp.task('concat-and-uglify-js', 'Crush JS', ['eslint', 'generate-page-metadata
     }))
     .pipe($.concat('sw-toolbox-scripts.js'));
 
-  return merge(siteScriptStream, siteLibStream).add(analyticsScriptStream).add(serviceWorkerScriptStream)
+  return merge(siteScriptStream, siteLibStream).add(serviceWorkerScriptStream)
     .pipe(uglifyJS().on('error', function(error) {
       $.util.log(error);
     }))

@@ -82,17 +82,29 @@ limitations under the License.
     }
   </script>
 
-  <!-- Unsupported browser checks need to come before webcomponents.js is loaded,
-       otherwise unsupported browsers will error out and not record a pageview.
-       Analytics lib is also loaded up front for error reporting. -->
-  <script>
-    window.ENV = {% .Env %}; // Used in analytics.js
-    window.PREFIX = {% .Prefix %};
-  </script>
-  <script src="{% .Prefix %}/scripts/analytics.js"></script>
+  <script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  <!-- Unsupported browser checks need to come before webcomponents.js is loaded. -->
   <script>
   (function() {
     "use strict";
+
+    window.ENV = {% .Env %}; // Used in IOWA.Analytics
+    window.PREFIX = {% .Prefix %};
+    window.START_DATE = {% .StartDateStr %};
+
+    // Initializes the analytics.js command queue.
+    window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+
+    // Creates the tracker.
+    ga('create', {
+      trackingId: window.ENV === 'prod' ? 'UA-58124138-3' : 'UA-58124138-2',
+      cookieDomain: 'auto',
+      cookiePath: window.ENV !== 'dev' ? window.PREFIX || '/io2016' : null,
+      siteSpeedSampleRate: 10, // 10% of users.
+    });
+
+    ga('send', 'pageview');
 
     // Setup error tracking before anything else runs.
     window.onerror = function(message, file, lineNumber, columnNumber, error) {
@@ -162,10 +174,15 @@ limitations under the License.
     })();
 
     if (!supported) {
-      // Note: pageview is recorded when IOWA.Analytics is setup.
-      IOWA.Analytics.trackEvent('Polymer', 'unsupported-browser', navigator.userAgent, null, function() {
+      var redirectToUpgradePage = function() {
         window.location = {% url "upgrade" %};
+      };
+      ga('send', 'event', 'Polymer', 'unsupported-browser', navigator.userAgent, {
+        hitCallback: redirectToUpgradePage
       });
+      // Adds a timeout to redirect in the event that analytics.js fails to
+      // load or is blocked by a browser extension.
+      setTimeout(redirectToUpgradePage, 5000);
     }
   })();
   </script>

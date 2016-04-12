@@ -84,10 +84,25 @@ limitations under the License.
     window.START_DATE = {% .StartDateStr %};
     window.FIREBASE_SHARDS = {% .FirebaseShards %};
   </script>
-  <script src="scripts/analytics.js"></script>
+  <script async src="https://www.google-analytics.com/analytics.js"></script>
   <script>
   (function() {
     "use strict";
+
+    window.ENV = {% .Env %}; // Used in IOWA.Analytics
+    window.PREFIX = {% .Prefix %};
+    window.START_DATE = {% .StartDateStr %};
+
+    // Initializes the analytics.js command queue.
+    window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+
+    // Creates the tracker.
+    ga('create', {
+      trackingId: window.ENV === 'prod' ? 'UA-58124138-3' : 'UA-58124138-2',
+      cookieDomain: 'auto',
+      cookiePath: window.ENV !== 'dev' ? window.PREFIX || '/io2016' : null,
+      siteSpeedSampleRate: 10, // 10% of users.
+    });
 
     // Setup error tracking before anything else runs.
     window.onerror = function(message, file, lineNumber, columnNumber, error) {
@@ -97,8 +112,7 @@ limitations under the License.
         if (error !== undefined) {
           message = error.stack;
         }
-
-        IOWA.Analytics.trackError(file + ':' + lineNumber, message);
+        ga('send', 'event', 'error', file + ':' + lineNumber, message);
       } catch (e) {
         // no-op
       }
@@ -157,9 +171,28 @@ limitations under the License.
     })();
 
     if (!supported) {
-      // Note: pageview is recorded when IOWA.Analytics is setup.
-      IOWA.Analytics.trackEvent('Polymer', 'unsupported-browser', navigator.userAgent, null, function() {
+      var redirectToUpgradePage = function() {
         window.location = {% url "upgrade" %};
+      };
+      // Sends a pageview here because this code will run before IOWA.Analytics is initialized.
+      ga('send', 'pageview');
+      ga('send', 'event', 'Polymer', 'unsupported-browser', navigator.userAgent, {
+        hitCallback: redirectToUpgradePage
+      });
+      // Adds a timeout to redirect in the event that analytics.js fails to
+      // load or is blocked by a browser extension.
+      setTimeout(redirectToUpgradePage, 5000);
+    }
+
+    // Adds User Timing marks for relevant perf events.
+    // These events correspond to the values tracked in analytics.js;
+    // changes made here must be made there as well.
+    var perfEvents = ['HTMLImportsLoaded', 'WebComponentsReady'];
+    if (window.performance && window.performance.mark) {
+      perfEvents.forEach(function(eventName) {
+        document.addEventListener(eventName, function() {
+          performance.mark(eventName);
+        });
       });
     }
   })();
@@ -438,9 +471,10 @@ limitations under the License.
 <script src="bower_components/firebase/firebase.js"></script>
 <script src="bower_components/js-crc/src/crc.js"></script>
 <script src="bower_components/simpledb_polyfill/index.js"></script>
+<script src="scripts/helper/util.js"></script>
+<script src="scripts/analytics.js"></script>
 <script src="scripts/main.js"></script>
 <script src="scripts/pages.js"></script>
-<script src="scripts/helper/util.js"></script>
 <script src="scripts/helper/auth.js"></script>
 <script src="scripts/helper/page-animation.js"></script>
 <script src="scripts/helper/elements.js"></script>
