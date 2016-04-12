@@ -17,6 +17,8 @@
 @import '../styles/components/_card';
 @import '../styles/components/_app';
 
+$bottom-buffer: 25px;
+
 :host {
   display: block;
   position: relative;
@@ -32,7 +34,7 @@
 .filler {
   height: 24px;
   margin-left: -1px;
-  margin-right: 1px;
+  margin-right: 2px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -78,8 +80,8 @@
   width: 1px;
   margin-left: -2px;
   position: absolute;
-  top: 48px;
-  bottom: 73px;
+  top: 24px;
+  bottom: calc(24px + #{$bottom-buffer});
   z-index: -1;
 }
 
@@ -92,6 +94,27 @@
   height: 100%;
   display: inline-block;
   background-color: #fff;
+}
+
+@media (min-width: 961px) {
+  .agenda-time:before {
+    top: 32px;
+    bottom: calc(32px + #{$bottom-buffer});
+  }
+}
+
+@media (min-width: 1305px) {
+  .agenda-time:before {
+    top: 40px;
+    bottom: calc(40px + #{$bottom-buffer});
+  }
+}
+
+@media (min-width: 1501px) {
+  .agenda-time:before {
+    top: 48px;
+    bottom: calc(48px + #{$bottom-buffer});
+  }
 }
 
 @media (max-width: $phone-breakpoint-max) {
