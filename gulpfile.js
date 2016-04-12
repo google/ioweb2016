@@ -68,7 +68,7 @@ function minifyHtml() {
     quotes: true,
     empty: true,
     spare: true
-  });
+  }).on('error', console.log.bind(console));
 }
 
 function uglifyJS() {
@@ -198,7 +198,6 @@ gulp.task('concat-and-uglify-js', 'Crush JS', ['eslint', 'generate-page-metadata
     'helper/request.js',
     'helper/picasa.js',
     'helper/simple-db.js',
-    'helper/notifications.js',
     'helper/schedule.js',
     'bootstrap.js'
   ].map(script => `${IOWA.appDir}/scripts/${script}`);
@@ -309,6 +308,7 @@ gulp.task('vulcanize-elements', false, ['sass'], function() {
       inlineScripts: true,
       dest: IOWA.appDir + '/elements'
     }))
+    .on('error', console.error.bind(console))
     .pipe($.crisper({scriptInHead: true}))
     // Minify html output
     .pipe($.if('*.html', minifyHtml()))

@@ -122,7 +122,6 @@
     IOWA.Router = IOWA.Router_(window); // eslint-disable-line new-cap
     IOWA.Elements.init();
     IOWA.Router.init(IOWA.Elements.Template);
-    IOWA.Notifications.init();
 
     initWorker();
 

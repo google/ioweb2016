@@ -60,31 +60,9 @@ IOWA.Auth = IOWA.Auth || (function() {
           var pendingResolution = pendingResolutions.shift();
           pendingResolution();
         }
-
-        // If the user hasn't denied notifications permission in the current browser,
-        // and the user has notifications turned on globally (i.e. in at least one other browser),
-        // and there isn't already a subscription in the current browser, then try to enable
-        // notifications in the current browser.
-        if (window.Notification.permission !== 'denied') {
-          IOWA.Notifications.isNotifyEnabledPromise().then(function(isGlobalNotificationsEnabled) {
-            if (isGlobalNotificationsEnabled) {
-              IOWA.Notifications.isExistingSubscriptionPromise().then(function(isLocalSubscription) {
-                if (!isLocalSubscription) {
-                  IOWA.Notifications.subscribePromise();
-                }
-              });
-            }
-          });
-        }
       });
     } else {
       clearUserUI();
-      if (IOWA.Notifications.isSupported) {
-        // This kicks off an async network request, wrapped in a promise.
-        // If the user has signed out, then we want to unsubscribe from the
-        // browser's push manager
-        IOWA.Notifications.unsubscribeFromPushManagerPromise();
-      }
 
       // Clear any requests in the SW cache that might have user-specific data.
       // Chrome 43 adds support for the Cache Storage API in the window scope, but we can't rely
