@@ -208,9 +208,8 @@ class IOFirebase {
 
     if (this.isAuthed()) {
       register();
-    } else {
-      this.authCallbacks.push(register);
     }
+    this.authCallbacks.push(register);
   }
 
   /**
