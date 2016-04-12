@@ -34,10 +34,10 @@ $color-section-border: #eaeaea;
   box-shadow: none !important;
 }
 
-#scrollable {
-  overflow-y: scroll;
-  -webkit-overflow-scrolling: touch;
-}
+//#scrollable {
+//  overflow-y: scroll;
+//  -webkit-overflow-scrolling: touch;
+//}
 
 #sessionDetails {
   max-width: $tablet-breakpoint-min;
