@@ -302,6 +302,13 @@ IOWA.Elements = (function() {
       IOWA.Elements.GoogleSignIn.signIn();
     };
 
+    template.keyboardSignIn = function(e) {
+      // Listen for Enter or Space press
+      if (e.keyCode === 13 || e.keyCode === 32) {
+        this.signIn();
+      }
+    };
+
     template.signOut = function(e) {
       if (e) {
         e.preventDefault();
@@ -312,6 +319,13 @@ IOWA.Elements = (function() {
         }
       }
       IOWA.Elements.GoogleSignIn.signOut();
+    };
+
+    template.keyboardSignOut = function(e) {
+      // Listen for Enter or Space press
+      if (e.keyCode === 13 || e.keyCode === 32) {
+        this.signOut();
+      }
     };
 
     template.initFabScroll = function() {
