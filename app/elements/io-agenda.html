@@ -12,9 +12,6 @@ limitations under the License.
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
-<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
-
 <!--
 The `<io-agenda>` element renders the agenda for a given day.  It uses a table to render and
 each hour is 2 columns.  Each event is a label column and 3 columns of different spans.
@@ -23,49 +20,79 @@ each hour is 2 columns.  Each event is a label column and 3 columns of different
   <link rel="import" type="css" href="io-agenda.css">
 
   <template>
+    <style include="shared-app-styles"></style>
     <div class$="card__container day-[[index]]">
       <div class="card">
         <div class="card-content no-bottom-padding">
           <h4>[[day]]</h4>
         </div>
-        <div class="card-content">
-          <table id="table_agenda">
-            <tbody>
-            <template is="dom-repeat" items="[[events]]" as="event">
-              <tr>
-                <td class="row_label" hidden$="[[app.isPhoneSize]]">[[event.name]]</td>
-                <template is="dom-if" if="[[_checkZero('left', event)]]">
-                  <td colspan$="[[_calculateLeftSpan(event)]]">
-                    <div class="filler"></div>
-                  </td>
-                </template>
-                <td colspan$="[[_calculateEventSpan(event)]]">
-                  <div class="filler center_text" style$="background:[[color]];">
-                    <span hidden$="[[_fitEventSpan(event)]]">[[event.name]]</span>
-                  </div>
-                </td>
-                <template is="dom-if" if="[[_checkZero('right', event)]]">
-                  <td colspan$="[[_calculateRightSpan(event)]]">
-                    <div class="filler">
-                      <span class="after_text" hidden$="[[_fitAfterSpan(event)]]">[[event.name]]</span>
-                    </div>
-                  </td>
-                </template>
-              </tr>
-            </template>
-            </tbody>
-            <tfoot>
-            <tr>
-              <td hidden$="[[app.isPhoneSize]]"></td>
-              <template is="dom-repeat" items="[[_calculateTime(start, end)]]" as="hour">
-                <td colspan="1" style$="width:[[_cellWidth]]" class$="agenda_time [[_isEveryOther(hour)]]">
-                  <span class$="agenda_hour [[_computeDoubleDigit(hour)]]" hidden$="[[_isEveryOther(hour)]]">[[hour]]</span>
-                </td>
-                <td colspan="1" style$="width:[[_cellWidth]]"></td>
+        <div id="agenda-content" class="card-content relative" layout vertical>
+          <template is="dom-repeat" items="[[events]]" as="event">
+            <div class="row-height" layout horizontal justified>
+              <div class="row-label" hidden$="[[app.isPhoneSize]]">[[event.name]]</div>
+              <template is="dom-if" if="[[_checkZero('left', event)]]">
+                <div  style$="[[_calculateLeftSpanStyle(event)]]"></div>
               </template>
-            </tr>
-            </tfoot>
-          </table>
+              <div style$="[[_calculateEventSpanStyle(event)]]">
+                <div class="filler center-text" style$="background:[[color]];">
+                  <span hidden$="[[_fitEventSpan(event)]]">[[event.name]]</span>
+                </div>
+              </div>
+              <template is="dom-if" if="[[_checkZero('right', event)]]">
+                <div style$="[[_calculateRightSpanStyle(event)]]"></div>
+              </template>
+              <div class="row-end"></div>
+            </div>
+          </template>
+          <div layout horizontal justified>
+            <div class="row-label" hidden$="[[app.isPhoneSize]]"></div>
+            <template is="dom-repeat" items="[[_calculateTime(start, end)]]" as="hour">
+              <div flex class$="agenda-time [[_isEveryOther(hour)]]">
+                <span class$="agenda-hour [[_computeDoubleDigit(hour)]]" hidden$="[[_isEveryOther(hour)]]">[[hour]]</span>
+              </div>
+              <div flex></div>
+            </template>
+            <div class="row-end agenda-time">
+              <span class$="agenda-hour [[_computeDoubleDigit(hour)]]" hidden$="[[_isEveryOther(hour)]]">[[_toTwelveHour(end)]]</span>
+            </div>
+          </div>
+          <!--<table id="table_agenda">-->
+            <!--<tbody>-->
+            <!--<template is="dom-repeat" items="[[events]]" as="event">-->
+              <!--<tr>-->
+                <!--<td class="row_label" hidden$="[[app.isPhoneSize]]">[[event.name]]</td>-->
+                <!--<template is="dom-if" if="[[_checkZero('left', event)]]">-->
+                  <!--<td colspan$="[[_calculateLeftSpan(event)]]">-->
+                    <!--<div class="filler"></div>-->
+                  <!--</td>-->
+                <!--</template>-->
+                <!--<td colspan$="[[_calculateEventSpan(event)]]">-->
+                  <!--<div class="filler center_text" style$="background:[[color]];">-->
+                    <!--<span hidden$="[[_fitEventSpan(event)]]">[[event.name]]</span>-->
+                  <!--</div>-->
+                <!--</td>-->
+                <!--<template is="dom-if" if="[[_checkZero('right', event)]]">-->
+                  <!--<td colspan$="[[_calculateRightSpan(event)]]">-->
+                    <!--<div class="filler">-->
+                      <!--<span class="after_text" hidden$="[[_fitAfterSpan(event)]]">[[event.name]]</span>-->
+                    <!--</div>-->
+                  <!--</td>-->
+                <!--</template>-->
+              <!--</tr>-->
+            <!--</template>-->
+            <!--</tbody>-->
+            <!--<tfoot>-->
+            <!--<tr>-->
+              <!--<td hidden$="[[app.isPhoneSize]]"></td>-->
+              <!--<template is="dom-repeat" items="[[_calculateTime(start, end)]]" as="hour">-->
+                <!--<td colspan="1" style$="width:[[_cellWidth]]" class$="agenda_time [[_isEveryOther(hour)]]">-->
+                  <!--<span class$="agenda_hour [[_computeDoubleDigit(hour)]]" hidden$="[[_isEveryOther(hour)]]">[[hour]]</span>-->
+                <!--</td>-->
+                <!--<td colspan="1" style$="width:[[_cellWidth]]"></td>-->
+              <!--</template>-->
+            <!--</tr>-->
+            <!--</tfoot>-->
+          <!--</table>-->
         </div>
       </div>
     </div>
@@ -130,17 +157,12 @@ each hour is 2 columns.  Each event is a label column and 3 columns of different
             type: Object
           },
 
-          _cellWidth: {
-            type: String
-          }
-        },
-        /**
-         * When ready calculate each cells width
-         */
-        ready: function() {
-          this._cellWidth = 100 / (this.end - this.start) / 2 + '%';
         },
 
+        _generateFlexStyle: function(span) {
+          return "-ms-flex: " + span + ";" + "-webkit-flex: " + span + ";" +
+            "flex: " + span;
+        },
         /**
          * Calculate the colspan of the left buffer
          *
@@ -152,14 +174,17 @@ each hour is 2 columns.  Each event is a label column and 3 columns of different
           return (event.start - this.start) * 2;
         },
 
+        _calculateLeftSpanStyle: function(event) {
+          return this._generateFlexStyle(this._calculateLeftSpan(event));
+        },
         /**
          * Calculate the colspan of the event
          * @param event
          * @returns {number}
          * @private
          */
-        _calculateEventSpan: function(event) {
-          return (event.end - event.start) * 2;
+        _calculateEventSpanStyle: function(event) {
+          return this._generateFlexStyle((event.end - event.start) * 2);
         },
 
         /**
@@ -173,6 +198,10 @@ each hour is 2 columns.  Each event is a label column and 3 columns of different
           return (this.end - event.end) * 2;
         },
 
+        _calculateRightSpanStyle: function(event) {
+          return this._generateFlexStyle(this._calculateRightSpan(event));
+        },
+
         /**
          * Creates the array of time labels
          *
@@ -183,7 +212,7 @@ each hour is 2 columns.  Each event is a label column and 3 columns of different
          */
         _calculateTime: function(start, end) {
           var hours = [];
-          for (var i = start; i <= end; i++) {
+          for (var i = start; i < end; i++) {
             if (i == 12) {
               hours.push('12P');
             } else {
@@ -191,6 +220,10 @@ each hour is 2 columns.  Each event is a label column and 3 columns of different
             }
           }
           return hours;
+        },
+
+        _toTwelveHour: function(hour) {
+          return hour > 12 ? hour - 12: hour;
         },
 
         /**
@@ -236,6 +269,7 @@ each hour is 2 columns.  Each event is a label column and 3 columns of different
             return 'double_digit';
           }
         },
+
 
         /**
          * Returns true if the event name is longer than the end time - start time * 3.5

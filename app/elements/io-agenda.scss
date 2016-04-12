@@ -22,7 +22,7 @@
   position: relative;
 }
 
-#table_agenda {
+#agenda-content {
   border-collapse: collapse;
   overflow: visible;
   position: relative;
@@ -32,26 +32,33 @@
 .filler {
   height: 24px;
   margin-left: -1px;
+  margin-right: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
+.increment {
+
+}
 .no-bottom-padding {
   padding-bottom: 0 !important;
 }
 
-.center_text {
+.center-text {
   text-align: center;
 }
 
-.row_label {
+.row-label {
   min-width: 150px;
 }
 
-#table_agenda tr {
+.row-height {
   height: 36px;
 }
 
-#table_agenda td {
-  vertical-align: top;
+.row-end {
+  min-width: 1.5em;
 }
 
 .card__container:not(.day-0) {
@@ -65,18 +72,18 @@
   }
 }
 
-.agenda_time:before {
+.agenda-time:before {
   content: ' ';
   background: $color-bluegrey-200;
   width: 1px;
   margin-left: -2px;
   position: absolute;
-  top: 1px;
-  bottom: 40px;
+  top: 48px;
+  bottom: 73px;
   z-index: -1;
 }
 
-.agenda_hour {
+.agenda-hour {
   margin-left: -0.25em;
   color: $color-bluegrey-200;
 }
@@ -85,10 +92,6 @@
   height: 100%;
   display: inline-block;
   background-color: #fff;
-}
-
-.table_agenda tfoot tr {
-  height: 24px;
 }
 
 @media (max-width: $phone-breakpoint-max) {
