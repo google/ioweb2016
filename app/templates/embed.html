@@ -15,7 +15,8 @@
   <script async src='https://www.google-analytics.com/analytics.js'></script>
 
   <script>
-  window.ENV = location.host.match('localhost') ? 'dev' : 'prod';
+  window.ENV = {% .Env %};
+  window.PREFIX = {% .Prefix %};
 
   // Initializes the analytics.js command queue.
   window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
