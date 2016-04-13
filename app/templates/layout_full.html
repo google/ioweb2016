@@ -283,7 +283,8 @@ limitations under the License.
     <app-toolbar id="navbar" role="navigation">
       <paper-icon-button icon="io:menu"
                          on-tap="toggleDrawer"
-                         hidden$="[[!app.isPhoneSize]]"></paper-icon-button>
+                         hidden$="[[!app.isPhoneSize]]"
+                         aria-label="Open navigation"></paper-icon-button>
       <div flex disabled$="{{_isPage('home', selectedPage)}}">
         <a href="./" class="io-logo-link"
             on-click="setSelectedPageToHome"
