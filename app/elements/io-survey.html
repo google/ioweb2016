@@ -251,9 +251,14 @@ limitations under the License.
          * Submits the survey responses
          */
         _submit: function(event) {
-          //TODO(pying): submit stuff
+          var answers = {};
+          for (let question of this.surveyQuestions) {
+            answers[question.id] = question.value;
+          }
           this._close();
-          this.fire('submitted');
+          IOWA.Schedule.saveSurvey(this.session.id, answers).then(function() {
+            this.fire('survey-submitted');
+          });
         },
 
         /**

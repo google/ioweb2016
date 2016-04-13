@@ -44,7 +44,8 @@ limitations under the License.
                   entry-animation="scale-up-animation"
                   exit-animation="fade-out-animation"
                   on-iron-overlay-closed="_onSessionDetailsClose"
-                  on-iron-overlay-opened="_onSessionDetailsOpen">
+                  on-iron-overlay-opened="_onSessionDetailsOpen"
+                  on-survey-submitted="_showSurveyNotification">
 
       <div class="fullschedule-banner card-content bg-bluegrey-50-60"
            layout horizontal center>
@@ -62,6 +63,12 @@ limitations under the License.
       <paper-dialog-scrollable id="scrollable">
         <div class="bg-bluegrey-50-20">
           <div class="card__photo" relative>
+
+            <div id="survey_notification" class="fullschedule-banner card-content bg-bluegrey-50-20"
+              layout horizontal center>
+              <iron-icon icon="stars"></iron-icon>
+              <span>Your feedback has been submitted.  Thanks for participating!</span>
+            </div>
 
             <template is="dom-if"
                       if="[[sessionHasVideo(_startScheduleVideo, selectedSession.isLivestream, selectedSession.youtubeUrl)]]"
@@ -250,10 +257,12 @@ limitations under the License.
         value: 0
       }
     },
-
-//    ready: function() {
-//      this.$.scrollable.dialogElement = this.$.sessionDetails;
-//    },
+    _showSurveyNotification: function() {
+      this.$.survey_notification.classList.add('show');
+      this.async(function(){
+          this.$.survey_notification.classList.remove('show');
+      }, 1500);
+    },
 
     _selectedSessionChanged: function() {
       if (this.selectedSession) {
