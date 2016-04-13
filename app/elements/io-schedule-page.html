@@ -13,11 +13,6 @@ limitations under the License.
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-
-<!--<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">-->
-<!--<link rel="import" href="../bower_components/neon-animation/animations/scale-up-animation.html">-->
-<!--<link rel="import" href="../bower_components/neon-animation/animations/fade-out-animation.html">-->
-
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../bower_components/paper-menu/paper-menu.html">
 
@@ -38,107 +33,6 @@ limitations under the License.
     <h1 class="focus-target" tabindex="-1">Schedule</h1>
   </div>
 </div>
-
-<!--<paper-dialog id="ratePanel"-->
-              <!--class="session__rate"-->
-              <!--entry-animation="scale-up-animation"-->
-              <!--exit-animation="fade-out-animation"-->
-              <!--with-backdrop$="{{!app.isIOS}}">-->
-  <!--<div class="scrollable">-->
-    <!--<div class="session__info__section rate__header" layout horizontal center>-->
-      <!--<paper-icon-button icon="io:arrow-back" dialog-dismiss aria-label="Close session"></paper-icon-button>-->
-      <!--<span>Rate this session</span>-->
-    <!--</div>-->
-    <!--<div class="session__info__section">-->
-      <!--<h2 class="session__title" tabindex="-1">{{selectedSession.title}}</h2>-->
-      <!--<h5 class="session__authors">{{_speakerIdsToNameString(selectedSession.speakers)}}</h5>-->
-    <!--</div>-->
-    <!--<div class="session__info__section">-->
-      <!--<p>Session rating:</p>-->
-      <!--<div>-->
-        <!--<div>-->
-          <!--<paper-menu selected="{{answers.overall}}"-->
-                      <!--attr-for-selected="value" layout horizontal justified>-->
-            <!--<paper-icon-button value="1" icon="io:star" class="rate__icon"></paper-icon-button>-->
-            <!--<paper-icon-button value="2" icon="io:star" class="rate__icon"></paper-icon-button>-->
-            <!--<paper-icon-button value="3" icon="io:star" class="rate__icon"></paper-icon-button>-->
-            <!--<paper-icon-button value="4" icon="io:star" class="rate__icon"></paper-icon-button>-->
-            <!--<paper-icon-button value="5" icon="io:star" class="rate__icon"></paper-icon-button>-->
-          <!--</paper-menu>-->
-        <!--</div>-->
-        <!--<div class="rate__hint" layout horizontal justified>-->
-          <!--<span>Not so awesome</span>-->
-          <!--<span>Awesome</span>-->
-        <!--</div>-->
-      <!--</div>-->
-    <!--</div>-->
-    <!--<div class="session__info__section">-->
-      <!--<p>How relevant was this session to your projects?</p>-->
-      <!--<div>-->
-        <!--<div>-->
-          <!--<paper-menu selected="{{answers.relevance}}"-->
-                      <!--attr-for-selected="value" layout horizontal justified>-->
-            <!--<paper-icon-button value="1" icon="io:star" class="rate__icon rate__icon-empty rate__icon-1"></paper-icon-button>-->
-            <!--<paper-icon-button value="2" icon="io:star" class="rate__icon rate__icon-empty rate__icon-2"></paper-icon-button>-->
-            <!--<paper-icon-button value="3" icon="io:star" class="rate__icon rate__icon-empty rate__icon-3"></paper-icon-button>-->
-            <!--<paper-icon-button value="4" icon="io:star" class="rate__icon rate__icon-empty rate__icon-4"></paper-icon-button>-->
-            <!--<paper-icon-button value="5" icon="io:star" class="rate__icon rate__icon-empty rate__icon-5"></paper-icon-button>-->
-          <!--</paper-menu>-->
-        <!--</div>-->
-        <!--<div class="rate__hint" layout horizontal justified>-->
-          <!--<span>Not at all</span>-->
-          <!--<span>Extremely</span>-->
-        <!--</div>-->
-      <!--</div>-->
-    <!--</div>-->
-    <!--<div class="session__info__section">-->
-      <!--<p>Based on the description/my expectations, the content was:</p>-->
-      <!--<div>-->
-        <!--<div>-->
-          <!--<paper-menu selected="{{answers.content}}"-->
-                      <!--attr-for-selected="value" layout horizontal justified>-->
-            <!--<paper-icon-button value="1" icon="io:star" class="rate__icon rate__icon-empty rate__icon-1"></paper-icon-button>-->
-            <!--<paper-icon-button value="2" icon="io:star" class="rate__icon rate__icon-empty rate__icon-2"></paper-icon-button>-->
-            <!--<paper-icon-button value="3" icon="io:star" class="rate__icon rate__icon-empty rate__icon-3"></paper-icon-button>-->
-            <!--<paper-icon-button value="4" icon="io:star" class="rate__icon rate__icon-empty rate__icon-4"></paper-icon-button>-->
-            <!--<paper-icon-button value="5" icon="io:star" class="rate__icon rate__icon-empty rate__icon-5"></paper-icon-button>-->
-          <!--</paper-menu>-->
-        <!--</div>-->
-        <!--<div class="rate__hint" layout horizontal justified>-->
-          <!--<span>Too basic</span>-->
-          <!--<span>Too advanced</span>-->
-        <!--</div>-->
-      <!--</div>-->
-    <!--</div>-->
-    <!--<div class="session__info__section">-->
-      <!--<p>Speaker quality:</p>-->
-      <!--<div>-->
-        <!--<div>-->
-          <!--<paper-menu selected="{{answers.speaker}}"-->
-                      <!--attr-for-selected="value" layout horizontal justified>-->
-            <!--<paper-icon-button value="1" icon="io:star" class="rate__icon rate__icon-empty rate__icon-1"></paper-icon-button>-->
-            <!--<paper-icon-button value="2" icon="io:star" class="rate__icon rate__icon-empty rate__icon-2"></paper-icon-button>-->
-            <!--<paper-icon-button value="3" icon="io:star" class="rate__icon rate__icon-empty rate__icon-3"></paper-icon-button>-->
-            <!--<paper-icon-button value="4" icon="io:star" class="rate__icon rate__icon-empty rate__icon-4"></paper-icon-button>-->
-            <!--<paper-icon-button value="5" icon="io:star" class="rate__icon rate__icon-empty rate__icon-5"></paper-icon-button>-->
-          <!--</paper-menu>-->
-        <!--</div>-->
-        <!--<div class="rate__hint" layout horizontal justified>-->
-          <!--<span>Poor</span>-->
-          <!--<span>Outstanding</span>-->
-        <!--</div>-->
-      <!--</div>-->
-    <!--</div>-->
-    <!--<div class="session__info__section session__info__links card-content">-->
-      <!--<span class="anchor-like" role="link"-->
-          <!--disabled$="[[_computeDisableRateSession(answers.*)]]"-->
-          <!--on-click="onRateSessionSubmit"-->
-          <!--data-track-link="schedule-rate-submit"-->
-          <!--dialog-dismiss$="[[!_computeDisableRateSession(answers.*)]]">Submit</span>-->
-    <!--</div>-->
-  <!--</div>-->
-<!--</paper-dialog>-->
-
 
 <div class="card__container">
 
@@ -409,23 +303,6 @@ limitations under the License.
 
     clearFilters: function(e) {
       this.$.scheduleEl.clearFilters();
-    },
-
-//    _computeDisableRateSession: function(answersRecord) {
-//      return !this.answers.overall && !this.answers.relevance &&
-//             !this.answers.content && !this.answers.speaker;
-//    },
-
-    _speakerIdsToNameString: function(speakers) {
-      if (!speakers) {
-        return '';
-      }
-      if (typeof speakers === 'string') {
-        return speakers; // speakers is already a "," separated string.
-      }
-      return speakers.map(function(speakerId) {
-        return this.app.scheduleData.speakers[speakerId].name;
-      }.bind(this)).sort().join(', ');
     },
 
     _applyActiveClassWhenNotSubpage: function(selectedSubpage, subpageName) {
