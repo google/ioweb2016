@@ -32,7 +32,7 @@ each hour is 2 divs.  Each event is a label column and 3 columns of different sp
             <div class="row-height" layout horizontal justified>
               <div class="row-label" hidden$="[[app.isPhoneSize]]">[[event.name]]</div>
               <template is="dom-if" if="[[_checkZero('left', event)]]">
-                <div  style$="[[_calculateLeftSpanStyle(event)]]"></div>
+                <div style$="[[_calculateLeftSpanStyle(event)]]"></div>
               </template>
               <div style$="[[_calculateEventSpanStyle(event)]]" class="overflow-hidden">
                 <div class="filler center-text" style$="background:[[color]];">
@@ -53,7 +53,8 @@ each hour is 2 divs.  Each event is a label column and 3 columns of different sp
             <div class="row-label" hidden$="[[app.isPhoneSize]]"></div>
             <template is="dom-repeat" items="[[_calculateTime(start, end)]]" as="hour">
               <div flex class$="agenda-time [[_isEveryOther(hour, app.isPhoneSize)]]">
-                <span class$="agenda-hour [[_computeDoubleDigit(hour)]]" hidden$="[[_isEveryOther(hour, app.isPhoneSize)]]">[[hour]]</span>
+                <span class$="agenda-hour [[_computeDoubleDigit(hour)]]"
+                      hidden$="[[_isEveryOther(hour, app.isPhoneSize)]]">[[hour]]</span>
               </div>
               <div flex></div>
             </template>
@@ -66,7 +67,7 @@ each hour is 2 divs.  Each event is a label column and 3 columns of different sp
     </div>
   </template>
   <script>
-    (function() {
+    (function () {
       Polymer({
         is: 'io-agenda',
         properties: {
@@ -102,7 +103,7 @@ each hour is 2 divs.  Each event is a label column and 3 columns of different sp
            */
           events: {
             type: Array,
-            value: function() {
+            value: function () {
               return [];
             }
           },
@@ -119,12 +120,7 @@ each hour is 2 divs.  Each event is a label column and 3 columns of different sp
            */
           end: {
             type: Number
-          },
-
-          app: {
-            type: Object
           }
-
         },
 
         /**
@@ -134,7 +130,7 @@ each hour is 2 divs.  Each event is a label column and 3 columns of different sp
          * @return {string} style string
          * @private
          */
-        _generateFlexStyle: function(span) {
+        _generateFlexStyle: function (span) {
           return "-ms-flex: " + span + ";" + "-webkit-flex: " + span + ";" +
             "flex: " + span;
         },
@@ -146,7 +142,7 @@ each hour is 2 divs.  Each event is a label column and 3 columns of different sp
          * @returns {number} number of columns to span
          * @private
          */
-        _calculateLeftSpan: function(event) {
+        _calculateLeftSpan: function (event) {
           return (event.start - this.start) * 2;
         },
 
@@ -156,7 +152,7 @@ each hour is 2 divs.  Each event is a label column and 3 columns of different sp
          * @returns {string}
          * @private
          */
-        _calculateLeftSpanStyle: function(event) {
+        _calculateLeftSpanStyle: function (event) {
           return this._generateFlexStyle(this._calculateLeftSpan(event));
         },
         /**
@@ -165,7 +161,7 @@ each hour is 2 divs.  Each event is a label column and 3 columns of different sp
          * @returns {number}
          * @private
          */
-        _calculateEventSpanStyle: function(event) {
+        _calculateEventSpanStyle: function (event) {
           return this._generateFlexStyle((event.end - event.start) * 2);
         },
 
@@ -176,7 +172,7 @@ each hour is 2 divs.  Each event is a label column and 3 columns of different sp
          * @returns {number}
          * @private
          */
-        _calculateRightSpan: function(event) {
+        _calculateRightSpan: function (event) {
           return (this.end - event.end) * 2;
         },
 
@@ -186,7 +182,7 @@ each hour is 2 divs.  Each event is a label column and 3 columns of different sp
          * @returns {string}
          * @private
          */
-        _calculateRightSpanStyle: function(event) {
+        _calculateRightSpanStyle: function (event) {
           return this._generateFlexStyle(this._calculateRightSpan(event));
         },
 
@@ -198,7 +194,7 @@ each hour is 2 divs.  Each event is a label column and 3 columns of different sp
          * @returns {Array} array of time labels
          * @private
          */
-        _calculateTime: function(start, end) {
+        _calculateTime: function (start, end) {
           var hours = [];
           for (var i = start; i < end; i++) {
             if (i == 12) {
@@ -216,11 +212,11 @@ each hour is 2 divs.  Each event is a label column and 3 columns of different sp
          * @param isPhoneSize boolean true if phone sized
          * @return {Number} 12 hour converted number or blank if mobile
          */
-        _toTwelveHour: function(hour, isPhoneSize) {
+        _toTwelveHour: function (hour, isPhoneSize) {
           if (isPhoneSize && hour % 2 == 0) {
-            return "";
+            return '';
           } else {
-            return hour > 12 ? hour - 12: hour;
+            return hour > 12 ? hour - 12 : hour;
           }
         },
 
@@ -232,7 +228,7 @@ each hour is 2 divs.  Each event is a label column and 3 columns of different sp
          * @returns {boolean} true if colspan is > 0
          * @private
          */
-        _checkZero: function(side, event) {
+        _checkZero: function (side, event) {
           if (side === 'left') {
             return this._calculateLeftSpan(event) > 0;
           } else {
@@ -243,10 +239,11 @@ each hour is 2 divs.  Each event is a label column and 3 columns of different sp
         /**
          * Returns true when viewport is mobile device and for every other hour
          * @param hour
+         * @param isPhoneSize true if phone sized
          * @returns {boolean}
          * @private
          */
-        _isEveryOther: function(hour, isPhoneSize) {
+        _isEveryOther: function (hour, isPhoneSize) {
           if (isPhoneSize) {
             return hour % 2 === 0 || hour === '12P';
           } else {
@@ -261,7 +258,7 @@ each hour is 2 divs.  Each event is a label column and 3 columns of different sp
          * @returns {string}
          * @private
          */
-        _computeDoubleDigit: function(hour) {
+        _computeDoubleDigit: function (hour) {
           if (hour > 9) {
             return 'double-digit';
           }
@@ -271,12 +268,13 @@ each hour is 2 divs.  Each event is a label column and 3 columns of different sp
         /**
          * Returns true if the event name is longer than the end time - start time * 3.5
          * @param event
+         * @param isPhoneSize true if is phone sized
          * @returns {boolean}
          * @private
          */
         _fitEventSpan: function (event, isPhoneSize) {
           return (!isPhoneSize ||
-              (event.name.length >= (event.end - event.start) * 3.5 && !(event.end === this.end)));
+          (event.name.length >= (event.end - event.start) * 3.5 && !(event.end === this.end)));
         },
 
         /**
@@ -284,10 +282,11 @@ each hour is 2 divs.  Each event is a label column and 3 columns of different sp
          * (if the word doesn't fit in the highlighted block)
          *
          * @param event
+         * @param isPhoneSize true if is phone sized
          * @returns {boolean}
          * @private
          */
-        _fitAfterSpan: function(event, isPhoneSize) {
+        _fitAfterSpan: function (event, isPhoneSize) {
           return !isPhoneSize || event.name.length < (event.end - event.start) * 3.5;
         }
       })
