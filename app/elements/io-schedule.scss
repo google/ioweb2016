@@ -202,9 +202,11 @@ $filterBannerHeight: 72px;
   clip: rect(0px, 1600px, 0px, 0px);
   will-change: transform;
   padding-left: 0;
+  visibility: hidden; // Hide for a11y
 
   &[showfilters] {
-    clip: rect(0px, 1600px, 800px, 0px);
+    clip: rect(0px, 1600px, 76vh, 0px);
+    visibility: visible; // Display for a11y
   }
 
   &.fixed {
@@ -226,6 +228,10 @@ $filterBannerHeight: 72px;
   padding: $mobileKeyline;
 }
 
+#filters-layout {
+  padding: 0 !important;
+}
+
 .filter-section {
   h4 {
     font-size: 16px;
@@ -239,13 +245,14 @@ $filterBannerHeight: 72px;
   }
 }
 
+.filter-section--clear-wrapper {
+  text-align: right;
+}
+
 .filter-section--clearall {
-  position: absolute;
-  right: 0;
-  top: -3px;
   color: $color-cyan-800;
-  text-transform: uppercase;
   font-size: 14px;
+  text-transform: uppercase;
 }
 
 .has-filtering-banner {
@@ -254,7 +261,7 @@ $filterBannerHeight: 72px;
 
 paper-radio-button {
   display: block;
-  padding: $mobileKeyline/2 0;
+  padding: $mobileKeyline/4 0;
 }
 
 @media (max-width: $phone-breakpoint-max) {
@@ -312,17 +319,19 @@ paper-radio-button {
     .filters_toggle_button {
       display: inline-block;
       position: absolute;
-      top: 10px;
+      top: 15px;
       right: $mobileKeyline;
       z-index: 1;
     }
   }
   #filters {
     background: #fff;
-    flex-direction: column;
     overflow-y: auto;
     height: 75vh;
     -webkit-overflow-scrolling: touch;
+  }
+  #filters-layout[layout][horizontal].io-schedule {
+    flex-direction: column;
   }
   .filter-section {
     border-top: 1px solid $color-bluegrey-100;
@@ -367,10 +376,18 @@ paper-radio-button {
   }
 
   .filter-section {
+    flex-grow: 1;
+    margin-left: 40px;
+
+    &:first-of-type {
+      margin-left: 0;
+    }
+
     h4 {
       border-bottom: 1px solid $color-bluegrey-100;
-      padding-bottom: $mobileKeyline / 2;
+      font-weight: 500;
       margin-bottom: $mobileKeyline;
+      padding-bottom: $mobileKeyline / 2;
     }
   }
 
@@ -410,5 +427,3 @@ paper-radio-button {
     padding: 48px;
   }
 }
-
-

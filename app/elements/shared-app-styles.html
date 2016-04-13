@@ -13,6 +13,7 @@ limitations under the License.
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/paper-styles/color.html">
 
 <dom-module id="shared-app-styles">
   <template>
@@ -70,6 +71,10 @@ limitations under the License.
         @apply(--layout-scroll);
       }
 
+      .noscroll {
+        overflow: hidden;
+      }
+
       /* Note: paper-tabs needs its parent to have layout in order to calculate
       its selection bar transform. Instead, visibility hide the subnav, set the
       selected tab, then display: none it. */
@@ -101,6 +106,18 @@ limitations under the License.
         --paper-tab-content: {
           opacity: 1 !important;
         };
+      }
+
+      paper-tab[link] {
+        padding: 0;
+      }
+
+      paper-tab[link] a {
+        padding: 0 12px;
+      }
+
+      paper-tab[focused] a {
+        background: rgba(0, 0, 0, 0.1);
       }
 
       paper-dialog {

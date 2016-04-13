@@ -17,9 +17,6 @@ limitations under the License.
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 
-<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
-<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
-
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
 
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
@@ -36,40 +33,38 @@ limitations under the License.
 
 <dom-module id="io-session-details">
 <link rel="import" type="css" href="io-session-details.css">
-  <template>
-    <style include="shared-app-styles"></style>
+<template>
+  <style include="shared-app-styles"></style>
 
-    <paper-dialog id="sessionDetails"
-                  no-cancel-on-outside-click="[[inline]]"
-                  no-cancel-on-esc-key="[[inline]]"
-                  with-backdrop="[[!inline]]"
-                  restore-focus-on-close
-                  no-auto-focus
-                  entry-animation="scale-up-animation"
-                  exit-animation="fade-out-animation"
-                  on-iron-overlay-closed="_onSessionDetailsClose"
-                  on-iron-overlay-opened="_onSessionDetailsOpen">
+  <paper-dialog id="sessionDetails"
+                no-cancel-on-outside-click="[[inline]]"
+                no-cancel-on-esc-key="[[inline]]"
+                with-backdrop="[[!inline]]"
+                restore-focus-on-close
+                entry-animation="scale-up-animation"
+                exit-animation="fade-out-animation"
+                on-iron-overlay-closed="_onSessionDetailsClose"
+                on-iron-overlay-opened="_onSessionDetailsOpen">
 
-      <div class="fullschedule-banner card-content bg-bluegrey-50-60"
-           layout horizontal center>
-        <paper-icon-button icon="io:arrow-back" dialog-dismiss
-                           aria-label="Full Schedule"></paper-icon-button>
-        <span>Full Schedule</span>
-      </div>
+    <div class="fullschedule-banner card-content bg-bluegrey-50-60"
+         layout horizontal center>
+      <paper-icon-button icon="io:arrow-back" dialog-dismiss
+                         aria-label="Full Schedule"></paper-icon-button>
+      <span>Full Schedule</span>
+    </div>
 
-      <io-survey id="ioSurvey"
-                 app="[[app]]"
-                 session="[[selectedSession]]"
-                 inline >
-      </io-survey>
+    <io-survey id="ioSurvey"
+               app="[[app]]"
+               session="[[selectedSession]]"
+               inline >
+    </io-survey>
 
-      <paper-dialog-scrollable id="scrollable">
-        <div class="bg-bluegrey-50-20">
-          <div class="card__photo" relative>
-            <template is="dom-if"
-                      if="[[sessionHasVideo(_startScheduleVideo, selectedSession.isLivestream, selectedSession.youtubeUrl)]]"
-                      restamp>
-              <google-youtube
+    <paper-dialog-scrollable id="scrollable">
+      <div class="bg-bluegrey-50-20">
+        <div class="card__photo" relative>
+
+          <template is="dom-if" if="[[sessionHasVideo(_startScheduleVideo, selectedSession.isLivestream, selectedSession.youtubeUrl)]]" restamp>
+            <google-youtube
                 video-id="[[_toVideoIdFilter(selectedSession.youtubeUrl)]]"
                 height="100%" width="100%" fit
                 autohide="1" controls="2" modestbranding="1" showinfo="0"
@@ -115,6 +110,7 @@ limitations under the License.
               </template>
             </div>
 
+<<<<<<< HEAD
             <paper-button on-click="_openSurvey" raised>Rate Session</paper-button>
             <paper-menu-button class="session__social"
                                on-iron-activate="openShareWindow"
@@ -139,6 +135,22 @@ limitations under the License.
                 </paper-item>
               </paper-listbox>
             </paper-menu-button>
+=======
+          <div class="session__social" layout horizontal center>
+            <a href="#" target="_blank" class="share-icon" on-click="openShareWindow"
+                        data-share-type="gplus" data-track-link="schedule-share-gplus">
+              <iron-icon icon="io:post-gplus" class="share-icon"></iron-icon>
+            </a>
+            <a href="#" target="_blank" class="share-icon" on-click="openShareWindow"
+                        data-share-type="twitter" data-track-link="schedule-share-twitter">
+              <iron-icon icon="io:post-twitter" class="share-icon twitter-icon"></iron-icon>
+            </a>
+            <a href="#" target="_blank" class="share-icon" on-click="openShareWindow"
+                        data-share-type="fb" data-track-link="schedule-share-fb">
+              <iron-icon icon="io:post-facebook" class="share-icon"></iron-icon>
+            </a>
+          </div>
+>>>>>>> 4b25cd5c3548a583764deb5f4647f1997b5e6509
 
           </div>
 
@@ -441,7 +453,9 @@ limitations under the License.
     openShareWindow: function(e, detail) {
       this.noop(e);
 
-      var type = detail.item.getAttribute('data-share-type');
+      var target = IOWA.Util.getEventSender(e, 'a');
+
+      var type = target.getAttribute('data-share-type');
       var url = null;
       var width = 600;
       var height = 600;
@@ -488,6 +502,9 @@ limitations under the License.
         var winOptions = 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=' +
                          height + ',width=' + width;
         window.open(url, 'share', winOptions);
+
+        IOWA.Analytics.trackEvent('link', 'social', title);
+
       }.bind(this));
     },
 

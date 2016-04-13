@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package backend
 
 import (
 	"crypto/rand"
@@ -24,116 +24,115 @@ import (
 	"io"
 	"math/big"
 	"net/http"
-	"net/http/httptest"
 	"os"
+	"sync"
 	"testing"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
+	"golang.org/x/net/context"
+
+	"google.golang.org/appengine/aetest"
 )
 
-const (
-	testUserID       = "user-12345"
-	testClientID     = "test-client-id"
-	testClientSecret = "test-client-secret"
-)
+const testUserID = "user-12345"
 
 var (
-	testIDToken   string
-	testJWSKey    []byte
-	testJWSCert   []byte
-	testJWSCertID = "test-cert"
+	aetInstWg sync.WaitGroup // keeps track of instances being shut down preemptively
+	aetInstMu sync.Mutex     // guards aetInst
+	aetInst   = make(map[*testing.T]aetest.Instance)
 
-	// The following 3 funcs are overwritten in server_gae_test.go
-	// to make it work with appengine/aetest package.
-	isGAEtest = false
-
-	// newTestRequest creates a new HTTP request using http.NewRequest.
-	// It marks state t as failed if http.NewRequest returns an error.
-	newTestRequest = func(t *testing.T, method, url string, body io.Reader) *http.Request {
-		req, err := http.NewRequest(method, url, body)
-		if err != nil {
-			t.Fatalf("newTestRequest(%q, %q): %v", err)
-		}
-		return req
-	}
-	// resetTestState is a noop in standalone tests
-	// it resets aetest.Instance in GAE tests
-	resetTestState = func(t *testing.T) {}
-	// cleanupTests is a noop in standalone tests
-	// it closes all running aetest.Instance instances in GAE tests
-	cleanupTests = func() {}
+	// global api test instance
+	aetestInstance aetest.Instance
 )
 
 func TestMain(m *testing.M) {
-	// GAE tests use gaeMemcache implementation
-	if cache == nil {
-		cache = newMemoryCache()
-	}
-
-	testJWSKey, testJWSCert = jwsTestKey(time.Now(), time.Now().Add(24*time.Hour))
-
-	token := jwt.New(jwt.GetSigningMethod("RS256"))
-	token.Header["kid"] = testJWSCertID
-	token.Claims = map[string]interface{}{
-		"iss": "accounts.google.com",
-		"exp": time.Now().Add(2 * time.Hour).Unix(),
-		"aud": testClientID,
-		"azp": testClientID,
-		"sub": testUserID,
-	}
-	var err error
-	testIDToken, err = token.SignedString(testJWSKey)
-	if err != nil {
-		panic("token.SignedString: " + err.Error())
-	}
-
-	cert := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.Header().Add("Cache-Control", "max-age=86400")
-		w.Header().Set("Age", "0")
-		fmt.Fprintf(w, `{"%s": %q}`, testJWSCertID, testJWSCert)
-	}))
-	defer cert.Close()
-
-	tokeninfo := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.FormValue("access_token") == "" {
-			http.Error(w, "no access token found", http.StatusBadRequest)
-			return
-		}
-		w.Header().Set("Content-Type", "application/json")
-		fmt.Fprintf(w, `{
-			"issued_to": %q,
-			"user_id": %q,
-			"expires_in": 3600
-		}`, config.Google.Auth.Client, testUserID)
-	}))
-	defer tokeninfo.Close()
-
 	config.Dir = "app"
 	config.Env = "dev"
 	config.Prefix = "/myprefix"
-
-	config.Google.Auth.Client = testClientID
-	config.Google.Auth.Secret = testClientSecret
-	config.Google.VerifyURL = tokeninfo.URL
-	config.Google.CertURL = cert.URL
+	config.Google.Auth.Client = "test-client-id"
 	config.Google.ServiceAccount.Key = ""
-	config.Secret = "a-test-secret"
 	config.SyncToken = "sync-token"
-	config.ExtPingURL = ""
-
 	config.Schedule.Start = time.Date(2015, 5, 28, 9, 0, 0, 0, time.UTC)
 	config.Schedule.Timezone = "America/Los_Angeles"
+	var err error
 	config.Schedule.Location, err = time.LoadLocation(config.Schedule.Timezone)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Could not load location %q", config.Schedule.Location)
 		os.Exit(1)
 	}
 
+	if aetestInstance, err = aetest.NewInstance(nil); err != nil {
+		panic(fmt.Sprintf("aetestInstance: %v", err))
+	}
 	code := m.Run()
+	aetestInstance.Close()
 	cleanupTests()
 	os.Exit(code)
+}
+
+// newTestContext creates a new context using aetestInstance
+// and a dummy GET / request.
+func newTestContext() context.Context {
+	r, _ := aetestInstance.NewRequest("GET", "/", nil)
+	return newContext(r)
+}
+
+// newTestRequest returns a new *http.Request associated with an aetest.Instance
+// of test state t.
+func newTestRequest(t *testing.T, method, url string, body io.Reader) *http.Request {
+	req, err := aetInstance(t).NewRequest(method, url, body)
+	if err != nil {
+		t.Fatalf("newTestRequest(%q, %q): %v", method, url, err)
+	}
+	return req
+}
+
+// resetTestState closes aetest.Instance associated with a test state t.
+func resetTestState(t *testing.T) {
+	aetInstMu.Lock()
+	defer aetInstMu.Unlock()
+	inst, ok := aetInst[t]
+	if !ok {
+		return
+	}
+	aetInstWg.Add(1)
+	go func() {
+		if err := inst.Close(); err != nil {
+			t.Logf("resetTestState: %v", err)
+		}
+		aetInstWg.Done()
+	}()
+	delete(aetInst, t)
+}
+
+// cleanupTests closes all running aetest.Instance instances.
+func cleanupTests() {
+	aetInstMu.Lock()
+	tts := make([]*testing.T, 0, len(aetInst))
+	for t := range aetInst {
+		tts = append(tts, t)
+	}
+	aetInstMu.Unlock()
+	for _, t := range tts {
+		resetTestState(t)
+	}
+	aetInstWg.Wait()
+}
+
+// aetInstance returns an aetest.Instance associated with the test state t
+// or creates a new one.
+func aetInstance(t *testing.T) aetest.Instance {
+	aetInstMu.Lock()
+	defer aetInstMu.Unlock()
+	if inst, ok := aetInst[t]; ok {
+		return inst
+	}
+	inst, err := aetest.NewInstance(nil)
+	if err != nil {
+		t.Fatalf("aetest.NewInstance: %v", err)
+	}
+	aetInst[t] = inst
+	return inst
 }
 
 func preserveConfig() func() {
@@ -175,7 +174,7 @@ func jwsTestKey(notBefore, notAfter time.Time) (pemKey []byte, pemCert []byte) {
 func toSessionIDs(a []*eventSession) []string {
 	res := make([]string, len(a))
 	for i, s := range a {
-		res[i] = s.Id
+		res[i] = s.ID
 	}
 	return res
 }

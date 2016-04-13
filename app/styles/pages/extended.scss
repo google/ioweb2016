@@ -140,6 +140,8 @@ $name: 'page-extended';
   }
 
   .find {
+    border-bottom: none;
+
     .details--icon {
       background: transparent url(../images/extended/icon-find.svg) center center no-repeat;
       background-size: 100%;
@@ -163,6 +165,12 @@ $name: 'page-extended';
     background-color: #b3d1ff;
     padding-bottom: (1 / 2) * 100%;
     position: relative;
+
+    // Ensure that there's room around the map to scroll on touch devices.
+    @media (max-width: $desktop-breakpoint-min + 50) {
+      max-width: 90%;
+      margin: 0 auto 0 auto;
+    }
 
     @media (max-width: $tablet-breakpoint-min) {
       padding-bottom: (2 / 3) * 100%;

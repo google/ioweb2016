@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package backend
 
 import (
 	"bytes"
@@ -80,16 +80,16 @@ type templateCache struct {
 
 // templateData is the templates context
 type templateData struct {
-	Env          string
-	ClientID     string
-	Prefix       string
-	Slug         string
-	Canonical    string
-	Title        string
-	Desc         string
-	OgTitle      string
-	OgImage      string
-	StartDateStr string
+	Env            string
+	ClientID       string
+	Prefix         string
+	Slug           string
+	Canonical      string
+	Title          string
+	Desc           string
+	OgTitle        string
+	OgImage        string
+	StartDateStr   string
 	FirebaseShards []string
 	// livestream youtube video IDs
 	LiveIDs []string
@@ -270,7 +270,7 @@ func safeHTMLAttr(k, v string) html.HTMLAttr {
 // getSitemap returns a sitemap containing both templated pages
 // and schedule session details.
 func getSitemap(c context.Context, baseURL *url.URL) (*sitemap, error) {
-	items := make([]*sitemapItem, 0)
+	var items []*sitemapItem
 
 	// templated pages
 	root := filepath.Join(config.Dir, templatesDir)
@@ -310,7 +310,7 @@ func getSitemap(c context.Context, baseURL *url.URL) (*sitemap, error) {
 		return nil, err
 	}
 	mod := sched.modified.In(time.UTC)
-	for id, _ := range sched.Sessions {
+	for id := range sched.Sessions {
 		u := baseURL.ResolveReference(&url.URL{Path: "schedule"})
 		u.RawQuery = url.Values{"sid": {id}}.Encode()
 		item := &sitemapItem{

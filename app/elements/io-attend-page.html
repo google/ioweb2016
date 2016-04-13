@@ -13,7 +13,6 @@ limitations under the License.
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
-<link rel="import" href="../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
 <link rel="import" href="../bower_components/paper-toolbar/paper-toolbar.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
@@ -41,22 +40,22 @@ limitations under the License.
 </div>
 
 <!-- backdrop shouldn't be applied on ios - github.com/Polymer/paper-dialog/issues/16 -->
-<paper-dialog id="venueMap" class="venue__map scrollable"
+<paper-dialog id="venueMap" class="venue__map"
               entry-animation="scale-up-animation"
               exit-animation="fade-out-animation"
-              with-backdrop="[[!app.isIOS]]">
-  <div class="scrollable">
+              with-backdrop="[[!app.isIOS]]"
+              on-iron-overlay-closed="closeMap">
     <div class="dialog-content">
       <paper-icon-button icon="io:close" dialog-dismiss
                          aria-label="Close map" style="color: #ffffff;"></paper-icon-button>
 
       <h2>Shoreline Amphitheatre</h2>
-      <a class="dialog-download" href="#map">Download map</a>
+      <!-- <a class="dialog-download" href="#map">Download map</a> -->
     </div>
 
-    <img src="../images/attend/map-dialog.svg" alt="Shoreline Amphitheatre map">
+    <div class="venue__image"></div>
 
-    <div class="dialog-content">
+<!--     <div class="dialog-content">
       <ul class="map-legend">
         <li><span class="dot bg-indigo-400"></span>Sandbox + Sessions</li>
         <li><span class="dot bg-amber-400"></span>F&amp;B</li>
@@ -65,9 +64,7 @@ limitations under the License.
         <li><span class="dot bg-bluegrey-200"></span>Production</li>
         <li><span class="dot bg-cyan-400"></span>Keynote + Concert</li>
       </ul>
-    </div>
-
-  </div>
+    </div> -->
 </paper-dialog>
 
 
@@ -79,13 +76,15 @@ limitations under the License.
         <paper-tabs id="subpage-tabs" class="white"
                     attr-for-selected="label"
                     selected="[[selectedSubpage]]">
-          <paper-tab label="event" role="">
+          <paper-tab label="event" link>
             <a href="#event" data-track-link="attending-event" data-ajax-link
-               layout horizontal center-center>Event</a>
+               layout horizontal center-center
+               tabindex="-1">Event</a>
           </paper-tab>
-          <paper-tab label="travel" role="">
+          <paper-tab label="travel" link>
             <a href="#travel" data-track-link="attending-travel" data-ajax-link
-               layout horizontal center-center>Travel</a>
+               layout horizontal center-center
+               tabindex="-1">Travel</a>
           </paper-tab>
         </paper-tabs>
       </div>
@@ -98,20 +97,14 @@ limitations under the License.
             <div class="card" layout horizontal wrap>
               <div class="card-content box bg-cyan-300" layout vertical>
                 <h5 style="font-weight: normal;">
-                  Get all the information you need to make the most of your I/O experience, from maps and check-in information to local guides and night life.
+                  Google I/O is our annual developer festival with hands-on learning, technical talks, and a chance to hear more about Google&#8217;s latest developer products.
                 </h5>
-                <div layout flex end>
-                  <a class="card__footerlink" href="#download" layout horiziontal justified center flex>
-                    Download the guide
-                    <iron-icon icon="icons:file-download"></iron-icon>
-                  </a>
-                </div>
               </div>
               <a class="card-content box card-map" href="#map" layout vertical on-click="openMap">
                 <div layout flex end>
-                  <span class="card__footerlink" layout horiziontal justified center flex>
-                    View the map
-                    <iron-icon icon="icons:launch"></iron-icon>
+                  <span class="card__footerlink typo-white" layout horiziontal justified center flex>
+                    View the full map
+                    <iron-icon icon="icons:zoom-in"></iron-icon>
                   </span>
                 </div>
               </a>
@@ -127,7 +120,7 @@ limitations under the License.
                 <h3 class="details--title">Sandbox</h3>
                 <div class="details--info-block">
                   <p>
-                    Shorter talks in pop-up spaces in the sandbox, letting you hear directly from us about developing with our latest APIs and tools.
+                    Get hands-on with our latest APIs and tools in the developer sandbox.
                   </p>
                 </div>
               </div>
@@ -141,7 +134,7 @@ limitations under the License.
                 <h3 class="details--title">Code Labs</h3>
                 <div class="details--info-block">
                   <p>
-                    Hands-on space to work through technical modules at your own pace, with experts on hand to help you out.
+                    Post up at a workstation to work through technical modules at your own pace. Googlers will be on hand to help you out as you work your way through.
                   </p>
                 </div>
               </div>
@@ -152,10 +145,10 @@ limitations under the License.
                 <div class="details--icon"></div>
               </div>
               <div class="details--text-container">
-                <h3 class="details--title">Office Hours</h3>
+                <h3 class="details--title">Office Hours &amp; App Reviews</h3>
                 <div class="details--info-block">
                   <p class="detail__text">
-                    Swing by office hours with Google experts to receive one-on-one help with your projects and apps.
+                    Swing by office hours with Google experts to ask your burning technical questions and to receive one-on-one help with your projects and apps.
                   </p>
                 </div>
               </div>
@@ -169,7 +162,7 @@ limitations under the License.
                 <h3 class="details--title">After Hours</h3>
                 <div class="details--info-block">
                   <p class="detail__text">
-                    Registered attendees are invited to party with us After Hours, mingling in a fun and relaxed environment while enjoying food, drinks, music, games and more.
+                    Stick around after sessions end for a concert in the amphitheatre and to party together After Hours. We&#8217;ll bring the food, drinks and fun.
                   </p>
                 </div>
               </div>
@@ -244,7 +237,25 @@ limitations under the License.
                 <div class="details--info-block">
                   <h5 class="detail__heading">Shuttle Service</h5>
                   <p class="detail__text">
-                    Event shuttles will be provided to Google I/O attendees at no charge from all Google-recommended hotels and with select service from San Francisco and other locations along the Peninsula. Please check back in the coming weeks for pick-up schedules and additional locations.</p><p class="detail__text">Each pick-up location will have ADA accessible vehicles. Please indicate on your registration form if you have any ADA or special assistance requirements and the planning team will follow up with you directly.
+                    Event shuttles will be provided to Google I/O attendees at no charge from all Google-recommended hotels and with select service from San Francisco and other locations along the Peninsula. <b>You must show your Google I/O confirmation email or conference badge to board all Google I/O event shuttles.</b>
+                  </p>
+                  <p class="detail__text">
+                    Please check back in the coming weeks for pick-up schedules. Google I/O event shuttles will service the hubs listed below for attendees making connections with public transportation services. Please check the event shuttle schedule for details.
+                  </p>
+                  <p class="detail__text no-bottom-margin">
+                    <b>BART:</b> <a href="https://www.bart.gov/stations/mlbr" target="_blank">Millbrae BART Station</a>
+                  </p>
+                  <p class="detail__text">
+                    <b>Caltrain:</b> <a href="http://www.caltrain.com/stations/mountainviewstation.html" target="_blank">Mountain View Caltrain Station</a>
+                  </p>
+                  <p class="detail__text">
+                    <a href="http://www.caltrain.com/stations/mountainviewstation.html" target="_blank">MountainView Caltrain Extended Service</a>: Google I/O will provide extended northbound service beginning at the Mountain View Caltrain Station on the evenings of Wednesday, May 18 and Thursday, May 19. Riders may take the 10:45 PM Google I/O event shuttle from Shoreline to connect to a 11:30 PM train departing from Mountain View Caltrain Station toward San Francisco.
+                  </p>
+                  <p class="detail__text">
+                    In addition to the Google I/O event shuttles, you may consider using <a href="http://www.mvgo.org/east-bayshore-route.html" target="_blank">MVgo</a>, a service of the Mountain View Transportation Management Association, to get to and from the Mountain View Caltrain Station, downtown Mountain View, and Crittenden stop, which is about half a mile from Shoreline Amphitheatre.
+                  </p>
+                  <p class="detail__text">
+                    Each pick-up location will have ADA accessible vehicles. Please indicate on your registration form if you have any ADA or special assistance requirements and the planning team will follow up with you directly.
                   </p>
                 </div>
                 <div class="details--info-block">
@@ -279,10 +290,22 @@ limitations under the License.
                 <h3 class="details--title">Parking and Carpooling</h3>
                 <div class="details--info-block">
                   <p class="detail__text">
-                    Parking is very limited and available only in the Google I/O designated lots located across from Shoreline Amphitheater along Shoreline Boulevard.
+                    Parking is very limited and available only in the Google I/O designated lots located across from Shoreline Amphitheater along Shoreline Boulevard next to the fire station. This is also the only valid passenger pick-up and drop-off location.
                   </p>
                   <p class="detail__text">
                     There is no event parking along Amphitheater Parkway or Charleston Road. If you plan to drive, we recommend carpooling with other attendees due to limited parking availability at the venue. Preferred parking spaces will be available for cars containing 2 or more people.
+                  </p>
+                </div>
+                <div class="details--info-block">
+                  <h5 class="detail__heading">uberPOOL</h5>
+                  <p class="detail__text">
+                    Download the Uber app from <a href="https://play.google.com/store/apps/details?id=com.ubercab" target="_blank">Google Play</a> or the <a href="https://itunes.apple.com/us/app/uber/id368677368?mt=8" target="_blank">App Store</a> to use uberPOOL to share a ride with another rider along the same route for a cheaper fare.
+                  </p>
+                  <p class="detail__text">
+                    Attendees may enter the code <b>GOOGLEIO16</b> to receive up to $10 off uberPOOL rides. Trips must begin or end at Shoreline Amphitheatre. This code is valid from May 18-20, limit 2 rides per day. Please note there is limited availability.
+                  </p>
+                  <p class="detail__text">
+                    The only valid passenger pick-up and drop-off location is located in the Google I/O parking lot across from Shoreline Amphitheatre and next to the fire station.
                   </p>
                 </div>
               </div>
@@ -319,9 +342,6 @@ limitations under the License.
   </div> <!-- .card -->
 </div> <!-- .card__container -->
 
-<iron-scroll-threshold id="threshold" hidden
-      lower-triggered="{{_scrolledToMapSection}}"></iron-scroll-threshold>
-
 </template>
 <script>
 (function () {
@@ -349,16 +369,16 @@ limitations under the License.
         type: String,
         value: 'event',
         notify: true
-      }
+      },
+
+      _scrolledToMapSection: false
     },
 
     attached: function() {
       this.listen(IOWA.Elements.ScrollContainer, 'scroll', '_onPageScroll');
 
-      this.$.threshold.scrollTarget = IOWA.Elements.ScrollContainer;
-
       // Calculate top of tweet cycler / hashtag video section.
-      this.$.threshold.lowerThreshold = IOWA.Elements.Footer.clientHeight +
+      this._lowerScrollThreshold = IOWA.Elements.Footer.clientHeight +
           parseInt(getComputedStyle(IOWA.Elements.Footer).height) +
           Polymer.dom(this.root).querySelector('.io__hash').clientHeight;
     },
@@ -375,6 +395,9 @@ limitations under the License.
     },
 
     _onPageScroll: function() {
+      var scrollY = IOWA.Elements.ScrollContainer.scrollY;
+      this._scrolledToMapSection = scrollY > this._lowerScrollThreshold;
+
       this.disableElementOnScroll(this.$.mapContainer);
     },
 
@@ -385,6 +408,15 @@ limitations under the License.
     openMap: function(e) {
       e.preventDefault();
       this.$.venueMap.open();
+      if (!this.inline) {
+        Polymer.IronDropdownScrollManager.pushScrollLock(this);
+      }
+    },
+
+    closeMap: function(e) {
+      if (!this.inline) {
+        Polymer.IronDropdownScrollManager.removeScrollLock(this);
+      }
     }
 
   });

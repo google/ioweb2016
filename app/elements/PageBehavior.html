@@ -27,6 +27,14 @@ window.IOBehaviors = window.IOBehaviors || {};
 var PageBehavior = {
 
   properties: {
+
+    /**
+     * App logic
+     */
+    app: {
+      type: Object
+    },
+
     /*
      * Slug name of the page.
      */
@@ -122,10 +130,15 @@ var PageBehavior = {
     var dest = IOWA.Elements.Main.querySelector(hash);
     if (dest) {
       var offset = opt_offset || 0;
+      // See https://github.com/GoogleChrome/ioweb2016/issues/561
+      // The target that's passed to Polymer.AppLayout.scroll needs to be an
+      // object with a style property.
+      var target = 'style' in IOWA.Elements.ScrollContainer ?
+        IOWA.Elements.ScrollContainer : IOWA.Elements.Scroller;
       Polymer.AppLayout.scroll({
         top:  dest.getBoundingClientRect().top + offset,
         behavior: 'smooth',
-        target: IOWA.Elements.ScrollContainer
+        target: target
       });
     }
   },
@@ -267,8 +280,7 @@ var PageBehavior = {
     if (this._mainSubnav && !this._mainSubnav.classList.contains('offscreen')) {
       IOWA.Elements.Scroller.scrollTop = scrollTop + offset;
     }
-  },
-
+  }
 };
 
 IOBehaviors.PageBehavior = [PageBehavior, IOBehaviors.UtilBehavior];

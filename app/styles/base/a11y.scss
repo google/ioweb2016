@@ -92,3 +92,11 @@ paper-tab a.focused,
 .io-countdown h4 a:focus {
   outline-color: white;
 }
+
+/**
+ * Make sure anything labeled offscreen is not visible to AT
+ * You can't just make it opacity: 0 because it can still be tabbed to
+ */
+.offscreen {
+  visibility: hidden;
+}

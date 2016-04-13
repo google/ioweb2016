@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package backend
 
 import (
 	"encoding/json"
@@ -68,7 +68,7 @@ type eventData struct {
 }
 
 type eventSession struct {
-	Id         string    `json:"id"`
+	ID         string    `json:"id"`
 	Title      string    `json:"title"`
 	Desc       string    `json:"description"`
 	StartTime  time.Time `json:"startTimestamp"`
@@ -82,7 +82,7 @@ type eventSession struct {
 	YouTube    string    `json:"youtubeUrl,omitempty"`
 	HasRelated bool      `json:"hasRelated"`
 	Related    []*struct {
-		Id string `json:"id"`
+		ID string `json:"id"`
 	} `json:"relatedContent,omitempty"`
 
 	Day      int             `json:"day"`
@@ -112,7 +112,7 @@ func (s *eventSession) liveChannelID() int {
 }
 
 type eventSpeaker struct {
-	Id      string `json:"id"`
+	ID      string `json:"id"`
 	Name    string `json:"name"`
 	Bio     string `json:"bio,omitempty"`
 	Company string `json:"company,omitempty"`
@@ -122,7 +122,7 @@ type eventSpeaker struct {
 }
 
 type eventVideo struct {
-	Id       string `json:"id"`
+	ID       string `json:"id"`
 	Title    string `json:"title"`
 	Desc     string `json:"desc,omitempty"`
 	Topic    string `json:"topic,omitempty"`
@@ -131,7 +131,7 @@ type eventVideo struct {
 }
 
 type eventRoom struct {
-	Id   string `json:"id"`
+	ID   string `json:"id"`
 	Name string `json:"name"`
 }
 
@@ -235,7 +235,7 @@ func fetchEventData(c context.Context, urlStr string, lastSync time.Time) (*even
 				}
 			}
 			for _, r := range s.Related {
-				s.Filters[r.Id] = true
+				s.Filters[r.ID] = true
 			}
 			s.HasRelated = len(s.Related) > 0
 			s.Related = nil
@@ -318,7 +318,7 @@ func slurpEventDataChunk(c context.Context, hc *http.Client, url string) (*event
 
 	rooms := make(map[string]*eventRoom, len(body.Rooms))
 	for _, r := range body.Rooms {
-		rooms[r.Id] = r
+		rooms[r.ID] = r
 	}
 
 	tags := make(map[string]*eventTag, len(body.Tags))
@@ -328,7 +328,7 @@ func slurpEventDataChunk(c context.Context, hc *http.Client, url string) (*event
 
 	sessions := make(map[string]*eventSession, len(body.Sessions))
 	for _, s := range body.Sessions {
-		if s.Id == "" || s.StartTime.Before(config.Schedule.Start) {
+		if s.ID == "" || s.StartTime.Before(config.Schedule.Start) {
 			continue
 		}
 
@@ -346,23 +346,23 @@ func slurpEventDataChunk(c context.Context, hc *http.Client, url string) (*event
 			s.Tags = nil
 		}
 
-		sessions[s.Id] = s
+		sessions[s.ID] = s
 	}
 
 	videos := make(map[string]*eventVideo, len(body.Videos))
 	for _, v := range body.Videos {
-		if v.Id == "" {
+		if v.ID == "" {
 			continue
 		}
-		videos[v.Id] = v
+		videos[v.ID] = v
 	}
 
 	speakers := make(map[string]*eventSpeaker, len(body.Speakers))
 	for _, s := range body.Speakers {
-		if s.Id == "" {
+		if s.ID == "" {
 			continue
 		}
-		speakers[s.Id] = s
+		speakers[s.ID] = s
 	}
 
 	return &eventData{
@@ -478,11 +478,11 @@ func compareSessions(a, b *eventSession) bool {
 // Original items are not modified.
 func upcomingSessions(now time.Time, items []*eventSession) []*eventSession {
 	sort.Strings(soonSessionIDs)
-	res := make([]*eventSession, 0)
+	var res []*eventSession
 	for _, s := range items {
 		t := s.StartTime.Sub(now)
-		i := sort.SearchStrings(soonSessionIDs, s.Id)
-		doSoon := i < len(soonSessionIDs) && soonSessionIDs[i] == s.Id
+		i := sort.SearchStrings(soonSessionIDs, s.ID)
+		doSoon := i < len(soonSessionIDs) && soonSessionIDs[i] == s.ID
 		var update string
 		switch {
 		default:
@@ -504,11 +504,11 @@ func upcomingSessions(now time.Time, items []*eventSession) []*eventSession {
 // Original items are not modified.
 func upcomingSurveys(now time.Time, items []*eventSession) []*eventSession {
 	sort.Strings(soonSessionIDs)
-	res := make([]*eventSession, 0)
+	var res []*eventSession
 	for _, s := range items {
 		t := s.StartTime.Sub(now)
-		i := sort.SearchStrings(surveySessionIDs, s.Id)
-		doSurvey := i < len(surveySessionIDs) && surveySessionIDs[i] == s.Id
+		i := sort.SearchStrings(surveySessionIDs, s.ID)
+		doSurvey := i < len(surveySessionIDs) && surveySessionIDs[i] == s.ID
 		if !doSurvey || t > 0 || t > -timeoutSurvey {
 			continue
 		}
@@ -519,70 +519,21 @@ func upcomingSurveys(now time.Time, items []*eventSession) []*eventSession {
 	return res
 }
 
+// TODO: port to firebase
+//
 // userSchedule returns a slice of session IDs bookmarked by a user.
 // It fetches data from Google Drive AppData folder associated with config.Google.Auth.Client.
 func userSchedule(c context.Context, uid string) ([]string, error) {
-	cred, err := getCredentials(c, uid)
-	if err != nil {
-		return nil, err
-	}
-	var data *appFolderData
-	if data, err = getAppFolderData(c, cred, false); err != nil {
-		return nil, err
-	}
-	return data.Bookmarks, nil
-}
-
-// bookmarkSessions adds session IDs ids to the bookmarks of user uid.
-func bookmarkSessions(c context.Context, uid string, ids ...string) ([]string, error) {
-	cred, err := getCredentials(c, uid)
-	if err != nil {
-		return nil, fmt.Errorf("bookmarkSessions: %v", err)
-	}
-
-	var data *appFolderData
-	for _, fresh := range []bool{false, true} {
-		data, err = getAppFolderData(c, cred, fresh)
-		if err != nil {
-			break
-		}
-		data.Bookmarks = unique(append(data.Bookmarks, ids...))
-		err = storeAppFolderData(c, cred, data)
-		if err != errConflict {
-			break
-		}
-	}
-
-	if err != nil {
-		return nil, fmt.Errorf("bookmarkSessions: %v", err)
-	}
-	return data.Bookmarks, nil
-}
-
-// unbookmarkSessions is the opposite of bookmarkSessions.
-func unbookmarkSessions(c context.Context, uid string, ids ...string) ([]string, error) {
-	cred, err := getCredentials(c, uid)
-	if err != nil {
-		return nil, fmt.Errorf("unbookmarkSessions: %v", err)
-	}
-
-	var data *appFolderData
-	for _, fresh := range []bool{false, true} {
-		data, err = getAppFolderData(c, cred, fresh)
-		if err != nil {
-			break
-		}
-		data.Bookmarks = subslice(data.Bookmarks, ids...)
-		err = storeAppFolderData(c, cred, data)
-		if err != errConflict {
-			break
-		}
-	}
-
-	if err != nil {
-		return nil, fmt.Errorf("unbookmarkSessions: %v", err)
-	}
-	return data.Bookmarks, nil
+	return nil, nil
+	//cred, err := getCredentials(c, uid)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//var data *appFolderData
+	//if data, err = getAppFolderData(c, cred, false); err != nil {
+	//	return nil, err
+	//}
+	//return data.Bookmarks, nil
 }
 
 // scheduleLiveIDs returns a slice of all youtubeUrl field values where isLivestream == true
@@ -680,17 +631,14 @@ func thumbURL(turl string) string {
 // durationStr returns duration d in a human readable simple format:
 // "2.5 hours", "1 hour", "30 minutes", etc.
 func durationStr(d time.Duration) string {
-	switch {
-	case d < time.Hour:
+	if d < time.Hour {
 		return fmt.Sprintf("%d minutes", int(d.Minutes()))
-	default:
-		v, u := d.Hours(), "hour"
-		if v > 1.5 {
-			u += "s"
-		}
-		return fmt.Sprintf("%g %s", d.Hours(), u)
 	}
-	return d.String()
+	v, u := d.Hours(), "hour"
+	if v > 1.5 {
+		u += "s"
+	}
+	return fmt.Sprintf("%g %s", d.Hours(), u)
 }
 
 // sortedSessionsList implements sort.Sort ordering items by:

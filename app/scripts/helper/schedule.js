@@ -73,10 +73,14 @@ class Schedule {
       this.scheduleData_ = data.scheduleData;
 
       let template = IOWA.Elements.Template;
-      template.set('app.scheduleData', data.scheduleData);
-      template.set('app.filterSessionTypes', data.tags.filterSessionTypes);
-      template.set('app.filterThemes', data.tags.filterThemes);
-      template.set('app.filterTopics', data.tags.filterTopics);
+
+      // Wait until template is stamped before adding schedule data to it.
+      template.domStampedPromise.then(() => {
+        template.set('app.scheduleData', data.scheduleData);
+        template.set('app.filterSessionTypes', data.tags.filterSessionTypes);
+        template.set('app.filterThemes', data.tags.filterThemes);
+        template.set('app.filterTopics', data.tags.filterTopics);
+      });
 
       return this.scheduleData_;
     });
@@ -185,13 +189,13 @@ class Schedule {
       let savedSessionsListIndex = savedSessions.indexOf(sessionId);
       let sessionsListIndex = template.app.scheduleData.sessions.findIndex(
         session => session.id === sessionId);
-      if (data && data.bookmarked && savedSessions.indexOf(sessionId) === -1) {
+      if (data && data.in_schedule && savedSessions.indexOf(sessionId) === -1) {
         // Add session to bookmarked sessions.
         template.push('app.savedSessions', sessionId);
         template.set(`app.scheduleData.sessions.${sessionsListIndex}.saved`, true);
 
         debugLog(`Session ${sessionId} bookmarked!`);
-      } else if (data && !data.bookmarked && savedSessionsListIndex !== -1) {
+      } else if (data && !data.in_schedule && savedSessionsListIndex !== -1) {
         // Remove the session from the bookmarks if present.
         template.splice('app.savedSessions', savedSessionsListIndex, 1);
         template.set(`app.scheduleData.sessions.${sessionsListIndex}.saved`, false);
@@ -304,23 +308,19 @@ class Schedule {
    */
   bookmarkSessionNotification(saved, opt_message) {
     let message = opt_message || 'You\'ll get a notification when it starts.';
-    let template = IOWA.Elements.Template;
+    let notificationWidget = document.querySelector('io-notification-widget');
 
     if (saved) {
-      // If IOWA.Elements.Template.dontAutoSubscribe is true, this promise will reject immediately,
-      // and we'll just add the session without attempting to auto-subscribe.
-      return IOWA.Notifications.subscribePromise(template.app.dontAutoSubscribe).then(() => {
-        IOWA.Elements.Toast.showMessage('Added to My Schedule. ' + message);
-      }).catch(error => {
-        template.set('app.dontAutoSubscribe', true);
-        if (error && error.name === 'AbortError') {
-          // AbortError indicates that the subscription couldn't be completed due to the page
+      return notificationWidget.subscribeIfAble().then(subscribed => {
+        if (subscribed) {
+          IOWA.Elements.Toast.showMessage('Added to My Schedule. ' + message);
+        } else if (Notification.permission === 'denied') {
+          // The subscription couldn't be completed due to the page
           // permissions for notifications being set to denied.
           IOWA.Elements.Toast.showMessage('Added to My Schedule. Want to enable notifications?',
               null, 'Learn how', () => window.open('permissions', '_blank'));
         } else {
-          // If the subscription failed for some other reason, like because we're not
-          // auto-subscribing, show the normal toast.
+          // Some other reason for not enabling notifications
           IOWA.Elements.Toast.showMessage('Added to My Schedule.');
         }
       });

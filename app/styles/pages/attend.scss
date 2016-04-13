@@ -29,7 +29,6 @@ $name: 'page-attend';
 
     .card-content {
       min-height: 320px;
-      padding-right: 32px;
 
       &:nth-of-type(1) {
         @media (max-width: 340px) {
@@ -131,6 +130,10 @@ $name: 'page-attend';
     font-size: 16px;
   }
 
+  .details--title {
+    margin-bottom: 8px;
+  }
+
   .details--icon {
     width: 72px;
     height: 72px;
@@ -155,6 +158,12 @@ $name: 'page-attend';
   }
 
   .subpage-event {
+
+    .card-content h5 {
+      font-size: 24px;
+      line-height: 32px;
+    }
+
     .card-map {
       background: transparent url(../images/attend/map-card.svg) center center no-repeat;
       background-size: cover;
@@ -269,6 +278,12 @@ $name: 'page-attend';
       background-color: #b3d1ff;
       position: relative;
 
+      // Ensure that there's room around the map to scroll on touch devices.
+      @media (max-width: $desktop-breakpoint-min + 50) {
+        max-width: 90%;
+        margin: 0 auto 0 auto;
+      }
+
       &::after {
         content: 'Loading...';
         position: absolute;
@@ -292,28 +307,36 @@ $name: 'page-attend';
   }
 
   .venue__map {
-    background: transparent;
+    background: #455a64;
+    bottom: 0;
     box-shadow: none;
     color: #fff;
     left: 0;
     margin: 0;
-    padding: 0 0 64px 0;
+    padding: 0;
     position: fixed;
     right: 0;
+    top: 0;
 
-    .scrollable {
-      padding: 0;
+    .venue__image {
+      background: url(../images/attend/map-dialog.svg) center center no-repeat;
+      background-size: contain;
+      height: 94%;
+      margin: 0 auto;
+      width: 94%;
     }
 
     paper-icon-button {
-      margin-top: -46px;
+      float: right;
     }
 
     h2 {
       font-size: 45px;
       font-weight: 400;
+      left: 40px;
       line-height: 1;
-      margin: 64px 0 24px 0;
+      position: absolute;
+      top: 54px;
 
       @media (max-width: $phone-breakpoint-max) {
         font-size: 34px;

@@ -12,11 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package backend
 
 import "testing"
 
 func TestIncludesWord(t *testing.T) {
+	t.Parallel()
 	filter := "#io15"
 	table := []struct {
 		in  string

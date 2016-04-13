@@ -25,7 +25,7 @@ limitations under the License.
   <!-- See http://updates.html5rocks.com/2014/11/Support-for-installable-web-apps-with-webapp-manifest-in-chrome-38-for-Android -->
   <link rel="manifest" href="manifest.json">
   <!-- See http://updates.html5rocks.com/2014/11/Support-for-theme-color-in-Chrome-39-for-Android -->
-  <meta name="theme-color" content="#546E7A">
+  <meta name="theme-color" content="#ECEFF1">
 
   <!-- Add to homescreen for Chrome on Android -->
   <meta name="mobile-web-app-capable" content="yes"> <!-- fallback for manifest.json -->
@@ -48,7 +48,7 @@ limitations under the License.
 
   <!-- Tile icon for Win8 (144x144 + tile color) -->
   <meta name="msapplication-TileImage" content="images/touch/homescreen144.png">
-  <meta name="msapplication-TileColor" content="#546E7A">
+  <meta name="msapplication-TileColor" content="#ECEFF1">
   <meta name="msapplication-tap-highlight" content="no">
 
   <!-- G+ sharing meta data -->
@@ -78,16 +78,29 @@ limitations under the License.
   <!-- Unsupported browser checks need to come before webcomponents.js is loaded,
        otherwise unsupported browsers will error out and not record a pageview.
        Analytics lib is also loaded up front for error reporting. -->
-  <script>
-    window.ENV = {% .Env %}; // Used in analytics.js
-    window.PREFIX = {% .Prefix %};
-    window.START_DATE = {% .StartDateStr %};
-    window.FIREBASE_SHARDS = {% .FirebaseShards %};
-  </script>
-  <script src="scripts/analytics.js"></script>
+  <script async src="https://www.google-analytics.com/analytics.js"></script>
   <script>
   (function() {
     "use strict";
+
+    window.ENV = {% .Env %}; // Used in IOWA.Analytics
+    window.PREFIX = {% .Prefix %};
+    window.START_DATE = {% .StartDateStr %};
+    window.FIREBASE_SHARDS = {% .FirebaseShards %};
+
+    // use Polymer's lazy registration feature to speed up initial boot.
+    window.Polymer = window.Polymer || {lazyRegister: true};
+
+    // Initializes the analytics.js command queue.
+    window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+
+    // Creates the tracker.
+    ga('create', {
+      trackingId: window.ENV === 'prod' ? 'UA-58124138-3' : 'UA-58124138-2',
+      cookieDomain: 'auto',
+      cookiePath: window.ENV !== 'dev' ? window.PREFIX || '/io2016' : null,
+      siteSpeedSampleRate: 10, // 10% of users.
+    });
 
     // Setup error tracking before anything else runs.
     window.onerror = function(message, file, lineNumber, columnNumber, error) {
@@ -97,8 +110,7 @@ limitations under the License.
         if (error !== undefined) {
           message = error.stack;
         }
-
-        IOWA.Analytics.trackError(file + ':' + lineNumber, message);
+        ga('send', 'event', 'error', file + ':' + lineNumber, message);
       } catch (e) {
         // no-op
       }
@@ -157,9 +169,28 @@ limitations under the License.
     })();
 
     if (!supported) {
-      // Note: pageview is recorded when IOWA.Analytics is setup.
-      IOWA.Analytics.trackEvent('Polymer', 'unsupported-browser', navigator.userAgent, null, function() {
+      var redirectToUpgradePage = function() {
         window.location = {% url "upgrade" %};
+      };
+      // Sends a pageview here because this code will run before IOWA.Analytics is initialized.
+      ga('send', 'pageview');
+      ga('send', 'event', 'Polymer', 'unsupported-browser', navigator.userAgent, {
+        hitCallback: redirectToUpgradePage
+      });
+      // Adds a timeout to redirect in the event that analytics.js fails to
+      // load or is blocked by a browser extension.
+      setTimeout(redirectToUpgradePage, 5000);
+    }
+
+    // Adds User Timing marks for relevant perf events.
+    // These events correspond to the values tracked in analytics.js;
+    // changes made here must be made there as well.
+    var perfEvents = ['HTMLImportsLoaded', 'WebComponentsReady'];
+    if (window.performance && window.performance.mark) {
+      perfEvents.forEach(function(eventName) {
+        document.addEventListener(eventName, function() {
+          performance.mark(eventName);
+        });
       });
     }
   })();
@@ -169,11 +200,8 @@ limitations under the License.
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
   <link rel="stylesheet" href="styles/main.css">
 
-  <script>
-  // Enable when https://github.com/Polymer/polymer/issues/3517 is fixed.
-  // window.Polymer = window.Polymer || {lazyRegister: true};
-  </script>
-  <link rel="import" href="elements/elements.html">
+  <link rel="import" href="elements/critical.html">
+
   {% if .Canonical %}
   <link rel="canonical" href="{% .Canonical %}">
   {% end %}
@@ -187,7 +215,6 @@ limitations under the License.
         background-color: var(--paper-grey-50);
       };
     }
-
     #navbar paper-tabs {
       --paper-tabs-selection-bar-color: var(--paper-blue-grey-100);
     }
@@ -196,12 +223,14 @@ limitations under the License.
     }
   </style>
 </head>
-<body id="page-{% .Slug %}" class="bg-white">
+<body id="page-{% .Slug %}" class="loading bg-white">
+
+<div id="splash" class="bg-bluegrey-600"></div>
 
 <template is="dom-bind" id="t">
 
 <google-signin client-id="{% .ClientID %}" scopes="profile email"
-               user="{{app.currentUser}}"></google-signin>
+               user="{{app.currentUser}}" load></google-signin>
 
 <!-- Responsive handlers -->
 <iron-media-query id="mq-phone" full query="(min-width:320px) and (max-width:768px)"
@@ -216,7 +245,7 @@ limitations under the License.
     <paper-toolbar class="tall">
       <div class="top io-logo" flex></div>
       <div class="top">
-        <img class="profilepic" hidden>
+        <img class="profilepic" alt="User profile image" hidden>
       </div>
       <div class="bottom">
         <div>May 18 &#8211; 20, 2016</div>
@@ -286,50 +315,36 @@ limitations under the License.
         <!-- Note: Use on-click instead of on-tap so oauth popup is not
              blocked. Needs user gesture. -->
         <span class="anchor-like button-link" role="button" tabindex="0"
-              data-track-link="nav-signin" on-click="signIn"
+              data-track-link="nav-signin" on-click="signIn" on-keydown="keyboardSignIn"
               hidden="[[app.currentUser.picture]]" layout center>Sign in</span>
         <!-- This image might be set based on cached data. -->
         <img src$="{{app.currentUser.picture}}"
              class="profilepic"
+             alt="User profile image"
              hidden="[[!app.currentUser.picture]]">
         <!-- Stamp this out when app.currentUser.id is set rather than just
              app.currentUser, since a subset of app.currentUser might be
              populated by cached data. -->
         <template is="dom-if" if="{{app.currentUser.id}}" restamp>
-          <paper-menu-button horizontal-align="right" vertical-align="top"
-                             on-paper-dropdown-open="getNotificationState">
+          <paper-menu-button horizontal-align="right" vertical-align="top">
             <paper-icon-button icon="io:more-vert"
                                class="dropdown-trigger"
                                aria-label="Settings"></paper-icon-button>
             <div id="signin-settings-panel" class="dropdown-content">
               <div class="card-content" layout horizontal>
-                <div><img src$="{{app.currentUser.picture}}" class="profilepic"></div>
+                <div><img src$="{{app.currentUser.picture}}" class="profilepic" alt="User profile image"></div>
                 <div>
                   <div>[[app.currentUser.name]]</div>
                   <div class="settings-email">[[app.currentUser.email]]</div>
                 </div>
               </div>
-              <div class="card-content notification__feature">
-                <h4>Notifications</h4>
-                <iron-label horizontal layout center>
-                  <paper-checkbox checked$="{{app.currentUser.notify}}"
-                                  disabled$="{{_disableNotify(app.currentUser.notify)}}"
-                                  on-tap="updateNotifyUser"></paper-checkbox>
-                  <b>I want to receive notifications from the Google I/O 2016 web app.</b>
-                </iron-label>
-                <p>If this option is deselected, I understand I won't be notified when:</p>
-                <ul>
-                  <li>I/O is about to start</li>
-                  <li>Events added to My Schedule are about to start</li>
-                  <li>Videos of sessions added to My Schedule are available</li>
-                </ul>
-                <p class="settings-note"><b>Note</b>: Notifications are activated per device. To receive notifications on multiple devices, sign in on each device, enable notifications, and make sure you're online. All device notifications can be turned on/off at any time in the settings panel.</p>
-              </div>
+              <io-notification-widget></io-notification-widget>
               <div class="card-content" layout horizontal justified>
                 <a href="https://www.google.com/intl/en/policies/terms/"
                    data-track-link="login-tos" target="_blank">Terms of Service</a>
                 <span class="anchor-like" data-track-link="login-signout"
-                      on-tap="signOut">Sign out</span>
+                      on-click="signOut" on-keydown="keyboardSignOut" tabindex="0"
+                      role="button">Sign out</span>
               </div>
             </div>
           </paper-menu-button>
@@ -342,7 +357,7 @@ limitations under the License.
     <template is="dom-if" if="[[_isPage('schedule', selectedPage)]]" restamp>
       <io-schedule-subnav selected-subpage="{{selectedSubpage}}" app="[[app]]"
                           show-filters="{{showFilters}}"
-                          class="header_subnav offscreen"
+                          class="header_subnav offscreen card"
                           filters="[[_filters]]"
                           on-filters-clear="_onClearFilters"></io-schedule-subnav>
     </template>
@@ -351,13 +366,15 @@ limitations under the License.
         <paper-tabs id="subpage-tabs" class="white"
                     attr-for-selected="label"
                     selected="{{selectedSubpage}}">
-          <paper-tab label="event" role="">
+          <paper-tab label="event" link>
             <a href="#event" data-track-link="attending-event" data-ajax-link
-               layout horizontal center-center>Event</a>
+               layout horizontal center-center
+               tabindex="-1">Event</a>
           </paper-tab>
-          <paper-tab label="travel" role="">
+          <paper-tab label="travel" link>
             <a href="#travel" data-track-link="attending-travel" data-ajax-link
-               layout horizontal center-center>Travel</a>
+               layout horizontal center-center
+               tabindex="-1">Travel</a>
           </paper-tab>
         </paper-tabs>
       </div>
@@ -375,7 +392,8 @@ limitations under the License.
       <template is="dom-if" name="home" restamp>
         <io-home-page
             app="[[app]]"
-            date="{% .StartDateStr %}"></io-home-page>
+            date="{% .StartDateStr %}"
+            {% .LiveIDs | json | safeAttr "live-stream-channel-ids" %}></io-home-page>
       </template>
       <template is="dom-if" name="attend" restamp>
         <io-attend-page app="{{app}}"
@@ -451,9 +469,10 @@ limitations under the License.
 <script src="bower_components/firebase/firebase.js"></script>
 <script src="bower_components/js-crc/src/crc.js"></script>
 <script src="bower_components/simpledb_polyfill/index.js"></script>
+<script src="scripts/helper/util.js"></script>
+<script src="scripts/analytics.js"></script>
 <script src="scripts/main.js"></script>
 <script src="scripts/pages.js"></script>
-<script src="scripts/helper/util.js"></script>
 <script src="scripts/helper/auth.js"></script>
 <script src="scripts/helper/page-animation.js"></script>
 <script src="scripts/helper/elements.js"></script>
@@ -464,7 +483,6 @@ limitations under the License.
 <script src="scripts/helper/request.js"></script>
 <script src="scripts/helper/picasa.js"></script>
 <script src="scripts/helper/simple-db.js"></script>
-<script src="scripts/helper/notifications.js"></script>
 <script src="scripts/helper/schedule.js"></script>
 <script src="scripts/bootstrap.js"></script>
 <!-- endbuild -->

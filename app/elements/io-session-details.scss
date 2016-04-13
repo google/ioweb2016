@@ -34,14 +34,8 @@ $color-section-border: #eaeaea;
   box-shadow: none !important;
 }
 
-//#scrollable {
-//  overflow-y: scroll;
-//  -webkit-overflow-scrolling: touch;
-//}
-
 #sessionDetails {
   max-width: $tablet-breakpoint-min;
-  position: fixed;
   overflow: hidden;
 }
 
@@ -88,16 +82,6 @@ $color-section-border: #eaeaea;
   }
   .session__info__section {
     padding: 40px $mobileKeyline;
-  }
-
-  paper-menu-button.session__social {
-    padding: 0;
-    margin-top: $desktopKeyline;
-
-    paper-item {
-      font-size: 14px;
-      cursor: pointer;
-    }
   }
 
   .share-icon {
@@ -194,6 +178,10 @@ $color-section-border: #eaeaea;
   .speaker__title {
     font-size: 14px;
   }
+}
+
+.share-icon {
+  color: inherit !important;
 
   .twitter-icon {
     margin-bottom: -2px;
@@ -209,9 +197,11 @@ $color-section-border: #eaeaea;
   a {
     color: inherit !important;
   }
-  .session__social {
-    margin-top: $mobileKeyline;
-  }
+}
+
+.session__social {
+  margin-top: $mobileKeyline;
+  line-height: 40px;
 }
 
 .session__related {
@@ -246,6 +236,7 @@ $color-section-border: #eaeaea;
     left: 0 !important;
     top: 0 !important;
     width: 100%;
+    position: fixed !important;
   }
 }
 
