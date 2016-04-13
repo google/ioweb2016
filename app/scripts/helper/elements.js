@@ -19,13 +19,14 @@ IOWA.Elements = (function() {
 
   const ANALYTICS_LINK_ATTR = 'data-track-link';
 
-  function updateElements() {
+  // Called from critical.html when the bundle is loaded.
+  function onElementsBundleLoaded() {
     var onPageSelect = function() {
       document.body.removeEventListener('page-select', onPageSelect);
 
       // Load auth after initial page is setup. This helps do less upfront work
       // until the main schedule data is returned by the worker.
-      IOWA.Elements.GoogleSignIn.load = true;
+      // IOWA.Elements.GoogleSignIn.load = true;
 
       // Deep link into a subpage.
       var selectedPageEl = IOWA.Elements.LazyPages.selectedPage;
@@ -45,8 +46,15 @@ IOWA.Elements = (function() {
       );
     };
 
-    document.body.addEventListener('page-select', onPageSelect);
+    if (IOWA.Elements && IOWA.Elements.LazyPages &&
+        IOWA.Elements.LazyPages.selectedPage) {
+      onPageSelect();
+    } else {
+      document.body.addEventListener('page-select', onPageSelect);
+    }
+  }
 
+  function onDomBindStamp() {
     var main = document.querySelector('.io-main');
 
     var masthead = document.querySelector('.masthead');
@@ -401,7 +409,9 @@ IOWA.Elements = (function() {
     };
 
     template.closeDrawer = function() {
-      this.$.appdrawer.close();
+      if (this.$.appdrawer) {
+        this.$.appdrawer.close();
+      }
     };
 
     template._onClearFilters = function(e) {
@@ -415,7 +425,7 @@ IOWA.Elements = (function() {
       template.addEventListener('dom-change', resolve);
     });
 
-    template.domStampedPromise.then(updateElements);
+    template.domStampedPromise.then(onDomBindStamp);
 
     template.addEventListener('page-transition-done', function() {
       this.set('app.pageTransitionDone', true);
@@ -433,6 +443,7 @@ IOWA.Elements = (function() {
   }
 
   return {
-    init: init
+    init,
+    onElementsBundleLoaded
   };
 })();

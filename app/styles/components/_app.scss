@@ -32,7 +32,29 @@ html, body {
 
 body {
   overflow-x: hidden;
+
+  &.loading {
+    overflow: hidden;
+
+    #splash {
+      opacity: 1;
+    }
+  }
 }
+
+#splash {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transition: opacity 300ms cubic-bezier(0,0,0.2,1);
+  opacity: 0;
+  will-change: opacity;
+  background: url(../images/hash.png) no-repeat 50% 50%;
+  background-size: 250px;
+  background-color: $color-bluegrey-50;
+ }
 
 .anchor-like {
   @include typo-button();
@@ -199,6 +221,14 @@ paper-progress {
   background-color: rgba($color-bluegrey-50, 0.6);
 }
 
+.bg-bluegrey-200 {
+  background-color: $color-bluegrey-200;
+}
+
+.bg-bluegrey-600 {
+  background-color: $color-bluegrey-600;
+}
+
 .bg-bluegrey-700 {
   background-color: $color-bluegrey-700;
 }
@@ -217,10 +247,6 @@ paper-progress {
 
 .bg-red-A200 {
   background-color: $color-red-A200;
-}
-
-.bg-bluegrey-200 {
-  background-color: $color-bluegrey-200;
 }
 
 .navbar__overlay {
