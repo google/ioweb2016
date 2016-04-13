@@ -57,14 +57,14 @@ limitations under the License.
         <span>Full Schedule</span>
       </div>
 
-      <paper-dialog-scrollable id="scrollable">
-        <io-survey id="ioSurvey"
-                   app="[[app]]"
-                   session="[[selectedSession]]"
-                   inline >
-        </io-survey>
-        <div class="bg-bluegrey-50-20">
+      <io-survey id="ioSurvey"
+                 app="[[app]]"
+                 session="[[selectedSession]]"
+                 inline >
+      </io-survey>
 
+      <paper-dialog-scrollable id="scrollable">
+        <div class="bg-bluegrey-50-20">
           <div class="card__photo" relative>
             <template is="dom-if"
                       if="[[sessionHasVideo(_startScheduleVideo, selectedSession.isLivestream, selectedSession.youtubeUrl)]]"

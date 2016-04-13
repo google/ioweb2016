@@ -42,6 +42,7 @@ $color-section-border: #eaeaea;
 #sessionDetails {
   max-width: $tablet-breakpoint-min;
   position: fixed;
+  overflow: hidden;
 }
 
 #sessionDetails {

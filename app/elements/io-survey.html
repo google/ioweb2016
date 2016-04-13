@@ -28,7 +28,9 @@ limitations under the License.
   <template>
     <style include="shared-app-styles">
     </style>
-      <section id="header" class="bg-cyan-200 lpadding">
+    <div class="card">
+      <section id="header" class="bg-cyan-200 card-content">
+        <paper-icon-button icon="close" id="close" on-click="_close"></paper-icon-button>
         <h1>Rate this Session</h1>
         <h3>[[session.title]]</h3>
         <h5 class="label">[[_sessionSpeakers]]</h5>
@@ -38,17 +40,18 @@ limitations under the License.
           <survey-rating id=[[question.id]]
                          selected={{question.value}}
                          question="[[question]]"
-                         class="border-bottom lpadding"></survey-rating>
+                         class="border-bottom card-content"></survey-rating>
         </template>
         <paper-input no-label-float="[[!app.isPhoneSize]]"
                      always-float-label="[[app.isPhoneSize]]"
                      label="Anything else we should know? (optional)"
-                     class="border-bottom lpadding"></paper-input>
+                     class="border-bottom card-content"></paper-input>
       </section>
       <div class="buttons margin-v-10">
         <paper-button on-tap="_cancel">Cancel</paper-button>
         <paper-button on-tap="_submit">Submit</paper-button>
       </div>
+    </div>
   </template>
   <script>
     (function () {
@@ -126,7 +129,9 @@ limitations under the License.
         open: function() {
           this.opened = true;
           this.style.display = 'block';
+          this.scrollTop = 0;
           this.playAnimation('entry');
+          Polymer.IronDropdownScrollManager.pushScrollLock(this);
         },
         _computeSpeakers: function (session) {
           if (session && session.speakers && this.app.scheduleData) {
@@ -149,10 +154,12 @@ limitations under the License.
         _close: function() {
           this.opened = false;
           this.playAnimation('exit');
+          Polymer.IronDropdownScrollManager.removeScrollLock(this);
         },
         closeNoAnimation: function() {
           this.opened = false;
           this.style.display = 'none';
+          Polymer.IronDropdownScrollManager.removeScrollLock(this);
         },
         _cancel: function(event) {
           this._close();
