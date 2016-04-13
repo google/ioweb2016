@@ -117,7 +117,6 @@ limitations under the License.
               </template>
             </div>
 
-<<<<<<< 1e9e39c7da0a3d8196b9573fc3c73f0efc088eea
           <div class="session__social" layout horizontal center>
             <a href="#" target="_blank" class="share-icon" on-click="openShareWindow"
                         data-share-type="gplus" data-track-link="schedule-share-gplus">
@@ -135,34 +134,6 @@ limitations under the License.
 
           <paper-button on-click="_openSurvey" raised>Rate Session</paper-button>
         </div>
-=======
-            <paper-button on-click="_openSurvey" raised>Rate Session</paper-button>
-            <paper-menu-button class="session__social"
-                               on-iron-activate="openShareWindow"
-                               on-iron-overlay-opened="noop"
-                               on-iron-overlay-closed="noop">
-              <paper-button class="dropdown-trigger" raised>Share</paper-button>
-              <paper-listbox class="dropdown-content" layout vertical>
-                <paper-item data-share-type="gplus"
-                            data-track-link="schedule-share-gplus">
-                  <iron-icon icon="io:post-gplus" class="share-icon"></iron-icon>
-                  Google
-                </paper-item>
-                <paper-item data-share-type="twitter"
-                            data-track-link="schedule-share-twitter">
-                  <iron-icon icon="io:post-twitter" class="share-icon"></iron-icon>
-                  Twitter
-                </paper-item>
-                <paper-item data-share-type="fb"
-                            data-track-link="schedule-share-fb">
-                  <iron-icon icon="io:post-facebook" class="share-icon"></iron-icon>
-                  Facebook
-                </paper-item>
-              </paper-listbox>
-            </paper-menu-button>
-
-          </div>
->>>>>>> fixing css for loading
 
           <div class="session__info__section session__speakers"
                hidden$="{{!selectedSession.speakers.length}}">
