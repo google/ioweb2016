@@ -10,13 +10,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
-
 <link rel="import" href="../bower_components/neon-animation/neon-animation-runner-behavior.html">
 <link rel="import" href="../bower_components/neon-animation/neon-animations.html">
 <link rel="import" href="../bower_components/neon-animation/animations/slide-from-bottom-animation.html">
@@ -42,13 +40,14 @@ limitations under the License.
                          class="border-bottom card-content"
                          on-selected-changed="_computeComplete"></survey-rating>
         </template>
-        <paper-input no-label-float="[[!app.isPhoneSize]]"
+        <paper-input id="input_additional"
+                     no-label-float="[[!app.isPhoneSize]]"
                      always-float-label="[[app.isPhoneSize]]"
                      label="Anything else we should know? (optional)"
                      class="border-bottom card-content"></paper-input>
       </section>
       <div class="buttons card-content">
-        <paper-button on-tap="_cancel">Cancel</paper-button>
+        <paper-button on-tap="_close">Cancel</paper-button>
         <paper-button id="button_submit"
                       disabled
                       on-tap="_submit">Submit</paper-button>
@@ -56,7 +55,7 @@ limitations under the License.
     </div>
   </template>
   <script>
-    (function () {
+    (function() {
       'use strict';
       Polymer({
         is: 'io-survey',
@@ -64,23 +63,40 @@ limitations under the License.
           Polymer.NeonAnimationRunnerBehavior
         ],
         properties: {
+          /**
+           * Selected session to survey
+           */
           session: {
             type: Object,
             observer: '_computeSpeakers',
-            value: function () {
+            value: function() {
               return {};
             }
           },
+
+          /**
+           * App Object
+           */
           app: {
             type: Object,
-            value: function () {
+            value: function() {
               return {};
             }
           },
+
+          /**
+           * Array of survey questions in the following format
+           * {
+           *   id: 'question ID',
+           *   labelText: 'label to display'
+           *   hintMin: 'Hint label min text'
+           *   hintMax: 'Hint label max text'
+           * }
+           */
           surveyQuestions: {
             type: Array,
             value: function() {
-              return[{
+              return [{
                 id: 'relevance',
                 labelText: 'How relevant was this session to your projects?',
                 hintMin: 'Not at all',
@@ -98,14 +114,26 @@ limitations under the License.
               }];
             }
           },
+
+          /**
+           * String representing the speakers
+           */
           _sessionSpeakers: {
             type: String,
             notify: false
           },
+
+          /**
+           * Boolean true if currently opened
+           */
           opened: {
             type: Boolean,
             value: false
           },
+
+          /**
+           * Defines entry and exit animations
+           */
           animationConfig: {
             type: Object,
             value: function() {
@@ -122,12 +150,17 @@ limitations under the License.
             }
           }
         },
-        ready: function() {
-          this.style.display = 'none';
-        },
+
         listeners: {
           'neon-animation-finish': '_onNeonAnimationFinish'
         },
+        ready: function() {
+          this.style.display = 'none';
+        },
+
+        /**
+         * Open the dialog
+         */
         open: function() {
           this.opened = true;
           this.style.display = 'block';
@@ -135,13 +168,20 @@ limitations under the License.
           this.playAnimation('entry');
           Polymer.IronDropdownScrollManager.pushScrollLock(this);
         },
-        _computeSpeakers: function (session) {
+
+        /**
+         * Computes the speakers string for a given session
+         *
+         * @param session
+         * @private
+         */
+        _computeSpeakers: function(session) {
           if (session && session.speakers && this.app.scheduleData) {
             var speakerString = 'by ';
             var speakerIds = session.speakers;
             var speakerHash = this.app.scheduleData.speakers;
 
-            if(speakerIds.length > 1) {
+            if (speakerIds.length > 1) {
               for (var i = 0; i < speakerIds.length - 1; i++) {
                 speakerString += speakerHash[speakerIds[i]].name + ', ';
               }
@@ -151,6 +191,14 @@ limitations under the License.
             this._sessionSpeakers = speakerString;
           }
         },
+
+        /**
+         * Checks if the survey is complete
+         *
+         * @param newVal
+         * @param oldVal
+         * @private
+         */
         _computeComplete: function(newVal, oldVal) {
           var complete = true;
           for (let question of this.surveyQuestions) {
@@ -158,36 +206,60 @@ limitations under the License.
               complete = false;
             }
           }
-          if(complete) {
+          if (complete) {
             this.$.button_submit.removeAttribute('disabled');
           } else {
             this.$.button_submit.setAttribute('disabled', '');
           }
         },
+
+        /**
+         * Resets survey values
+         *
+         * @private
+         */
         _resetValues: function() {
           let surveys = this.getElementsByTagName('survey-rating');
           for (let i = 0; i < surveys.length; i++) {
             surveys[i].reset();
           }
+          this.$.input_additional.value = '';
         },
+
+        /**
+         * Helper method to close the dialog
+         *
+         * @private
+         */
         _close: function() {
           this.opened = false;
           this.playAnimation('exit');
           Polymer.IronDropdownScrollManager.removeScrollLock(this);
           this._resetValues();
         },
+
+        /**
+         * Closes the dialog with out a closing animation
+         */
         closeNoAnimation: function() {
           this.opened = false;
           this.style.display = 'none';
           Polymer.IronDropdownScrollManager.removeScrollLock(this);
         },
-        _cancel: function(event) {
-          this._close();
-        },
+
+        /**
+         * Submits the survey responses
+         */
         _submit: function(event) {
           //TODO(pying): submit stuff
           this._close();
+          this.fire('submitted');
         },
+
+        /**
+         * Handles animation finish event and hides the dialog if opened == false
+         * @private
+         */
         _onNeonAnimationFinish: function() {
           if (!this.opened) {
             this.style.display = 'none';
@@ -237,10 +309,17 @@ limitations under the License.
       Polymer({
         is: 'survey-rating',
         properties: {
+          /**
+           * Selected rating
+           */
           selected: {
             type: Number,
             notify: true
           },
+
+          /**
+           * Survey question to render
+           */
           question: {
             type: Object,
             value: function() {
@@ -248,6 +327,11 @@ limitations under the License.
             }
           }
         },
+
+        /**
+         * Handles mouse over event and adds selected class to appropriate icons
+         * @param event mouse over event
+         */
         _mouseOverHandler: function(event) {
           var elementIndex = event.currentTarget.getAttribute('value');
           if (this.selected && this.selected > elementIndex) {
@@ -256,6 +340,10 @@ limitations under the License.
             this._selectElements(0, elementIndex);
           }
         },
+        /**
+         * Handles mouse out event and removes selected class from appropriate icons
+         * @param event mouse out event
+         */
         _mouseOutHandler: function(event) {
           var elementIndex = event.currentTarget.getAttribute('value');
           if (!this.selected) {
@@ -266,28 +354,49 @@ limitations under the License.
             this._selectElements(elementIndex, this.selected);
           }
         },
+        /**
+         * Helper method to add selected class from start to end element
+         * @param start index of start element
+         * @param end index of end element
+         */
         _selectElements: function(start, end) {
           var elements = this.$.rating.children;
           for (var i = start; i < end; i++) {
             elements[i].classList.add('selected');
           }
         },
+        /**
+         * Helper method to remove selected class from start to end element
+         * @param start index of start element
+         * @param end index of end element
+         */
         _deselectElements: function(start, end) {
           var elements = this.$.rating.children;
           for (var i = start; i < end; i++) {
             elements[i].classList.remove('selected');
           }
         },
+
+        /**
+         * Sets selected to 0 and removes selected css class from all children
+         */
         reset: function() {
           this.selected = 0;
           this._deselectElements(0, 5);
         },
+
+        /**
+         * Sets the selected value and adds selected class to elements
+         * @param event
+         * @private
+         */
         _selectValue: function(event) {
           var elementIndex = parseInt(event.currentTarget.getAttribute('value'), 10);
           if (elementIndex !== this.selected) {
             this.selected = elementIndex;
+            this._selectElements(0, elementIndex);
           } else {
-            this.selected = 0;
+            this.reset();
           }
         }
       });
