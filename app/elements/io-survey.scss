@@ -18,18 +18,9 @@
   @apply(--layout-scroll);
 }
 
-.lpadding {
-  padding: 40px;
-}
-
 .border-bottom {
   display: block;
   border-bottom: 1px solid $color-grey-300 !important;
-}
-
-.margin-v-10 {
-  margin-top: 10px;
-  margin-bottom: 10px;
 }
 
 #close {
