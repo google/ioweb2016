@@ -78,12 +78,6 @@ limitations under the License.
   <!-- Unsupported browser checks need to come before webcomponents.js is loaded,
        otherwise unsupported browsers will error out and not record a pageview.
        Analytics lib is also loaded up front for error reporting. -->
-  <script>
-    window.ENV = {% .Env %}; // Used in analytics.js
-    window.PREFIX = {% .Prefix %};
-    window.START_DATE = {% .StartDateStr %};
-    window.FIREBASE_SHARDS = {% .FirebaseShards %};
-  </script>
   <script async src="https://www.google-analytics.com/analytics.js"></script>
   <script>
   (function() {
@@ -92,6 +86,10 @@ limitations under the License.
     window.ENV = {% .Env %}; // Used in IOWA.Analytics
     window.PREFIX = {% .Prefix %};
     window.START_DATE = {% .StartDateStr %};
+    window.FIREBASE_SHARDS = {% .FirebaseShards %};
+
+    // use Polymer's lazy registration feature to speed up initial boot.
+    window.Polymer = window.Polymer || {lazyRegister: true};
 
     // Initializes the analytics.js command queue.
     window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
@@ -201,11 +199,6 @@ limitations under the License.
   <!-- Page styles -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
   <link rel="stylesheet" href="styles/main.css">
-
-  <script>
-  // Enable when https://github.com/Polymer/polymer/issues/3517 is fixed.
-  // window.Polymer = window.Polymer || {lazyRegister: true};
-  </script>
 
   <link rel="import" href="elements/critical.html">
 
