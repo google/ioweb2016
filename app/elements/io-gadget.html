@@ -293,7 +293,7 @@ The `<io-gadget>` element renders a youtube video + social feed.
           case YT.PlayerState.PLAYING:
             this._updateVideoInfo();
             if (!this._wasPaused) {
-              IOWA.Analytics.trackEvent('gadget', 'video', this.selectedVideoId);
+              ga('send', 'event', 'gadget', 'video', this.selectedVideoId);
             }
             this._wasPaused = false;
             break;
@@ -308,7 +308,7 @@ The `<io-gadget>` element renders a youtube video + social feed.
         },
 
         _onOpenSchedule: function() {
-          IOWA.Analytics.trackEvent('gadget', 'link', 'open-schedule-link');
+          ga('send', 'event', 'gadget', 'link', 'open-schedule-link');
         },
 
         setView: function () {
