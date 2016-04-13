@@ -39,16 +39,19 @@ limitations under the License.
           <survey-rating id=[[question.id]]
                          selected={{question.value}}
                          question="[[question]]"
-                         class="border-bottom card-content"></survey-rating>
+                         class="border-bottom card-content"
+                         on-selected-changed="_computeComplete"></survey-rating>
         </template>
         <paper-input no-label-float="[[!app.isPhoneSize]]"
                      always-float-label="[[app.isPhoneSize]]"
                      label="Anything else we should know? (optional)"
                      class="border-bottom card-content"></paper-input>
       </section>
-      <div class="buttons margin-v-10">
+      <div class="buttons card-content">
         <paper-button on-tap="_cancel">Cancel</paper-button>
-        <paper-button on-tap="_submit">Submit</paper-button>
+        <paper-button id="button_submit"
+                      disabled
+                      on-tap="_submit">Submit</paper-button>
       </div>
     </div>
   </template>
@@ -142,18 +145,36 @@ limitations under the License.
               for (var i = 0; i < speakerIds.length - 1; i++) {
                 speakerString += speakerHash[speakerIds[i]].name + ', ';
               }
-
               speakerString = speakerString.slice(0, speakerString.length - 2) + ' & ';
             }
             speakerString += speakerHash[speakerIds[speakerIds.length - 1]].name;
-
             this._sessionSpeakers = speakerString;
+          }
+        },
+        _computeComplete: function(newVal, oldVal) {
+          var complete = true;
+          for (let question of this.surveyQuestions) {
+            if (!question.value) {
+              complete = false;
+            }
+          }
+          if(complete) {
+            this.$.button_submit.removeAttribute('disabled');
+          } else {
+            this.$.button_submit.setAttribute('disabled', '');
+          }
+        },
+        _resetValues: function() {
+          let surveys = this.getElementsByTagName('survey-rating');
+          for (let i = 0; i < surveys.length; i++) {
+            surveys[i].reset();
           }
         },
         _close: function() {
           this.opened = false;
           this.playAnimation('exit');
           Polymer.IronDropdownScrollManager.removeScrollLock(this);
+          this._resetValues();
         },
         closeNoAnimation: function() {
           this.opened = false;
@@ -257,12 +278,16 @@ limitations under the License.
             elements[i].classList.remove('selected');
           }
         },
+        reset: function() {
+          this.selected = 0;
+          this._deselectElements(0, 5);
+        },
         _selectValue: function(event) {
           var elementIndex = parseInt(event.currentTarget.getAttribute('value'), 10);
           if (elementIndex !== this.selected) {
             this.selected = elementIndex;
           } else {
-            this.selected = null;
+            this.selected = 0;
           }
         }
       });
