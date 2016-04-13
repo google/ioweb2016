@@ -105,10 +105,6 @@ $filterBannerHeight: 72px;
 .session-block {
   border-top: 1px solid $color-section-border;
 
-  &:first-of-type {
-    border-top: 0;
-  }
-
   .schedule-row {
     border-top: 0 !important;
   }
