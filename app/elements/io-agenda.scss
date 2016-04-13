@@ -36,7 +36,6 @@ $bottom-buffer: 25px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-right: 1px;
 }
 
 .overflow-hidden {
@@ -81,7 +80,6 @@ $bottom-buffer: 25px;
   content: ' ';
   background: $color-bluegrey-200;
   width: 1px;
-  margin-left: -1px;
   position: absolute;
   top: 32px;
   bottom: calc(32px + #{$bottom-buffer});
