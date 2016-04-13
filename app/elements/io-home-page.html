@@ -190,7 +190,7 @@ limitations under the License.
 
         </div>
         <div class="card-content box card--bottom-right-clip fullbleed io__hash bg-bluegrey-50-40">
-          <a href="https://twitter.com/search?q=%23io16" target="_blank">
+          <a href="https://twitter.com/search?q=%23io16" target="_blank" aria-label="Search #io16 on Twitter">
             <template is="dom-if" if="[[_loadVideo]]">
               <card-video id="card-video"
                   src="/io2016/videos/hashtag-800.mp4"
@@ -244,7 +244,7 @@ limitations under the License.
       _loadVideo: {
         type: Boolean,
         //computed: '_computeLoadVideo(app.isDesktopSize, app.pageTransitionDone, _scrolledToBottomCards)'
-        computed: '_computeLoadVideo(app.isDesktopSize, app.pageTransitionDone)'
+        computed: '_computeLoadVideo(app.isDesktopSize, app.pageTransitionDone, app.isIOS, app.isAndroid)'
       }
     },
 
@@ -339,8 +339,8 @@ limitations under the License.
       }, 250);
     },
 
-    _computeLoadVideo: function(isDesktopSize, pageTransitionDone, scrolledEnough) {
-      return isDesktopSize && pageTransitionDone;// && scrolledEnough;
+    _computeLoadVideo: function(isDesktopSize, pageTransitionDone, isIOS, isAndroid) {
+      return isDesktopSize && pageTransitionDone && !isIOS && !isAndroid;
     },
 
     _onSetReminder: function(e, detail) {

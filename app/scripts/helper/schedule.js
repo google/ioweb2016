@@ -308,23 +308,19 @@ class Schedule {
    */
   bookmarkSessionNotification(saved, opt_message) {
     let message = opt_message || 'You\'ll get a notification when it starts.';
-    let template = IOWA.Elements.Template;
+    let notificationWidget = document.querySelector('io-notification-widget');
 
     if (saved) {
-      // If IOWA.Elements.Template.dontAutoSubscribe is true, this promise will reject immediately,
-      // and we'll just add the session without attempting to auto-subscribe.
-      return IOWA.Notifications.subscribePromise(template.app.dontAutoSubscribe).then(() => {
-        IOWA.Elements.Toast.showMessage('Added to My Schedule. ' + message);
-      }).catch(error => {
-        template.set('app.dontAutoSubscribe', true);
-        if (error && error.name === 'AbortError') {
-          // AbortError indicates that the subscription couldn't be completed due to the page
+      return notificationWidget.subscribeIfAble().then(subscribed => {
+        if (subscribed) {
+          IOWA.Elements.Toast.showMessage('Added to My Schedule. ' + message);
+        } else if (Notification.permission === 'denied') {
+          // The subscription couldn't be completed due to the page
           // permissions for notifications being set to denied.
           IOWA.Elements.Toast.showMessage('Added to My Schedule. Want to enable notifications?',
               null, 'Learn how', () => window.open('permissions', '_blank'));
         } else {
-          // If the subscription failed for some other reason, like because we're not
-          // auto-subscribing, show the normal toast.
+          // Some other reason for not enabling notifications
           IOWA.Elements.Toast.showMessage('Added to My Schedule.');
         }
       });

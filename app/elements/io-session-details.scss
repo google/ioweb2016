@@ -83,20 +83,6 @@ $color-section-border: #eaeaea;
     padding: 40px $mobileKeyline;
   }
 
-  paper-menu-button.session__social {
-    padding: 0;
-    margin-top: $desktopKeyline;
-
-    paper-item {
-      font-size: 14px;
-      cursor: pointer;
-    }
-
-    paper-listbox {
-      min-width: 130px;
-    }
-  }
-
   .share-icon {
     margin-right: $mobileKeyline / 2;
   }
@@ -191,6 +177,10 @@ $color-section-border: #eaeaea;
   .speaker__title {
     font-size: 14px;
   }
+}
+
+.share-icon {
+  color: inherit !important;
 
   .twitter-icon {
     margin-bottom: -2px;
@@ -206,9 +196,11 @@ $color-section-border: #eaeaea;
   a {
     color: inherit !important;
   }
-  .session__social {
-    margin-top: $mobileKeyline;
-  }
+}
+
+.session__social {
+  margin-top: $mobileKeyline;
+  line-height: 40px;
 }
 
 .session__related {

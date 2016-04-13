@@ -22,7 +22,7 @@ limitations under the License.
   <!-- See http://updates.html5rocks.com/2014/11/Support-for-installable-web-apps-with-webapp-manifest-in-chrome-38-for-Android -->
   <link rel="manifest" href="manifest.json">
   <!-- See http://updates.html5rocks.com/2014/11/Support-for-theme-color-in-Chrome-39-for-Android -->
-  <meta name="theme-color" content="#eceff1">
+  <meta name="theme-color" content="#ECEFF1">
 
   <!-- Add to homescreen for Chrome on Android -->
   <meta name="mobile-web-app-capable" content="yes"> <!-- fallback for manifest.json -->
@@ -43,7 +43,7 @@ limitations under the License.
 
   <!-- Tile icon for Win8 (144x144 + tile color) -->
   <meta name="msapplication-TileImage" content="images/touch/homescreen144.png">
-  <meta name="msapplication-TileColor" content="#eceff1">
+  <meta name="msapplication-TileColor" content="#ECEFF1">
   <meta name="msapplication-tap-highlight" content="no">
 
   <!-- G+ and Twitter sharing meta data -->
@@ -64,7 +64,7 @@ limitations under the License.
       "@type": "Event",
       "name": "Google I/O 2016",
       "url": ".?utm_source=schema_org_event",
-      "image": "images/io15-color.png",
+      "image": "images/hash.png",
       "location": {
         "@type": "Place",
         "name": "Moscone Center West",
@@ -82,17 +82,29 @@ limitations under the License.
     }
   </script>
 
-  <!-- Unsupported browser checks need to come before webcomponents.js is loaded,
-       otherwise unsupported browsers will error out and not record a pageview.
-       Analytics lib is also loaded up front for error reporting. -->
-  <script>
-    window.ENV = {% .Env %}; // Used in analytics.js
-    window.PREFIX = {% .Prefix %};
-  </script>
-  <script src="{% .Prefix %}/scripts/analytics.js"></script>
+  <script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  <!-- Unsupported browser checks need to come before webcomponents.js is loaded. -->
   <script>
   (function() {
     "use strict";
+
+    window.ENV = {% .Env %}; // Used in IOWA.Analytics
+    window.PREFIX = {% .Prefix %};
+    window.START_DATE = {% .StartDateStr %};
+
+    // Initializes the analytics.js command queue.
+    window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+
+    // Creates the tracker.
+    ga('create', {
+      trackingId: window.ENV === 'prod' ? 'UA-58124138-3' : 'UA-58124138-2',
+      cookieDomain: 'auto',
+      cookiePath: window.ENV !== 'dev' ? window.PREFIX || '/io2016' : null,
+      siteSpeedSampleRate: 10, // 10% of users.
+    });
+
+    ga('send', 'pageview');
 
     // Setup error tracking before anything else runs.
     window.onerror = function(message, file, lineNumber, columnNumber, error) {
@@ -162,10 +174,15 @@ limitations under the License.
     })();
 
     if (!supported) {
-      // Note: pageview is recorded when IOWA.Analytics is setup.
-      IOWA.Analytics.trackEvent('Polymer', 'unsupported-browser', navigator.userAgent, null, function() {
+      var redirectToUpgradePage = function() {
         window.location = {% url "upgrade" %};
+      };
+      ga('send', 'event', 'Polymer', 'unsupported-browser', navigator.userAgent, {
+        hitCallback: redirectToUpgradePage
       });
+      // Adds a timeout to redirect in the event that analytics.js fails to
+      // load or is blocked by a browser extension.
+      setTimeout(redirectToUpgradePage, 5000);
     }
   })();
   </script>
