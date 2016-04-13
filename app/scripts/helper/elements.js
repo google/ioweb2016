@@ -93,6 +93,7 @@ IOWA.Elements = (function() {
     template.app.pageTransitionDone = false;
     template.app.fullscreenVideoActive = false;
     template.app.isIOS = IOWA.Util.isIOS();
+    template.app.isAndroid = IOWA.Util.isAndroid();
     template.app.ANALYTICS_LINK_ATTR = ANALYTICS_LINK_ATTR;
     template.app.scheduleData = null;
     template.app.savedSessions = [];

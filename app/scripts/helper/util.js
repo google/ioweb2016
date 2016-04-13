@@ -54,6 +54,10 @@ IOWA.Util = IOWA.Util || (function() {
     return (/(iPhone|iPad|iPod)/gi).test(navigator.platform);
   }
 
+  function isAndroid() {
+    return (/Android/gi).test(navigator.userAgent);
+  }
+
   function isSafari() {
     var userAgent = navigator.userAgent;
     return (/Safari/gi).test(userAgent) &&
@@ -266,6 +270,7 @@ IOWA.Util = IOWA.Util || (function() {
     isIE,
     isEdge,
     isIOS,
+    isAndroid,
     isSafari,
     isTouchScreen,
     setMetaThemeColor,
