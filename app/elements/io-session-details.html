@@ -110,32 +110,7 @@ limitations under the License.
               </template>
             </div>
 
-<<<<<<< HEAD
-            <paper-button on-click="_openSurvey" raised>Rate Session</paper-button>
-            <paper-menu-button class="session__social"
-                               on-iron-activate="openShareWindow"
-                               on-iron-overlay-opened="noop"
-                               on-iron-overlay-closed="noop">
-              <paper-button class="dropdown-trigger" raised>Share</paper-button>
-              <paper-listbox class="dropdown-content" layout vertical>
-                <paper-item data-share-type="gplus"
-                            data-track-link="schedule-share-gplus">
-                  <iron-icon icon="io:post-gplus" class="share-icon"></iron-icon>
-                  Google
-                </paper-item>
-                <paper-item data-share-type="twitter"
-                            data-track-link="schedule-share-twitter">
-                  <iron-icon icon="io:post-twitter" class="share-icon"></iron-icon>
-                  Twitter
-                </paper-item>
-                <paper-item data-share-type="fb"
-                            data-track-link="schedule-share-fb">
-                  <iron-icon icon="io:post-facebook" class="share-icon"></iron-icon>
-                  Facebook
-                </paper-item>
-              </paper-listbox>
-            </paper-menu-button>
-=======
+          <paper-button on-click="_openSurvey" raised>Rate Session</paper-button>
           <div class="session__social" layout horizontal center>
             <a href="#" target="_blank" class="share-icon" on-click="openShareWindow"
                         data-share-type="gplus" data-track-link="schedule-share-gplus">
@@ -150,8 +125,6 @@ limitations under the License.
               <iron-icon icon="io:post-facebook" class="share-icon"></iron-icon>
             </a>
           </div>
->>>>>>> 4b25cd5c3548a583764deb5f4647f1997b5e6509
-
           </div>
 
           <div class="session__info__section session__speakers"
