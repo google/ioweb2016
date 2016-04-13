@@ -5373,8 +5373,8 @@
       "id": "a80e15fd-ccef-e411-b87f-00155d5066d7",
       "title": "Self-paced Code Labs",
       "description": "Get hands on with self-paced workshops showcasing Google mobile, wearable, and Cloud technologies. We provide the workstations and tablets - just bring yourself any time during the day! We can also help you set up your own machine and device.",
-      "startTimestamp": "2016-05-19T23:00:00Z",
-      "endTimestamp": "2016-05-30T00:00:00Z",
+      "startTimestamp": "2016-05-20T23:00:00Z",
+      "endTimestamp": "2016-05-20T00:00:00Z",
       "isLivestream": false,
       "tags": [
         "TYPE_CODELABS"
@@ -5383,7 +5383,7 @@
       "room": "Develop Sandbox (L2)",
       "photoUrl": "https://storage.googleapis.com/io2015-data.appspot.com/images/sessions/__w-200-400-600-800-1000__/a80e15fd-ccef-e411-b87f-00155d5066d7.jpg",
       "hasRelated": false,
-      "day": 19,
+      "day": 20,
       "block": "4 PM",
       "start": "4:00 PM",
       "end": "5:00 PM",
