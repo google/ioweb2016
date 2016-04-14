@@ -50,7 +50,8 @@ limitations under the License.
         <paper-button on-tap="_close">Cancel</paper-button>
         <paper-button id="button_submit"
                       disabled
-                      on-tap="_submit">Submit</paper-button>
+                      on-tap="_submit">Submit
+        </paper-button>
       </div>
     </div>
   </template>
@@ -59,9 +60,7 @@ limitations under the License.
       'use strict';
       Polymer({
         is: 'io-survey',
-        behaviors: [
-          Polymer.NeonAnimationRunnerBehavior
-        ],
+        behaviors: [Polymer.NeonAnimationRunnerBehavior],
         properties: {
           /**
            * Selected session to survey
@@ -154,6 +153,7 @@ limitations under the License.
         listeners: {
           'neon-animation-finish': '_onNeonAnimationFinish'
         },
+
         ready: function() {
           this.style.display = 'none';
         },
@@ -201,8 +201,8 @@ limitations under the License.
          */
         _computeComplete: function(newVal, oldVal) {
           var complete = true;
-          for (let question of this.surveyQuestions) {
-            if (!question.value) {
+          for (var i in this.surveyQuestions) {
+            if (!this.surveyQuestions[i].value) {
               complete = false;
             }
           }
@@ -219,8 +219,8 @@ limitations under the License.
          * @private
          */
         _resetValues: function() {
-          let surveys = this.getElementsByTagName('survey-rating');
-          for (let i = 0; i < surveys.length; i++) {
+          var surveys = this.getElementsByTagName('survey-rating');
+          for (var i = 0; i < surveys.length; i++) {
             surveys[i].reset();
           }
           this.$.input_additional.value = '';
@@ -252,8 +252,8 @@ limitations under the License.
          */
         _submit: function(event) {
           var answers = {};
-          for (let question of this.surveyQuestions) {
-            answers[question.id] = question.value;
+          for (var i in this.surveyQuestions) {
+            answers[this.surveyQuestions[i].id] = this.surveyQuestions[i].value;
           }
           this._close();
           IOWA.Schedule.saveSurvey(this.session.id, answers).then(function() {
