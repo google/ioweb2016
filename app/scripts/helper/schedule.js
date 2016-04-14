@@ -351,7 +351,7 @@ class Schedule {
         case 'TYPE':
           filterSessionTypes.push(tag.name);
           break;
-        case 'TOPIC':
+        case 'TRACK':
           filterTopics.push(tag.name);
           break;
         case 'THEME':

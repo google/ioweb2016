@@ -117,12 +117,20 @@ The `<io-notification-widget>` element renders the notification toggle UI.
       },
 
       attached: function() {
+        // propel will be set inside the ready callback iff we're on a platform
+        // that supports service worker push notifications.
+        if (!propel) {
+          return;
+        }
+
         propel.addEventListener('statuschange', function(status) {
           this._set_propelStatus(status);
         }.bind(this));
+
         IOWA.IOFirebase.registerToNotificationUpdates(function(value) {
           this._set_firebaseStatus(value);
         }.bind(this));
+
         document.addEventListener('signin-change', function(e) {
           if (!e.detail.user) {
             // We logged out, so unsubscribe
@@ -136,7 +144,7 @@ The `<io-notification-widget>` element renders the notification toggle UI.
        * @return {Boolean} Whether subscribing succeeded
        */
       subscribeIfAble: function() {
-        if (this.autoSubscribe) {
+        if (this.autoSubscribe && propel) {
           return propel.subscribe()
             .then(function(sub) {
               // Did we successfully subscribe?
@@ -179,12 +187,14 @@ The `<io-notification-widget>` element renders the notification toggle UI.
           this.$.pages.select(0);
           this.checked = status.isSubscribed;
           this.disabled = false;
-          IOWA.IOFirebase.setNotificationsEnabled(status.isSubscribed);
-          if (status.isSubscribed) {
-            IOWA.IOFirebase.addPushSubscription(status.currentSubscription);
-          } else {
-            // TODO(mscales): Remove the existing subscription from FB
-          }
+          IOWA.Auth.waitForSignedIn().then(function() {
+            IOWA.IOFirebase.setNotificationsEnabled(status.isSubscribed);
+            if (status.isSubscribed) {
+              IOWA.IOFirebase.addPushSubscription(status.currentSubscription);
+            } else {
+              // TODO(mscales): Remove the existing subscription from FB
+            }
+          });
         } else if (status.permissionState === 'denied') {
           this.$.pages.select(1);
           // Were we actually trying to turn notifications on?
