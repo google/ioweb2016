@@ -119,23 +119,22 @@ limitations under the License.
               </template>
             </div>
 
-          <div class="session__social" layout horizontal center>
-            <a href="#" target="_blank" class="share-icon" on-click="openShareWindow"
-                        data-share-type="gplus" data-track-link="schedule-share-gplus">
-              <iron-icon icon="io:post-gplus" class="share-icon"></iron-icon>
-            </a>
-            <a href="#" target="_blank" class="share-icon" on-click="openShareWindow"
-                        data-share-type="twitter" data-track-link="schedule-share-twitter">
-              <iron-icon icon="io:post-twitter" class="share-icon twitter-icon"></iron-icon>
-            </a>
-            <a href="#" target="_blank" class="share-icon" on-click="openShareWindow"
-                        data-share-type="fb" data-track-link="schedule-share-fb">
-              <iron-icon icon="io:post-facebook" class="share-icon"></iron-icon>
-            </a>
+            <div class="session__social" layout horizontal center>
+              <a href="#" target="_blank" class="share-icon" on-click="openShareWindow"
+                 data-share-type="gplus" data-track-link="schedule-share-gplus">
+                <iron-icon icon="io:post-gplus" class="share-icon"></iron-icon>
+              </a>
+              <a href="#" target="_blank" class="share-icon" on-click="openShareWindow"
+                 data-share-type="twitter" data-track-link="schedule-share-twitter">
+                <iron-icon icon="io:post-twitter" class="share-icon twitter-icon"></iron-icon>
+              </a>
+              <a href="#" target="_blank" class="share-icon" on-click="openShareWindow"
+                 data-share-type="fb" data-track-link="schedule-share-fb">
+                <iron-icon icon="io:post-facebook" class="share-icon"></iron-icon>
+              </a>
+            </div>
+            <paper-button id="open_survey" on-click="_openSurvey" raised>Rate Session</paper-button>
           </div>
-
-          <paper-button id="open_survey" on-click="_openSurvey" raised>Rate Session</paper-button>
-        </div>
 
           <div class="session__info__section session__speakers"
                hidden$="{{!selectedSession.speakers.length}}">
