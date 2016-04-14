@@ -523,7 +523,11 @@ Fired when the user toggles bookmarking/removing a session.
             var sessionId = IOWA.Util.getURLParameter('sid') || parsedUrl.resourceId;
             if (sessionId) {
               pageIsDeepLinked_ = true;
+              var hashSplit = parsedUrl.hash.split('/');
               this.openSession(IOWA.Schedule.getSessionById(sessionId));
+              if (hashSplit[hashSplit.length - 1] === 'survey') {
+                this.$.sessionDetails.showSurvey = true;
+              }
             } else {
               pageIsDeepLinked_ = false;
             }

@@ -239,6 +239,16 @@ limitations under the License.
         },
 
         /**
+         * Opens the survey with no animation
+         */
+        openNoAnimation: function() {
+          this.opened = true;
+          this.style.display = 'block';
+          this.scrollTop = 0;
+          Polymer.IronDropdownScrollManager.pushScrollLock(this);
+        },
+
+        /**
          * Closes the dialog with out a closing animation
          */
         closeNoAnimation: function() {

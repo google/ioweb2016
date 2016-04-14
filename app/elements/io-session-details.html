@@ -223,6 +223,12 @@ limitations under the License.
         observer: '_selectedSessionChanged'
       },
 
+      showSurvey: {
+        type: Boolean,
+        value: false,
+        observer: '_showSurveyChanged'
+      },
+
       /**
        * List of this sessions sanitized tags.
        */
@@ -506,6 +512,12 @@ limitations under the License.
       // Panel is already open, but force the event handler so the pushState
       // and other code runs.
       this._onSessionDetailsOpen();
+    },
+
+    _showSurveyChanged: function(newVal, oldVal) {
+      if(newVal) {
+        this.$.ioSurvey.openNoAnimation();
+      }
     },
 
     _openSurvey: function() {
