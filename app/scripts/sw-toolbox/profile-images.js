@@ -18,7 +18,7 @@
   var DEFAULT_PROFILE_IMAGE_URL = 'images/touch/homescreen96.png';
 
   function profileImageRequest(request) {
-    return global.toolbox.cacheFirst(request).catch(function() {
+    return global.toolbox.networkFirst(request).catch(function() {
       return global.toolbox.cacheOnly(new Request(DEFAULT_PROFILE_IMAGE_URL));
     });
   }

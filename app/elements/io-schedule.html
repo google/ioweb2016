@@ -36,9 +36,9 @@ limitations under the License.
   <div layout horizontal
        class$="[[_addClass('session-block', session.firstOfBlock)]]">
     <div class="schedule-block-title">
-      <h1 layout horizontal end>
-        <span>[[_getMeridiemPart(session.block, 0)]]</span>
-        <span class="schedule-block-meridiem">[[_getMeridiemLetter(session.block)]]</span>
+      <h1 layout horizontal end aria-label$="Start time: [[session.block]]">
+        <span aria-hidden="true">[[_getMeridiemPart(session.block, 0)]]</span>
+        <span aria-hidden="true" class="schedule-block-meridiem">[[_getMeridiemLetter(session.block)]]</span>
       </h1>
     </div>
     <div class$="schedule-row [[_addClass('saved', session.saved)]]"

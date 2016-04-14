@@ -34,47 +34,6 @@ limitations under the License.
 
 <dom-module id="io-session-details">
 <link rel="import" type="css" href="io-session-details.css">
-<<<<<<< 2d7647349141118cab293709074ac62c7b8b6e01
-
-<template>
-  <style include="shared-app-styles"></style>
-
-  <paper-dialog id="sessionDetails"
-                no-cancel-on-outside-click="[[inline]]"
-                no-cancel-on-esc-key="[[inline]]"
-                with-backdrop="[[!inline]]"
-                restore-focus-on-close
-                entry-animation="scale-up-animation"
-                exit-animation="fade-out-animation"
-                on-iron-overlay-closed="_onSessionDetailsClose"
-                on-iron-overlay-opened="_onSessionDetailsOpen">
-
-    <div class="fullschedule-banner card-content bg-bluegrey-50-60"
-         layout horizontal center>
-      <paper-icon-button icon="io:arrow-back" dialog-dismiss
-                         aria-label="Full Schedule"></paper-icon-button>
-      <span>Full Schedule</span>
-    </div>
-
-    <io-survey id="ioSurvey"
-               app="[[app]]"
-               session="[[selectedSession]]"
-               inline >
-    </io-survey>
-
-    <paper-dialog-scrollable id="scrollable">
-
-      <io-survey id="ioSurvey"
-                 app="[[app]]"
-                 session="[[selectedSession]]">
-      </io-survey>
-      <div class="bg-bluegrey-50-20">
-
-        <div class="card__photo" relative>
-
-          <template is="dom-if" if="[[sessionHasVideo(_startScheduleVideo, selectedSession.isLivestream, selectedSession.youtubeUrl)]]" restamp>
-            <google-youtube
-=======
   <template>
     <style include="shared-app-styles"></style>
     <paper-dialog id="sessionDetails"
@@ -115,7 +74,6 @@ limitations under the License.
                       if="[[sessionHasVideo(_startScheduleVideo, selectedSession.isLivestream, selectedSession.youtubeUrl)]]"
                       restamp>
               <google-youtube
->>>>>>> updating survey button position
                 video-id="[[_toVideoIdFilter(selectedSession.youtubeUrl)]]"
                 height="100%" width="100%" fit
                 autohide="1" controls="2" modestbranding="1" showinfo="0"
@@ -396,6 +354,10 @@ limitations under the License.
         return tag.length;
       });
       return list;
+    },
+
+    _computeLabel: function(isSessionSaved) {
+      return isSessionSaved ? 'Remove session from My Schedule' : 'Add session to My Schedule';
     },
 
     _onToggleSaveSession: function(e) {
