@@ -179,12 +179,14 @@ The `<io-notification-widget>` element renders the notification toggle UI.
           this.$.pages.select(0);
           this.checked = status.isSubscribed;
           this.disabled = false;
-          IOWA.IOFirebase.setNotificationsEnabled(status.isSubscribed);
-          if (status.isSubscribed) {
-            IOWA.IOFirebase.addPushSubscription(status.currentSubscription);
-          } else {
-            // TODO(mscales): Remove the existing subscription from FB
-          }
+          IOWA.Auth.waitForSignedIn().then(function() {
+            IOWA.IOFirebase.setNotificationsEnabled(status.isSubscribed);
+            if (status.isSubscribed) {
+              IOWA.IOFirebase.addPushSubscription(status.currentSubscription);
+            } else {
+              // TODO(mscales): Remove the existing subscription from FB
+            }
+          });
         } else if (status.permissionState === 'denied') {
           this.$.pages.select(1);
           // Were we actually trying to turn notifications on?
