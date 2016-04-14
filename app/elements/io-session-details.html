@@ -78,7 +78,8 @@ limitations under the License.
           <paper-fab icon="[[_computeSessionSavedIcon(selectedSession.saved)]]"
                      mini="[[app.isPhoneSize]]"
                      class$="[[_addClass('active', selectedSession.saved)]]"
-                     on-up="_onToggleSaveSession"></paper-fab>
+                     on-up="_onToggleSaveSession"
+                     aria-label$="[[_computeLabel(selectedSession.saved)]]"></paper-fab>
         </div>
         <div class="session__info__section session__details">
           <h3 class="session__title" tabindex="-1">{{selectedSession.title}}</h3>
@@ -313,6 +314,10 @@ limitations under the License.
         return tag.length;
       });
       return list;
+    },
+
+    _computeLabel: function(isSessionSaved) {
+      return isSessionSaved ? 'Remove session from My Schedule' : 'Add session to My Schedule';
     },
 
     _onToggleSaveSession: function(e) {
