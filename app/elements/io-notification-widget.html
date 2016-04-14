@@ -119,22 +119,24 @@ The `<io-notification-widget>` element renders the notification toggle UI.
       attached: function() {
         // propel will be set inside the ready callback iff we're on a platform
         // that supports service worker push notifications.
-        if (propel) {
-          propel.addEventListener('statuschange', function(status) {
-            this._set_propelStatus(status);
-          }.bind(this));
-
-          IOWA.IOFirebase.registerToNotificationUpdates(function(value) {
-            this._set_firebaseStatus(value);
-          }.bind(this));
-
-          document.addEventListener('signin-change', function(e) {
-            if (!e.detail.user) {
-              // We logged out, so unsubscribe
-              propel.unsubscribe();
-            }
-          });
+        if (!propel) {
+          return;
         }
+
+        propel.addEventListener('statuschange', function(status) {
+          this._set_propelStatus(status);
+        }.bind(this));
+
+        IOWA.IOFirebase.registerToNotificationUpdates(function(value) {
+          this._set_firebaseStatus(value);
+        }.bind(this));
+
+        document.addEventListener('signin-change', function(e) {
+          if (!e.detail.user) {
+            // We logged out, so unsubscribe
+            propel.unsubscribe();
+          }
+        });
       },
 
       /**
