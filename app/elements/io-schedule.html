@@ -470,6 +470,8 @@ Fired when the user toggles bookmarking/removing a session.
 
         detached: function() {
           this.unlisten(window, 'popstate', 'sessionDetailsPopstateHandler');
+          this.showFilters = false;
+          this.selectedSession = null;
         },
 
         onApplyFilter: function(e, detail) {
