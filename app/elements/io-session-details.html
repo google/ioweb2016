@@ -94,11 +94,12 @@ limitations under the License.
             </div>
             <template is="dom-if" if="[[tags.length]]">
               <div class="session__tags">
-                <iron-icon icon="io:filter-list" aria-label="Filter sessions"></iron-icon>
+                <iron-icon icon="io:filter-list"></iron-icon>
                 <template is="dom-repeat" items="[[tags]]" as="tag">
                   <a href$="/io2016/schedule?filters=[[tag]]"
                      data-track-link="schedule-details-filter"
-                     on-click="_onApplyFilter">[[tag]]</a>
+                     on-click="_onApplyFilter"
+                     aria-label$="Show other sessions tagged: [[tag]]">[[tag]]</a>
                 </template>
               </div>
             </template>
@@ -106,15 +107,18 @@ limitations under the License.
 
           <div class="session__social" layout horizontal center>
             <a href="#" target="_blank" class="share-icon" on-click="openShareWindow"
-                        data-share-type="gplus" data-track-link="schedule-share-gplus">
+                        data-share-type="gplus" data-track-link="schedule-share-gplus"
+                        aria-label="Share on G+">
               <iron-icon icon="io:post-gplus" class="share-icon"></iron-icon>
             </a>
             <a href="#" target="_blank" class="share-icon" on-click="openShareWindow"
-                        data-share-type="twitter" data-track-link="schedule-share-twitter">
+                        data-share-type="twitter" data-track-link="schedule-share-twitter"
+                        aria-label="Share on Twitter">
               <iron-icon icon="io:post-twitter" class="share-icon twitter-icon"></iron-icon>
             </a>
             <a href="#" target="_blank" class="share-icon" on-click="openShareWindow"
-                        data-share-type="fb" data-track-link="schedule-share-fb">
+                        data-share-type="fb" data-track-link="schedule-share-fb"
+                        aria-label="Share on Facebook">
               <iron-icon icon="io:post-facebook" class="share-icon"></iron-icon>
             </a>
           </div>
@@ -140,8 +144,8 @@ limitations under the License.
                 <div class="speaker__info" >
                   <div class="speaker__desc">{{_propOfArrayItem(app.scheduleData.speakers, speakerId, 'bio')}}</div>
                   <div class="session__social" layout horizontal center>
-                    <a href$="{{_propOfArrayItem(app.scheduleData.speakers, speakerId, 'plusoneUrl')}}" target="_blank" class="share-icon" hidden$="{{!_propOfArrayItem(app.scheduleData.speakers, speakerId, 'plusoneUrl')}}"><iron-icon icon="io:post-gplus"></iron-icon></a>
-                    <a href$="{{_propOfArrayItem(app.scheduleData.speakers, speakerId, 'twitterUrl')}}" target="_blank" class="share-icon" hidden$="{{!_propOfArrayItem(app.scheduleData.speakers, speakerId, 'twitterUrl')}}"><iron-icon icon="io:post-twitter" class="twitter-icon"></iron-icon></a>
+                    <a href$="{{_propOfArrayItem(app.scheduleData.speakers, speakerId, 'plusoneUrl')}}" target="_blank" class="share-icon" hidden$="{{!_propOfArrayItem(app.scheduleData.speakers, speakerId, 'plusoneUrl')}}" aria-label$="Follow {{_propOfArrayItem(app.scheduleData.speakers, speakerId, 'name')}} on G+"><iron-icon icon="io:post-gplus"></iron-icon></a>
+                    <a href$="{{_propOfArrayItem(app.scheduleData.speakers, speakerId, 'twitterUrl')}}" target="_blank" class="share-icon" hidden$="{{!_propOfArrayItem(app.scheduleData.speakers, speakerId, 'twitterUrl')}}" aria-label$="Follow {{_propOfArrayItem(app.scheduleData.speakers, speakerId, 'name')}} on Twitter"><iron-icon icon="io:post-twitter" class="twitter-icon"></iron-icon></a>
                   </div>
                 </div>
               </div>
