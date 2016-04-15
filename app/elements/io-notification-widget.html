@@ -221,6 +221,8 @@ The `<io-notification-widget>` element renders the notification toggle UI.
           this.disabled = true;
           this.checked = false;
         } else {
+          // Users who have not enabled notifications yet.
+          this.$.pages.select(0);
           this.disabled = false;
           this.checked = false;
         }
