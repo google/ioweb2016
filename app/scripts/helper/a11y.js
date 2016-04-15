@@ -101,6 +101,13 @@ IOWA.A11y = IOWA.A11y || (function() {
   function focusNewPage() {
     if (isInitialPage) {
       isInitialPage = false;
+
+      // Override navigation paper-tabs' super annoying focus managment
+      var tab = IOWA.Elements.NavPaperTabs.querySelector('paper-tab[tabindex="0"]');
+      if (tab) {
+        tab.setAttribute('tabindex', '-1');
+      }
+
       return;
     }
 
