@@ -30,26 +30,26 @@ each hour is 2 divs.  Each event is a label column and 3 columns of different sp
         <div id="agenda-content" class="card-content relative" layout vertical>
           <template is="dom-repeat" items="[[events]]" as="event">
             <div class="row-height" layout horizontal justified>
-              <div class="row-label" hidden$="[[app.isPhoneSize]]">[[event.name]]</div>
+              <div class="row-label" hidden$="[[app.isPhoneSize]]" aria-label$="[[event.name]]: [[_toTwelveHourWithMeridiem(event.start)]] to [[_toTwelveHourWithMeridiem(event.end)]]">[[event.name]]</div>
               <template is="dom-if" if="[[_checkZero('left', event)]]">
                 <div style$="[[_calculateLeftSpanStyle(event)]]"></div>
               </template>
               <div style$="[[_calculateEventSpanStyle(event)]]" class="overflow-hidden">
                 <div class="filler center-text" style$="background:[[color]];">
-                  <span hidden$="[[_fitEventSpan(event, app.isPhoneSize)]]">[[event.name]]</span>
+                  <span hidden$="[[_fitEventSpan(event, app.isPhoneSize)]]" aria-label$="[[event.name]]: [[_toTwelveHourWithMeridiem(event.start)]] to [[_toTwelveHourWithMeridiem(event.end)]]">[[event.name]]</span>
                 </div>
               </div>
               <template is="dom-if" if="[[_checkZero('right', event)]]">
                 <div style$="[[_calculateRightSpanStyle(event)]]">
                   <div class="filler">
-                    <span class="after-text" hidden$="[[_fitAfterSpan(event, app.isPhoneSize)]]">[[event.name]]</span>
+                    <span class="after-text" hidden$="[[_fitAfterSpan(event, app.isPhoneSize)]]" aria-label$="[[event.name]]: [[_toTwelveHourWithMeridiem(event.start)]] to [[_toTwelveHourWithMeridiem(event.end)]]">[[event.name]]</span>
                   </div>
                 </div>
               </template>
               <div class="row-end"></div>
             </div>
           </template>
-          <div layout horizontal justified>
+          <div layout horizontal justified aria-hidden="true">
             <div class="row-label" hidden$="[[app.isPhoneSize]]"></div>
             <template is="dom-repeat" items="[[_calculateTime(start, end)]]" as="hour">
               <div flex class$="agenda-time [[_isEveryOther(hour, app.isPhoneSize)]]">
@@ -218,6 +218,22 @@ each hour is 2 divs.  Each event is a label column and 3 columns of different sp
           } else {
             return hour > 12 ? hour - 12 : hour;
           }
+        },
+
+        /**
+         * Converts 24H to 12H for aria label with full am/pm meridiem and decimal converted to minutes.
+         * @param hour hour to convert
+         * @return {String} 12 hour converted string with am/pm meridiem
+         */
+        _toTwelveHourWithMeridiem: function(hour) {
+          var hoursMinutes = hour.toString().split('.');
+          var twelveHours = Math.floor(hour > 12 ? hour - 12 : hour);
+          var minutes = hoursMinutes.length > 1 ? ':' + Math.floor(('.' + hoursMinutes[1]) * 60) : '';
+          var meridiem = hour >= 12 ? 'PM' : 'AM';
+          if (twelveHours === 0) {
+            twelveHours = hour >= 12 ? 12 : 1;
+          }
+          return twelveHours + minutes + meridiem;
         },
 
         /**
