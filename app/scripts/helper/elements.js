@@ -285,8 +285,9 @@ IOWA.Elements = (function() {
         target: IOWA.Elements.Scroller
       });
 
-      // Move focus to the top of the page
-      IOWA.A11y.focusNavigation();
+      // Kick focus back to the page
+      // User will start from the top of the document again
+      e.target.blur();
     };
 
     template.toggleDrawer = function() {
