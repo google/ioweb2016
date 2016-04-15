@@ -40,6 +40,9 @@ limitations under the License.
                 no-cancel-on-esc-key="[[inline]]"
                 with-backdrop="[[!inline]]"
                 restore-focus-on-close
+                modal
+                aria-labelledby="session__title"
+                aria-describedby="session__desc"
                 entry-animation="scale-up-animation"
                 exit-animation="fade-out-animation"
                 on-iron-overlay-closed="_onSessionDetailsClose"
@@ -74,17 +77,19 @@ limitations under the License.
           </div>
           <iron-image src="[[placeholderImage(selectedSession)]]"
                       placeholder="images/io16-social.jpg"
-                      sizing="cover" preload fade fit></iron-image>
+                      sizing="cover" preload fade fit
+                      aria-hidden="true"></iron-image>
           <paper-fab icon="[[_computeSessionSavedIcon(selectedSession.saved)]]"
                      mini="[[app.isPhoneSize]]"
                      class$="[[_addClass('active', selectedSession.saved)]]"
                      on-up="_onToggleSaveSession"
-                     aria-label$="[[_computeLabel(selectedSession.saved)]]"></paper-fab>
+                     aria-label$="[[_computeLabel(selectedSession.saved)]]"
+                     autofocus></paper-fab>
         </div>
         <div class="session__info__section session__details">
-          <h3 class="session__title" tabindex="-1">{{selectedSession.title}}</h3>
+          <h3 id="session__title" class="session__title">{{selectedSession.title}}</h3>
           <h5 class="session__time">May <span>{{selectedSession.day}}</span>, <span>{{selectedSession.start}}</span><span hidden$="{{_equal('__keynote__', selectedSession.id)}}"> - {{selectedSession.end}}</span> / <span>{{selectedSession.room}}</span></h5>
-          <div class="session__desc">{{selectedSession.description}}</div>
+          <div id="session__desc" class="session__desc">{{selectedSession.description}}</div>
           <div class="session__categories">
             <div class="session__livestream" hidden$="{{!selectedSession.isLivestream}}">
               <iron-icon icon="io:videocam"></iron-icon>
@@ -350,9 +355,6 @@ limitations under the License.
     },
 
     _onSessionDetailsOpen: function() {
-      // TODO dialog supports autofocus attr.
-      //this.$.sessionDetails.querySelector('.session__title').focus();
-
       document.title = this.selectedSession.title + ' - Google I/O Schedule';
 
       // Update URL with deep link. Always ensure sid parameter is set.
