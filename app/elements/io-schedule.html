@@ -466,12 +466,30 @@ Fired when the user toggles bookmarking/removing a session.
 
         attached: function() {
           this.listen(window, 'popstate', 'sessionDetailsPopstateHandler');
+          this.listen(window, 'click', '_closeFilters');
         },
 
         detached: function() {
           this.unlisten(window, 'popstate', 'sessionDetailsPopstateHandler');
           this.showFilters = false;
           this.selectedSession = null;
+          this.unlisten(window, 'click', '_closeFilters');
+        },
+
+        _closeFilters: function(e) {
+          var filterMetrics = this.$.filters.getBoundingClientRect();
+
+          var withinPanel = e.x >= filterMetrics.left &&
+                            e.x <= filterMetrics.right &&
+                            e.y >= filterMetrics.top &&
+                            e.y <= filterMetrics.bottom;
+
+          // Hide filters panel when the user clicks outside of it. Make sure
+          // not to hide it when the user is clicking the toggle button itself!
+          if (!withinPanel &&
+              !IOWA.Util.getEventSender(e, 'io-schedule-subnav')) {
+            this.showFilters = false;
+          }
         },
 
         onApplyFilter: function(e, detail) {
