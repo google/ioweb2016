@@ -82,7 +82,7 @@ Fired when the mode changes.
       </template>
     </div>
 
-    <paper-fab id="schedfab" icon="picture-in-picture"
+    <paper-fab id="schedfab" icon="io:picture-in-picture"
                aria-label="Live schedule" title="Live schedule"
                on-tap="onFabClick"></paper-fab>
 
@@ -97,7 +97,7 @@ Fired when the mode changes.
     <div id="livewidget" class="bg-cyan-400" on-transitionend="onFabTransition">
 
       <!-- <paper-dialog id="sessiondetails" transition="paper-dialog-transition-bottom" layered="false" on-core-overlay-open-completed="onSessionDetailsOpen">
-        <paper-icon-button icon="arrow-back" core-overlay-toggle aria-label="Close session"></paper-icon-button>
+        <paper-icon-button icon="io:arrow-back" core-overlay-toggle aria-label="Close session"></paper-icon-button>
         <div class="card__photo" relative>
           <iron-image src="{{_computeSrc(selectedSession)}}" placeholder="images/io15-color.png" sizing="cover" preload fade fit></iron-image>
           <paper-fab icon="{{_computeIcon(selectedSession)}}" mini on-up="onToggleSaveSession" class$="{{_addClass('active', selectedSession.saved)}}" disabled$="{{fetchingUserData}}"></paper-fab>
@@ -135,7 +135,7 @@ Fired when the mode changes.
       <div class="middle-content-section" layout vertical>
 
         <div class="widget-nav" layout horizontal center self-end>
-          <paper-icon-button icon="close" on-tap="closeFab"></paper-icon-button>
+          <paper-icon-button icon="io:close" on-tap="closeFab"></paper-icon-button>
         </div>
 
         <paper-tabs attr-for-selected="label" selected="{{selectedTab}}">
