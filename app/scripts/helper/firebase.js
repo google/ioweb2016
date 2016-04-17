@@ -235,6 +235,17 @@ class IOFirebase {
   }
 
   /**
+   * Register to get updates on session videos the user has watched. This
+   * should also be used to get the initial list of videos watched by the user.
+   *
+   * @param {IOFirebase~updateCallback} callback Called when the list of watched
+   *     videos changes.
+   */
+  registerToVideoWatchUpdates(callback) {
+    this._registerToUpdates('data', 'viewed_videos', callback);
+  }
+
+  /**
    * Clears out the data in the READS IndexedDB datastore.
    *
    * @returns {Promise} Fulfills when the IndexedDB data is cleared.
@@ -389,7 +400,7 @@ class IOFirebase {
   markVideoAsViewed(videoIdOrUrl) {
     // Making sure we save the ID of the video and not the full Youtube URL.
     let match = videoIdOrUrl.match(/.*(?:youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/);
-    let videoId = match ? videoIdOrUrl : match[1];
+    let videoId = match ? match[1] : videoIdOrUrl;
     return this._setFirebaseUserData('data', `viewed_videos/${videoId}`, true);
   }
 
