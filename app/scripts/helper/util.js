@@ -197,22 +197,22 @@ IOWA.Util = IOWA.Util || (function() {
     });
   }
 
-  /**
-   * Adjusts the size of the ripple to fully cover the parent element.
-   * @param {Element} ripple The ripple DOM element.
-   * @return {Object} parentRect Parent bounding rect, for reuse.
-   */
-  var resizeRipple = function(ripple) {
-    var parentRect = ripple.parentNode.getBoundingClientRect();
+  // /**
+  //  * Adjusts the size of the ripple to fully cover the parent element.
+  //  * @param {Element} ripple The ripple DOM element.
+  //  * @return {Object} parentRect Parent bounding rect, for reuse.
+  //  */
+  // var resizeRipple = function(ripple) {
+  //   var parentRect = ripple.parentNode.getBoundingClientRect();
 
-    var rippleContainerSize = parentRect.width / 2;
-    ripple.style.width = rippleContainerSize + 'px';
-    ripple.style.height = rippleContainerSize + 'px';
-    ripple.style.left = -(rippleContainerSize / 2) + 'px';
-    ripple.style.top = -(rippleContainerSize / 2) + 'px';
+  //   var rippleContainerSize = parentRect.width / 2;
+  //   ripple.style.width = rippleContainerSize + 'px';
+  //   ripple.style.height = rippleContainerSize + 'px';
+  //   ripple.style.left = -(rippleContainerSize / 2) + 'px';
+  //   ripple.style.top = -(rippleContainerSize / 2) + 'px';
 
-    return parentRect;
-  };
+  //   return parentRect;
+  // };
 
   /**
    * Reports an error to Google Analytics.
@@ -282,7 +282,7 @@ IOWA.Util = IOWA.Util || (function() {
     setSearchParam,
     getEventSender,
     removeSearchParam,
-    resizeRipple,
+    // resizeRipple,
     reportError
   };
 })();
