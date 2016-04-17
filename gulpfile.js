@@ -1,4 +1,4 @@
-/* jshint node: true */
+/* eslint-env node */
 
 /**
  * Copyright 2016 Google Inc. All rights reserved.
@@ -68,7 +68,7 @@ function minifyHtml() {
     quotes: true,
     empty: true,
     spare: true
-  });
+  }).on('error', console.log.bind(console));
 }
 
 function uglifyJS() {
@@ -131,6 +131,7 @@ gulp.task('clean', 'Remove built app', ['clear'], function() {
 gulp.task('vulcanize', 'Vulcanize all polymer elements', [
   'vulcanize-elements',
   // 'vulcanize-extended-elements',
+  'vulcanize-critical-elements',
   'vulcanize-gadget-elements'
 ]);
 
@@ -185,9 +186,10 @@ gulp.task('concat-and-uglify-js', 'Crush JS', ['eslint', 'generate-page-metadata
   var siteScripts = [
     // The SimpleDB polyfill needs to be run through Babel, so include it here.
     '../bower_components/simpledb_polyfill/index.js',
+    'helper/util.js',
+    'analytics.js',
     'main.js',
     'pages.js',
-    'helper/util.js',
     'helper/auth.js',
     'helper/page-animation.js',
     'helper/elements.js',
@@ -198,7 +200,6 @@ gulp.task('concat-and-uglify-js', 'Crush JS', ['eslint', 'generate-page-metadata
     'helper/request.js',
     'helper/picasa.js',
     'helper/simple-db.js',
-    'helper/notifications.js',
     'helper/schedule.js',
     'bootstrap.js'
   ].map(script => `${IOWA.appDir}/scripts/${script}`);
@@ -210,9 +211,6 @@ gulp.task('concat-and-uglify-js', 'Crush JS', ['eslint', 'generate-page-metadata
       compact: false
     }))
     .pipe($.concat('site-scripts.js'));
-
-  // analytics.js is loaded separately and shouldn't be concatenated.
-  var analyticsScriptStream = gulp.src([IOWA.appDir + '/scripts/analytics.js']);
 
   var serviceWorkerScriptStream = gulp.src([
     IOWA.appDir + '/bower_components/sw-toolbox/sw-toolbox.js',
@@ -226,7 +224,7 @@ gulp.task('concat-and-uglify-js', 'Crush JS', ['eslint', 'generate-page-metadata
     }))
     .pipe($.concat('sw-toolbox-scripts.js'));
 
-  return merge(siteScriptStream, siteLibStream).add(analyticsScriptStream).add(serviceWorkerScriptStream)
+  return merge(siteScriptStream, siteLibStream).add(serviceWorkerScriptStream)
     .pipe(uglifyJS().on('error', function(error) {
       $.util.log(error);
     }))
@@ -307,13 +305,41 @@ gulp.task('vulcanize-elements', false, ['sass'], function() {
       stripComments: true,
       inlineCss: true,
       inlineScripts: true,
+      excludes: [
+
+      ],
+      stripExcludes: [
+        'roboto.html', // Web fonts are loaded in the main page.
+        'iron-label.html',
+        'iron-selector.html',
+        'paper-tabs.html',
+        'polymer.html',
+        'shared-app-styles.html'
+      ],
       dest: IOWA.appDir + '/elements'
     }))
+    .on('error', console.error.bind(console))
     .pipe($.crisper({scriptInHead: true}))
     // Minify html output
     .pipe($.if('*.html', minifyHtml()))
     // Minifiy js output
     .pipe($.if('*.js', uglifyJS()))
+    .pipe(gulp.dest(IOWA.distDir + '/' + IOWA.appDir + '/elements/'));
+});
+
+// vulcanize main site elements separately.
+gulp.task('vulcanize-critical-elements', false, ['sass'], function() {
+  return gulp.src([
+    IOWA.appDir + '/elements/critical.html'
+  ])
+    .pipe($.vulcanize({
+      stripComments: true,
+      inlineCss: true,
+      inlineScripts: true,
+      dest: IOWA.appDir + '/elements'
+    }))
+    // Minify html output
+    .pipe($.if('*.html', minifyHtml()))
     .pipe(gulp.dest(IOWA.distDir + '/' + IOWA.appDir + '/elements/'));
 });
 

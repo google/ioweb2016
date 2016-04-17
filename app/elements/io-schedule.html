@@ -36,9 +36,9 @@ limitations under the License.
   <div layout horizontal
        class$="[[_addClass('session-block', session.firstOfBlock)]]">
     <div class="schedule-block-title">
-      <h1 layout horizontal end>
-        <span>[[_getMeridiemPart(session.block, 0)]]</span>
-        <span class="schedule-block-meridiem">[[_getMeridiemLetter(session.block)]]</span>
+      <h1 layout horizontal end aria-label$="Start time: [[session.block]]">
+        <span aria-hidden="true">[[_getMeridiemPart(session.block, 0)]]</span>
+        <span aria-hidden="true" class="schedule-block-meridiem">[[_getMeridiemLetter(session.block)]]</span>
       </h1>
     </div>
     <div class$="schedule-row [[_addClass('saved', session.saved)]]"
@@ -256,9 +256,9 @@ Fired when the user toggles bookmarking/removing a session.
                 <p class="note">
                   Note: Notifications are activated per device. To receive notifications on multiple devices, sign in on each device, enable notifications, and make sure you're online. All device notifications can be turned on/off at any time in the settings panel.
                 </p>
-                <span class="anchor-like" role="link" tabindex="0"
+                <a href="#" class="anchor-like" role="button" tabindex="0"
                       data-track-link="schedule-open-settings"
-                      on-click="openSettings">Settings</span>
+                      on-click="openSettings">Settings</a>
               </div>
             </iron-pages>
           </div>
@@ -354,6 +354,13 @@ Fired when the user toggles bookmarking/removing a session.
         behaviors: [IOBehaviors.UtilBehavior],
 
         properties: {
+          /**
+           * App logic
+           */
+          app: {
+            type: Object
+          },
+
           /**
            * Optional day to filter the sessions, e.g. 'day1'.
            */
@@ -459,10 +466,30 @@ Fired when the user toggles bookmarking/removing a session.
 
         attached: function() {
           this.listen(window, 'popstate', 'sessionDetailsPopstateHandler');
+          this.listen(window, 'click', '_closeFilters');
         },
 
         detached: function() {
           this.unlisten(window, 'popstate', 'sessionDetailsPopstateHandler');
+          this.showFilters = false;
+          this.selectedSession = null;
+          this.unlisten(window, 'click', '_closeFilters');
+        },
+
+        _closeFilters: function(e) {
+          var filterMetrics = this.$.filters.getBoundingClientRect();
+
+          var withinPanel = e.x >= filterMetrics.left &&
+                            e.x <= filterMetrics.right &&
+                            e.y >= filterMetrics.top &&
+                            e.y <= filterMetrics.bottom;
+
+          // Hide filters panel when the user clicks outside of it. Make sure
+          // not to hide it when the user is clicking the toggle button itself!
+          if (!withinPanel &&
+              !IOWA.Util.getEventSender(e, 'io-schedule-subnav')) {
+            this.showFilters = false;
+          }
         },
 
         onApplyFilter: function(e, detail) {
@@ -631,6 +658,8 @@ Fired when the user toggles bookmarking/removing a session.
 
         openSettings: function(e) {
           e.stopPropagation();
+          e.preventDefault();
+
           // TODO: note global pollution. Consider firing bubbling event.
           IOWA.Elements.Template.openSettings(e);
         },

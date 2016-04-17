@@ -112,14 +112,31 @@ Fired when sign in fails for some reason.
 
         onLoadAuth: function() {
           gapi.load('auth2', function () {
-            // Init auth.
-            this.auth2 = gapi.auth2.init({
+            var authOpts = {
               client_id: this.clientId,
               scope: this.scopes,
               fetch_basic_profile: false,
               cookie_policy: this.cookiePolicy
-            });
-            this.auth2.isSignedIn.listen(this.signinChangedHandler_);
+            };
+
+            // Initialize auth and then respond to the signed-in status.
+            this.auth2 = gapi.auth2.init(authOpts).then(function(auth2) {
+              this.auth2 = auth2;
+
+              var signedIn = this.auth2.isSignedIn.get();
+              if (signedIn) {
+                this.handleSignIn();
+              } else {
+                // This is likely to be redundant, but just ensure that the
+                // IndexedDB image cache is cleared if we know we're signed out.
+                this.clearCachedUserInfo();
+                IOWA.Analytics.updateTracker(
+                    IOWA.Analytics.customDimensions.SIGNED_IN, false);
+              }
+
+              // Listens for future changes to the signin status.
+              this.auth2.isSignedIn.listen(this.signinChangedHandler_);
+            }.bind(this));
           }.bind(this));
         },
 
@@ -129,18 +146,12 @@ Fired when sign in fails for some reason.
           }
           // Starts the client side sign-in popup flow.
           // Note: This isn't a real promise! You can't use catch().
-          this.auth2.signIn().then(undefined, function(error) {
-            debugLog('auth2.signIn error:', error);
-          });
+          this.auth2.signIn().then(undefined, this.handleSignInFailure);
         },
 
         signOut: function() {
           // Note: This isn't a real promise! You can't use catch().
-          this.auth2.signOut().then(function() {
-            this.clearCachedUserInfo();
-          }.bind(this), function(error) {
-            debugLog('auth2.signOut error:', error);
-          });
+          this.auth2.signOut().then(undefined, this.handleSignOutFailure);
         },
 
         loadCachedUserInfo: function() {
@@ -158,6 +169,7 @@ Fired when sign in fails for some reason.
         },
 
         clearCachedUserInfo: function() {
+          this.user = null;
           return IOWA.SimpleDB.clearData(IOWA.SimpleDB.NAMES.USER);
         },
 
@@ -187,18 +199,66 @@ Fired when sign in fails for some reason.
           }.bind(this));
         },
 
+        /**
+         * Runs whenever the user manually signs in or out.
+         * Note: this method is *not* run on the initial auth attempt.
+         * It is only run if the user's sign-in status changes.
+         * @param {boolean} signedIn
+         */
         signinChangedHandler: function(signedIn) {
-          // Reset user to null to overwrite any cached user data.
-          this.user = null;
-
-          this.signedIn = signedIn;
-          this.currentUser = this.auth2.currentUser.get();
-          if (this.signedIn) {
-            this.loadUserInfo();
+          if (signedIn) {
+            this.handleSignIn();
           } else {
-            this.signedIn = false;
-            this.fire('signin-change', {signedIn: false, user: null});
+            this.handleSignOut();
           }
+
+          IOWA.Analytics.trackEvent(
+              'auth', 'change', signedIn ? 'signed in' : 'signed out');
+        },
+
+        /**
+         * Handles successful sign ins, either via user action or the initial
+         * auth attempt.
+         */
+        handleSignIn: function() {
+          this.signedIn = true;
+          this.currentUser = this.auth2.currentUser.get();
+          this.loadUserInfo();
+
+          IOWA.Analytics.updateTracker(
+              IOWA.Analytics.customDimensions.SIGNED_IN, true);
+        },
+
+        /**
+         * Handles successful sign outs.
+         */
+        handleSignOut: function() {
+          this.signedIn = false;
+          this.clearCachedUserInfo();
+          this.fire('signin-change', {signedIn: false, user: null});
+
+          IOWA.Analytics.updateTracker(
+              IOWA.Analytics.customDimensions.SIGNED_IN, false);
+        },
+
+        /**
+         * Handles logging and reporting sign in errors.
+         * @param {Object} error The error object from gapi.auth2.
+         */
+        handleSignInFailure: function(error) {
+          debugLog('auth2.signIn error:', error);
+          IOWA.Analytics.trackEvent(
+              'auth', 'error', 'signin', error.type + ": " + error.reason);
+        },
+
+        /**
+         * Handles logging and reporting sign out errors.
+         * @param {Object} error The error object from gapi.auth2.
+         */
+        handleSignOutFailure: function(error) {
+          debugLog('auth2.signOut error:', error);
+          IOWA.Analytics.trackEvent(
+              'auth', 'error', 'signout', error.type + ": " + error.reason);
         }
       });
     }());

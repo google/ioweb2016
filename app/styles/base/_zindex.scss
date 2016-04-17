@@ -49,3 +49,8 @@ io-gallery {
 app-drawer {
   z-index: 12;
 }
+
+#splash {
+  z-index: 13; // higher than anything
+}
+

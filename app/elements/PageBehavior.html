@@ -27,6 +27,14 @@ window.IOBehaviors = window.IOBehaviors || {};
 var PageBehavior = {
 
   properties: {
+
+    /**
+     * App logic
+     */
+    app: {
+      type: Object
+    },
+
     /*
      * Slug name of the page.
      */
@@ -126,8 +134,7 @@ var PageBehavior = {
       // The target that's passed to Polymer.AppLayout.scroll needs to be an
       // object with a style property.
       var target = 'style' in IOWA.Elements.ScrollContainer ?
-        IOWA.Elements.ScrollContainer :
-        document.body;
+        IOWA.Elements.ScrollContainer : IOWA.Elements.Scroller;
       Polymer.AppLayout.scroll({
         top:  dest.getBoundingClientRect().top + offset,
         behavior: 'smooth',

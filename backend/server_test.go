@@ -23,58 +23,13 @@ import (
 	"google.golang.org/appengine/user"
 )
 
-func TestCheckAdmin(t *testing.T) {
-	defer preserveConfig()()
-
-	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("ok"))
-	})
-
-	config.Whitelist = []string{"white@example.org"}
-	config.Admins = []string{"admin@example.org"}
-
-	table := []struct {
-		env   string
-		email string
-		code  int
-	}{
-		{"stage", "", http.StatusFound},
-		{"stage", "dude@example.org", http.StatusForbidden},
-		{"stage", "white@example.org", http.StatusForbidden},
-		{"stage", "admin@example.org", http.StatusOK},
-		{"prod", "", http.StatusFound},
-		{"prod", "dude@example.org", http.StatusForbidden},
-		{"prod", "white@example.org", http.StatusForbidden},
-		{"prod", "admin@example.org", http.StatusOK},
-	}
-	for _, test := range table {
-		config.Env = test.env
-		w := httptest.NewRecorder()
-		r, _ := aetestInstance.NewRequest("GET", "/", nil)
-		if test.email != "" {
-			aetest.Login(&user.User{Email: test.email}, r)
-		}
-		checkAdmin(h).ServeHTTP(w, r)
-
-		if w.Code != test.code {
-			t.Errorf("%s: w.Code = %d; want %d %s\nResponse: %s",
-				test.email, w.Code, test.code, w.Header().Get("location"), w.Body.String())
-		}
-		if w.Code == http.StatusOK && w.Body.String() != "ok" {
-			t.Errorf("w.Body = %s; want 'ok'", w.Body.String())
-		}
-	}
-}
-
 func TestCheckWhitelist(t *testing.T) {
 	defer preserveConfig()()
+	config.Whitelist = []string{"@whitedomain.org", "white@example.org"}
 
 	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("ok"))
 	})
-
-	config.Whitelist = []string{"white@example.org"}
-	config.Admins = []string{"admin@example.org"}
 
 	table := []struct {
 		env   string
@@ -84,11 +39,11 @@ func TestCheckWhitelist(t *testing.T) {
 		{"stage", "", http.StatusFound},
 		{"stage", "dude@example.org", http.StatusForbidden},
 		{"stage", "white@example.org", http.StatusOK},
-		{"stage", "admin@example.org", http.StatusOK},
+		{"stage", "user@whitedomain.org", http.StatusOK},
 		{"prod", "", http.StatusFound},
 		{"prod", "dude@example.org", http.StatusForbidden},
 		{"prod", "white@example.org", http.StatusOK},
-		{"prod", "admin@example.org", http.StatusOK},
+		{"prod", "user@whitedomain.org", http.StatusOK},
 	}
 	for _, test := range table {
 		config.Env = test.env

@@ -1,0 +1,249 @@
+<!--
+Copyright 2016 Google Inc. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-label/iron-label.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="shared-app-styles.html">
+<script src="../bower_components/propel-web-push/dist/propel-client.js"></script>
+<!--
+The `<io-notification-widget>` element renders the notification toggle UI.
+-->
+
+<dom-module id="io-notification-widget">
+  <template>
+    <style include="shared-app-styles"></style>
+    <div class="card-content notification__feature">
+      <h4>Notifications</h4>
+      <iron-pages id="pages" selected="0">
+        <div>
+          <iron-label horizontal layout center>
+            <paper-checkbox checked="{{checked}}" disabled="{{disabled}}">
+            </paper-checkbox>
+            <b>I want to receive notifications from the Google I/O 2016 web app.</b>
+          </iron-label>
+          <p>If this option is deselected, I understand I won't be notified when:</p>
+          <ul>
+            <li>I/O is about to start</li>
+            <li>Events added to My Schedule are about to start</li>
+            <li>Videos of sessions added to My Schedule are available</li>
+          </ul>
+          <p class="settings-note"><b>Note</b>: Notifications are activated per device. To receive notifications on multiple devices, sign in on each device, enable notifications, and make sure you're online. However, turning off notifications on one device will turn them off on all devices.</p>
+        </div>
+        <div>
+          The permission required for notifications has been denied on this browser/device. If you want to enable this feature you will need to change the permission setting.
+          <br/>
+          <a href="/io2016/permissions" target="_blank">Learn how</a>.
+        </div>
+        <div>
+          The permission required for notifications has not been granted on this browser/device. If you want to enable this feature you will need to reload the page.
+        </div>
+      </iron-pages>
+    </div>
+  </template>
+
+  <script>
+  (function() {
+    "use strict";
+
+    var propel;
+
+    Polymer({
+
+      is: 'io-notification-widget',
+
+      properties: {
+        /**
+         * Whether or not the checkbox is checked
+         */
+        checked: {
+          type: Boolean,
+          observer: '_checkedChanged',
+          value: false
+        },
+
+        /**
+         * Whether or not the checkbox is disabled
+         */
+        disabled: {
+          type: Boolean,
+          value: true
+        },
+
+        /**
+         * If the user adds an item to their schedule we can try to subscribe
+         * them for push notifications. Setting this flag to false turns off the
+         * prompting, for example when they have previously declined or have
+         * explicitly turned notifications off.
+         */
+        autoSubscribe: {
+          type: Boolean,
+          value: true
+        },
+
+        /**
+         * Tracks the status of the Propel client
+         */
+        _propelStatus: {
+          readOnly: true,
+          type: Object,
+          observer: '_propelStatusChanged'
+        },
+
+        /**
+         * Tracks the value of the notifications enabled property in Firebase
+         */
+        _firebaseStatus: {
+          readOnly: true,
+          type: Boolean,
+          observer: '_firebaseStatusChanged'
+        }
+      },
+
+      ready: function() {
+        if (goog.propel.PropelClient.isSupported()) {
+          propel = new goog.propel.PropelClient(IOWA.ServiceWorkerRegistration.URL, IOWA.ServiceWorkerRegistration.SCOPE);
+        } else {
+          document.body.classList.add('nosupport-notifications');
+        }
+      },
+
+      attached: function() {
+        // propel will be set inside the ready callback iff we're on a platform
+        // that supports service worker push notifications.
+        if (!propel) {
+          return;
+        }
+
+        propel.addEventListener('statuschange', function(status) {
+          this._set_propelStatus(status);
+        }.bind(this));
+
+        IOWA.IOFirebase.registerToNotificationUpdates(function(value) {
+          this._set_firebaseStatus(value);
+        }.bind(this));
+
+        document.addEventListener('signin-change', function(e) {
+          if (!e.detail.user) {
+            // We logged out, so unsubscribe
+            propel.unsubscribe();
+          }
+        });
+      },
+
+      /**
+       * If autoSubscribe is true then try to subscribe for push messages
+       * @return {Boolean} Whether subscribing succeeded
+       */
+      subscribeIfAble: function() {
+        if (this.autoSubscribe && propel) {
+          return propel.subscribe()
+            .then(function(sub) {
+              // Did we successfully subscribe?
+              return sub ? true : false;
+            })
+            .catch(function(err) {
+              IOWA.Util.reportError(err);
+              // Failed to subscribe :(
+              return false;
+            });
+        }
+        return Promise.resolve(false);
+      },
+
+      _firebaseStatusChanged: function(value) {
+        // Feature turned off on another client, so turn off here too
+        if (!value) {
+          this.checked = false;
+          propel.unsubscribe();
+        } else {
+          Promise.all([
+            goog.propel.PropelClient.getPermissionState(),
+            propel.getSubscription()
+          ]).then(function(perm, sub) {
+            if ((perm[0] === 'default' || perm[0] === 'granted') && !sub) {
+              // If the user is being prompted for notifications approval we display the box
+              // as ticked but disabled.
+              if (perm[0] === 'default') {
+                this.disabled = true;
+                this.checked = true;
+              }
+              // 1. The global notification setting is on
+              // 2. There is no current local subscription
+              // So we're going to subscribe locally. This state is most
+              // likely to come about because the user signed out on this
+              // device after they enabled notifications.
+              propel.subscribe().catch(IOWA.Util.reportError);
+            }
+          }.bind(this));
+        }
+      },
+
+      _propelStatusChanged: function(status) {
+        if (status.permissionState === 'granted') {
+          this.$.pages.select(0);
+          this.checked = status.isSubscribed;
+          this.disabled = false;
+          IOWA.Auth.waitForSignedIn().then(function() {
+            IOWA.IOFirebase.setNotificationsEnabled(status.isSubscribed);
+            if (status.isSubscribed) {
+              IOWA.IOFirebase.addPushSubscription(status.currentSubscription);
+            } else {
+              // TODO(mscales): Remove the existing subscription from FB
+            }
+          });
+        } else if (status.permissionState === 'denied') {
+          this.$.pages.select(1);
+          // Were we actually trying to turn notifications on?
+          if (this.checked) {
+            IOWA.Elements.Toast.showMessage('Please update your notification permissions', null, 'Learn how', function() {
+                return window.open('permissions', '_blank');
+              });
+          }
+          this.disabled = true;
+          this.checked = false;
+          this.autoSubscribe = false;
+        } else if (this._firebaseStatus) {
+          // Permission dialog was dismissed without answering and we are already have notifications
+          // enabled in other browsers/devices for that user.
+          this.$.pages.select(2);
+          this.disabled = true;
+          this.checked = false;
+        } else {
+          // Users who have not enabled notifications yet.
+          this.$.pages.select(0);
+          this.disabled = false;
+          this.checked = false;
+        }
+      },
+
+      _checkedChanged: function() {
+        // Need to catch the case where disabled has not yet been set to it's
+        // default value, as happens when checked is initialized and set to it's
+        // initial value first.
+        if (this.disabled || this.disabled === undefined) {
+          return;
+        }
+
+        this.disabled = true;
+        this.autoSubscribe = this.checked;
+        var action = this.checked ? propel.subscribe() : propel.unsubscribe();
+
+        return action.catch(IOWA.Util.reportError);
+      }
+    });
+  })();
+  </script>
+</dom-module>
+

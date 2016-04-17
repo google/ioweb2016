@@ -119,12 +119,11 @@
   }
 
   function afterImports() {
+    initWorker();
+
     IOWA.Router = IOWA.Router_(window); // eslint-disable-line new-cap
     IOWA.Elements.init();
     IOWA.Router.init(IOWA.Elements.Template);
-    IOWA.Notifications.init();
-
-    initWorker();
 
     IOWA.Schedule.loadCachedUserSchedule();
   }
@@ -144,6 +143,12 @@
       // if (template.mapGalleryActive) {
       //   template.closeMapGallery();
       // }
+
+      var subnav = document.querySelector('io-schedule-subnav');
+      if (subnav) {
+        subnav.closeFilters();
+      }
+
       var live = document.querySelector('io-live');
       if (live) {
         live.openWidget = false;
@@ -171,6 +176,7 @@
 
   lazyLoadWCPolyfillsIfNecessary();
 
+  // Wait for critical.html to load if we don't have native HTML imports.
   if (IOWA.Util.supportsHTMLImports) {
     afterImports();
   } else {

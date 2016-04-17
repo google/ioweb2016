@@ -60,14 +60,13 @@ limitations under the License.
   <!-- <div layout horizontal end>
     <div id="countdown-container" class="card__container">
       <countdown-timer id="ctimer" date="[[date]]"
-          role="timer"
           on-countdown-intro="_onIntro"
-          current-time="{{currentTime}}"></countdown-timer>
+          current-time="{{currentTime}}"
+          aria-hidden="true"></countdown-timer>
     </div>
   </div> -->
 
-  <div id="aria-countdown" role="timer"
-       aria-label$="[[currentTime]]">[[currentTime]]</div>
+  <div id="aria-countdown" role="timer">[[currentTime]]</div>
 
   <!-- <paper-toolbar class="navbar__overlay navbar__overlay--video"
                  aria-hidden$="{{!app.fullscreenVideoActive}}" fit>
@@ -115,7 +114,7 @@ limitations under the License.
           </div>
         </div>
         <div class="card-content box card__photo card--top-right-clip" relative>
-          <iron-pages id="photo_list" class="card--top-right-clip" on-transitionend="onTransitionEnd" selected="0" fit>
+          <iron-pages id="photo_list" class="card--top-right-clip" on-transitionend="onTransitionEnd" selected="0" fit role="marquee" aria-label="image carousel">
             <img src="/io2016/images/home/cardboard.jpg" class="card--top-right-clip" style="visibility: visible;" alt="A man wearing headphones looks through a Google cardboard device">
             <img src="/io2016/images/home/keynote.jpg" class="card--top-right-clip" alt="A woman presents a keynote address on stage at Google I/O">
             <img src="/io2016/images/home/design.jpg" class="card--top-right-clip" alt="An audience sits on bean bag chairs watching a presentation on design">
@@ -192,7 +191,7 @@ limitations under the License.
             <social-poller url="/io2016/api/v1/social" posts="{{socialPosts}}"
                            interval="30000"></social-poller>
 
-            <iron-pages id="social_list" selected="0" layout vertical>
+            <iron-pages id="social_list" selected="0" layout vertical role="marquee" aria-label="tweet carousel">
               <template is="dom-repeat" items="[[_limit(socialPosts, 5)]]" as="post">
                 <social-post view="card"
                              kind="[[post.kind]]"
@@ -200,7 +199,8 @@ limitations under the License.
                              url="[[post.url]]"
                              text="[[post.text]]"
                              when="[[post.when]]"
-                             layout vertical flex>
+                             layout vertical flex
+                             on-transitionend="onTransitionEnd">
                 </social-post>
               </template>
             </iron-pages>
@@ -208,7 +208,7 @@ limitations under the License.
 
         </div>
         <div class="card-content box card--bottom-right-clip fullbleed io__hash bg-bluegrey-50-40">
-          <a href="https://twitter.com/search?q=%23io16" target="_blank">
+          <a href="https://twitter.com/search?q=%23io16" target="_blank" aria-label="Search #io16 on Twitter">
             <template is="dom-if" if="[[_loadVideo]]">
               <card-video id="card-video"
                   src="/io2016/videos/hashtag-800.mp4"
@@ -262,7 +262,7 @@ limitations under the License.
       _loadVideo: {
         type: Boolean,
         //computed: '_computeLoadVideo(app.isDesktopSize, app.pageTransitionDone, _scrolledToBottomCards)'
-        computed: '_computeLoadVideo(app.isDesktopSize, app.pageTransitionDone)'
+        computed: '_computeLoadVideo(app.isDesktopSize, app.pageTransitionDone, app.isIOS, app.isAndroid)'
       }
     },
 
@@ -364,8 +364,8 @@ limitations under the License.
       }
     },
 
-    _computeLoadVideo: function(isDesktopSize, pageTransitionDone, scrolledEnough) {
-      return isDesktopSize && pageTransitionDone;// && scrolledEnough;
+    _computeLoadVideo: function(isDesktopSize, pageTransitionDone, isIOS, isAndroid) {
+      return isDesktopSize && pageTransitionDone && !isIOS && !isAndroid;
     },
 
     _onSetReminder: function(e, detail) {

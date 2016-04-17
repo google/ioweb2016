@@ -19,13 +19,14 @@ IOWA.Elements = (function() {
 
   const ANALYTICS_LINK_ATTR = 'data-track-link';
 
-  function updateElements() {
+  // Called from critical.html when the bundle is loaded.
+  function onElementsBundleLoaded() {
     var onPageSelect = function() {
       document.body.removeEventListener('page-select', onPageSelect);
 
       // Load auth after initial page is setup. This helps do less upfront work
       // until the main schedule data is returned by the worker.
-      IOWA.Elements.GoogleSignIn.load = true;
+      // IOWA.Elements.GoogleSignIn.load = true;
 
       // Deep link into a subpage.
       var selectedPageEl = IOWA.Elements.LazyPages.selectedPage;
@@ -45,8 +46,15 @@ IOWA.Elements = (function() {
       );
     };
 
-    document.body.addEventListener('page-select', onPageSelect);
+    if (IOWA.Elements && IOWA.Elements.LazyPages &&
+        IOWA.Elements.LazyPages.selectedPage) {
+      onPageSelect();
+    } else {
+      document.body.addEventListener('page-select', onPageSelect);
+    }
+  }
 
+  function onDomBindStamp() {
     var main = document.querySelector('.io-main');
 
     var masthead = document.querySelector('.masthead');
@@ -85,10 +93,10 @@ IOWA.Elements = (function() {
     template.app.pageTransitionDone = false;
     template.app.fullscreenVideoActive = false;
     template.app.isIOS = IOWA.Util.isIOS();
+    template.app.isAndroid = IOWA.Util.isAndroid();
     template.app.ANALYTICS_LINK_ATTR = ANALYTICS_LINK_ATTR;
     template.app.scheduleData = null;
     template.app.savedSessions = [];
-    template.app.dontAutoSubscribe = false;
     template.app.currentUser = null;
     template.app.showMySchedulHelp = true;
     template.app.headerReveals = true;
@@ -277,8 +285,9 @@ IOWA.Elements = (function() {
         target: IOWA.Elements.Scroller
       });
 
-      // Move focus to the top of the page
-      IOWA.A11y.focusNavigation();
+      // Kick focus back to the page
+      // User will start from the top of the document again
+      e.target.blur();
     };
 
     template.toggleDrawer = function() {
@@ -303,6 +312,13 @@ IOWA.Elements = (function() {
       IOWA.Elements.GoogleSignIn.signIn();
     };
 
+    template.keyboardSignIn = function(e) {
+      // Listen for Enter or Space press
+      if (e.keyCode === 13 || e.keyCode === 32) {
+        this.signIn();
+      }
+    };
+
     template.signOut = function(e) {
       if (e) {
         e.preventDefault();
@@ -315,67 +331,10 @@ IOWA.Elements = (function() {
       IOWA.Elements.GoogleSignIn.signOut();
     };
 
-    template.updateNotifyUser = function(e) {
-      // Both these functions are asynchronous and return promises. Since there's no specific
-      // callback or follow-up that needs to be performed once they complete, the returned promise
-      // is ignored.
-      var target = Polymer.dom(e).localTarget;
-      if (target.checked) {
-        // subscribePromise() handles registering a subscription with the browser's push manager
-        // and toggling the notify state to true in the backend via an API call.
-        IOWA.Notifications.subscribePromise().then(function() {
-          template.set('app.dontAutoSubscribe', false);
-        }).catch(function(error) {
-          if (error && error.name === 'AbortError') {
-            IOWA.Elements.Toast.showMessage('Please update your notification permissions', null, 'Learn how', function() {
-              window.open('permissions', '_blank');
-            });
-          }
-        });
-      } else {
-        // The steps to turn off notifications are broken down into two separate promises, the first
-        // which unsubscribes from the browser's push manager and the second which sets the notify
-        // state to false in the backend via an API call.
-        this.set('app.dontAutoSubscribe', true);
-        IOWA.Notifications.unsubscribeFromPushManagerPromise()
-          .then(IOWA.Notifications.disableNotificationsPromise)
-          .catch(IOWA.Util.reportError);
-      }
-    };
-
-    // Updates IOWA.Elements.GoogleSignIn.user.notify = true iff the browser supports notifications,
-    // global notifications are enabled, the current browser has a push subscription,
-    // and window.Notification.permission === 'granted'.
-    // Updates IOWA.Elements.GoogleSignIn.user.notify = false otherwise.
-    template.getNotificationState = function() {
-      // This sends a signal to the template that we're still calculating the proper state, and
-      // that the checkbox should be disabled for the time being.
-      IOWA.Elements.GoogleSignIn.set('user.notify', null);
-
-      // First, check the things that can be done synchronously, before the promises.
-      if (IOWA.Notifications.isSupported && window.Notification.permission === 'granted') {
-        // Check to see if notifications are enabled globally, via an API call to the backend.
-        IOWA.Notifications.isNotifyEnabledPromise().then(function(isGlobalNotifyEnabled) {
-          if (isGlobalNotifyEnabled) {
-            // If notifications are on globally, next check to see if there's an existing push
-            // subscription for the current browser.
-            IOWA.Notifications.isExistingSubscriptionPromise().then(function(isExistingSubscription) {
-              // Set user.notify property based on whether there's an existing push manager subscription
-              IOWA.Elements.GoogleSignIn.set('user.notify', isExistingSubscription);
-            });
-          } else {
-            // If notifications are off globally, then always set the user.notify to false.
-            IOWA.Elements.GoogleSignIn.set('user.notify', false);
-          }
-        }).catch(function() {
-          // If something goes wrong while calculating the notifications state, just assume false.
-          IOWA.Elements.GoogleSignIn.set('user.notify', false);
-        });
-      } else {
-        // Wrap this in an async to ensure that the checked attribute is properly updated.
-        this.async(function() {
-          IOWA.Elements.GoogleSignIn.set('user.notify', false);
-        });
+    template.keyboardSignOut = function(e) {
+      // Listen for Enter or Space press
+      if (e.keyCode === 13 || e.keyCode === 32) {
+        this.signOut();
       }
     };
 
@@ -414,7 +373,6 @@ IOWA.Elements = (function() {
         return; // cut out early.
       }
 
-      this.$.navbar.classList.add('scrolled');
       this.$.fab.classList.add('active'); // Reveal FAB.
       this.debounce('updatefaba11y', function() {
         this.$.fabAnchor.setAttribute('tabindex', 0);
@@ -429,9 +387,9 @@ IOWA.Elements = (function() {
     };
 
     template._onContentScroll = function() {
-      this.debounce('mainscroll', function() {
-        var scrollTop = IOWA.Elements.Masthead._scrollTop;
+      var scrollTop = IOWA.Elements.Masthead._scrollTop;
 
+      this.debounce('mainscroll', function() {
         if (scrollTop === 0) {
           this.$.navbar.classList.remove('scrolled');
         } else {
@@ -441,21 +399,21 @@ IOWA.Elements = (function() {
         // Note, we should not call this on every scroll event, but scoping
         // the update to the nav is very cheap (< 1ms).
         IOWA.Elements.NavPaperTabs.updateStyles();
-
-        this._setFabPosition(scrollTop);
       }, 25);
+
+      window.requestAnimationFrame(function() {
+        this._setFabPosition(scrollTop);
+      }.bind(this));
     };
 
     template._isPage = function(page, selectedPage) {
       return page === selectedPage;
     };
 
-    template._disableNotify = function(notify) {
-      return notify === null;
-    };
-
     template.closeDrawer = function() {
-      this.$.appdrawer.close();
+      if (this.$.appdrawer) {
+        this.$.appdrawer.close();
+      }
     };
 
     template._onClearFilters = function(e) {
@@ -469,7 +427,7 @@ IOWA.Elements = (function() {
       template.addEventListener('dom-change', resolve);
     });
 
-    template.domStampedPromise.then(updateElements);
+    template.domStampedPromise.then(onDomBindStamp);
 
     template.addEventListener('page-transition-done', function() {
       this.set('app.pageTransitionDone', true);
@@ -487,6 +445,7 @@ IOWA.Elements = (function() {
   }
 
   return {
-    init: init
+    init,
+    onElementsBundleLoaded
   };
 })();

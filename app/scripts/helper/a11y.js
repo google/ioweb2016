@@ -81,13 +81,6 @@ IOWA.A11y = IOWA.A11y || (function() {
     });
   }
 
-  // Shortcut to set the focus to the first item in the navigation menu
-  function focusNavigation() {
-    // Temporarily focus the home link until we add in navigation
-    IOWA.Elements.Nav.querySelector('.io-logo-link').focus();
-    // IOWA.Elements.NavPaperTabs.items[0].firstElementChild.focus();
-  }
-
   // Pipe text to an aria-live region. This is automatically trigged
   // when toasts are shown.
   function announceLiveChange(e) {
@@ -101,6 +94,13 @@ IOWA.A11y = IOWA.A11y || (function() {
   function focusNewPage() {
     if (isInitialPage) {
       isInitialPage = false;
+
+      // Override navigation paper-tabs' super annoying focus managment
+      var tab = IOWA.Elements.NavPaperTabs.querySelector('paper-tab[tabindex="0"]');
+      if (tab) {
+        tab.setAttribute('tabindex', '-1');
+      }
+
       return;
     }
 
@@ -113,7 +113,6 @@ IOWA.A11y = IOWA.A11y || (function() {
     init: init,
     addFocusStates: addFocusStates,
     removeFocusStates: removeFocusStates,
-    focusNavigation: focusNavigation,
     announceLiveChange: announceLiveChange,
     focusNewPage: focusNewPage
   };

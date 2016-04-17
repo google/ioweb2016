@@ -36,6 +36,12 @@ class IOFirebase {
      */
     this.clockOffset = 0;
 
+    /**
+     * Stores callbacks that we should call when we become authenticated
+     * @type {Set<function>}
+     */
+    this.authCallbacks = [];
+
     // Disconnect Firebase while the focus is off the page to save battery.
     if (typeof document.hidden !== 'undefined') {
       document.addEventListener('visibilitychange',
@@ -76,6 +82,8 @@ class IOFirebase {
         IOWA.Analytics.trackEvent('login', 'success', firebaseShardUrl);
         debugLog('Authenticated successfully to Firebase shard', firebaseShardUrl);
 
+        this.authCallbacks.forEach(cb => cb());
+
         // Check to see if there are any failed session modification requests,
         // and if so, replay them before fetching the user schedule.
         return this._replayQueuedOperations().then(() => {
@@ -94,6 +102,7 @@ class IOFirebase {
     if (this.firebaseRef) {
       // Make sure to detach any callbacks.
       let userId = this.firebaseRef.getAuth().uid;
+      this.firebaseRef.child(`users/${userId}/web_notifications_enabled`).off();
       this.firebaseRef.child(`data/${userId}/my_sessions`).off();
       this.firebaseRef.child(`data/${userId}/feedback_submitted_sessions`).off();
       // Unauthorize the Firebase reference.
@@ -182,6 +191,25 @@ class IOFirebase {
   static goOnline() {
     Firebase.goOnline();
     debugLog('Firebase back online!');
+  }
+
+  /**
+   * Register to get updates on the notification preference. This should also be used to get the initial value.
+   *
+   * @param {IOFirebase~updateCallback} callback A callback function that will be called with the
+   *     value when the notification preference changes.
+   */
+  registerToNotificationUpdates(callback) {
+    const register = () => {
+      const userId = this.firebaseRef.getAuth().uid;
+      this.firebaseRef.child(`users/${userId}/web_notifications_enabled`)
+        .on('value', s => callback(s.val()));
+    };
+
+    if (this.isAuthed()) {
+      register();
+    }
+    this.authCallbacks.push(register);
   }
 
   /**
@@ -377,14 +405,7 @@ class IOFirebase {
     }
     const key = crc32(subscription.endpoint);
     // We need to turn the PushSubscription into a simple object
-    const clone = subscription.toJSON();
-    const value = {
-      endpoint: clone.endpoint,
-      keys: {
-        p256dh: clone.keys.p256dh,
-        auth: clone.keys.auth
-      }
-    };
+    const value = JSON.stringify(subscription);
     return this._setFirebaseUserData('users', `web_push_subscriptions/${key}`, value);
   }
 
@@ -396,22 +417,6 @@ class IOFirebase {
    */
   setNotificationsEnabled(value) {
     return this._setFirebaseUserData('users', 'web_notifications_enabled', !!value);
-  }
-
-  /**
-   * Checks if the user has enabled notifications on any device
-   *
-   * @return {Promise} Promise that fullfils when the value is available.
-   */
-  hasNotificationsEnabled() {
-    if (this.isAuthed()) {
-      let userId = this.firebaseRef.getAuth().uid;
-      let location = `users/${userId}/web_notifications_enabled`;
-      let ref = this.firebaseRef.child(location);
-      return ref.once('value');
-    }
-
-    return Promise.reject('Not currently authorized with Firebase.');
   }
 
   /**

@@ -22,7 +22,6 @@ $widgetWidth: 360px;
 
 :host {
   // @include typo-body();
-  background-color: #fff;
   z-index: 1;
 }
 
@@ -222,6 +221,11 @@ countdown-timer {
   height: $paperTabsHeight; // same as paper-tabs nav
   border-top-left-radius: 2px;
   border-top-right-radius: 2px;
+
+  iron-icon {
+    margin-right: $mobileKeyline;
+    margin-top: $mobileKeyline;
+  }
 }
 
 paper-tabs {
