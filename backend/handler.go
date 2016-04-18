@@ -73,7 +73,7 @@ func registerHandlers() {
 	handle("/task/ping-device", handlePingDevice)
 	handle("/task/clock", handleClock)
 	// debug handlers; not available in prod
-	if !isProd() {
+	if !isProd() || isDevServer() {
 		handle("/debug/srvget", debugServiceGetURL)
 		handle("/debug/push", debugPush)
 		handle("/debug/sync", debugSync)
