@@ -1,8 +1,5 @@
 @import '_elements';
 
-@import '../styles/components/_app';
-@import '../styles/components/_card';
-
 :host([inline]) {
   color: $color-text;
   position: absolute !important;
