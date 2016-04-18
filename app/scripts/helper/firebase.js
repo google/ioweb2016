@@ -105,6 +105,7 @@ class IOFirebase {
       this.firebaseRef.child(`users/${userId}/web_notifications_enabled`).off();
       this.firebaseRef.child(`data/${userId}/my_sessions`).off();
       this.firebaseRef.child(`data/${userId}/feedback_submitted_sessions`).off();
+      this.firebaseRef.child(`data/${userId}/viewed_videos`).off();
       // Unauthorize the Firebase reference.
       this.firebaseRef.unauth();
       debugLog('Unauthorized Firebase');
