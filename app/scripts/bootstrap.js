@@ -143,6 +143,12 @@
       // if (template.mapGalleryActive) {
       //   template.closeMapGallery();
       // }
+
+      var subnav = document.querySelector('io-schedule-subnav');
+      if (subnav) {
+        subnav.closeFilters();
+      }
+
       var live = document.querySelector('io-live');
       if (live) {
         live.openWidget = false;

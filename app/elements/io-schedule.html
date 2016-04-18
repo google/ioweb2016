@@ -433,6 +433,14 @@ Fired when the user toggles bookmarking/removing a session.
           },
 
           /**
+           * User's list of watched videos.
+           */
+          watchedVideos: {
+            type: Array,
+            value: function() { return []; }
+          },
+
+          /**
            * True to show the filter panel
            */
           showFilters: {
@@ -461,15 +469,36 @@ Fired when the user toggles bookmarking/removing a session.
           '_recalcFirstOfBlock(sessions.length, savedSessions.length)',
           // Recalc time blocks when new day is selected or filter is applied.
           '_recalcFirstOfBlock(sessions.length, day, filters.length)',
-          '_savedSessionsChanged(savedSessions.splices)'
+          '_savedSessionsChanged(savedSessions.splices)',
+          '_watchedVideosChanged(watchedVideos.splices)'
         ],
 
         attached: function() {
           this.listen(window, 'popstate', 'sessionDetailsPopstateHandler');
+          this.listen(window, 'click', '_closeFilters');
         },
 
         detached: function() {
           this.unlisten(window, 'popstate', 'sessionDetailsPopstateHandler');
+          this.showFilters = false;
+          this.selectedSession = null;
+          this.unlisten(window, 'click', '_closeFilters');
+        },
+
+        _closeFilters: function(e) {
+          var filterMetrics = this.$.filters.getBoundingClientRect();
+
+          var withinPanel = e.x >= filterMetrics.left &&
+                            e.x <= filterMetrics.right &&
+                            e.y >= filterMetrics.top &&
+                            e.y <= filterMetrics.bottom;
+
+          // Hide filters panel when the user clicks outside of it. Make sure
+          // not to hide it when the user is clicking the toggle button itself!
+          if (!withinPanel &&
+              !IOWA.Util.getEventSender(e, 'io-schedule-subnav')) {
+            this.showFilters = false;
+          }
         },
 
         onApplyFilter: function(e, detail) {
@@ -740,6 +769,17 @@ Fired when the user toggles bookmarking/removing a session.
             this.set('selectedSession.saved',
                      IOWA.Schedule.getSessionById(this.selectedSession.id).saved);
           }, 100);
+        },
+
+        _watchedVideosChanged: function(record) {
+          if (!this.watchedVideos.length || !this.selectedSession) {
+            return;
+          }
+
+          this.debounce('_watchedVideosChanged', function() {
+            this.set('selectedSession.watched',
+                     IOWA.Schedule.getSessionById(this.selectedSession.id).watched);
+          }, 25);
         },
 
         toggleFilters: function() {

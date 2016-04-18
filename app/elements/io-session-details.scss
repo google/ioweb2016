@@ -134,9 +134,13 @@ $color-section-border: #eaeaea;
     background: url(../images/play-video-button.png) no-repeat 50% 45%;
     background-size: 50px;
 
+    &.watched {
+      background-color: rgba(0,0,0,0.6);
+    }
+
     h4 {
       position: relative;
-      top: 50px;
+      top: 30px;
       color: #fff;
     }
   }

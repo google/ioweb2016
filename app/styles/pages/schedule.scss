@@ -201,10 +201,6 @@ iron-icon[icon="schedule"] {
     width: 100%;
     height: 100%;
   }
-  .card-content > div:first-child {
-    padding: 16px;
-    border-bottom: 1px solid $color-light-grey-border;
-  }
 }
 
 @media (min-width: $tablet-breakpoint-min) {

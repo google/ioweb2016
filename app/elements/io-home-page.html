@@ -27,6 +27,8 @@ limitations under the License.
 <link rel="import" href="countdown-timer/countdown-timer.html">
 <link rel="import" href="card-video.html">
 
+<!-- <link rel="import" href="io-live.html"> -->
+
 <link rel="import" href="shared-app-styles.html">
 <link rel="import" href="PageBehavior.html">
 
@@ -39,6 +41,22 @@ limitations under the License.
     }
   </style>
 
+  <!-- <io-live id="iolive"
+           app="[[app]]"
+           mode="{{liveModuleMode}}"
+           date="[[date]]"
+           sessions="[[app.scheduleData.sessions]]"
+           speakers="[[app.scheduleData.speakers]]"
+           user-sessions="[[app.savedSessions]]"
+           social-posts="[[socialPosts]]"
+           live-stream-channel-ids="[[liveStreamChannelIds]]"
+           auto-open-fab="[[app.pageTransitionDone]]"
+           on-countdown-intro="_onIntro"
+           fit>
+    <h2>I/O is starting soon. #io16</h2>
+  </io-live> -->
+
+  <!-- TODO: comment out when io-live is up. -->
   <div layout horizontal end>
     <div id="countdown-container" class="card__container">
       <countdown-timer id="ctimer" date="[[date]]"
@@ -96,7 +114,7 @@ limitations under the License.
           </div>
         </div>
         <div class="card-content box card__photo card--top-right-clip" relative>
-          <iron-pages id="photo_list" class="card--top-right-clip" on-transitionend="onTransitionEnd" selected="0" fit>
+          <iron-pages id="photo_list" class="card--top-right-clip" on-transitionend="onTransitionEnd" selected="0" fit role="marquee" aria-label="image carousel">
             <img src="/io2016/images/home/cardboard.jpg" class="card--top-right-clip" style="visibility: visible;" alt="A man wearing headphones looks through a Google cardboard device">
             <img src="/io2016/images/home/keynote.jpg" class="card--top-right-clip" alt="A woman presents a keynote address on stage at Google I/O">
             <img src="/io2016/images/home/design.jpg" class="card--top-right-clip" alt="An audience sits on bean bag chairs watching a presentation on design">
@@ -173,7 +191,7 @@ limitations under the License.
             <social-poller url="/io2016/api/v1/social" posts="{{socialPosts}}"
                            interval="30000"></social-poller>
 
-            <iron-pages id="social_list" selected="0" layout vertical>
+            <iron-pages id="social_list" selected="0" layout vertical role="marquee" aria-label="tweet carousel">
               <template is="dom-repeat" items="[[_limit(socialPosts, 5)]]" as="post">
                 <social-post view="card"
                              kind="[[post.kind]]"
@@ -181,7 +199,8 @@ limitations under the License.
                              url="[[post.url]]"
                              text="[[post.text]]"
                              when="[[post.when]]"
-                             layout vertical flex>
+                             layout vertical flex
+                             on-transitionend="onTransitionEnd">
                 </social-post>
               </template>
             </iron-pages>
@@ -291,7 +310,12 @@ limitations under the License.
     },
 
     onPageTransitionDone: function() {
-      this.$.ctimer.start(); // Start countdown.
+      if (this.$.ctimer) {
+        this.$.ctimer.start(); // Start countdown.
+      }
+      if (this.$.iolive) {
+        this.$.iolive.startCountdown(); // Start io-live's countdown.
+      }
 
       this.startTweetCycler();
 
@@ -331,11 +355,13 @@ limitations under the License.
     },
 
     _onPageScroll: function() {
-      this.$.ctimer.stop();
+      if (this.$.ctimer) {
+        this.$.ctimer.stop();
 
-      this.debounce('enablecountdown', function() {
-        this.$.ctimer.start();
-      }, 250);
+        this.debounce('enablecountdown', function() {
+          this.$.ctimer.start();
+        }, 250);
+      }
     },
 
     _computeLoadVideo: function(isDesktopSize, pageTransitionDone, isIOS, isAndroid) {

@@ -163,7 +163,7 @@ Fired when the clears filter "x" is clicked.
          on-tap="toggleFilters">
       <span hidden$="[[app.isPhoneSize]]">Filter</span>
       <!-- paper-icon-buttons supports its own disabled property. yay! -->
-      <paper-icon-button icon="io:filter-list" aria-label="Filter list"
+      <paper-icon-button icon="[[_computeFilterIcon(showFilters)]]" aria-label="Filter list"
                          disabled="[[_disableFilterBtn]]">
       </paper-icon-button>
     </div>
@@ -274,12 +274,20 @@ Fired when the clears filter "x" is clicked.
       this.showFilters = !this.showFilters;
     },
 
+    closeFilters: function() {
+      this.showFilters = false;
+    },
+
     _prettifyFilters: function(filters) {
       return this.filters.join(', ');
     },
 
     clearFilters: function() {
       this.fire('filters-clear');
+    },
+
+    _computeFilterIcon: function(filtering) {
+      return filtering ? 'io:close' : 'io:filter-list';
     }
 
   })
