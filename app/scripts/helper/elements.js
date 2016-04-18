@@ -97,6 +97,7 @@ IOWA.Elements = (function() {
     template.app.ANALYTICS_LINK_ATTR = ANALYTICS_LINK_ATTR;
     template.app.scheduleData = null;
     template.app.savedSessions = [];
+    template.app.watchedVideos = [];
     template.app.currentUser = null;
     template.app.showMySchedulHelp = true;
     template.app.headerReveals = true;
@@ -285,8 +286,9 @@ IOWA.Elements = (function() {
         target: IOWA.Elements.Scroller
       });
 
-      // Move focus to the top of the page
-      IOWA.A11y.focusNavigation();
+      // Kick focus back to the page
+      // User will start from the top of the document again
+      e.target.blur();
     };
 
     template.toggleDrawer = function() {

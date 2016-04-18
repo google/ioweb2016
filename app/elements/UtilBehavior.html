@@ -82,6 +82,19 @@ IOBehaviors.UtilBehavior = {
     e.stopPropagation();
     e.preventDefault();
     window.history.go(-1);
+  },
+
+  /**
+   * Returns the video ID of a Youtube embed URL.
+   *
+   * @param {string} youtubeUrl A full URL to a Youtube video.
+   * @return {string} video id.
+   */
+  _toVideoIdFilter: function(youtubeUrl) {
+    if (!youtubeUrl) {
+      return youtubeUrl;
+    }
+    return youtubeUrl.replace(/https?:\/\/youtu\.be\//, '');
   }
 
 };

@@ -86,6 +86,14 @@ Fired when the intro sequence starts or finishes.
           currentTime: {
             type: String,
             notify: true
+          },
+
+          /**
+           * If true, starts the countdown timer.
+           */
+          autoStart: {
+            type: Boolean,
+            value: false
           }
         },
 
@@ -96,6 +104,10 @@ Fired when the intro sequence starts or finishes.
           this.countdownController = new IOWA.CountdownTimer.Core(new Date(this.date), Polymer.dom(this).node);
           this.countdownController.setUp(_skipIntro);
           this.countdownController.attachEvents();
+
+          if (this.autoStart) {
+            this.start();
+          }
         },
 
         detached: function() {

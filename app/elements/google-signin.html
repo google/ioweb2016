@@ -127,6 +127,9 @@ Fired when sign in fails for some reason.
               if (signedIn) {
                 this.handleSignIn();
               } else {
+                // This is likely to be redundant, but just ensure that the
+                // IndexedDB image cache is cleared if we know we're signed out.
+                this.clearCachedUserInfo();
                 IOWA.Analytics.updateTracker(
                     IOWA.Analytics.customDimensions.SIGNED_IN, false);
               }
@@ -166,6 +169,7 @@ Fired when sign in fails for some reason.
         },
 
         clearCachedUserInfo: function() {
+          this.user = null;
           return IOWA.SimpleDB.clearData(IOWA.SimpleDB.NAMES.USER);
         },
 
@@ -229,7 +233,6 @@ Fired when sign in fails for some reason.
          * Handles successful sign outs.
          */
         handleSignOut: function() {
-          this.user = null;
           this.signedIn = false;
           this.clearCachedUserInfo();
           this.fire('signin-change', {signedIn: false, user: null});

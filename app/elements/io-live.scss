@@ -22,31 +22,33 @@ $widgetWidth: 360px;
 
 :host {
   // @include typo-body();
+  background-color: #fff;
   z-index: 1;
 }
 
 countdown-timer {
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+//   top: 0;
+//   left: 0;
+//   width: 100%;
+//   height: 100%;
+//   transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  padding-top: $navbarHeight;
 }
 
 .card {
-  box-shadow: none;
-  border-top: 1px solid $color-light-grey-border;
+//   box-shadow: none;
+//   border-top: 1px solid $color-light-grey-border;
   border-radius: 0;
 
   .card-content {
     padding: $mobileKeyline;
   }
 
-  a {
-    color: $color-cyan-A400;
-    font-weight: 500;
-    text-decoration: none;
-  }
+//   a {
+//     color: $color-cyan-A400;
+//     font-weight: 500;
+//     text-decoration: none;
+//   }
 }
 
 .bottom__bar {
@@ -89,13 +91,16 @@ countdown-timer {
   -webkit-clip-path: circle(28px at bottom 28px right 28px);
   clip-path: circle(32px at center);
   transition: -webkit-clip-path 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  background-color: white;
+  // background-color: white;
   height: 60vh;
   width: calc(100% - 32px);
   max-width: $widgetWidth;
   overflow: hidden;
   opacity: 0;
   pointer-events: none;
+
+  // box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.25),
+              // 0px 2px 3px 0px rgba(0, 0, 0, 0.25);
 
   &.transitioning {
     opacity: 1;
@@ -109,102 +114,102 @@ countdown-timer {
   }
 }
 
-#sessiondetails {
-  position: absolute;
-  top: 0;
-  left: 0;
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
+// #sessiondetails {
+//   position: absolute;
+//   top: 0;
+//   left: 0;
+//   margin: 0;
+//   padding: 0;
+//   width: 100%;
+//   height: 100%;
 
-  paper-progress {
-    position: absolute;
-    bottom: 0;
-  }
+//   paper-progress {
+//     position: absolute;
+//     bottom: 0;
+//   }
 
-  paper-fab {
-    background: #fff;
-    color: inherit;
-    position: absolute;
-    right: 16px;
-    bottom: calc(-40px/2); // fab size / 2
+//   paper-fab {
+//     background: #fff;
+//     color: inherit;
+//     position: absolute;
+//     right: 16px;
+//     bottom: calc(-40px/2); // fab size / 2
 
-    &.active {
-      color: white;
-      background-color: $color-cyan-A400;
-    }
+//     &.active {
+//       color: white;
+//       background-color: $color-cyan-A400;
+//     }
 
-    &[disabled] {
-      background-color: $color-light-grey-border;
-      color: $color-grey-50;
-    }
-  }
+//     &[disabled] {
+//       background-color: $color-light-grey-border;
+//       color: $color-grey-50;
+//     }
+//   }
 
-  paper-icon-button {
-    position: absolute;
-    z-index: 10;
-    top: $mobileKeyline / 2;
-    left: $mobileKeyline / 2;
-  }
+//   paper-icon-button {
+//     position: absolute;
+//     z-index: 10;
+//     top: $mobileKeyline / 2;
+//     left: $mobileKeyline / 2;
+//   }
 
-  .card__photo {
-    height: 200px;
-  }
+//   .card__photo {
+//     height: 200px;
+//   }
 
-  .session__info__section {
-    padding: $tabletKeyline;
-  }
-  .session__desc {
-    font-size: 14px;
-    margin-top: $tabletKeyline;
-  }
-  .session__title {
-    @include typo-heading-2();
-    line-height: 32px;
-    font-weight: 300;
-    margin: 0;
-  }
-  .speaker__info {
-    .speaker__name {
-      color: #000;
-      font-size: 16px;
-    }
-    .speaker__title {
-      color: $color-link-grey;
-      font-size: 14px;
-    }
-    .speaker__desc {
-      font-size: 14px;
-      padding: $mobileKeyline 0;
-    }
-  }
-  .session__social {
-    line-height: 32px;
+//   .session__info__section {
+//     padding: $tabletKeyline;
+//   }
+//   .session__desc {
+//     font-size: 14px;
+//     margin-top: $tabletKeyline;
+//   }
+//   .session__title {
+//     @include typo-heading-2();
+//     line-height: 32px;
+//     font-weight: 300;
+//     margin: 0;
+//   }
+//   .speaker__info {
+//     .speaker__name {
+//       color: #000;
+//       font-size: 16px;
+//     }
+//     .speaker__title {
+//       color: $color-link-grey;
+//       font-size: 14px;
+//     }
+//     .speaker__desc {
+//       font-size: 14px;
+//       padding: $mobileKeyline 0;
+//     }
+//   }
+//   .session__social {
+//     line-height: 32px;
 
-    a {
-      color: inherit;
-    }
-    .share-icon {
-      margin-right: 12px;
-      &:last-child {
-        margin-right: 0;
-      }
-    }
-  }
-  .session__speakers {
-    border-top: 1px solid $color-light-grey-border;
+//     a {
+//       color: inherit;
+//     }
+//     .share-icon {
+//       margin-right: 12px;
+//       &:last-child {
+//         margin-right: 0;
+//       }
+//     }
+//   }
+//   .session__speakers {
+//     border-top: 1px solid $color-light-grey-border;
 
-    h3 {
-      margin: 0;
-      font-weight: 400;
-    }
+//     h3 {
+//       margin: 0;
+//       font-weight: 400;
+//     }
 
-    .speaker__card {
-      margin-top: $tabletKeyline;
-    }
-  }
-}
+//     .speaker__card {
+//       margin-top: $tabletKeyline;
+//     }
+//   }
+// }
 
 .profile__pic {
   height: 56px;
@@ -215,7 +220,6 @@ countdown-timer {
 
 .widget-nav {
   height: $paperTabsHeight; // same as paper-tabs nav
-  color: white;
   border-top-left-radius: 2px;
   border-top-right-radius: 2px;
 
@@ -246,8 +250,9 @@ paper-tabs {
 }
 
 .card__photo--live {
-  background-image: url(../images/videos/keynote.jpg);
-  height: 100%;
+  background-image: url(../images/hash.png);
+  background-size: 50%;
+  min-height: 150px;
 
   img {
     height: 48px;
@@ -264,16 +269,15 @@ paper-tabs {
   }
 }
 
-.card__photo--live-desc {
-  position: absolute;
-  z-index: 1;
-  bottom: 0;
-}
+// .card__photo--live-desc {
+//   padding: $mobileKeyline;
+// }
 
 neon-animated-pages {
   margin-top: $paperTabsHeight * 2;
   overflow: hidden;
   z-index: 1; // force layer so no rendering artifacts.
+  background-color: #fafafa;
 }
 
 .schedule__content {
@@ -311,10 +315,10 @@ neon-animated-pages {
   }
 }
 
-paper-progress {
-  width: 100%;
-  height: 2px;
-}
+// paper-progress {
+//   width: 100%;
+//   height: 2px;
+// }
 
 #hashtab {
   overflow: auto;
@@ -361,7 +365,7 @@ paper-progress {
 #live-channel-menu {
   $profilepicSize: 40px;
 
-  margin: 0;
+  padding: 0;
   overflow: auto;
 
   .profile__pic {
@@ -397,10 +401,11 @@ paper-progress {
   opacity: 0;
   border-radius: 3px;
   border: 0;
-  background: url(../images/home/keynotebanner.jpg) no-repeat 50% 50%;
-  background-size: cover;
+  background: url(../images/hash.png) no-repeat 94% 50%;
+  background-color: $color-indigo-400;
+  background-size: 120px;
   color: white;
-  height: 80px;
+  height: 88px;
   width: calc(100% - 32px);
   max-width: $widgetWidth;
   position: absolute;
@@ -413,6 +418,12 @@ paper-progress {
 
   &.on {
     opacity: 1;
+  }
+}
+
+@media (max-width: $phone-breakpoint-max) {
+  countdown-timer {
+    padding-top: $navbarHeightMobile;
   }
 }
 

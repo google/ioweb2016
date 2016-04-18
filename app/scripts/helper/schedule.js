@@ -218,6 +218,23 @@ class Schedule {
       }
     };
 
+    let videoWatchUpdatesCallback = videoId => {
+      let template = IOWA.Elements.Template;
+      let watchedVideos = template.app.watchedVideos;
+      let sessions = template.app.scheduleData.sessions;
+      let sessionsListIndex = sessions.findIndex(session => {
+        return session.youtubeUrl && session.youtubeUrl.match(videoId);
+      });
+
+      if (watchedVideos.indexOf(videoId) === -1) {
+        // Add video to saved feedbacks.
+        template.push('app.watchedVideos', videoId);
+        template.set(`app.scheduleData.sessions.${sessionsListIndex}.watched`, true);
+
+        debugLog(`Session ${videoId} video has been watched.`);
+      }
+    };
+
     // We can't do anything until the master schedule has been fetched.
     this.schedulePromise().then(() => {
       if (replayFromCache) {
@@ -232,6 +249,8 @@ class Schedule {
           IOWA.IOFirebase.registerToSessionUpdates(sessionUpdatesCallback);
           // Listen to feedback updates.
           IOWA.IOFirebase.registerToFeedbackUpdates(sessionFeedbackUpdatesCallback);
+          // Listen to video watch updates.
+          IOWA.IOFirebase.registerToVideoWatchUpdates(videoWatchUpdatesCallback);
         });
       }
     });

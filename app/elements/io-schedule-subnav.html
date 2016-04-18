@@ -274,6 +274,10 @@ Fired when the clears filter "x" is clicked.
       this.showFilters = !this.showFilters;
     },
 
+    closeFilters: function() {
+      this.showFilters = false;
+    },
+
     _prettifyFilters: function(filters) {
       return this.filters.join(', ');
     },

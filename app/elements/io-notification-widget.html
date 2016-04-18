@@ -42,9 +42,12 @@ The `<io-notification-widget>` element renders the notification toggle UI.
           <p class="settings-note"><b>Note</b>: Notifications are activated per device. To receive notifications on multiple devices, sign in on each device, enable notifications, and make sure you're online. However, turning off notifications on one device will turn them off on all devices.</p>
         </div>
         <div>
-          The permission required for notifications has been denied. If you want to enable this feature you will need to change the permission setting.
+          The permission required for notifications has been denied on this browser/device. If you want to enable this feature you will need to change the permission setting.
           <br/>
-          <a href="permissions" target="_blank">Learn how</a>.
+          <a href="/io2016/permissions" target="_blank">Learn how</a>.
+        </div>
+        <div>
+          The permission required for notifications has not been granted on this browser/device. If you want to enable this feature you will need to reload the page.
         </div>
       </iron-pages>
     </div>
@@ -169,16 +172,21 @@ The `<io-notification-widget>` element renders the notification toggle UI.
             goog.propel.PropelClient.getPermissionState(),
             propel.getSubscription()
           ]).then(function(perm, sub) {
-            if (perm.state === 'granted' && !sub) {
+            if ((perm[0] === 'default' || perm[0] === 'granted') && !sub) {
+              // If the user is being prompted for notifications approval we display the box
+              // as ticked but disabled.
+              if (perm[0] === 'default') {
+                this.disabled = true;
+                this.checked = true;
+              }
               // 1. The global notification setting is on
-              // 2. This client already has permission for notifications
-              // 3. There is no current local subscription
+              // 2. There is no current local subscription
               // So we're going to subscribe locally. This state is most
               // likely to come about because the user signed out on this
               // device after they enabled notifications.
               propel.subscribe().catch(IOWA.Util.reportError);
             }
-          });
+          }.bind(this));
         }
       },
 
@@ -206,8 +214,14 @@ The `<io-notification-widget>` element renders the notification toggle UI.
           this.disabled = true;
           this.checked = false;
           this.autoSubscribe = false;
+        } else if (this._firebaseStatus) {
+          // Permission dialog was dismissed without answering and we are already have notifications
+          // enabled in other browsers/devices for that user.
+          this.$.pages.select(2);
+          this.disabled = true;
+          this.checked = false;
         } else {
-          // permission dialog was dismissed without answering, can still prompt again
+          // Users who have not enabled notifications yet.
           this.$.pages.select(0);
           this.disabled = false;
           this.checked = false;
