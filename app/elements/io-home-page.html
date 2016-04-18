@@ -27,6 +27,8 @@ limitations under the License.
 <link rel="import" href="countdown-timer/countdown-timer.html">
 <link rel="import" href="card-video.html">
 
+<!-- <link rel="import" href="io-live.html"> -->
+
 <link rel="import" href="shared-app-styles.html">
 <link rel="import" href="PageBehavior.html">
 
@@ -39,6 +41,22 @@ limitations under the License.
     }
   </style>
 
+  <!-- <io-live id="iolive"
+           app="[[app]]"
+           mode="{{liveModuleMode}}"
+           date="[[date]]"
+           sessions="[[app.scheduleData.sessions]]"
+           speakers="[[app.scheduleData.speakers]]"
+           user-sessions="[[app.savedSessions]]"
+           social-posts="[[socialPosts]]"
+           live-stream-channel-ids="[[liveStreamChannelIds]]"
+           auto-open-fab="[[app.pageTransitionDone]]"
+           on-countdown-intro="_onIntro"
+           fit>
+    <h2>I/O is starting soon. #io16</h2>
+  </io-live> -->
+
+  <!-- TODO: comment out when io-live is up. -->
   <div layout horizontal end>
     <div id="countdown-container" class="card__container">
       <countdown-timer id="ctimer" date="[[date]]"
@@ -292,7 +310,12 @@ limitations under the License.
     },
 
     onPageTransitionDone: function() {
-      this.$.ctimer.start(); // Start countdown.
+      if (this.$.ctimer) {
+        this.$.ctimer.start(); // Start countdown.
+      }
+      if (this.$.iolive) {
+        this.$.iolive.startCountdown(); // Start io-live's countdown.
+      }
 
       this.startTweetCycler();
 
@@ -332,11 +355,13 @@ limitations under the License.
     },
 
     _onPageScroll: function() {
-      this.$.ctimer.stop();
+      if (this.$.ctimer) {
+        this.$.ctimer.stop();
 
-      this.debounce('enablecountdown', function() {
-        this.$.ctimer.start();
-      }, 250);
+        this.debounce('enablecountdown', function() {
+          this.$.ctimer.start();
+        }, 250);
+      }
     },
 
     _computeLoadVideo: function(isDesktopSize, pageTransitionDone, isIOS, isAndroid) {
