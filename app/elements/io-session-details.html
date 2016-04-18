@@ -13,7 +13,6 @@ limitations under the License.
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
-<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
@@ -30,6 +29,7 @@ limitations under the License.
 
 <link rel="import" href="UtilBehavior.html">
 <link rel="import" href="shared-app-styles.html">
+<link rel="import" href="io-icons.html">
 <link rel="import" href="io-survey.html">
 
 <dom-module id="io-session-details">
@@ -57,6 +57,7 @@ limitations under the License.
       <io-survey id="ioSurvey"
                  app="[[app]]"
                  session="[[selectedSession]]"
+                 hidden
                  inline>
       </io-survey>
 
@@ -66,7 +67,7 @@ limitations under the License.
 
             <div id="survey_notification" class="fullschedule-banner card-content bg-bluegrey-50-20"
               layout horizontal center>
-              <iron-icon icon="stars"></iron-icon>
+              <iron-icon icon="io:stars"></iron-icon>
               <span>Your feedback has been submitted.  Thanks for participating!</span>
             </div>
 
@@ -250,11 +251,6 @@ limitations under the License.
       _startScheduleVideo: {
         type: Boolean,
         value: false
-      },
-
-      _selected: {
-        type: Number,
-        value: 0
       }
     },
     _showSurveyNotification: function() {

@@ -73,7 +73,7 @@
   --iron-icon-stroke-color: $color-text;
   width: 40px;
   height: 40px;
-  transition: background-color .3s linear .1s, color .3s linear .1s;
+  transition: color .2s ease-in-out .2s;
   border-radius: 50%;
 
   &.selected {

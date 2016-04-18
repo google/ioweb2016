@@ -14,25 +14,25 @@ limitations under the License.
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/neon-animation/neon-animation-runner-behavior.html">
 <link rel="import" href="../bower_components/neon-animation/animations/slide-from-bottom-animation.html">
 <link rel="import" href="../bower_components/neon-animation/animations/fade-out-animation.html">
+
+<link rel="import" href="io-icons.html">
 <link rel="import" href="shared-app-styles.html">
 
 <dom-module id="io-survey">
   <link rel="import" type="css" href="io-survey.css">
   <template>
-    <style include="shared-app-styles">
-    </style>
+    <style include="shared-app-styles"></style>
     <div class="card">
-      <section id="header" class="bg-cyan-200 card-content">
+      <section id="survey_header" class="bg-cyan-200 card-content">
         <paper-icon-button icon="close" id="close" on-click="_close"></paper-icon-button>
         <h1>Rate this Session</h1>
         <h3>[[session.title]]</h3>
         <h5 class="label">[[_sessionSpeakers]]</h5>
       </section>
-      <section id="body">
+      <section id="survey_body">
         <template is="dom-repeat" items="[[surveyQuestions]]" as="question">
           <survey-rating id=[[question.id]]
                          selected={{question.value}}
@@ -48,7 +48,7 @@ limitations under the License.
       </section>
       <div class="buttons card-content">
         <paper-button on-tap="_close">Cancel</paper-button>
-        <paper-button id="button_submit"
+        <paper-button id="survey_button_submit"
                       disabled
                       on-tap="_submit">Submit
         </paper-button>
@@ -58,9 +58,12 @@ limitations under the License.
   <script>
     (function() {
       'use strict';
+
       Polymer({
         is: 'io-survey',
+
         behaviors: [Polymer.NeonAnimationRunnerBehavior],
+
         properties: {
           /**
            * Selected session to survey
@@ -154,16 +157,12 @@ limitations under the License.
           'neon-animation-finish': '_onNeonAnimationFinish'
         },
 
-        ready: function() {
-          this.style.display = 'none';
-        },
-
         /**
          * Open the dialog
          */
         open: function() {
           this.opened = true;
-          this.style.display = 'block';
+          this.hidden = false;
           this.scrollTop = 0;
           this.playAnimation('entry');
           Polymer.IronDropdownScrollManager.pushScrollLock(this);
@@ -195,21 +194,20 @@ limitations under the License.
         /**
          * Checks if the survey is complete
          *
-         * @param newVal
-         * @param oldVal
+         * @param event
          * @private
          */
-        _computeComplete: function(newVal, oldVal) {
+        _computeComplete: function(event) {
           var complete = true;
-          for (var i in this.surveyQuestions) {
+          for (var i = 0; i < this.surveyQuestions.length; i++) {
             if (!this.surveyQuestions[i].value) {
               complete = false;
             }
           }
           if (complete) {
-            this.$.button_submit.removeAttribute('disabled');
+            this.$.survey_button_submit.removeAttribute('disabled');
           } else {
-            this.$.button_submit.setAttribute('disabled', '');
+            this.$.survey_button_submit.setAttribute('disabled', '');
           }
         },
 
@@ -219,7 +217,8 @@ limitations under the License.
          * @private
          */
         _resetValues: function() {
-          var surveys = this.getElementsByTagName('survey-rating');
+//          var surveys = this.getElementsByTagName('survey-rating');
+          var surveys = Polymer.dom(this.root).querySelector('survey-rating');
           for (var i = 0; i < surveys.length; i++) {
             surveys[i].reset();
           }
@@ -243,7 +242,7 @@ limitations under the License.
          */
         closeNoAnimation: function() {
           this.opened = false;
-          this.style.display = 'none';
+          this.hidden = true;
           Polymer.IronDropdownScrollManager.removeScrollLock(this);
         },
 
@@ -258,7 +257,7 @@ limitations under the License.
           this._close();
           IOWA.Schedule.saveSurvey(this.session.id, answers).then(function() {
             this.fire('survey-submitted');
-          });
+          }.bind(this));
         },
 
         /**
@@ -267,7 +266,7 @@ limitations under the License.
          */
         _onNeonAnimationFinish: function() {
           if (!this.opened) {
-            this.style.display = 'none';
+            this.hidden = true;
           }
         }
       });
@@ -278,27 +277,26 @@ limitations under the License.
 <dom-module id="survey-rating">
   <link rel="import" type="css" href="io-survey.css">
   <template>
-    <style include="shared-app-styles">
-    </style>
+    <style include="shared-app-styles"></style>
     <h5 class="label margin-b-20">[[question.labelText]]</h5>
     <div id="rating" layout flex justified>
-      <paper-icon-button value="1" icon="stars" class="rate__icon"
+      <paper-icon-button value="1" icon="io:stars" class="rate__icon"
                          on-mouseover="_mouseOverHandler"
                          on-mouseout="_mouseOutHandler"
                          on-tap="_selectValue"></paper-icon-button>
-      <paper-icon-button value="2" icon="stars" class="rate__icon"
+      <paper-icon-button value="2" icon="io:stars" class="rate__icon"
                          on-mouseover="_mouseOverHandler"
                          on-mouseout="_mouseOutHandler"
                          on-tap="_selectValue"></paper-icon-button>
-      <paper-icon-button value="3" icon="stars" class="rate__icon"
+      <paper-icon-button value="3" icon="io:stars" class="rate__icon"
                          on-mouseover="_mouseOverHandler"
                          on-mouseout="_mouseOutHandler"
                          on-tap="_selectValue"></paper-icon-button>
-      <paper-icon-button value="4" icon="stars" class="rate__icon"
+      <paper-icon-button value="4" icon="io:stars" class="rate__icon"
                          on-mouseover="_mouseOverHandler"
                          on-mouseout="_mouseOutHandler"
                          on-tap="_selectValue"></paper-icon-button>
-      <paper-icon-button value="5" icon="stars" class="rate__icon"
+      <paper-icon-button value="5" icon="io:stars" class="rate__icon"
                          on-mouseover="_mouseOverHandler"
                          on-mouseout="_mouseOutHandler"
                          on-tap="_selectValue"></paper-icon-button>
@@ -311,8 +309,10 @@ limitations under the License.
   <script>
     (function() {
       'use strict';
+
       Polymer({
         is: 'survey-rating',
+
         properties: {
           /**
            * Selected rating
