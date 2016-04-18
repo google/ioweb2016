@@ -188,7 +188,7 @@ $filterBannerHeight: 72px;
 }
 
 .filters__panel {
-  background: #fff;
+  background: rgba(255,255,255,0.9);
   position: absolute;
   z-index: 2;
   width: 100%;
@@ -402,9 +402,14 @@ paper-radio-button {
   }
 
   .filters__panel {
+    &[filtering] {
+      margin-top: -$filterBannerHeight;
+      z-index: 9;
+    }
+
     &.fixed {
       &[filtering] {
-        margin-top: $filterBannerHeight;
+        margin-top: 0;
       }
     }
   }
