@@ -217,7 +217,6 @@ limitations under the License.
          * @private
          */
         _resetValues: function() {
-//          var surveys = this.getElementsByTagName('survey-rating');
           var surveys = Polymer.dom(this.root).querySelector('survey-rating');
           for (var i = 0; i < surveys.length; i++) {
             surveys[i].reset();
