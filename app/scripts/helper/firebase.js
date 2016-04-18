@@ -105,6 +105,7 @@ class IOFirebase {
       this.firebaseRef.child(`users/${userId}/web_notifications_enabled`).off();
       this.firebaseRef.child(`data/${userId}/my_sessions`).off();
       this.firebaseRef.child(`data/${userId}/feedback_submitted_sessions`).off();
+      this.firebaseRef.child(`data/${userId}/viewed_videos`).off();
       // Unauthorize the Firebase reference.
       this.firebaseRef.unauth();
       debugLog('Unauthorized Firebase');
@@ -232,6 +233,17 @@ class IOFirebase {
    */
   registerToFeedbackUpdates(callback) {
     this._registerToUpdates('data', 'feedback_submitted_sessions', callback);
+  }
+
+  /**
+   * Register to get updates on session videos the user has watched. This
+   * should also be used to get the initial list of videos watched by the user.
+   *
+   * @param {IOFirebase~updateCallback} callback Called when the list of watched
+   *     videos changes.
+   */
+  registerToVideoWatchUpdates(callback) {
+    this._registerToUpdates('data', 'viewed_videos', callback);
   }
 
   /**
@@ -389,7 +401,7 @@ class IOFirebase {
   markVideoAsViewed(videoIdOrUrl) {
     // Making sure we save the ID of the video and not the full Youtube URL.
     let match = videoIdOrUrl.match(/.*(?:youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/);
-    let videoId = match ? videoIdOrUrl : match[1];
+    let videoId = match ? match[1] : videoIdOrUrl;
     return this._setFirebaseUserData('data', `viewed_videos/${videoId}`, true);
   }
 

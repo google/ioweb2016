@@ -51,8 +51,8 @@ limitations under the License.
     <div class="fullschedule-banner card-content bg-bluegrey-50-60"
          layout horizontal center>
       <paper-icon-button icon="io:arrow-back" dialog-dismiss
-                         aria-label="Full Schedule"></paper-icon-button>
-      <span>Full Schedule</span>
+                         aria-label$="[[_computeHeaderMsg(selectedSession.watched)]]"></paper-icon-button>
+      <span>[[_computeHeaderMsg(selectedSession.watched)]]</span>
     </div>
 
     <paper-dialog-scrollable id="scrollable">
@@ -69,11 +69,13 @@ limitations under the License.
                 iv_load_policy="3" rel="0" autoplay="1"
                 on-google-youtube-ready="onScheduleVideoReady"></google-youtube>
           </template>
-          <div class="play__button__container" on-click="onVideoPlay"
-               data-track-link$="{{selectedSession.youtubeUrl}}"
-               hidden$="{{showSessionPlayButton(selectedSession)}}"
+          <div class$="play__button__container [[_addClass('watched', selectedSession.watched)]]"
+               on-click="onVideoPlay"
+               data-videoid$="[[selectedSession.youtubeUrl]]"
+               data-track-link$="[[selectedSession.youtubeUrl]]"
+               hidden$="[[hideSessionPlayButton(selectedSession)]]"
                layout vertical center-center fit>
-            <h4>Watch video</h4>
+            <h4>[[_computeWatchedVideoMsg(selectedSession.watched)]]</h4>
           </div>
           <iron-image src="[[placeholderImage(selectedSession)]]"
                       placeholder="images/io16-social.jpg"
@@ -256,13 +258,17 @@ limitations under the License.
     onVideoPlay: function(e, detail) {
       this.noop(e);
 
-      this._startScheduleVideo = true;
-
       var target = Polymer.dom(e).rootTarget;
+
+      var videoUrl = target.getAttribute('data-videoid');
+      if (videoUrl) {
+        this._startScheduleVideo = true;
+        IOWA.IOFirebase.markVideoAsViewed(videoUrl);
+      }
+
       if (target && target.hasAttribute(this.app.ANALYTICS_LINK_ATTR)) {
         var videoUrl = target.getAttribute(this.app.ANALYTICS_LINK_ATTR);
         IOWA.Analytics.trackEvent('schedule', 'video play', videoUrl);
-        IOWA.IOFirebase.markVideoAsViewed(videoUrl);
       }
     },
 
@@ -270,10 +276,13 @@ limitations under the License.
       return startVideo && !isLivestream && youtubeUrl;
     },
 
-    showSessionPlayButton: function(selectedSession) {
+    hideSessionPlayButton: function(selectedSession) {
       if (!selectedSession) {
         return false;
       }
+      // Live streamed videos are on a channel that plays all day. Don't show
+      // the play button until they're marked as !isLivestream and have a
+      // session video URL.
       return selectedSession.isLivestream || !selectedSession.youtubeUrl;
     },
 
@@ -475,6 +484,14 @@ limitations under the License.
       // Panel is already open, but force the event handler so the pushState
       // and other code runs.
       this._onSessionDetailsOpen();
+    },
+
+    _computeWatchedVideoMsg: function(watched) {
+      return watched ? 'Replay' : 'Watch video';
+    },
+
+    _computeHeaderMsg: function(watched) {
+      return watched ? "You've watched this video" : 'Full Schedule';
     },
 
     noop: function(e) {

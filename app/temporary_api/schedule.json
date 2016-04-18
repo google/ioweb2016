@@ -1165,7 +1165,7 @@
       "description":"Android Studio has a wide range of features designed for experienced developers. This session will take an in-depth look into some of the advanced features of Android Studio and you can take away new productivity tips to help in app development.",
       "startTimestamp":"2016-05-19T16:00:00Z",
       "endTimestamp":"2016-05-19T17:00:00Z",
-      "isLivestream":false,
+      "isLivestream":true,
       "isFeatured":false,
       "tags":[
         "TRACK_ANDROID",
@@ -1190,7 +1190,7 @@
       "filters":{
         "Android":true,
         "Develop":true,
-        "Live streamed":false,
+        "Live streamed":true,
         "Sessions":true
       }
     },

@@ -433,6 +433,14 @@ Fired when the user toggles bookmarking/removing a session.
           },
 
           /**
+           * User's list of watched videos.
+           */
+          watchedVideos: {
+            type: Array,
+            value: function() { return []; }
+          },
+
+          /**
            * True to show the filter panel
            */
           showFilters: {
@@ -461,7 +469,8 @@ Fired when the user toggles bookmarking/removing a session.
           '_recalcFirstOfBlock(sessions.length, savedSessions.length)',
           // Recalc time blocks when new day is selected or filter is applied.
           '_recalcFirstOfBlock(sessions.length, day, filters.length)',
-          '_savedSessionsChanged(savedSessions.splices)'
+          '_savedSessionsChanged(savedSessions.splices)',
+          '_watchedVideosChanged(watchedVideos.splices)'
         ],
 
         attached: function() {
@@ -760,6 +769,17 @@ Fired when the user toggles bookmarking/removing a session.
             this.set('selectedSession.saved',
                      IOWA.Schedule.getSessionById(this.selectedSession.id).saved);
           }, 100);
+        },
+
+        _watchedVideosChanged: function(record) {
+          if (!this.watchedVideos.length || !this.selectedSession) {
+            return;
+          }
+
+          this.debounce('_watchedVideosChanged', function() {
+            this.set('selectedSession.watched',
+                     IOWA.Schedule.getSessionById(this.selectedSession.id).watched);
+          }, 25);
         },
 
         toggleFilters: function() {
