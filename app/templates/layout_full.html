@@ -282,7 +282,7 @@ limitations under the License.
               reveals="[[app.headerReveals]]" effects="fade-background waterfall">
     <app-toolbar id="navbar" role="navigation">
       <paper-icon-button icon="io:menu"
-                         on-tap="toggleDrawer"
+                         on-click="toggleDrawer"
                          hidden$="[[!app.isPhoneSize]]"
                          aria-label="Open navigation"></paper-icon-button>
       <div flex disabled$="{{_isPage('home', selectedPage)}}">

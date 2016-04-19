@@ -31,6 +31,11 @@ IOWA.A11y = IOWA.A11y || (function() {
     addFocusStates('#signin-nav-elements .button-link');
     document.addEventListener('toast-message', announceLiveChange);
     document.addEventListener('page-transition-done', focusNewPage);
+    document.addEventListener('app-drawer-transitioned', focusDrawer.bind(this));
+
+    // Hold a reference to the first focusable item in the drawer so we
+    // can send focus to it anytime the drawer is opened
+    this._drawerAnchor = IOWA.Elements.Drawer.querySelector('a');
   }
 
   // Handlers managed by the addFocusStates and removeFocusStates methods.
@@ -109,11 +114,18 @@ IOWA.A11y = IOWA.A11y || (function() {
     page.manageFocus();
   }
 
+  function focusDrawer() {
+    if (IOWA.Elements.Drawer.opened) {
+      this._drawerAnchor.focus();
+    }
+  }
+
   return {
     init: init,
     addFocusStates: addFocusStates,
     removeFocusStates: removeFocusStates,
     announceLiveChange: announceLiveChange,
-    focusNewPage: focusNewPage
+    focusNewPage: focusNewPage,
+    focusDrawer: focusDrawer
   };
 })();
