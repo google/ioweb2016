@@ -89,13 +89,11 @@ Fired when the mode changes.
                aria-label="Live schedule" title="Live schedule"
                on-tap="onFabClick"></paper-fab>
 
-    <!-- <template is="dom-if" if="[[afterKeynote]]"> -->
-      <div class$="keynote__banner card [[_computeKeynoteBannerClass(afterKeynote, openWidget)]]" layout horizontal on-tap="onPlayKeynote">
-        <div class="card-content" layout horizontal center>
-          <div><iron-icon icon="io:play-circle-fill" self-center></iron-icon> Watch the keynote</div>
-        </div>
+    <div class$="keynote__banner card [[_computeKeynoteBannerClass(afterKeynote, openWidget)]]" layout horizontal on-tap="onPlayKeynote">
+      <div class="card-content" layout horizontal center>
+        <div><iron-icon icon="io:play-circle-fill" self-center></iron-icon> Watch the keynote</div>
       </div>
-    <!-- </template> -->
+    </div>
 
     <div id="livewidget" class="bg-cyan-400" on-transitionend="onFabTransition">
 
@@ -120,7 +118,7 @@ Fired when the mode changes.
             <div hidden$="[[!_equal(mode, _MODES.BEFORE)]]" fit layout vertical>
               <div class="card__photo card__photo--live bg-indigo-400" flex two></div>
               <div class="card card__photo--live-desc">
-                <div class="card-content">Our 9th annual Google I/O developer conference will kick-off with a keynote hosted by our Senior Vice-President of Products, Sundar Pichai.</div>
+                <div class="card-content">Join us to learn about product and platform innovation at Google, starting with a live kickoff from Google CEO Sundar Pichai.</div>
               </div>
             </div>
 
@@ -134,7 +132,7 @@ Fired when the mode changes.
             <div layout vertical hidden$="[[!_hasLiveSessions(currentLiveSessions, mode)]]">
               <div class="card">
                 <div class="card-content">
-                  <h2>I/O Live will resume soon</h2>
+                  <h2>I/O Live continues tomorrow</h2>
                   <div>In the meantime, browse the live schedule and create your own I/O Live playlist.</div>
                 </div>
               </div>
@@ -144,7 +142,7 @@ Fired when the mode changes.
               <div class="card" layout vertical flex>
                 <div class="card-content">
                   <h2>Thanks for watching I/O 2016</h2>
-                  <div>Missed a session? No worries! You'll be able to watch all of the recorded sessions soon.</div>
+                  <div>Missed a session? No worries! You'll be able to watch all of the recorded sessions soon. </div>
                 </div>
               </div>
             </div>
@@ -718,7 +716,7 @@ Fired when the mode changes.
     //     this.mode = this._MODES.LIVE;
     //   }
     // },
-    onPlayKeynote: function(e, detail, sender) {
+    onPlayKeynote: function(e, detail) {
       var keynoteSession = this.sessions[0];
       if (keynoteSession.id === '__keynote__') {
         this.selectedVideoId = keynoteSession.youtubeUrl;
