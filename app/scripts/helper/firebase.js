@@ -77,16 +77,16 @@ class IOFirebase {
     return this._setClockOffset()
       .then(() => this.firebaseRef.authWithOAuthToken('google', accessToken))
       .then(() => {
-        this._bumpLastActivityTimestamp();
-
         IOWA.Analytics.trackEvent('login', 'success', firebaseShardUrl);
         debugLog('Authenticated successfully to Firebase shard', firebaseShardUrl);
 
         this.authCallbacks.forEach(cb => cb());
 
-        // Check to see if there are any failed session modification requests,
-        // and if so, replay them before fetching the user schedule.
-        return this._replayQueuedOperations().then(() => {
+        return this._bumpLastActivityTimestamp().then(() => {
+          // Check to see if there are any failed session modification requests,
+          // and if so, replay them before fetching the user schedule.
+          return this._replayQueuedOperations();
+        }).then(() => {
           IOWA.Schedule.loadUserSchedule();
         });
       }).catch(error => {
@@ -140,6 +140,12 @@ class IOFirebase {
         // _setFirebaseData() will take care of deleting the IDB entry.
         return this._setFirebaseData(attribute, queuedOperations[attribute]);
       }));
+    }).then(results => {
+      // Only display the toast if the Promise.all() from the previous step
+      // fulfilled with a value, since there might not be anything replayed.
+      if (results && results.length) {
+        IOWA.Elements.Toast.showMessage('My Schedule was updated with offline changes.');
+      }
     }).catch(error => {
       debugLog('Error in _replayQueuedOperations: ' + error);
     });
