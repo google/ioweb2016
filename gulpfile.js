@@ -214,6 +214,7 @@ gulp.task('concat-and-uglify-js', 'Crush JS', ['eslint', 'generate-page-metadata
 
   var serviceWorkerScriptStream = gulp.src([
     IOWA.appDir + '/bower_components/sw-toolbox/sw-toolbox.js',
+    IOWA.appDir + '/bower_components/propel-web-push/dist/propel-worker.js',
     IOWA.appDir + '/bower_components/simpledb_polyfill/index.js',
     IOWA.appDir + '/scripts/sw-toolbox/*.js'
   ])
@@ -417,6 +418,7 @@ gulp.task('generate-service-worker-dev', 'Generate service worker for dev', ['sa
   del.sync([IOWA.appDir + '/service-worker.js']);
   var importScripts = glob.sync('scripts/sw-toolbox/*.js', {cwd: IOWA.appDir});
   importScripts.unshift('bower_components/simpledb_polyfill/index.js');
+  importScripts.unshift('bower_components/propel-web-push/dist/propel-worker.js');
   importScripts.unshift('bower_components/sw-toolbox/sw-toolbox.js');
 
   generateServiceWorker(IOWA.appDir, !!argv['fetch-dev'], importScripts, function(error, serviceWorkerFileContents) {
