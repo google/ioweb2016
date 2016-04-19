@@ -109,6 +109,11 @@ limitations under the License.
           </h3>
           <div layout flex end>
             <div>
+              <span class="notification__feature">
+                <a href="#" data-track-link="home-reminder-button" on-click="_onSetReminder">
+                  <paper-button class="reminder-button" noink tabindex="-1">Set a reminder</paper-button>
+                </a>
+              </span>
               <h5 style="font-weight:normal">Google I/O is for developers&#8212;the creative coders who are building what&#8217;s next. Together we&#8217;ll explore the latest in tech, mobile, and beyond.</h5>
             </div>
           </div>
@@ -372,14 +377,9 @@ limitations under the License.
       e.preventDefault();
 
       IOWA.Schedule.saveSession('__keynote__', true).then(function() {
-        var savedSessions = this.app.savedSessions;
-        if (savedSessions.length) {
-          IOWA.Schedule.updateSavedSessionsUI(savedSessions);
-        }
-
         IOWA.Schedule.bookmarkSessionNotification(
-            true, 'You\'ll be reminded when I/O starts.');
-      }.bind(this));
+            true, "You'll be reminded when I/O starts.");
+      });
     },
 
     _cyclePhotos: function() {
@@ -426,7 +426,6 @@ limitations under the License.
         logo.classList.add('active');
       }
     }
-
   });
 
 }());

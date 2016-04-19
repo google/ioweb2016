@@ -43,6 +43,20 @@ h3 a {
   font-weight: inherit;
 }
 
+.reminder-button {
+  width: 133px;
+  background: #fff;
+  color: $color-bluegrey-800;
+  font-size: 14px;
+  line-height: 14px;
+  margin: 0 0 $desktopKeyline 0;
+  border-radius: 2px;
+
+  &:hover {
+    @include shadow-z1();
+  }
+}
+
 .photo__people {
   background-image: url(../images/home/cardboard.jpg);
 }
