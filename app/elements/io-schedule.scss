@@ -369,63 +369,67 @@ paper-radio-button {
 }
 
 @media (min-width: $tablet-breakpoint-min) {
-  .schedule-row {
-    padding: $tabletKeyline;
-  }
-  .schedule-block-title {
-    padding: $tabletKeyline 0;
-  }
-  .schedule-title {
-    font-size: 20px;
-    line-height: 24px;
-  }
-  .schedule-time {
-    line-height: 24px;
-  }
-  .schedule-toggle-buttons {
-    display: block;
-    height: 24px;
-    width: 24px;
-  }
-  .schedule-toggle-buttons-mobile {
-    display: none;
-  }
-
-  .filter-section {
-    flex-grow: 1;
-    margin-left: 40px;
-
-    &:first-of-type {
-      margin-left: 0;
+  // Wrapped in selector b/c we don't want these styles to apply on desktop
+  // where <io-schedule-row> is used in the <io-live> widget.
+  :host(:not([mobile])) {
+    .schedule-row {
+      padding: $tabletKeyline;
+    }
+    .schedule-block-title {
+      padding: $tabletKeyline 0;
+    }
+    .schedule-title {
+      font-size: 20px;
+      line-height: 24px;
+    }
+    .schedule-time {
+      line-height: 24px;
+    }
+    .schedule-toggle-buttons {
+      display: block;
+      height: 24px;
+      width: 24px;
+    }
+    .schedule-toggle-buttons-mobile {
+      display: none;
     }
 
-    h4 {
-      border-bottom: 1px solid $color-bluegrey-100;
-      font-weight: 500;
-      margin-bottom: $mobileKeyline;
-      padding-bottom: $mobileKeyline / 2;
-    }
-  }
+    .filter-section {
+      flex-grow: 1;
+      margin-left: 40px;
 
-  .filter-section--types {
-    paper-radio-group {
-      column-count: 3;
-    }
-  }
+      &:first-of-type {
+        margin-left: 0;
+      }
 
-  #filters {
-    padding: $tabletKeyline;
-  }
-
-  .filters__panel {
-    &[filtering] {
-      margin-top: -$filterBannerHeight;
-      z-index: 9;
+      h4 {
+        border-bottom: 1px solid $color-bluegrey-100;
+        font-weight: 500;
+        margin-bottom: $mobileKeyline;
+        padding-bottom: $mobileKeyline / 2;
+      }
     }
 
-    &.fixed {
+    .filter-section--types {
+      paper-radio-group {
+        column-count: 3;
+      }
+    }
+
+    #filters {
+      padding: $tabletKeyline;
+    }
+
+    .filters__panel {
       &[filtering] {
-        margin-top: 0;
+        margin-top: -$filterBannerHeight;
+        z-index: 9;
+      }
+
+      &.fixed {
+        &[filtering] {
+          margin-top: 0;
+        }
       }
     }
   }

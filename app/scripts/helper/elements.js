@@ -28,6 +28,8 @@ IOWA.Elements = (function() {
       // until the main schedule data is returned by the worker.
       // IOWA.Elements.GoogleSignIn.load = true;
 
+      IOWA.Elements.Template.set('app.splashRemoved', true);
+
       // Deep link into a subpage.
       var selectedPageEl = IOWA.Elements.LazyPages.selectedPage;
       var parsedUrl = IOWA.Router.parseUrl(window.location.href);
@@ -91,6 +93,8 @@ IOWA.Elements = (function() {
 
     template.app = {}; // Shared global properties among pages.
     template.app.pageTransitionDone = false;
+    template.app.splashRemoved = false;
+    template.app.headerReveals = true;
     template.app.fullscreenVideoActive = false;
     template.app.isIOS = IOWA.Util.isIOS();
     template.app.isAndroid = IOWA.Util.isAndroid();
@@ -101,7 +105,6 @@ IOWA.Elements = (function() {
     template.app.watchedVideos = [];
     template.app.currentUser = null;
     template.app.showMySchedulHelp = true;
-    template.app.headerReveals = true;
 
     template.pages = IOWA.PAGES; // defined in auto-generated ../pages.js
     template.selectedPage = IOWA.Router.parseUrl(window.location.href).page;
