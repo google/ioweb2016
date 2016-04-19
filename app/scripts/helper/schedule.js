@@ -265,10 +265,12 @@ class Schedule {
    */
   saveSession(sessionId, save) {
     IOWA.Analytics.trackEvent('session', 'bookmark', save ? 'save' : 'remove');
-    return IOWA.Auth.waitForSignedIn('Sign in to add events to My Schedule').then(() => {
-      return IOWA.IOFirebase.toggleSession(sessionId, save)
-          .catch(error => IOWA.Elements.Toast.showMessage(
-              error + ' The change will be retried on your next visit.'));
+
+    // Pass true to waitForSignedIn() to indicate that we're fine if we only
+    // have the cached user id due to having started up while offline.
+    return IOWA.Auth.waitForSignedIn('Sign in to add events to My Schedule', true).then(() => {
+      return IOWA.IOFirebase.toggleSession(sessionId, save).catch(error =>
+        IOWA.Elements.Toast.showMessage(error + ' The change will be retried on your next visit.'));
     });
   }
 
@@ -329,22 +331,29 @@ class Schedule {
     let message = opt_message || 'You\'ll get a notification when it starts.';
     let notificationWidget = document.querySelector('io-notification-widget');
 
-    if (saved) {
-      return notificationWidget.subscribeIfAble().then(subscribed => {
-        if (subscribed) {
-          IOWA.Elements.Toast.showMessage('Added to My Schedule. ' + message);
-        } else if (Notification.permission === 'denied') {
-          // The subscription couldn't be completed due to the page
-          // permissions for notifications being set to denied.
-          IOWA.Elements.Toast.showMessage('Added to My Schedule. Want to enable notifications?',
+    // notificationWidget will be present if we're fully auth'ed.
+    if (notificationWidget) {
+      if (saved) {
+        return notificationWidget.subscribeIfAble().then(subscribed => {
+          if (subscribed) {
+            IOWA.Elements.Toast.showMessage('Added to My Schedule. ' + message);
+          } else if (Notification.permission === 'denied') {
+            // The subscription couldn't be completed due to the page
+            // permissions for notifications being set to denied.
+            IOWA.Elements.Toast.showMessage('Added to My Schedule. Want to enable notifications?',
               null, 'Learn how', () => window.open('permissions', '_blank'));
-        } else {
-          // Some other reason for not enabling notifications
-          IOWA.Elements.Toast.showMessage('Added to My Schedule.');
-        }
-      });
+          } else {
+            // Some other reason for not enabling notifications
+            IOWA.Elements.Toast.showMessage('Added to My Schedule.');
+          }
+        });
+      }
+      IOWA.Elements.Toast.showMessage('Removed from My Schedule');
+    } else {
+      // If notificationWidget isn't present and we're not auth'ed, then display
+      // a message about the schedule update being queued.
+      IOWA.Elements.Toast.showMessage('My Schedule update will be applied when you come back while online.');
     }
-    IOWA.Elements.Toast.showMessage('Removed from My Schedule');
   }
 
   generateFilters(tags = {}) {

@@ -94,12 +94,18 @@ IOWA.Auth = IOWA.Auth || (function() {
    * }
    *
    * @param {string} message The text displayed in the toast.
-   *                         Defaults to 'Please sign in'
+   *                         Defaults to 'Please sign in'.
+   * @param {Boolean} useCachedUserInfo If true, resolve immediately without
+   *                                    a toast if we have cached user info.
    * @return {Promise} Resolves once the user is signed in. Does not reject.
    */
-  function waitForSignedIn(message) {
+  function waitForSignedIn(message, useCachedUserId) {
     // If we're already signed in, return a Promise that resolves immediately.
     if (getTokenResponse_() && IOWA.IOFirebase.isAuthed()) {
+      return Promise.resolve();
+    }
+
+    if (useCachedUserId && IOWA.Elements.Template.app.currentUser.id) {
       return Promise.resolve();
     }
 
