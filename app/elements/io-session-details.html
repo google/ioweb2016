@@ -53,6 +53,8 @@ limitations under the License.
       <paper-icon-button icon="io:arrow-back" dialog-dismiss
                          aria-label$="[[_computeHeaderMsg(selectedSession.watched)]]"></paper-icon-button>
       <span>[[_computeHeaderMsg(selectedSession.watched)]]</span>
+      <!-- Manage focus to this element so session details don't scroll -->
+      <span tabindex="-1" autofocus></span>
     </div>
 
     <paper-dialog-scrollable id="scrollable">
@@ -85,8 +87,7 @@ limitations under the License.
                      mini="[[app.isPhoneSize]]"
                      class$="[[_addClass('active', selectedSession.saved)]]"
                      on-up="_onToggleSaveSession"
-                     aria-label$="[[_computeLabel(selectedSession.saved)]]"
-                     autofocus></paper-fab>
+                     aria-label$="[[_computeLabel(selectedSession.saved)]]"></paper-fab>
         </div>
         <div class="session__info__section session__details">
           <h3 id="session__title" class="session__title">{{selectedSession.title}}</h3>
