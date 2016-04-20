@@ -352,7 +352,7 @@ class Schedule {
     } else {
       // If notificationWidget isn't present and we're not auth'ed, then display
       // a message about the schedule update being queued.
-      IOWA.Elements.Toast.showMessage('My Schedule update will be applied when you come back while online.');
+      IOWA.Elements.Toast.showMessage('My Schedule update queued. Reload this page while online to apply it.');
     }
   }
 
