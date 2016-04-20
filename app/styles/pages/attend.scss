@@ -73,7 +73,7 @@ $name: 'page-attend';
     border-bottom: 1px solid $color-grey-300;
     display: flex;
     flex-direction: row;
-    padding: 72px 0;
+    padding: 66px 0;
     max-width: 760px;
     margin: 0 auto;
 
@@ -102,6 +102,10 @@ $name: 'page-attend';
       }
     }
 
+    > *:last-child {
+      margin-bottom: 0 !important;
+    }
+
     .detail__link, a {
       color: $color-cyan-800;
     }
@@ -114,8 +118,10 @@ $name: 'page-attend';
   }
 
   .detail__heading {
+    font-size: 16px;
+    font-weight: 700;
     line-height: 32px;
-    margin-top: 18px;
+    margin: 40px 0 12px 0;
   }
 
   .detail__text {
@@ -126,12 +132,8 @@ $name: 'page-attend';
     }
   }
 
-  .detail__heading {
-    font-size: 16px;
-  }
-
   .details--title {
-    margin-bottom: 8px;
+    margin-bottom: 24px;
   }
 
   .details--icon {
