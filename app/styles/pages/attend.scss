@@ -165,7 +165,7 @@ $name: 'page-attend';
     }
 
     .card-map {
-      background: transparent url(../images/attend/map-card.svg) center center no-repeat;
+      background: transparent url(../images/attend/map-card.jpg) center center no-repeat;
       background-size: cover;
     }
 
@@ -272,31 +272,25 @@ $name: 'page-attend';
         margin-bottom: 0;
       }
     }
+  }
 
-    #mapContainer {
-      height: 480px;
-      background-color: #b3d1ff;
-      position: relative;
+  .map-container {
+    height: 480px;
+    background-color: #b3d1ff;
+    position: relative;
 
-      // Ensure that there's room around the map to scroll on touch devices.
-      @media (max-width: $desktop-breakpoint-min + 50) {
-        max-width: 90%;
-        margin: 0 auto 0 auto;
-      }
-
-      &::after {
-        content: 'Loading...';
-        position: absolute;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        font-size: 24px;
-        color: #fff;
-      }
+    &::after {
+      content: 'Loading...';
+      position: absolute;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      font-size: 24px;
+      color: #fff;
     }
 
     iframe {
@@ -306,8 +300,16 @@ $name: 'page-attend';
     }
   }
 
+  .hotel__map {
+    // Ensure that there's room around the map to scroll on touch devices.
+    @media (max-width: $desktop-breakpoint-min + 50) {
+      max-width: 90%;
+      margin: 0 auto 0 auto;
+    }
+  }
+
   .venue__map {
-    background: #455a64;
+    background: transparent;
     bottom: 0;
     box-shadow: none;
     color: #fff;
@@ -317,80 +319,17 @@ $name: 'page-attend';
     position: fixed;
     right: 0;
     top: 0;
+  }
 
-    .venue__image {
-      background: url(../images/attend/map-dialog.svg) center center no-repeat;
-      background-size: contain;
-      height: 94%;
-      margin: 0 auto;
-      width: 94%;
-    }
-
-    paper-icon-button {
-      float: right;
-    }
-
-    h2 {
-      font-size: 45px;
-      font-weight: 400;
-      left: 40px;
-      line-height: 1;
-      position: absolute;
-      top: 54px;
-
-      @media (max-width: $phone-breakpoint-max) {
-        font-size: 34px;
-      }
-    }
-
-    .dialog-download {
-      @include typo-button();
-    }
-
-    img {
-      display: block;
-      width: 100%;
-
-      @media (max-width: $phone-breakpoint-max) {
-        margin-top: 32px;
-      }
-    }
-
-    .map-legend {
-      columns: 2;
-      float: right;
-      font-size: 16px;
-      list-style: none;
-      margin: -18px 0 0 0;
-      padding: 0;
-
-      li {
-        margin-bottom: 12px;
-      }
-
-      @media (max-width: $phone-breakpoint-max) {
-        margin-top: 48px;
-      }
-
-      @media (max-width: $phone-breakpoint-mid) {
-        columns: 1;
-        float: none;
-      }
-
-    }
-
-    .dot {
-      border-radius: 50%;
-      display: inline-block;
-      height: 24px;
-      margin: 0 12px 0 0;
-      vertical-align: middle;
-      width: 24px;
-    }
+  .venue__embed {
+    height: 80%;
+    margin: 0 auto;
+    padding: 0 !important;
+    width: 90%;
   }
 
   .dialog-content {
-    padding: 0 24px;
+    margin-bottom: 16px;
   }
 
   @media (max-width: $phone-breakpoint-max) {

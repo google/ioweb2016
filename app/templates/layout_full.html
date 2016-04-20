@@ -282,7 +282,7 @@ limitations under the License.
               reveals="[[app.headerReveals]]" effects="fade-background waterfall">
     <app-toolbar id="navbar" role="navigation">
       <paper-icon-button icon="io:menu"
-                         on-tap="toggleDrawer"
+                         on-click="toggleDrawer"
                          hidden$="[[!app.isPhoneSize]]"
                          aria-label="Open navigation"></paper-icon-button>
       <div flex disabled$="{{_isPage('home', selectedPage)}}">
@@ -324,10 +324,10 @@ limitations under the License.
              class="profilepic"
              alt="User profile image"
              hidden="[[!app.currentUser.picture]]">
-        <!-- Stamp this out when app.currentUser.id is set rather than just
+        <!-- Stamp this out when app.currentUser.tokenResponse is set rather than just
              app.currentUser, since a subset of app.currentUser might be
              populated by cached data. -->
-        <template is="dom-if" if="{{app.currentUser.id}}" restamp>
+        <template is="dom-if" if="{{app.currentUser.tokenResponse}}" restamp>
           <paper-menu-button horizontal-align="right" vertical-align="top">
             <paper-icon-button icon="io:more-vert"
                                class="dropdown-trigger"

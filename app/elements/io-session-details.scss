@@ -120,6 +120,9 @@ $color-section-border: #eaeaea;
     line-height: 28px;
   }
   .session__tags {
+    a {
+      margin-right: $mobileKeyline / 4;
+    }
     a:not(:last-of-type)::after {
       content: ',';
       color: $color-text;

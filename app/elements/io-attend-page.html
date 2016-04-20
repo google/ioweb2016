@@ -45,26 +45,15 @@ limitations under the License.
               exit-animation="fade-out-animation"
               with-backdrop="[[!app.isIOS]]"
               on-iron-overlay-closed="closeMap">
-    <div class="dialog-content">
-      <paper-icon-button icon="io:close" dialog-dismiss
-                         aria-label="Close map" style="color: #ffffff;"></paper-icon-button>
+  <div class="dialog-content">
+    <paper-icon-button icon="io:arrow-back" dialog-dismiss aria-label="Close map" style="color: #ffffff;"></paper-icon-button>
+  </div>
 
-      <h2>Shoreline Amphitheatre</h2>
-      <!-- <a class="dialog-download" href="#map">Download map</a> -->
-    </div>
-
-    <div class="venue__image"></div>
-
-<!--     <div class="dialog-content">
-      <ul class="map-legend">
-        <li><span class="dot bg-indigo-400"></span>Sandbox + Sessions</li>
-        <li><span class="dot bg-amber-400"></span>F&amp;B</li>
-        <li><span class="dot bg-lightgreen-600"></span>RR</li>
-        <li><span class="dot bg-red-A200"></span>Registration + Information</li>
-        <li><span class="dot bg-bluegrey-200"></span>Production</li>
-        <li><span class="dot bg-cyan-400"></span>Keynote + Concert</li>
-      </ul>
-    </div> -->
+  <div id="venueMapContainer" class="map-container venue__embed">
+    <template is="dom-if" if="[[_loadVenueMap]]">
+      <iframe src="https://www.google.com/maps/d/embed?mid=zw02JmrSGtIE.kcBDdSlNAd4Y" width="100%" height="100%"></iframe>
+    </template>
+  </div>
 </paper-dialog>
 
 
@@ -100,10 +89,10 @@ limitations under the License.
                   Google I/O is our annual developer festival with hands-on learning, technical talks, and a chance to hear more about Google&#8217;s latest developer products.
                 </h5>
               </div>
-              <a class="card-content box card-map" href="#map" layout vertical on-click="openMap">
+              <a class="card-content box card-map" href="https://www.google.com/maps/d/embed?mid=zw02JmrSGtIE.kcBDdSlNAd4Y" layout vertical on-click="openMap">
                 <div layout flex end>
                   <span class="card__footerlink typo-white" layout horiziontal justified center flex>
-                    View the full map
+                    View full map
                     <iron-icon icon="icons:zoom-in"></iron-icon>
                   </span>
                 </div>
@@ -249,7 +238,7 @@ limitations under the License.
                     <b>Caltrain:</b> <a href="http://www.caltrain.com/stations/mountainviewstation.html" target="_blank">Mountain View Caltrain Station</a>
                   </p>
                   <p class="detail__text">
-                    <a href="http://www.caltrain.com/stations/mountainviewstation.html" target="_blank">MountainView Caltrain Extended Service</a>: Google I/O will provide extended northbound service beginning at the Mountain View Caltrain Station on the evenings of Wednesday, May 18 and Thursday, May 19. Riders may take the 10:45 PM Google I/O event shuttle from Shoreline to connect to a 11:30 PM train departing from Mountain View Caltrain Station toward San Francisco.
+                    <a href="http://www.caltrain.com/stations/mountainviewstation.html" target="_blank">Mountain View Caltrain Extended Service</a>: Google I/O will provide extended northbound service beginning at the Mountain View Caltrain Station on the evenings of Wednesday, May 18 and Thursday, May 19. Riders may take the 10:45 PM Google I/O event shuttle from Shoreline to connect to a 11:30 PM train departing from Mountain View Caltrain Station toward San Francisco.
                   </p>
                   <p class="detail__text">
                     In addition to the Google I/O event shuttles, you may consider using <a href="http://www.mvgo.org/east-bayshore-route.html" target="_blank">MVgo</a>, a service of the Mountain View Transportation Management Association, to get to and from the Mountain View Caltrain Station, downtown Mountain View, and Crittenden stop, which is about half a mile from Shoreline Amphitheatre.
@@ -276,7 +265,7 @@ limitations under the License.
                     Bike parking will be available at Shoreline Amphitheatre. Recommended bike routes will be available in the coming weeks.
                   </p>
                   <p class="detail__text">
-                    Alternatively, the <a class="detail__link" href="http://www.bayareabikeshare.com/stations" target="_blank">Bay Area Bike Share</a> program provides 24/7 access to shared bicycles in five service areas across the Peninsula. The closest location to Shoreline Amphitheatre is at 228 Charleston Road, Mountain View, CA 94043. More information regarding membership and pricing is available via the Bay Area Bike Share website.
+                    Alternatively, the Bay Area Bike Share program provides 24/7 access to shared bicycles in <a href="http://www.bayareabikeshare.com/stations" target="_blank" class="detail__link">five service areas</a> across the Peninsula. The closest location to Shoreline Amphitheatre is at 228 Charleston Road, Mountain View, CA 94043. More information regarding membership and pricing is available via the  <a href="http://www.bayareabikeshare.com/stations" target="_blank" class="detail__link">Bay Area Bike Share</a> website.
                   </p>
                 </div>
               </div>
@@ -326,7 +315,7 @@ limitations under the License.
             </div>
           </section>
 
-          <section id="mapContainer">
+          <section id="mapContainer" class="map-container hotel__map">
             <template is="dom-if" if="[[_loadMap]]">
               <iframe src="https://www.google.com/maps/d/u/0/embed?mid=zhj-bilAxwho.kAQv4c7VcqU4" width="100%" height="100%"></iframe>
             </template>
@@ -360,6 +349,11 @@ limitations under the License.
       _loadMap: {
         type: Boolean,
         computed: '_computeLoadMap(app.pageTransitionDone, selectedSubpage, _scrolledToMapSection)'
+      },
+
+      _loadVenueMap: {
+        type: Boolean,
+        value: false
       },
 
       /**
@@ -406,8 +400,13 @@ limitations under the License.
     },
 
     openMap: function(e) {
+      if (this.app.isPhoneSize) {
+        return;
+      }
+
       e.preventDefault();
       this.$.venueMap.open();
+      this._loadVenueMap = true;
       if (!this.inline) {
         Polymer.IronDropdownScrollManager.pushScrollLock(this);
       }

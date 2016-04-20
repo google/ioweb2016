@@ -59,6 +59,10 @@ The `<io-notification-widget>` element renders the notification toggle UI.
 
     var propel;
 
+    window.IOWA.Notifications = IOWA.Notifications || {
+      supported: goog.propel.PropelClient.isSupported()
+    };
+
     Polymer({
 
       is: 'io-notification-widget',
