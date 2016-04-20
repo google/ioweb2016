@@ -151,7 +151,6 @@ Fired when the mode changes.
 
               <paper-menu id="live-channel-menu" class="schedule__content"
                           attr-for-selected="videoid" selected="{{selectedVideoId}}">
-<!-- TODO: hide if during keynote -->
                 <template is="dom-repeat" items="[[currentLiveSessions]]" as="session">
                   <div class="schedule-row" layout horizontal center
                        videoid$="[[session.youtubeUrl]]">
@@ -168,10 +167,12 @@ Fired when the mode changes.
                     <iron-icon icon="[[_computeIcon2(selectedVideoId, session)]]"></iron-icon>
                   </div>
                 </template>
-                <template is="dom-repeat" items="[[missingChannels]]" as="channel">
-                  <div class="schedule-row" layout horizontal center videoid$="{{channel.videoId}}">
+                <template is="dom-repeat" items="[[_missingChannels]]" as="channel">
+                  <div class="schedule-row" layout horizontal center
+                       videoid$="[[channel.videoId]]">
                     <div>
-                      <img src$="/io2016/images/schedule/channel[[channel.label]].png" class="profile__pic">
+                      <img src$="/io2016/images/schedule/channel[[channel.label]].png"
+                           class="profile__pic">
                     </div>
                     <div class="session__detail" layout vertical flex>
                       <span class="session__title" title="Channel [[channel.label]]"
@@ -286,10 +287,10 @@ Fired when the mode changes.
         }
       },
       _refreshSessionTimeout: { value: null },
-      _videoReady: {
-        type: Boolean,
-        value: false
-      },
+      // _videoReady: {
+      //   type: Boolean,
+      //   value: false
+      // },
 
       day1Start: {
         type: Object
@@ -357,8 +358,7 @@ Fired when the mode changes.
        */
       duringKeynote: {
         type: Boolean,
-        value: false,
-        readOnly: true
+        computed: '_computeDuringKeynote(currentLiveSessions)'
       },
 
       /**
@@ -438,6 +438,12 @@ Fired when the mode changes.
         value: function() { return []; }
       },
 
+
+      _missingChannels: {
+        type: Array,
+        value: function() { return []; }
+      },
+
       /**
        * Speaker info.
        */
@@ -457,7 +463,8 @@ Fired when the mode changes.
 
     observers: [
       // Recalc time blocks when users list of saved sessions comes in.
-      '_recalcFirstOfBlock(sessions.length)'
+      '_recalcFirstOfBlock(sessions.length)',
+      'listLiveSessionsInThisHour(todaysLiveSessions)'
     ],
 
     ready: function () {
@@ -584,8 +591,7 @@ Fired when the mode changes.
     },
 
     _autoOpenFabChanged: function() {
-      // Expand FAB if we're in not streaming the keynote.
-      if (this.autoOpenFab && !this.duringKeynote) {
+      if (this.autoOpenFab) {
         this.async(this.openFab, 600);
       }
     },
@@ -594,33 +600,48 @@ Fired when the mode changes.
       IOWA.Analytics.trackEvent('live', 'tab select', this.selectedTab);
     },
 
-    onVideoReady: function(e, detail, sender) {
-      this._videoReady = true;
-      this.autoOpenFabChanged();
+    onVideoReady: function(e, detail) {
+      // this._videoReady = true;
+      if (!this.duringKeynote) {
+        this.autoOpenFab = true;
+      }
       // go through auto-open fab flow.
-      this.listLiveSessionsInThisHour();
+// this.listLiveSessionsInThisHour();
     },
 
     onStateChange: function(e, detail) {
       var video = this.$.livecontainer.querySelector('google-youtube');
       switch (detail.data) {
-      case YT.PlayerState.CUED:
-        this.wasPaused_ = false;
-        break;
-      case YT.PlayerState.PAUSED:
-        this.wasPaused_ = true;
-        break;
-      case YT.PlayerState.PLAYING:
-        // this.updateVideoInfo();
-        if (!this.wasPaused_) {
-          IOWA.Analytics.trackEvent('live', 'channel select', this.selectedVideoId);
-        }
-        this.wasPaused_ = false;
-        break;
+        case YT.PlayerState.CUED:
+          this.wasPaused_ = false;
+          break;
+        case YT.PlayerState.PAUSED:
+          this.wasPaused_ = true;
+          break;
+        case YT.PlayerState.PLAYING:
+          // this.updateVideoInfo();
+          if (!this.wasPaused_) {
+            IOWA.Analytics.trackEvent('live', 'channel select', this.selectedVideoId);
+          }
+          this.wasPaused_ = false;
+          break;
       }
     },
 
-    listLiveSessionsInThisHour: function() {
+    _computeDuringKeynote: function(currentLiveSessions) {
+      var duringKeynote = currentLiveSessions.map(function(session) {
+        return session.id;
+      }).indexOf('__keynote__') !== -1;
+
+      // If currently during the keynote, set it as the playing video.
+      if (duringKeynote) {
+        this._selectedVideoId = currentLiveSessions[0].youtubeUrl;
+      }
+
+      return duringKeynote;
+    },
+
+    listLiveSessionsInThisHour: function(todaysLiveSessions) {
       // Refresh the page once a day if the user has the page open. This is
       // necessary to get new live streamed channel ids.
       var now = moment();
@@ -628,27 +649,29 @@ Fired when the mode changes.
         location.reload();
         return;
       }
-      this.currentLiveSessions = this.filterCurrentTimeBlock(this.todaysLiveSessions);
+      this.currentLiveSessions = this.filterCurrentTimeBlock(todaysLiveSessions);
+// console.log(this.currentLiveSessions)
       // Find any live channels that are not streaming content right now and
       // include them in the list live streaming list for users to switch to.
       // The content will be recorded and/or other content.
       var liveIds = this.currentLiveSessions.map(function(session) {
         return session.youtubeUrl;
       });
-      var duringKeynote = this.currentLiveSessions.map(function(session) {
-        return session.id;
-      }).indexOf('__keynote__') !== -1;
-      this._setDuringKeynote(duringKeynote);
+      // var duringKeynote = this.currentLiveSessions.map(function(session) {
+      //   return session.id;
+      // }).indexOf('__keynote__') !== -1;
+      // this._setDuringKeynote(duringKeynote);
 
-      // If currently during the keynote, set it as the playing video and exit.
-      if (this.duringKeynote) {
-        this.selectedVideoId = this.currentLiveSessions[0].youtubeUrl;
-        return;
-      }
+      // // If currently during the keynote, set it as the playing video and exit.
+      // if (this.duringKeynote) {
+      //   this._selectedVideoId = this.currentLiveSessions[0].youtubeUrl;
+      //   return;
+      // }
+
       // Keynote is guaranteed to be first channel. Ignore it as a channel since
       // we're handling it separately.
       var liveStreamChannelIds = this.liveStreamChannelIds.slice(1);
-      this.missingChannels = liveStreamChannelIds.filter(function(channel) {
+      this._missingChannels = liveStreamChannelIds.filter(function(channel) {
         return liveIds.indexOf(channel) < 0;
       }).map(function(channel) {
         return {
@@ -660,11 +683,11 @@ Fired when the mode changes.
       // playing the first one. Otherwise default to the first non-streaming
       // channel.
       if (this.currentLiveSessions.length) {
-        this.selectedVideoId = this.currentLiveSessions[0].youtubeUrl;
+        this._selectedVideoId = this.currentLiveSessions[0].youtubeUrl;
       } else if (this.mode === this._MODES.AFTER || now.isBetween(this.day1End, this.day2Start)) {
         this.onPlayKeynote();
       } else {
-        this.selectedVideoId = liveStreamChannelIds[0];
+        this._selectedVideoId = liveStreamChannelIds[0];
       }
       // Refresh live stream views when the next timeblock hits, either at the
       // next 30min mark or the next hour block.
@@ -687,7 +710,7 @@ Fired when the mode changes.
       }
     },
 
-    onFabClick: function(e, detail, sender) {
+    onFabClick: function(e, detail) {
       e.stopPropagation();
       this.openFab();
       IOWA.Analytics.trackEvent('live', 'fab opened', 'opened');
@@ -719,7 +742,7 @@ Fired when the mode changes.
     onPlayKeynote: function(e, detail) {
       var keynoteSession = this.sessions[0];
       if (keynoteSession.id === '__keynote__') {
-        this.selectedVideoId = keynoteSession.youtubeUrl;
+        this._selectedVideoId = keynoteSession.youtubeUrl;
         IOWA.Analytics.trackEvent('live', 'play keynote video');
       }
     },
@@ -799,7 +822,10 @@ Fired when the mode changes.
     },
 
     startCountdown: function() {
-      this.$.livecontainer.querySelector('countdown-timer').start();
+      var timer = this.$.livecontainer.querySelector('countdown-timer');
+      if (timer) {
+        timer.start();
+      }
     }
   });
 </script>
