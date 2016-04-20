@@ -270,7 +270,7 @@ class Schedule {
     // have the cached user id due to having started up while offline.
     return IOWA.Auth.waitForSignedIn('Sign in to add events to My Schedule', true).then(() => {
       return IOWA.IOFirebase.toggleSession(sessionId, save).catch(error =>
-        IOWA.Elements.Toast.showMessage(error + ' The change will be retried on your next visit.'));
+        IOWA.Elements.Toast.showMessage(`${error} The change will be retried on your next visit.`));
     });
   }
 
