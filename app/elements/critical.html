@@ -44,7 +44,7 @@ limitations under the License.
 
     removeSplashScreen();
 
-    var fp = IOWA.Util.getFPInChrome();
+    var fp = IOWA.Util.getFPIfSupported();
     if (fp) {
       debugLog('first paint:', fp, 'ms');
       IOWA.Analytics.trackPerf('load', 'firstpaint', fp);
