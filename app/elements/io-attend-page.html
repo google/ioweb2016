@@ -21,6 +21,7 @@ limitations under the License.
 <link rel="import" href="../bower_components/neon-animation/animations/scale-up-animation.html">
 <link rel="import" href="../bower_components/neon-animation/animations/fade-out-animation.html">
 
+<link rel="import" href="io-attend-bus-schedule.html">
 <link rel="import" href="shared-app-styles.html">
 <link rel="import" href="PageBehavior.html">
 
@@ -37,6 +38,11 @@ limitations under the License.
     <h1 class="focus-target" tabindex="-1">Attending</h1>
   </div>
 </div>
+
+
+<template is="dom-if" if="[[_loadSchedule]]">
+  <io-attend-bus-schedule id="busScheduleElement" app="[[app]]"></io-attend-bus-schedule>
+</template>
 
 <div class="card__container">
   <div class="card">
@@ -210,6 +216,8 @@ limitations under the License.
                   <p class="detail__text">
                     Please check back in the coming weeks for pick-up schedules. Google I/O event shuttles will service the hubs listed below for attendees making connections with public transportation services. Please check the event shuttle schedule for details.
                   </p>
+                  <paper-button raised class="cta-button shuttle-button" on-click="openBusSchedule">View shuttle schedule</paper-button>
+
                   <p class="detail__text no-bottom-margin">
                     <b>BART:</b> <a href="https://www.bart.gov/stations/mlbr" target="_blank">Millbrae BART Station</a>
                   </p>
@@ -332,7 +340,7 @@ limitations under the License.
         computed: '_computeLoadMap(app.pageTransitionDone, selectedSubpage, _scrolledToMapSection)'
       },
 
-      _loadVenueMap: {
+      _loadSchedule: {
         type: Boolean,
         value: false
       },
@@ -386,6 +394,15 @@ limitations under the License.
 
     _computeLoadMap: function(pageTransitionDone, selectedSubpage, scrolledEnough) {
       return pageTransitionDone && selectedSubpage == 'travel' && scrolledEnough;
+    },
+
+    openBusSchedule: function(e) {
+      e.preventDefault();
+      this._loadSchedule = true;
+
+      this.async(function() {
+        this.$$('#busScheduleElement').$.busSchedule.open();
+      }.bind(this));
     }
 
   });
