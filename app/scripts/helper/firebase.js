@@ -489,8 +489,17 @@ class IOFirebase {
    */
   _setFirebaseUserData(subtree, attribute, value) {
     if (this.isAuthed()) {
+      // If we're auth'ed, use the fresh uid.
       let userId = this.firebaseRef.getAuth().uid;
       return this._setFirebaseData(`${subtree}/${userId}/${attribute}`, value);
+    } else if (IOWA.Elements.Template.app.currentUser.id) {
+      // If we're not auth'ed but we have a cached uid, use that to queue an
+      // update that will be replayed the next time we start up online.
+      // The uid returned by Firebase is equal to the currentUser.id value
+      // with the 'google:' prefix.
+      // This is specific to the current version of Firebase!
+      let cachedUserId = 'google:' + IOWA.Elements.Template.app.currentUser.id;
+      return this._queueOperation(`${subtree}/${cachedUserId}/${attribute}`, value);
     }
 
     return Promise.reject('Not currently authorized with Firebase.');

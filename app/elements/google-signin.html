@@ -187,9 +187,9 @@ Fired when sign in fails for some reason.
               this.fire('signin-change', {signedIn: true, user: this.user});
 
               IOWA.SimpleDB.instance(IOWA.SimpleDB.NAMES.USER).then(function(db) {
-                // We only want to cache a subset of the user data so that we
-                // can display a profile picture while starting up offline.
+                // We only need a subset of the user data.
                 db.set(IOWA.SimpleDB.NAMES.USER, {
+                  id: this.user.id,
                   picture: this.user.picture
                 });
               }.bind(this)).catch(function(error) {
