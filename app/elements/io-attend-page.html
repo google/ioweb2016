@@ -334,6 +334,8 @@ limitations under the License.
 (function () {
   'use strict';
 
+  var SUBTAB_SELECTOR = '#subpage-tabs a';
+
   Polymer({
     is: 'io-attend-page',
 
@@ -373,10 +375,16 @@ limitations under the License.
       this._lowerScrollThreshold = IOWA.Elements.Footer.clientHeight +
           parseInt(getComputedStyle(IOWA.Elements.Footer).height) +
           Polymer.dom(this.root).querySelector('.io__hash').clientHeight;
+
+      // Wait till after subnav effects to look for focusable items
+      this.async(function() {
+        IOWA.A11y.addFocusStates(SUBTAB_SELECTOR);
+      });
     },
 
     detached: function() {
       this.unlisten(IOWA.Elements.ScrollContainer, 'scroll', '_onPageScroll');
+      IOWA.A11y.removeFocusStates(SUBTAB_SELECTOR);
     },
 
     onSubpageTransitionDone: function() {
