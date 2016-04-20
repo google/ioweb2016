@@ -492,7 +492,8 @@ class IOFirebase {
       // If we're auth'ed, use the fresh uid.
       let userId = this.firebaseRef.getAuth().uid;
       return this._setFirebaseData(`${subtree}/${userId}/${attribute}`, value);
-    } else if (IOWA.Elements.Template.app.currentUser.id) {
+    } else if (IOWA.Elements.Template.app.currentUser &&
+               IOWA.Elements.Template.app.currentUser.id) {
       // If we're not auth'ed but we have a cached uid, use that to queue an
       // update that will be replayed the next time we start up online.
       // The uid returned by Firebase is equal to the currentUser.id value
