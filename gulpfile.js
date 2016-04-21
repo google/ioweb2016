@@ -315,7 +315,8 @@ gulp.task('vulcanize-elements', false, ['sass'], function() {
         'iron-selector.html',
         'paper-tabs.html',
         'polymer.html',
-        'shared-app-styles.html'
+        'shared-app-styles.html',
+        'io-icons.html'
       ],
       dest: IOWA.appDir + '/elements'
     }))
