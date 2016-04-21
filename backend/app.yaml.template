@@ -19,6 +19,7 @@ handlers:
 
 # shorter cache for some files that may change frequently,
 # including service worker
+<<<<<<< HEAD
 - url: $PREFIX$/(.+((critical|elements)\.html|\.js|\.css))$
   static_files: app/\1
   upload: app/(.+((critical|elements)\.html|\.js|\.css))$
