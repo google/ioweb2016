@@ -217,7 +217,7 @@ limitations under the License.
          * @private
          */
         _resetValues: function() {
-          var surveys = Polymer.dom(this.root).querySelector('survey-rating');
+          var surveys = Polymer.dom(this.root).querySelectorAll('survey-rating');
           for (var i = 0; i < surveys.length; i++) {
             surveys[i].reset();
           }
@@ -243,6 +243,7 @@ limitations under the License.
           this.opened = false;
           this.hidden = true;
           Polymer.IronDropdownScrollManager.removeScrollLock(this);
+          this._resetValues();
         },
 
         /**

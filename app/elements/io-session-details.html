@@ -72,7 +72,7 @@ limitations under the License.
           <div class="card__photo" relative>
 
             <div id="survey_notification" class="fullschedule-banner card-content bg-bluegrey-50-20"
-              layout horizontal center hidden$="[[!_computeHideSessionRating(selectedSession, app.savedSurveys)]]">
+              layout horizontal center hidden$="[[!_computeHideSessionRatedNotification(selectedSession, app.savedSurveys)]]">
               <iron-icon icon="io:stars"></iron-icon>
               <span>Your feedback has been submitted.  Thanks for participating!</span>
             </div>
@@ -146,7 +146,7 @@ limitations under the License.
               <iron-icon icon="io:post-facebook" class="share-icon"></iron-icon>
             </a>
           </div>
-          <paper-button id="open_survey" on-click="_openSurvey" raised hidden$="[[_computeHideSessionRating(selectedSession, app.savedSurveys)]]">Rate Session</paper-button>
+          <paper-button id="open_survey" on-click="_openSurvey" raised hidden$="[[_computeHideOpenSurveyButton(selectedSession, app.savedSurveys)]]">Rate Session</paper-button>
         </div>
 
         <div class="session__info__section session__speakers"
@@ -259,6 +259,7 @@ limitations under the License.
 
     _selectedSessionChanged: function() {
       if (this.selectedSession) {
+//        this.$.ioSurvey.closeNoAnimation();
         this.$.sessionDetails.open();
         if (!this.inline) {
           Polymer.IronDropdownScrollManager.pushScrollLock(this);
@@ -330,12 +331,20 @@ limitations under the License.
              (!isFinished && !session.hasRelated);
     },
 
-    _computeHideSessionRating: function(session, savedSurveys) {
+    _computeHideSessionRatedNotification: function(session, savedSurveys) {
+      if (session === null) {
+        return true;
+      }
+      return savedSurveys.indexOf(session.id) !== -1;
+    },
+
+    _computeHideOpenSurveyButton: function(session, savedSurveys) {
       if (session === null) {
         return true;
       }
       var isFinished = new Date(session.endTimestamp) < Date.now();
-      return savedSurveys.indexOf(session.id) !== -1  || session.id === '__afterhours__' || !isFinished;
+
+      return this._computeHideSessionRatedNotification(session, savedSurveys) || session.id === '__afterhours__' || !isFinished;
     },
 
     _computeSessionSavedIcon: function(saved) {
