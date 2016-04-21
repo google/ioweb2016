@@ -251,7 +251,7 @@ limitations under the License.
         _submit: function(event) {
           var answers = {};
           for (var i in this.surveyQuestions) {
-            answers[this.surveyQuestions[i].id] = this.surveyQuestions[i].value;
+            answers[this.surveyQuestions[i].id] = this.surveyQuestions[i].value.toString();
           }
           this._close();
           IOWA.Schedule.saveSurvey(this.session.id, answers).then(function() {

@@ -48,7 +48,8 @@ limitations under the License.
                 entry-animation="scale-up-animation"
                 exit-animation="fade-out-animation"
                 on-iron-overlay-closed="_onSessionDetailsClose"
-                on-iron-overlay-opened="_onSessionDetailsOpen">
+                on-iron-overlay-opened="_onSessionDetailsOpen"
+                on-survey-submitted="_showSurveyNotification">
 
     <div class="fullschedule-banner card-content bg-bluegrey-50-60"
          layout horizontal center>
@@ -71,7 +72,7 @@ limitations under the License.
           <div class="card__photo" relative>
 
             <div id="survey_notification" class="fullschedule-banner card-content bg-bluegrey-50-20"
-              layout horizontal center>
+              layout horizontal center hidden$="[[!_computeHideSessionRating(selectedSession, app.savedSurveys)]]">
               <iron-icon icon="io:stars"></iron-icon>
               <span>Your feedback has been submitted.  Thanks for participating!</span>
             </div>
@@ -145,7 +146,7 @@ limitations under the License.
               <iron-icon icon="io:post-facebook" class="share-icon"></iron-icon>
             </a>
           </div>
-          <paper-button id="open_survey" on-click="_openSurvey" raised>Rate Session</paper-button>
+          <paper-button id="open_survey" on-click="_openSurvey" raised hidden$="[[_computeHideSessionRating(selectedSession, app.savedSurveys)]]">Rate Session</paper-button>
         </div>
 
         <div class="session__info__section session__speakers"
@@ -252,10 +253,8 @@ limitations under the License.
       }
     },
     _showSurveyNotification: function() {
-      this.$.survey_notification.classList.add('show');
-      this.async(function(){
-          this.$.survey_notification.classList.remove('show');
-      }, 1500);
+      this.$.open_survey.hidden = true;
+      this.$.survey_notification.hidden = false;
     },
 
     _selectedSessionChanged: function() {
@@ -331,12 +330,12 @@ limitations under the License.
              (!isFinished && !session.hasRelated);
     },
 
-    _computeHideSessionRating: function(session) {
+    _computeHideSessionRating: function(session, savedSurveys) {
       if (session === null) {
-        return false;
+        return true;
       }
       var isFinished = new Date(session.endTimestamp) < Date.now();
-      return session.rated || session.id == '__afterhours__' || !isFinished;
+      return savedSurveys.indexOf(session.id) !== -1  || session.id === '__afterhours__' || !isFinished;
     },
 
     _computeSessionSavedIcon: function(saved) {
