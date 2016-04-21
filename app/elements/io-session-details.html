@@ -326,7 +326,7 @@ limitations under the License.
       if (session === null) {
         return false;
       }
-      var isFinished = new Date(session.endTimestamp) < Date.now();
+      var isFinished = new Date(session.startTimestamp) < Date.now();
       return session.id === '__afterhours__' ||
              (!isFinished && !session.hasRelated);
     },
