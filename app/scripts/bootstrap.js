@@ -118,8 +118,40 @@
     }
   }
 
+  function removeSplashScreen() {
+    var splash = document.getElementById('splash');
+    splash.addEventListener('transitionend', function() {
+      splash.parentElement.removeChild(splash);
+    });
+
+    document.body.classList.remove('loading');
+  }
+
   function afterImports() {
     initWorker();
+
+    // Wait for HTMLImportsLoaded to ensure scripts at the bottom of the page
+    // have run. In certain situations, we've seen a race condition where the
+    // elements.html bundle finishes loading before IOWA.Elements is defined.
+    // Since bootstrap is the last js file we load, this should make sure
+    // IOWA.Elements is defined and the import has loaded.
+    Polymer.Base.importHref('/io2016/elements/elements.html', function() {
+      IOWA.Elements.onElementsBundleLoaded();
+
+      // Note: this is also done in <io-notifications-widget>'s ready,
+      // but we need this code to run before that element is attached.
+      if (IOWA.Notifications && !IOWA.Notifications.supported) {
+        document.body.classList.add('nosupport-notifications');
+      }
+
+      removeSplashScreen();
+
+      var fp = IOWA.Util.getFPIfSupported();
+      if (fp) {
+        debugLog('first paint:', fp, 'ms');
+        IOWA.Analytics.trackPerf('load', 'firstpaint', fp);
+      }
+    }, null, true);
 
     IOWA.Router = IOWA.Router_(window); // eslint-disable-line new-cap
     IOWA.Elements.init();
@@ -194,19 +226,5 @@
       IOWA.Analytics.trackEvent('installprompt', choiceResult.outcome,
         choiceResult.platform);
     });
-  });
-
-  // Wait for DCM to ensure scripts at the bottom of the page have run.
-  // In certain situations, we've seen a race condition where the
-  // elements.html bundle finishes loading before IOWA.Elements is defined.
-  // This is no bueno.
-  window.addEventListener('DOMContentLoaded', function() {
-    IOWA.Elements.onElementsBundleLoaded();
-
-    var fp = IOWA.Util.getFPIfSupported();
-    if (fp) {
-      debugLog('first paint:', fp, 'ms');
-      IOWA.Analytics.trackPerf('load', 'firstpaint', fp);
-    }
   });
 })();
