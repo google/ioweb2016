@@ -35,8 +35,6 @@ limitations under the License.
   }
 
   Polymer.Base.importHref('/io2016/elements/elements.html', function() {
-    IOWA.Elements.onElementsBundleLoaded();
-
     // Note; this is also done in <io-notifications-widget>'s ready,
     // but we need this code to run before that element is attached.
     if (IOWA.Notifications && !IOWA.Notifications.supported) {
@@ -44,12 +42,6 @@ limitations under the License.
     }
 
     removeSplashScreen();
-
-    var fp = IOWA.Util.getFPIfSupported();
-    if (fp) {
-      debugLog('first paint:', fp, 'ms');
-      IOWA.Analytics.trackPerf('load', 'firstpaint', fp);
-    }
   }, null, true);
 
 })();

@@ -195,4 +195,18 @@
         choiceResult.platform);
     });
   });
+
+  // Wait for DCM to ensure scripts at the bottom of the page have run.
+  // In certain situations, we've seen a race condition where the
+  // elements.html bundle finishes loading before IOWA.Elements is defined.
+  // This is no bueno.
+  window.addEventListener('DOMContentLoaded', function() {
+    IOWA.Elements.onElementsBundleLoaded();
+
+    var fp = IOWA.Util.getFPIfSupported();
+    if (fp) {
+      debugLog('first paint:', fp, 'ms');
+      IOWA.Analytics.trackPerf('load', 'firstpaint', fp);
+    }
+  });
 })();
