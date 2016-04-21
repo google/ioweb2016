@@ -6,7 +6,7 @@
       "description":"Join us to learn about product and platform innovation at Google, starting with a live kickoff from Google CEO Sundar Pichai.",
       "startTimestamp":"2016-05-18T17:00:00Z",
       "endTimestamp":"2016-05-18T19:00:00Z",
-      "isLivestream":false,
+      "isLivestream":true,
       "isFeatured":false,
       "tags":[
         "FLAG_KEYNOTE"
@@ -20,8 +20,9 @@
       "start":"10:00 AM",
       "end":"12:00 PM",
       "duration":"2 hours",
+      "youtubeUrl":"7V-fIGMDsmE",
       "filters":{
-        "Live streamed":false
+        "Live streamed":true
       }
     },
     {
@@ -386,7 +387,7 @@
       ],
       "room":"Stage 8",
       "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/b9d50c09-0cef-e511-a517-00155d5066d7.jpg",
-      "youtubeUrl":"https://youtu.be/Eg8muhjUi4I",
+      "youtubeUrl":"Eg8muhjUi4I",
       "hasRelated":false,
       "day":18,
       "block":"3 PM",
@@ -501,7 +502,7 @@
       "description":"Watching video and listening to audio files are among the most popular activities on Android mobile devices and smart TVs. This session explains how you can use the ExoPlayer streaming media library to help provide your users with a great media experience. The talk provides an overview of the ExoPlayer's design, and highlights the advantages of ExoPlayer over other libraries such as MediaPlayer.\n\nThe ExoPlayer provides many sophisticated features such as Dynamic adaptive streaming over HTTP (DASH), SmoothStreaming and Common Encryption. It's designed to be easy to customize and extend, and many components can be replaced with custom implementations. Because ExoPlayer is a library that you include in your application, it can be easily updated along with your app.\n\nAfter attending this talk you'll understand how to integrate ExoPlayer into your application. If you are using it to replace MediaPlayer, this can be a quick and simple integration. However, you'll also come away with an understanding of the design and inner workings of ExoPlayer, including how to wire up ExoPlayer instances using custom components to satisfy the most demanding performance and UX requirements, as well as take full advantage of the sophisticated features provided by the player.",
       "startTimestamp":"2016-05-18T22:00:00Z",
       "endTimestamp":"2016-05-18T23:00:00Z",
-      "isLivestream":false,
+      "isLivestream":true,
       "isFeatured":false,
       "tags":[
         "TRACK_TV\u0026LIVINGROOM",
@@ -519,8 +520,9 @@
       "start":"3:00 PM",
       "end":"4:00 PM",
       "duration":"1 hour",
+      "youtubeUrl":"Eg8muhjUi4I",
       "filters":{
-        "Live streamed":false,
+        "Live streamed":true,
         "Sessions":true,
         "TV \u0026 Living Room":true,
         "What's Next":true
@@ -564,7 +566,7 @@
       "description":"Learn how 20% engineers at Google used the same open source tools \u0026 technologies you use to launch a Progressive Web App on Google.com. We'll cover how we built a real, scalable, offline-first web app powered by Polymer, web components, service workers, notifications, Google Signin, Firebase, new browser APIs, and more. If Google has an API for it, we used it! Come for the workarounds. Stay for the tips and tricks.",
       "startTimestamp":"2016-05-18T23:00:00Z",
       "endTimestamp":"2016-05-19T00:00:00Z",
-      "isLivestream":false,
+      "isLivestream":true,
       "isFeatured":false,
       "tags":[
         "TRACK_MOBILEWEB",
@@ -582,9 +584,10 @@
       "start":"4:00 PM",
       "end":"5:00 PM",
       "duration":"1 hour",
+      "youtubeUrl":"Eg8muhjUi4I",
       "filters":{
         "Develop":true,
-        "Live streamed":false,
+        "Live streamed":true,
         "Mobile Web":true,
         "Sessions":true
       }
@@ -1118,7 +1121,7 @@
       ],
       "room":"Stage 2",
       "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/962d2aeb-0bef-e511-a517-00155d5066d7.jpg",
-      "youtubeUrl":"https://google.com/events/io",
+      "youtubeUrl":"Eg8muhjUi4I",
       "hasRelated":false,
       "day":19,
       "block":"9 AM",
@@ -1835,7 +1838,7 @@
       "description":"The barriers to users finding and engaging with a specific app are significant. While efforts are always being put into mechanisms to increase app discovery, it's critical for app developers to make sure app experiences are engaging. How can you best connect with the consumer of your app? What makes for a great app experience? What are best practices to help reduce friction so that users convert? This talk will help answer these questions by covering app design best practices based on research. ",
       "startTimestamp":"2016-05-19T22:00:00Z",
       "endTimestamp":"2016-05-19T23:00:00Z",
-      "isLivestream":false,
+      "isLivestream":true,
       "isFeatured":false,
       "tags":[
         "TRACK_DESIGN",
@@ -1857,7 +1860,7 @@
       "filters":{
         "Design":true,
         "Develop":true,
-        "Live streamed":false,
+        "Live streamed":true,
         "Sessions":true
       }
     },

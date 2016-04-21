@@ -122,8 +122,10 @@ Fired when the mode changes.
               </div>
             </div>
 
-            <div layout vertical flex hidden$="[[!duringKeynote]]">
-              <div class="card__photo card__photo--live" flex layout vertical center-center>
+            <div class="" flex hidden$="[[!duringKeynote]]">
+              <div class="card__photo card__photo--live bg-indigo-400" fit></div>
+              <div class="play__button__container" layout vertical center-center fit
+                   style="background-color:rgba(0,0,0,0.54)">
                 <img src="/io2016/images/play-video-button.png">
                 <h4>Keynote in progress</h4>
               </div>
@@ -801,6 +803,10 @@ Fired when the mode changes.
     },
 
     generateSpeakerImage: function(session) {
+      if (!session.speakers) {
+        return 'images/schedule/profile_placeholder.png';
+      }
+      // If a session has multiple speakers, pick a profile pic at random.
       var idx = Math.floor(Math.random() * session.speakers.length);
       return this.speakers[session.speakers[idx]].thumbnailUrl || 'images/schedule/profile_placeholder.png';
     },

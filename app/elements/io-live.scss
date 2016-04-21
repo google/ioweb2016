@@ -145,10 +145,13 @@ paper-tabs {
   background-image: url(../images/hash2.png);
   background-size: 80%;
   min-height: 150px;
+}
 
+.play__button__container {
   img {
     height: 48px;
     width: 48px;
+    opacity: 0.75;
   }
 
   h4 {
@@ -158,6 +161,7 @@ paper-tabs {
     top: 16px;
     margin: 0;
     font-weight: normal;
+    font-size: 16px;
   }
 }
 
