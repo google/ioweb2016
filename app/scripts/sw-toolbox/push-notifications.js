@@ -18,10 +18,35 @@
   const DEFAULT_URL = 'schedule#myschedule';
   const DEFAULT_ICON = 'images/touch/homescreen192.png';
   const DEFAULT_TITLE = 'Some events in My Schedule have been updated';
+  const SCHEDULE_ENDPOINT = 'api/v1/schedule';
   const UTM_SOURCE_PARAM = 'utm_source=notification';
 
+  function updateSessionCache(sessions) {
+    return global.toolbox.cacheOnly(SCHEDULE_ENDPOINT).then(response => {
+      if (!response || response.status >= 400) {
+        // Schedule wasn't cached or was a cached error, so just fetch a
+        // fresh copy.
+        global.toolbox.cache(SCHEDULE_ENDPOINT);
+      }
+
+      // If there's a cached sessions feed, then update the changed fields
+      // and replace the cached version with the updated version.
+      return response.json().then(function(schedule) {
+        sessions.forEach(function(session) {
+          schedule.sessions[session.id] = session;
+        });
+
+        return caches.open(global.toolbox.options.cache.name).then(cache =>
+          cache.put(SCHEDULE_ENDPOINT, new Response(JSON.stringify(schedule)))
+        );
+      });
+    }).catch(function(error) {
+      console.error('Could not update the cached sessions feed:', error);
+    });
+  }
+
   global.addEventListener('push', function(event) {
-    let defaults = {
+    const defaults = {
       icon: DEFAULT_ICON,
       title: DEFAULT_TITLE,
       body: ''
@@ -30,6 +55,20 @@
       // Didn't have notification data in the payload, show fallback notification
       defaults.data = {error: 'no_notification_in_payload'};
       event.waitUntil(global.registration.showNotification(defaults.title, defaults));
+    }
+
+    if (event.data) {
+      let data;
+      try {
+        data = event.data.json();
+      } catch (e) {
+        // data was not valid JSON
+        data = {};
+      }
+
+      if (data.sessions) {
+        event.waitUntil(updateSessionCache(data.sessions));
+      }
     }
   });
 
@@ -52,7 +91,7 @@
       relativeUrl += '?utm_error=' + error;
     }
 
-    var url = new URL(relativeUrl, global.location.href);
+    const url = new URL(relativeUrl, global.location.href);
     url.search += (url.search ? '&' : '') + UTM_SOURCE_PARAM;
 
     event.waitUntil(global.clients.openWindow(url.toString()));

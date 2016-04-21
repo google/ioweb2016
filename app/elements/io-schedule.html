@@ -229,14 +229,14 @@ Fired when the user toggles bookmarking/removing a session.
 
       <template is="dom-if" if="{{_dayIs(day, 'myschedule')}}">
 
-        <div class="card bg-cyan-200">
+        <div class="card bg-cyan-200 notification__feature">
           <div class="card-content card-content--myscheduleinfo"
                hidden$="[[!app.showMySchedulHelp]]">
             <iron-pages selected="[[_computeMyScheduleHelp(app.currentUser)]]">
               <div id="signin-prompt">
                 <h3 class="card__title">Create your custom I/O schedule</h3>
                 <div>Sign in to add events to My Schedule.
-                  <span class="notification__feature">
+                  <span>
                     To receive notifications on this device, you need to sign in and enable notifications.
                     <p class="note">Note: Notifications are activated per device. To receive notifications on multiple devices, sign in on each device, enable notifications, and make sure you're online. All device notifications can be turned on/off at any time in the settings panel.</p>
                   </span>
@@ -244,7 +244,7 @@ Fired when the user toggles bookmarking/removing a session.
                 <paper-button class="cta-button" data-track-link="schedule-sign-in"
                               on-click="signIn">Sign in</paper-button>
               </div>
-              <div id="notificationInfo" class="notification__feature">
+              <div id="notificationInfo">
                 <paper-icon-button icon="io:close" aria-label="Close"
                                on-tap="closeHelp"></paper-icon-button>
                 <div>If you have notifications enabled, you'll be notified on this device when:

@@ -67,13 +67,11 @@ limitations under the License.
                     selected="[[selectedSubpage]]">
           <paper-tab label="event" link>
             <a href="#event" data-track-link="attending-event" data-ajax-link
-               layout horizontal center-center
-               tabindex="-1">Event</a>
+               layout horizontal center-center>Event</a>
           </paper-tab>
           <paper-tab label="travel" link>
             <a href="#travel" data-track-link="attending-travel" data-ajax-link
-               layout horizontal center-center
-               tabindex="-1">Travel</a>
+               layout horizontal center-center>Travel</a>
           </paper-tab>
         </paper-tabs>
       </div>
@@ -336,6 +334,8 @@ limitations under the License.
 (function () {
   'use strict';
 
+  var SUBTAB_SELECTOR = '#subpage-tabs a';
+
   Polymer({
     is: 'io-attend-page',
 
@@ -375,10 +375,16 @@ limitations under the License.
       this._lowerScrollThreshold = IOWA.Elements.Footer.clientHeight +
           parseInt(getComputedStyle(IOWA.Elements.Footer).height) +
           Polymer.dom(this.root).querySelector('.io__hash').clientHeight;
+
+      // Wait till after subnav effects to look for focusable items
+      this.async(function() {
+        IOWA.A11y.addFocusStates(SUBTAB_SELECTOR);
+      });
     },
 
     detached: function() {
       this.unlisten(IOWA.Elements.ScrollContainer, 'scroll', '_onPageScroll');
+      IOWA.A11y.removeFocusStates(SUBTAB_SELECTOR);
     },
 
     onSubpageTransitionDone: function() {

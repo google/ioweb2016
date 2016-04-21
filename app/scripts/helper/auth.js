@@ -105,7 +105,8 @@ IOWA.Auth = IOWA.Auth || (function() {
       return Promise.resolve();
     }
 
-    if (useCachedUserId && IOWA.Elements.Template.app.currentUser.id) {
+    if (useCachedUserId && IOWA.Elements.Template.app.currentUser &&
+        IOWA.Elements.Template.app.currentUser.id) {
       return Promise.resolve();
     }
 
