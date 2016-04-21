@@ -349,8 +349,8 @@ Fired when the mode changes.
 
       /**
        * Current day to display schedule information for. This calculated from
-       * the `date` property. For example, "May 18 2016 09:00:00 GMT-0700 (PDT)"
-       * would be 28.
+       * the `date` property. For example, "May 18 2016 10:00:00 GMT-0700 (PDT)"
+       * would be 18.
        */
       currentDay: {
         type: Number,
@@ -367,15 +367,15 @@ Fired when the mode changes.
 
       /**
        * The target date for the event. Should be specified in ISO 8601
-       * format, e.g. 'May 18 2016 09:30:00 GMT-0700 (PDT)'.
+       * format, e.g. 'May 18 2016 10:00:00 GMT-0700 (PDT)'.
        *
        * @attribute date
        * @type string
-       * @default 'May 18 2016 09:30:00 GMT-0700 (PDT)'
+       * @default 'May 18 2016 10:00:00 GMT-0700 (PDT)'
        */
       date: {
         type: String,
-        value: 'May 18 2016 09:30:00 GMT-0700 (PDT)',
+        value: 'May 18 2016 10:00:00 GMT-0700 (PDT)',
         observer: '_dateChanged'
       },
 
