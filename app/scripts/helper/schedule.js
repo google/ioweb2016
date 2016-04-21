@@ -207,10 +207,8 @@ class Schedule {
     let sessionFeedbackUpdatesCallback = sessionId => {
       let template = IOWA.Elements.Template;
       let savedFeedback = template.app.savedSurveys;
-      // let sessionsListIndex = template.app.scheduleData.sessions.findIndex(
-      //   session => session.id === sessionId);
       if (savedFeedback.indexOf(sessionId) === -1) {
-        // Add feedback to saved feedbacks.
+        // Add feedback to saved feedback.
         template.push('app.savedSurveys', sessionId);
 
         debugLog(`Session ${sessionId} has received feedback!`);
