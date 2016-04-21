@@ -47,22 +47,25 @@ class SimpleDB {
    * @return {Promise} Fulfills with the SimpleDB instance.
    */
   instance(name) {
-    if (window.indexedDB && window.indexedDB.open && window.simpleDB) {
-      if (this.simpleDbInstances[name]) {
-        // Resolve immediately if we already have an open instance.
-        return Promise.resolve(this.simpleDbInstances[name]);
+    return Promise.reject('SimpleDB is temporarily disabled.');
+    /*
+      if (window.indexedDB && window.indexedDB.open && window.simpleDB) {
+        if (this.simpleDbInstances[name]) {
+          // Resolve immediately if we already have an open instance.
+          return Promise.resolve(this.simpleDbInstances[name]);
+        }
+
+        return window.simpleDB.open(name).then(db => {
+          // Stash the instance away for reuse next time.
+          this.simpleDbInstances[name] = db;
+          return this.simpleDbInstances[name];
+        });
       }
 
-      return window.simpleDB.open(name).then(db => {
-        // Stash the instance away for reuse next time.
-        this.simpleDbInstances[name] = db;
-        return this.simpleDbInstances[name];
-      });
-    }
-
-    // window.simpleDB will be undefined if we detected that there was no
-    // IndexedDB support in the current browser.
-    return Promise.reject('SimpleDB is not supported.');
+      // window.simpleDB will be undefined if we detected that there was no
+      // IndexedDB support in the current browser.
+      return Promise.reject('SimpleDB is not supported.');
+    */
   }
 
   /**
@@ -72,7 +75,9 @@ class SimpleDB {
    * @returns {Promise} Fulfills when the data is cleared.
    */
   clearData(name) {
-    return this.instance(name).then(db => db.clear());
+    return this.instance(name).then(db => db.clear()).catch(function() {
+      debugLog('SimpleDB is temporarily disabled.');
+    });
   }
 }
 
