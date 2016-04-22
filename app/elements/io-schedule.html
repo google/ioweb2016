@@ -135,8 +135,7 @@ limitations under the License.
       if (!str) {
         return '';
       }
-      var parts = str.split(' ');
-      return parts.length ? parts[part] : '';
+      return str.split(' ')[part];
     },
 
     _getMeridiemLetter: function(sessionBlock) {
