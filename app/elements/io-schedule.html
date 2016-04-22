@@ -132,6 +132,9 @@ limitations under the License.
     },
 
     _getMeridiemPart: function(str, part) {
+      if (!str) {
+        return '';
+      }
       return str.split(' ')[part];
     },
 
