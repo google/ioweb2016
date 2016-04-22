@@ -45,6 +45,27 @@
     });
   }
 
+  function openClient(url) {
+    return global.clients.matchAll({type: 'window'}).then(clientList => {
+      if (clientList.length === 0) {
+        // No open clients
+        return global.clients.openWindow(url);
+      }
+
+      // Search through the open clients
+      for (let client of clientList) {
+        // If the client is already at the correct URL then it's perfect, focus it
+        if (client.url === url && 'focus' in client) {
+          return client.focus();
+        }
+      }
+
+      // None of the clients were open to the correct URL, so use any.
+      clientList[0].navigate(url);
+      clientList[0].focus();
+    });
+  }
+
   global.addEventListener('push', function(event) {
     const defaults = {
       icon: DEFAULT_ICON,
@@ -87,13 +108,13 @@
       relativeUrl = DEFAULT_URL;
     }
 
-    if (error) {
-      relativeUrl += '?utm_error=' + error;
-    }
-
     const url = new URL(relativeUrl, global.location.href);
     url.search += (url.search ? '&' : '') + UTM_SOURCE_PARAM;
+    if (error) {
+      url.search += '&utm_error=' + error;
+    }
+    const urlString = url.toString();
 
-    event.waitUntil(global.clients.openWindow(url.toString()));
+    event.waitUntil(openClient(urlString));
   });
 })(self);
