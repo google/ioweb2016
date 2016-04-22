@@ -295,7 +295,7 @@ limitations under the License.
     },
 
     speakerProfilePic: function(speakers, id) {
-      if (speakers && speakers[id].thumbnailUrl) {
+      if (speakers && speakers[id] && speakers[id].thumbnailUrl) {
         return speakers[id].thumbnailUrl;
       }
       return 'images/schedule/profile_placeholder.png';

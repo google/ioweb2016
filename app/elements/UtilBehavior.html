@@ -43,7 +43,10 @@ IOBehaviors.UtilBehavior = {
   },
 
   _propOfArrayItem: function(array, index, prop) {
-    return array[index][prop];
+    if (!array[index]) {
+      return null;
+    }
+    return prop in array[index] ? array[index][prop] : null;
   },
 
   _addClass: function(name, prop) {
