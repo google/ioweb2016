@@ -635,7 +635,7 @@ Fired when the user toggles bookmarking/removing a session.
 
           if (day !== 'myschedule') {
             var dayAsNumber = parseInt(day.split('day')[1]); // 'day1' => 1
-            var ioStartDay = new Date(this.gmtDayOne).getDate(); // 18
+            var ioStartDay = new Date(this.gmtDayOne).getUTCDate(); // 18
             var dateIndex = (session.day % ioStartDay); // May 18 === 0
 
             if (!isNaN(dayAsNumber) && (dateIndex + 1) === dayAsNumber) {
@@ -685,7 +685,7 @@ Fired when the user toggles bookmarking/removing a session.
         },
 
         _dayIndexToDate: function(timeBlockIdx) {
-          var ioStartDay = new Date(this.gmtDayOne).getDate(); // 18
+          var ioStartDay = new Date(this.gmtDayOne).getUTCDate(); // 18
           return timeBlockIdx + ioStartDay;
         },
 
