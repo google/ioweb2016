@@ -65,6 +65,7 @@ func registerHandlers() {
 	handle("/api/v1/schedule", serveSchedule)
 	handle("/api/v1/easter-egg", handleEasterEgg)
 	handle("/api/v1/photoproxy", servePhotosProxy)
+	handle("/api/v1/livestream", serveLivestream)
 	handle("/api/v1/user/survey/", submitUserSurvey)
 	// background jobs
 	handle("/sync/gcs", syncEventData)
@@ -838,6 +839,31 @@ func servePhotosProxy(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;charset=utf-8")
 	w.WriteHeader(res.StatusCode)
 	io.Copy(w, res.Body)
+}
+
+// serveLivestream responds with a list of live-streamed sessions,
+// in the form of YouTube video IDs.
+func serveLivestream(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;charset=utf-8")
+	c := newContext(r)
+
+	// respond with stubbed JSON entries in dev mode
+	if isDev() {
+		// I/O 2015 keynote
+		w.Write([]byte(`["7V-fIGMDsmE"]`))
+	}
+
+	ids, err := scheduleLiveIDs(c, time.Now())
+	if err != nil {
+		writeJSONError(c, w, errStatus(err), err)
+		return
+	}
+	b, err := json.Marshal(ids)
+	if err != nil {
+		writeJSONError(c, w, errStatus(err), err)
+		return
+	}
+	w.Write(b)
 }
 
 // debugGetURL fetches a URL with service account credentials.
