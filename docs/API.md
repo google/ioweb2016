@@ -73,6 +73,18 @@ Event full schedule and other data.
 See `app/temporary_api/schedule.json` for a sample response.
 
 
+### GET /api/v1/livestream
+
+Returns a list of currenly live-streamed sessions in a form of YouTube video IDs.
+
+```json
+[
+  "7V-fIGMDsmE",
+  "another-yt-id"
+]
+```
+
+
 ### PUT /api/v1/user/survey/:session_id?uid=:uid
 
 Submit session feedback survey.

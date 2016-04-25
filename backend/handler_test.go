@@ -375,6 +375,63 @@ func TestServeEmbed(t *testing.T) {
 	}
 }
 
+func TestServeLivestream(t *testing.T) {
+	defer resetTestState(t)
+	defer preserveConfig()()
+
+	now := time.Now().Round(time.Second).UTC()
+	config.Env = "prod"
+	config.Schedule.Start = now
+	config.Schedule.Location = time.UTC
+
+	r := newTestRequest(t, "GET", "/api/v1/livestream", nil)
+	c := newContext(r)
+
+	if err := storeEventData(c, &eventData{Sessions: map[string]*eventSession{
+		"live": {
+			StartTime: now.Add(time.Millisecond),
+			IsLive:    true,
+			YouTube:   "live",
+			Desc:      "Channel 1",
+		},
+		"recorded": {
+			StartTime: now,
+			IsLive:    false,
+			YouTube:   "http://recorded",
+			Desc:      "Channel 1",
+		},
+		keynoteID: {
+			StartTime: now,
+			IsLive:    true,
+			YouTube:   "keynote",
+		},
+		"same-live": {
+			StartTime: now,
+			IsLive:    true,
+			YouTube:   "live",
+			Desc:      "Channel 1",
+		},
+	}}); err != nil {
+		t.Fatal(err)
+	}
+
+	w := httptest.NewRecorder()
+	serveLivestream(w, r)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("w.Code = %d; want 200\nResponse: %s", w.Code, w.Body.String())
+	}
+
+	var res []string
+	if err := json.Unmarshal(w.Body.Bytes(), &res); err != nil {
+		t.Fatalf("%s: %v", w.Body.String(), err)
+	}
+	want := []string{"keynote", "live"}
+	if !reflect.DeepEqual(res, want) {
+		t.Errorf("res = %v; want %v", res, want)
+	}
+}
+
 func TestServeSitemap(t *testing.T) {
 	defer resetTestState(t)
 	defer preserveConfig()()
