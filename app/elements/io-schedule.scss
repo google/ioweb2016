@@ -98,6 +98,17 @@ $filterBannerHeight: 72px;
   }
 }
 
+#main_schedule_results {
+  &.noresults::before {
+    content: 'No results for this day. Try updating your filters.';
+    text-align: center;
+    margin-top: $desktopKeyline;
+    position: absolute;
+    left: 0;
+    right: 0;
+  }
+}
+
 .session-block {
   border-top: 1px solid $color-section-border;
 
