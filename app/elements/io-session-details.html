@@ -71,7 +71,7 @@ limitations under the License.
         <div class="bg-bluegrey-50-20">
           <div class="card__photo" relative>
 
-            <div id="survey_notification" class="fullschedule-banner card-content bg-bluegrey-50-20"
+            <div id="survey_notification" class="fullschedule-banner card-content"
               layout horizontal center hidden$="[[!_computeHideSessionRatedNotification(selectedSession, app.savedSurveys)]]">
               <iron-icon icon="io:stars"></iron-icon>
               <span>Your feedback has been submitted.  Thanks for participating!</span>
@@ -259,7 +259,6 @@ limitations under the License.
 
     _selectedSessionChanged: function() {
       if (this.selectedSession) {
-//        this.$.ioSurvey.closeNoAnimation();
         this.$.sessionDetails.open();
         if (!this.inline) {
           Polymer.IronDropdownScrollManager.pushScrollLock(this);
@@ -322,15 +321,6 @@ limitations under the License.
       return 'images/schedule/profile_placeholder.png';
     },
 
-    _computeHideSessionInfo: function(session) {
-      if (session === null) {
-        return false;
-      }
-      var isFinished = new Date(session.startTimestamp) < Date.now();
-      return session.id === '__afterhours__' ||
-             (!isFinished && !session.hasRelated);
-    },
-
     _computeHideSessionRatedNotification: function(session, savedSurveys) {
       if (session === null) {
         return true;
@@ -342,9 +332,9 @@ limitations under the License.
       if (session === null) {
         return true;
       }
-      var isFinished = new Date(session.endTimestamp) < Date.now();
+      var isFinished = new Date(session.startTimestamp) < Date.now();
 
-      return this._computeHideSessionRatedNotification(session, savedSurveys) || session.id === '__afterhours__' || !isFinished;
+      return this._computeHideSessionRatedNotification(session, savedSurveys) || session.id === '__afterhours__' || session.id === '__keynote__' || !isFinished;
     },
 
     _computeSessionSavedIcon: function(saved) {

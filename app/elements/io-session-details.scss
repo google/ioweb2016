@@ -168,11 +168,13 @@ $color-section-border: #eaeaea;
   top: 0;
   z-index: 1;
   width: 100%;
+  font-size: 14px;
+  background-color: rgba(255,255,255,0.54);
 
   iron-icon {
-    height: 40px;
-    width: 40px;
-    margin-right: 8px;
+    height: 24px;
+    width: 24px;
+    margin-right: $mobileKeyline / 2;
   }
 }
 

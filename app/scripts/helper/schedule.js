@@ -311,7 +311,6 @@ class Schedule {
       let url = `${this.SURVEY_ENDPOINT}/${sessionId}?uid=${IOWA.IOFirebase.firebaseRef.getAuth().uid}`;
       let callback = () => {
         IOWA.Elements.Template.push('app.savedSurveys', sessionId);
-        IOWA.IOFirebase.markSessionRated(sessionId);
       };
       return this.submitSessionRequest(
         url, 'PUT', answers, 'Unable to save feedback results.', callback);
