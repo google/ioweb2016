@@ -338,7 +338,7 @@ Fired when the mode changes.
        */
       dayView: {
         type: Number,
-        computed: '_computeDayView(currentDay, day1Start)'
+        computed: '_computeDayIndex(currentDay, day1Start)'
       },
 
       /**
@@ -350,10 +350,11 @@ Fired when the mode changes.
       },
 
       /**
-       * List of live stream YT video channel ids.
+       * List of live stream YT video channel ids from the server.
        */
       liveStreamChannelIds: {
         type: Array,
+        readOnly: true,
         value: function() { return []; }
       },
 
@@ -452,11 +453,16 @@ Fired when the mode changes.
     observers: [
       // Recalc time blocks when users list of saved sessions comes in.
       '_recalcFirstOfBlock(sessions.length)',
-      'listLiveSessionsInThisHour(todaysLiveSessions)'
+      'listLiveSessionsInThisHour(todaysLiveSessions, liveStreamChannelIds)'
     ],
 
     ready: function () {
       this._loadedOnDate = moment();
+
+      IOWA.Request.xhrPromise('GET', '/api/v1/livestream', false).then(function(resp) {
+        this._setLiveStreamChannelIds(resp);
+        return resp;
+      }.bind(this));
     },
 
     attached: function() {
@@ -511,7 +517,7 @@ Fired when the mode changes.
       return selectedVideoId.replace(/https?:\/\/youtu\.be\//, '');
     },
 
-    _dateChanged: function () {
+    _dateChanged: function() {
       this.day1Start = moment(this.date);
       this.day1End = moment(this.day1Start).hours(19).startOf('hour'); // 7pm
       this.day2Start = moment(this.day1Start).add(1, 'days').hours(9); // 9am
@@ -546,21 +552,21 @@ Fired when the mode changes.
     },
 
     _computeCurrentDay: function(day1Start) {
-      // Calculate day view. Either 18/19/20 based on user's time, but
-      // normalized to PDT.
-      var today = moment();
-      var day1StartDayPDT = parseInt(moment(day1Start).tz('America/Los_Angeles').format('D'));
-      var daysRelativeToStart = parseInt(moment(today).tz('America/Los_Angeles').format('D')) - day1StartDayPDT;
+      // Calculate the current day (e.g. 18/19/20) based on user's time,
+      // but normalized to PDT.
+      var today = moment().tz('America/Los_Angeles');
+      var day1StartDayPDT = moment(day1Start).tz('America/Los_Angeles');
+
+      var daysRelativeToStart = today.diff(day1StartDayPDT, 'days');
 
       // If we're before the start day of I/O, set current day to the start day
-      // of I/O. Otherwise, set it to the current day of the show. Note:
-      // moment will calculate daysRelativeToStart as negative for if we're
-      // before day1StartDayPDT.
-      return daysRelativeToStart <= 0 ? day1StartDayPDT :
-                                        day1StartDayPDT + daysRelativeToStart;
+      // of I/O. Otherwise, set it to the current day the user loads the page
+      // on. Note: momentA.diff(momentB) is negative when we're before momentB.
+      return daysRelativeToStart <= 0 ? parseInt(day1StartDayPDT.format('D')) :
+                                        parseInt(today.format('D'));
     },
 
-    _computeDayView: function(currentDay, day1Start) {
+    _computeDayIndex: function(currentDay, day1Start) {
       var day1StartDayPDT = parseInt(moment(day1Start).tz('America/Los_Angeles').format('D'));
       // May 18 -> 1, May 19 -> 2, May 20 -> 3
       return currentDay % day1StartDayPDT + 1;
@@ -631,7 +637,11 @@ Fired when the mode changes.
       return duringKeynote;
     },
 
-    listLiveSessionsInThisHour: function(todaysLiveSessions) {
+    listLiveSessionsInThisHour: function(todaysLiveSessions, liveStreamChannelIds) {
+      if (!this.liveStreamChannelIds.length) {
+        return;
+      }
+
       // Refresh the page once a day if the user has the page open. This is
       // necessary to get new live streamed channel ids.
       var now = moment();
@@ -682,7 +692,7 @@ Fired when the mode changes.
       }
       var timeout = nextTimeMark.diff(now, 'milliseconds');
       this._refreshSessionTimeout = setTimeout(function() {
-        this.listLiveSessionsInThisHour(this.todaysLiveSessions);
+        this.listLiveSessionsInThisHour(this.todaysLiveSessions, this.liveStreamChannelIds);
         this.$.upcominglist.render(); // Force upcoming live session list to re-render.
       }.bind(this), timeout);
     },

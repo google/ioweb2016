@@ -49,7 +49,6 @@ limitations under the License.
            speakers="[[app.scheduleData.speakers]]"
            user-sessions="[[app.savedSessions]]"
            social-posts="[[socialPosts]]"
-           live-stream-channel-ids="[[liveStreamChannelIds]]"
            auto-open-fab="[[app.splashRemoved]]"
            on-countdown-intro="_onIntro"
            fit>
@@ -268,10 +267,6 @@ limitations under the License.
         type: Boolean,
         //computed: '_computeLoadVideo(app.isDesktopSize, app.pageTransitionDone, _scrolledToBottomCards)'
         computed: '_computeLoadVideo(app.isDesktopSize, app.pageTransitionDone, app.isIOS, app.isAndroid)'
-      },
-
-      liveStreamChannelIds: {
-        type: Array
       }
     },
 
