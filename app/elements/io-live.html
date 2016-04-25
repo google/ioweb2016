@@ -460,7 +460,7 @@ Fired when the mode changes.
       this._loadedOnDate = moment();
 
       IOWA.Request.xhrPromise('GET', '/api/v1/livestream', false).then(function(resp) {
-        this._setLiveStreamChannelIds(resp);
+        this._setLiveStreamChannelIds(resp || []);
         return resp;
       }.bind(this));
     },
