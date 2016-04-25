@@ -16,6 +16,17 @@
 
 @import '../base/layout';
 
+
+&.io-live-mode {
+  #navbar {
+    color: #fff;
+  }
+  #navbar .io-logo {
+    opacity: 1 !important;
+    background-image: url('../images/io-logo-white.png');
+  }
+}
+
 .io-logo {
   display: inline-block;
   background: url('../images/io.png') no-repeat;

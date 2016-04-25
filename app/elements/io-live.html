@@ -461,6 +461,7 @@ Fired when the mode changes.
 
       IOWA.Request.xhrPromise('GET', '/api/v1/livestream', false).then(function(resp) {
         this._setLiveStreamChannelIds(resp || []);
+        // this._setLiveStreamChannelIds(['7V-fIGMDsmE']);
         return resp;
       }.bind(this));
     },
