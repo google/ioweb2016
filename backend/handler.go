@@ -851,6 +851,7 @@ func serveLivestream(w http.ResponseWriter, r *http.Request) {
 	if isDev() {
 		// I/O 2015 keynote
 		w.Write([]byte(`["7V-fIGMDsmE"]`))
+		return
 	}
 
 	ids, err := scheduleLiveIDs(c, time.Now())
