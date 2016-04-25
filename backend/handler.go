@@ -859,6 +859,9 @@ func serveLivestream(w http.ResponseWriter, r *http.Request) {
 		writeJSONError(c, w, errStatus(err), err)
 		return
 	}
+	if ids == nil {
+		ids = []string{}
+	}
 	b, err := json.Marshal(ids)
 	if err != nil {
 		writeJSONError(c, w, errStatus(err), err)
