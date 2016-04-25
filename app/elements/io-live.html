@@ -147,7 +147,7 @@ Fired when the mode changes.
                 <template is="dom-repeat" items="[[_missingChannels]]" as="channel">
                   <div class="schedule-row" layout horizontal center
                        videoid$="[[channel.videoId]]">
-                    <div>
+                    <div layout horizontal center>
                       <img src$="/io2016/images/schedule/channel[[channel.label]].png"
                            class="profile__pic">
                     </div>
@@ -642,7 +642,7 @@ Fired when the mode changes.
       this.currentLiveSessions = this.filterCurrentTimeBlock(todaysLiveSessions);
 
       // Find any live channels that are not streaming content right now and
-      // include them in the list live streaming list for users to switch to.
+      // include them in the live streaming list for users to switch to.
       // The content will be recorded and/or other content.
       var liveIds = this.currentLiveSessions.map(function(session) {
         return session.youtubeUrl;
