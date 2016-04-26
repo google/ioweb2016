@@ -13,7 +13,6 @@ limitations under the License.
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/neon-animation/neon-animation-runner-behavior.html">
 <link rel="import" href="../bower_components/neon-animation/animations/slide-from-bottom-animation.html">
 <link rel="import" href="../bower_components/neon-animation/animations/fade-out-animation.html">
@@ -27,7 +26,7 @@ limitations under the License.
     <style include="shared-app-styles"></style>
     <div class="card" flex>
       <section id="survey_header" class="bg-cyan-200 card-content">
-        <paper-icon-button icon="close" id="close" on-click="_close"></paper-icon-button>
+        <paper-icon-button icon="io:close" id="close" on-click="_close"></paper-icon-button>
         <h1>Rate this Session</h1>
         <h3>[[session.title]]</h3>
         <h5 class="label">[[_sessionSpeakers]]</h5>
@@ -40,11 +39,6 @@ limitations under the License.
                          class="border-bottom card-content"
                          on-selected-changed="_computeComplete"></survey-rating>
         </template>
-        <paper-input id="input_additional"
-                     no-label-float="[[!app.isPhoneSize]]"
-                     always-float-label="[[app.isPhoneSize]]"
-                     label="Anything else we should know? (optional)"
-                     class="border-bottom card-content"></paper-input>
       </section>
       <div class="buttons card-content">
         <paper-button on-tap="_close">Cancel</paper-button>
@@ -221,7 +215,6 @@ limitations under the License.
           for (var i = 0; i < surveys.length; i++) {
             surveys[i].reset();
           }
-          this.$.input_additional.value = '';
         },
 
         /**
@@ -254,7 +247,6 @@ limitations under the License.
           for (var i in this.surveyQuestions) {
             answers[this.surveyQuestions[i].id] = this.surveyQuestions[i].value.toString();
           }
-          answers.textFeedback = this.$.input_additional.value;
           this._close();
           IOWA.Schedule.saveSurvey(this.session.id, answers).then(function() {
             this.fire('survey-submitted');
