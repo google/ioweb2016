@@ -254,6 +254,7 @@ limitations under the License.
           for (var i in this.surveyQuestions) {
             answers[this.surveyQuestions[i].id] = this.surveyQuestions[i].value.toString();
           }
+          answers.textFeedback = this.$.input_additional.value;
           this._close();
           IOWA.Schedule.saveSurvey(this.session.id, answers).then(function() {
             this.fire('survey-submitted');
