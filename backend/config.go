@@ -114,6 +114,7 @@ type appConfig struct {
 
 	// Firebase settings
 	Firebase struct {
+		Secret string
 		Shards []string
 	}
 

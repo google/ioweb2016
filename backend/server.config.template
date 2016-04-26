@@ -9,6 +9,7 @@
     "manifest": "https://storage.googleapis.com/io2015-data.appspot.com/manifest_v1.json"
   },
   "firebase": {
+    "secret": "FIREBASE_SECRET",
     "shards": [
       "DATABASE_SHARD_URL",
       "DATABASE_SHARD_URL",
