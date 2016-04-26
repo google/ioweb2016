@@ -29,6 +29,8 @@ limitations under the License.
 
 <link rel="import" href="UtilBehavior.html">
 <link rel="import" href="shared-app-styles.html">
+<link rel="import" href="io-icons.html">
+<link rel="import" href="io-survey.html">
 
 <dom-module id="io-session-details">
 <link rel="import" type="css" href="io-session-details.css">
@@ -46,7 +48,8 @@ limitations under the License.
                 entry-animation="scale-up-animation"
                 exit-animation="fade-out-animation"
                 on-iron-overlay-closed="_onSessionDetailsClose"
-                on-iron-overlay-opened="_onSessionDetailsOpen">
+                on-iron-overlay-opened="_onSessionDetailsOpen"
+                on-survey-submitted="_showSurveyNotification">
 
     <div class="fullschedule-banner card-content bg-bluegrey-50-60"
          layout horizontal center>
@@ -57,14 +60,27 @@ limitations under the License.
       <span tabindex="-1" autofocus></span>
     </div>
 
-    <paper-dialog-scrollable id="scrollable">
+      <io-survey id="ioSurvey"
+                 app="[[app]]"
+                 session="[[selectedSession]]"
+                 hidden
+                 inline>
+      </io-survey>
 
-      <div class="bg-bluegrey-50-20">
+      <paper-dialog-scrollable id="scrollable">
+        <div class="bg-bluegrey-50-20">
+          <div class="card__photo" relative>
 
-        <div class="card__photo" relative>
+            <div id="survey_notification" class="fullschedule-banner card-content"
+              layout horizontal center hidden$="[[!_computeHideSessionRatedNotification(selectedSession, app.savedSurveys)]]">
+              <iron-icon icon="io:stars"></iron-icon>
+              <span>Your feedback has been submitted.  Thanks for participating!</span>
+            </div>
 
-          <template is="dom-if" if="[[sessionHasVideo(_startScheduleVideo, selectedSession.isLivestream, selectedSession.youtubeUrl)]]" restamp>
-            <google-youtube
+            <template is="dom-if"
+                      if="[[sessionHasVideo(_startScheduleVideo, selectedSession.isLivestream, selectedSession.youtubeUrl)]]"
+                      restamp>
+              <google-youtube
                 video-id="[[_toVideoIdFilter(selectedSession.youtubeUrl)]]"
                 height="100%" width="100%" fit
                 autohide="1" controls="2" modestbranding="1" showinfo="0"
@@ -130,7 +146,7 @@ limitations under the License.
               <iron-icon icon="io:post-facebook" class="share-icon"></iron-icon>
             </a>
           </div>
-
+          <paper-button id="open_survey" on-click="_openSurvey" raised hidden$="[[_computeHideOpenSurveyButton(selectedSession, app.savedSurveys)]]">Rate Session</paper-button>
         </div>
 
         <div class="session__info__section session__speakers"
@@ -236,6 +252,10 @@ limitations under the License.
         value: false
       }
     },
+    _showSurveyNotification: function() {
+      this.$.open_survey.hidden = true;
+      this.$.survey_notification.hidden = false;
+    },
 
     _selectedSessionChanged: function() {
       if (this.selectedSession) {
@@ -301,21 +321,20 @@ limitations under the License.
       return 'images/schedule/profile_placeholder.png';
     },
 
-    _computeHideSessionInfo: function(session) {
+    _computeHideSessionRatedNotification: function(session, savedSurveys) {
       if (session === null) {
-        return false;
+        return true;
       }
-      var isFinished = new Date(session.endTimestamp) < Date.now();
-      return session.id === '__afterhours__' ||
-             (!isFinished && !session.hasRelated);
+      return savedSurveys.indexOf(session.id) !== -1;
     },
 
-    _computeHideSessionRating: function(session) {
+    _computeHideOpenSurveyButton: function(session, savedSurveys) {
       if (session === null) {
-        return false;
+        return true;
       }
-      var isFinished = new Date(session.endTimestamp) < Date.now();
-      return session.rated || session.id == '__afterhours__' || !isFinished;
+      var isFinished = new Date(session.startTimestamp) < Date.now();
+
+      return this._computeHideSessionRatedNotification(session, savedSurveys) || session.id === '__afterhours__' || session.id === '__keynote__' || !isFinished;
     },
 
     _computeSessionSavedIcon: function(saved) {
@@ -365,6 +384,8 @@ limitations under the License.
       this.$.sessionDetails.querySelector('.play__button__container').classList.remove('fadeout');
       this._startScheduleVideo = false;
 
+      // Hide Survey
+      this.$.ioSurvey.closeNoAnimation();
       this.selectedSession = null;
     },
 
@@ -493,6 +514,10 @@ limitations under the License.
 
     _computeHeaderMsg: function(watched) {
       return watched ? "You've watched this video" : 'Full Schedule';
+    },
+
+    _openSurvey: function() {
+      this.$.ioSurvey.open();
     },
 
     noop: function(e) {

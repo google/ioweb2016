@@ -1,0 +1,403 @@
+<!--
+Copyright 2016 Google Inc. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animation-runner-behavior.html">
+<link rel="import" href="../bower_components/neon-animation/animations/slide-from-bottom-animation.html">
+<link rel="import" href="../bower_components/neon-animation/animations/fade-out-animation.html">
+
+<link rel="import" href="io-icons.html">
+<link rel="import" href="shared-app-styles.html">
+
+<dom-module id="io-survey">
+  <link rel="import" type="css" href="io-survey.css">
+  <template>
+    <style include="shared-app-styles"></style>
+    <div class="card" flex>
+      <section id="survey_header" class="bg-cyan-200 card-content">
+        <paper-icon-button icon="io:close" id="close" on-click="_close"></paper-icon-button>
+        <h1>Rate this Session</h1>
+        <h3>[[session.title]]</h3>
+        <h5 class="label">[[_sessionSpeakers]]</h5>
+      </section>
+      <section id="survey_body">
+        <template is="dom-repeat" items="[[surveyQuestions]]" as="question">
+          <survey-rating id=[[question.id]]
+                         selected={{question.value}}
+                         question="[[question]]"
+                         class="border-bottom card-content"
+                         on-selected-changed="_computeComplete"></survey-rating>
+        </template>
+      </section>
+      <div class="buttons card-content">
+        <paper-button on-tap="_close">Cancel</paper-button>
+        <paper-button id="survey_button_submit"
+                      disabled
+                      on-tap="_submit">Submit
+        </paper-button>
+      </div>
+    </div>
+  </template>
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'io-survey',
+
+        behaviors: [Polymer.NeonAnimationRunnerBehavior],
+
+        properties: {
+          /**
+           * Selected session to survey
+           */
+          session: {
+            type: Object,
+            observer: '_computeSpeakers',
+            value: function() {
+              return {};
+            }
+          },
+
+          /**
+           * App Object
+           */
+          app: {
+            type: Object,
+            value: function() {
+              return {};
+            }
+          },
+
+          /**
+           * Array of survey questions in the following format
+           * {
+           *   id: 'question ID',
+           *   labelText: 'label to display'
+           *   hintMin: 'Hint label min text'
+           *   hintMax: 'Hint label max text'
+           * }
+           */
+          surveyQuestions: {
+            type: Array,
+            value: function() {
+              return [{
+                id: 'relevance',
+                labelText: 'How relevant was this session to your projects?',
+                hintMin: 'Not at all',
+                hintMax: 'Extremely'
+              }, {
+                id: 'content',
+                labelText: 'The content was:',
+                hintMin: 'Too basic',
+                hintMax: 'Too advanced'
+              }, {
+                id: 'speaker',
+                labelText: 'The speaker was:',
+                hintMin: 'Poor',
+                hintMax: 'Outstanding'
+              }];
+            }
+          },
+
+          /**
+           * String representing the speakers
+           */
+          _sessionSpeakers: {
+            type: String,
+            notify: false
+          },
+
+          /**
+           * Boolean true if currently opened
+           */
+          opened: {
+            type: Boolean,
+            value: false
+          },
+
+          /**
+           * Defines entry and exit animations
+           */
+          animationConfig: {
+            type: Object,
+            value: function() {
+              return {
+                'entry': [{
+                  name: 'slide-from-bottom-animation',
+                  node: this
+                }],
+                'exit': [{
+                  name: 'fade-out-animation',
+                  node: this
+                }]
+              }
+            }
+          }
+        },
+
+        listeners: {
+          'neon-animation-finish': '_onNeonAnimationFinish'
+        },
+
+        /**
+         * Open the dialog
+         */
+        open: function() {
+          this.opened = true;
+          this.hidden = false;
+          this.scrollTop = 0;
+          this.playAnimation('entry');
+          Polymer.IronDropdownScrollManager.pushScrollLock(this);
+        },
+
+        /**
+         * Computes the speakers string for a given session
+         *
+         * @param session
+         * @private
+         */
+        _computeSpeakers: function(session) {
+          if (session && session.speakers && this.app.scheduleData) {
+            var speakerString = 'by ';
+            var speakerIds = session.speakers;
+            var speakerHash = this.app.scheduleData.speakers;
+
+            if (speakerIds.length > 1) {
+              for (var i = 0; i < speakerIds.length - 1; i++) {
+                speakerString += speakerHash[speakerIds[i]].name + ', ';
+              }
+              speakerString = speakerString.slice(0, speakerString.length - 2) + ' & ';
+            }
+            speakerString += speakerHash[speakerIds[speakerIds.length - 1]].name;
+            this._sessionSpeakers = speakerString;
+          }
+        },
+
+        /**
+         * Checks if the survey is complete
+         *
+         * @param event
+         * @private
+         */
+        _computeComplete: function(event) {
+          var complete = true;
+          for (var i = 0; i < this.surveyQuestions.length; i++) {
+            if (!this.surveyQuestions[i].value) {
+              complete = false;
+            }
+          }
+          if (complete) {
+            this.$.survey_button_submit.removeAttribute('disabled');
+          } else {
+            this.$.survey_button_submit.setAttribute('disabled', '');
+          }
+        },
+
+        /**
+         * Resets survey values
+         *
+         * @private
+         */
+        _resetValues: function() {
+          var surveys = Polymer.dom(this.root).querySelectorAll('survey-rating');
+          for (var i = 0; i < surveys.length; i++) {
+            surveys[i].reset();
+          }
+        },
+
+        /**
+         * Helper method to close the dialog
+         *
+         * @private
+         */
+        _close: function() {
+          this.opened = false;
+          this.playAnimation('exit');
+          Polymer.IronDropdownScrollManager.removeScrollLock(this);
+          this._resetValues();
+        },
+
+        /**
+         * Closes the dialog with out a closing animation
+         */
+        closeNoAnimation: function() {
+          this.opened = false;
+          this.hidden = true;
+          Polymer.IronDropdownScrollManager.removeScrollLock(this);
+          this._resetValues();
+        },
+
+        /**
+         * Submits the survey responses
+         */
+        _submit: function(event) {
+          var answers = {};
+          for (var i in this.surveyQuestions) {
+            answers[this.surveyQuestions[i].id] = this.surveyQuestions[i].value.toString();
+          }
+          this._close();
+          IOWA.Schedule.saveSurvey(this.session.id, answers).then(function() {
+            this.fire('survey-submitted');
+          }.bind(this));
+        },
+
+        /**
+         * Handles animation finish event and hides the dialog if opened == false
+         * @private
+         */
+        _onNeonAnimationFinish: function() {
+          if (!this.opened) {
+            this.hidden = true;
+          }
+        }
+      });
+    })();
+  </script>
+</dom-module>
+
+<dom-module id="survey-rating">
+  <link rel="import" type="css" href="io-survey.css">
+  <template>
+    <style include="shared-app-styles"></style>
+    <h5 class="label margin-b-20">[[question.labelText]]</h5>
+    <div id="rating" layout flex justified>
+      <paper-icon-button value="1" icon="io:stars" class="rate__icon"
+                         on-mouseover="_mouseOverHandler"
+                         on-mouseout="_mouseOutHandler"
+                         on-tap="_selectValue"></paper-icon-button>
+      <paper-icon-button value="2" icon="io:stars" class="rate__icon"
+                         on-mouseover="_mouseOverHandler"
+                         on-mouseout="_mouseOutHandler"
+                         on-tap="_selectValue"></paper-icon-button>
+      <paper-icon-button value="3" icon="io:stars" class="rate__icon"
+                         on-mouseover="_mouseOverHandler"
+                         on-mouseout="_mouseOutHandler"
+                         on-tap="_selectValue"></paper-icon-button>
+      <paper-icon-button value="4" icon="io:stars" class="rate__icon"
+                         on-mouseover="_mouseOverHandler"
+                         on-mouseout="_mouseOutHandler"
+                         on-tap="_selectValue"></paper-icon-button>
+      <paper-icon-button value="5" icon="io:stars" class="rate__icon"
+                         on-mouseover="_mouseOverHandler"
+                         on-mouseout="_mouseOutHandler"
+                         on-tap="_selectValue"></paper-icon-button>
+    </div>
+    <div class="rate__hint" layout horizontal justified>
+      <span class="hint margin-t-10">[[question.hintMin]]</span>
+      <span class="hint margin-t-10">[[question.hintMax]]</span>
+    </div>
+  </template>
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'survey-rating',
+
+        properties: {
+          /**
+           * Selected rating
+           */
+          selected: {
+            type: Number,
+            notify: true
+          },
+
+          /**
+           * Survey question to render
+           */
+          question: {
+            type: Object,
+            value: function() {
+              return {};
+            }
+          }
+        },
+
+        /**
+         * Handles mouse over event and adds selected class to appropriate icons
+         * @param event mouse over event
+         */
+        _mouseOverHandler: function(event) {
+          var elementIndex = event.currentTarget.getAttribute('value');
+          if (this.selected && this.selected > elementIndex) {
+            this._deselectElements(elementIndex, this.selected);
+          } else {
+            this._selectElements(0, elementIndex);
+          }
+        },
+        /**
+         * Handles mouse out event and removes selected class from appropriate icons
+         * @param event mouse out event
+         */
+        _mouseOutHandler: function(event) {
+          var elementIndex = event.currentTarget.getAttribute('value');
+          if (!this.selected) {
+            this._deselectElements(0, elementIndex);
+          } else if (this.selected && elementIndex > this.selected) {
+            this._deselectElements(this.selected, elementIndex);
+          } else if (this.selected && this.selected > elementIndex) {
+            this._selectElements(elementIndex, this.selected);
+          }
+        },
+        /**
+         * Helper method to add selected class from start to end element
+         * @param start index of start element
+         * @param end index of end element
+         */
+        _selectElements: function(start, end) {
+          var elements = this.$.rating.children;
+          for (var i = start; i < end; i++) {
+            elements[i].classList.add('selected');
+          }
+        },
+        /**
+         * Helper method to remove selected class from start to end element
+         * @param start index of start element
+         * @param end index of end element
+         */
+        _deselectElements: function(start, end) {
+          var elements = this.$.rating.children;
+          for (var i = start; i < end; i++) {
+            elements[i].classList.remove('selected');
+          }
+        },
+
+        /**
+         * Sets selected to 0 and removes selected css class from all children
+         */
+        reset: function() {
+          this.selected = 0;
+          this._deselectElements(0, 5);
+        },
+
+        /**
+         * Sets the selected value and adds selected class to elements
+         * @param event
+         * @private
+         */
+        _selectValue: function(event) {
+          var elementIndex = parseInt(event.currentTarget.getAttribute('value'), 10);
+          if (elementIndex !== this.selected) {
+            this.selected = elementIndex;
+            this._selectElements(0, elementIndex);
+          } else {
+            this.reset();
+          }
+        }
+      });
+    })();
+  </script>
+</dom-module>

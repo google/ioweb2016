@@ -22,13 +22,11 @@ IOWA.Auth = IOWA.Auth || (function() {
   var pendingResolutions = [];
 
   function getTokenResponse_() {
-    if (IOWA.Elements.GoogleSignIn.auth2) {
-      var user = IOWA.Elements.GoogleSignIn.auth2.currentUser.get();
-      if (user.isSignedIn()) {
-        return user.getAuthResponse();
-      }
-    } else if (window.gapi && window.gapi.auth) {
-      return window.gapi.auth.getToken();
+    if (IOWA.IOFirebase.isAuthed()) {
+      return {
+        token_type: 'Bearer',
+        access_token: IOWA.IOFirebase.firebaseRef.getAuth().token
+      };
     }
     return null;
   }
@@ -101,7 +99,7 @@ IOWA.Auth = IOWA.Auth || (function() {
    */
   function waitForSignedIn(message, useCachedUserId) {
     // If we're already signed in, return a Promise that resolves immediately.
-    if (getTokenResponse_() && IOWA.IOFirebase.isAuthed()) {
+    if (getTokenResponse_()) {
       return Promise.resolve();
     }
 

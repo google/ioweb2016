@@ -389,16 +389,6 @@ class IOFirebase {
   }
 
   /**
-   * Mark that user has provided feedback for a session.
-   *
-   * @param {string} sessionUUID The session's UUID.
-   * @return {Promise} Promise to track completion.
-   */
-  markSessionRated(sessionUUID) {
-    return this._setFirebaseUserData('data', `feedback_submitted_sessions/${sessionUUID}`, true);
-  }
-
-  /**
    * Mark the given video as viewed by the user.
    *
    * @param {string} videoIdOrUrl The Youtube Video URL or ID.

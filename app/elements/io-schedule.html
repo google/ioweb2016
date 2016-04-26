@@ -24,7 +24,6 @@ limitations under the License.
 <link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
 
 <link rel="import" href="io-session-details.html">
-
 <link rel="import" href="UtilBehavior.html">
 <link rel="import" href="shared-app-styles.html">
 
@@ -33,6 +32,7 @@ limitations under the License.
 <link rel="import" type="css" href="io-schedule.css">
 <template>
   <style include="shared-app-styles"></style>
+
   <div layout horizontal
        class$="[[_addClass('session-block', session.firstOfBlock)]]">
     <div class="schedule-block-title">
@@ -176,7 +176,6 @@ Fired when the user toggles bookmarking/removing a session.
         --primary-text-color: inherit;
       }
     </style>
-
     <div class="filters__panel" filtering$="[[_isFiltering(filters.length)]]"
          showfilters$="[[showFilters]]">
       <div id="filters" class="card-content bg-bluegrey-50-40">
@@ -223,7 +222,8 @@ Fired when the user toggles bookmarking/removing a session.
     </div>
 
     <div class$="[[_addClass('has-filtering-banner', filters.length)]]"
-         on-session-bookmark="_onToggleSaveSession" relative>
+         on-session-bookmark="_onToggleSaveSession"
+         relative>
 
       <io-session-details id="sessionDetails"
                           selected-session="{{selectedSession}}"
@@ -798,7 +798,6 @@ Fired when the user toggles bookmarking/removing a session.
         _isFiltering: function(filtersLen) {
           return filtersLen > 0;
         }
-
       });
     }());
   </script>

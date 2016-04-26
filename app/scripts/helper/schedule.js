@@ -207,12 +207,9 @@ class Schedule {
     let sessionFeedbackUpdatesCallback = sessionId => {
       let template = IOWA.Elements.Template;
       let savedFeedback = template.app.savedSurveys;
-      let sessionsListIndex = template.app.scheduleData.sessions.findIndex(
-        session => session.id === sessionId);
       if (savedFeedback.indexOf(sessionId) === -1) {
-        // Add feedback to saved feedbacks.
+        // Add feedback to saved feedback.
         template.push('app.savedSurveys', sessionId);
-        template.set(`app.scheduleData.sessions.${sessionsListIndex}.rated`, true);
 
         debugLog(`Session ${sessionId} has received feedback!`);
       }
@@ -311,10 +308,9 @@ class Schedule {
     IOWA.Analytics.trackEvent('session', 'rate', sessionId);
 
     return IOWA.Auth.waitForSignedIn('Sign in to submit feedback').then(() => {
-      let url = `${this.SURVEY_ENDPOINT}/${sessionId}`;
-      let callback = response => {
-        IOWA.Elements.Template.set('app.savedSurveys', response);
-        IOWA.IOFirebase.markSessionRated(sessionId);
+      let url = `${this.SURVEY_ENDPOINT}/${sessionId}?uid=${IOWA.IOFirebase.firebaseRef.getAuth().uid}`;
+      let callback = () => {
+        IOWA.Elements.Template.push('app.savedSurveys', sessionId);
       };
       return this.submitSessionRequest(
         url, 'PUT', answers, 'Unable to save feedback results.', callback);

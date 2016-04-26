@@ -97,6 +97,7 @@ IOWA.Elements = (function() {
     template.app.ANALYTICS_LINK_ATTR = ANALYTICS_LINK_ATTR;
     template.app.scheduleData = null;
     template.app.savedSessions = [];
+    template.app.savedSurveys = [];
     template.app.watchedVideos = [];
     template.app.currentUser = null;
     template.app.showMySchedulHelp = true;

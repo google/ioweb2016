@@ -36,6 +36,7 @@ $color-section-border: #eaeaea;
 
 #sessionDetails {
   max-width: $tablet-breakpoint-min;
+  overflow: hidden;
 }
 
 #sessionDetails {
@@ -153,6 +154,27 @@ $color-section-border: #eaeaea;
   .fadeout {
     opacity: 0;
     pointer-events: none;
+  }
+}
+
+#open_survey {
+  margin-top: 16px;
+  margin-left: 0;
+}
+
+#survey_notification {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  width: 100%;
+  font-size: 14px;
+  background-color: rgba(255,255,255,0.54);
+
+  iron-icon {
+    height: 24px;
+    width: 24px;
+    margin-right: $mobileKeyline / 2;
   }
 }
 
