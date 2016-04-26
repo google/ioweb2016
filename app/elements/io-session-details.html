@@ -65,10 +65,10 @@ limitations under the License.
         <div class="card__photo" relative>
 
           <div id="survey_notification" class="fullschedule-banner card-content"
-               layout horizontal center
+               layout horizontal center end-justified
                hidden$="[[!_computeHideSessionRatedNotification(selectedSession, app.savedSurveys)]]">
             <iron-icon icon="io:stars"></iron-icon>
-            <span>Your feedback has been submitted.  Thanks for participating!</span>
+            <span>Your feedback has been submitted. Thanks for participating!</span>
           </div>
 
           <div class="fullschedule-banner card-content"
@@ -252,6 +252,7 @@ limitations under the License.
         value: false
       }
     },
+
     _showSurveyNotification: function() {
       this.$.open_survey.hidden = true;
       this.$.survey_notification.hidden = false;
@@ -334,7 +335,10 @@ limitations under the License.
       }
       var isFinished = new Date(session.startTimestamp) < Date.now();
 
-      return this._computeHideSessionRatedNotification(session, savedSurveys) || session.id === '__afterhours__' || session.id === '__keynote__' || !isFinished;
+      return this._computeHideSessionRatedNotification(session, savedSurveys) ||
+             session.id === '__afterhours__' ||
+             session.id === '__keynote__' ||
+             !isFinished;
     },
 
     _computeSessionSavedIcon: function(saved) {
