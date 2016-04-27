@@ -78,6 +78,21 @@ func serviceAccountClient(c context.Context, scopes ...string) (*http.Client, er
 	return oauth2Client(c, cred), nil
 }
 
+type firebaseTransport struct {
+	ctx context.Context
+}
+
+func (t *firebaseTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+	q := req.URL.Query()
+	q.Add("auth", config.Firebase.Secret)
+	req.URL.RawQuery = q.Encode()
+	return httpTransport(t.ctx).RoundTrip(req)
+}
+
+func firebaseClient(c context.Context) *http.Client {
+	return &http.Client{Transport: &firebaseTransport{c}}
+}
+
 func typeMimeHeader(contentType string) textproto.MIMEHeader {
 	h := make(textproto.MIMEHeader)
 	h.Set("Content-Type", contentType)
