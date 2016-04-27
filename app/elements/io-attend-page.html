@@ -39,24 +39,6 @@ limitations under the License.
   </div>
 </div>
 
-<!-- backdrop shouldn't be applied on ios - github.com/Polymer/paper-dialog/issues/16 -->
-<paper-dialog id="venueMap" class="venue__map"
-              entry-animation="scale-up-animation"
-              exit-animation="fade-out-animation"
-              with-backdrop="[[!app.isIOS]]"
-              on-iron-overlay-closed="closeMap">
-  <div class="dialog-content">
-    <paper-icon-button icon="io:close" dialog-dismiss aria-label="Close map" style="color:#fff;"></paper-icon-button>
-  </div>
-
-  <div id="venueMapContainer" class="map-container venue__embed">
-    <template is="dom-if" if="[[_loadVenueMap]]">
-      <iframe src="https://www.google.com/maps/d/embed?mid=zw02JmrSGtIE.kcBDdSlNAd4Y" width="100%" height="100%"></iframe>
-    </template>
-  </div>
-</paper-dialog>
-
-
 <div class="card__container">
   <div class="card">
     <div class="subpage__container">
@@ -87,7 +69,7 @@ limitations under the License.
                   Google I/O is our annual developer festival with hands-on learning, technical talks, and a chance to hear more about Google&#8217;s latest developer products.
                 </h5>
               </div>
-              <a class="card-content box card-map" href="https://www.google.com/maps/d/embed?mid=zw02JmrSGtIE.kcBDdSlNAd4Y" layout vertical on-click="openMap">
+              <a class="card-content box card-map" href="https://www.google.com/maps/d/viewer?mid=zw02JmrSGtIE.kcBDdSlNAd4Y" target="_blank" layout vertical>
                 <div layout flex end>
                   <span class="card__footerlink typo-white" layout horiziontal justified center flex>
                     View full map
@@ -403,25 +385,6 @@ limitations under the License.
 
     _computeLoadMap: function(pageTransitionDone, selectedSubpage, scrolledEnough) {
       return pageTransitionDone && selectedSubpage == 'travel' && scrolledEnough;
-    },
-
-    openMap: function(e) {
-      if (this.app.isPhoneSize) {
-        return;
-      }
-
-      e.preventDefault();
-      this.$.venueMap.open();
-      this._loadVenueMap = true;
-      if (!this.inline) {
-        Polymer.IronDropdownScrollManager.pushScrollLock(this);
-      }
-    },
-
-    closeMap: function(e) {
-      if (!this.inline) {
-        Polymer.IronDropdownScrollManager.removeScrollLock(this);
-      }
     }
 
   });
