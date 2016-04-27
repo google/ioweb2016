@@ -140,11 +140,6 @@ paper-tabs {
   min-height: 150px;
 }
 
-// .card__photo--live-desc,
-// .card__bottom-links {
-//   background-color: #fafafa;
-// }
-
 .play__button__container {
   img {
     height: 48px;
@@ -170,19 +165,11 @@ neon-animated-pages {
   background-color: #fff;
   border-bottom-left-radius: 2px;
   border-bottom-right-radius: 2px;
-  // border: 1px solid $color-bluegrey-50;
-  // border-top: 0;
 }
 
 .schedule__content {
   .schedule-rows {
     overflow: auto;
-
-    // .card-content {
-    //   flex-shrink: 0;
-    //   padding: $mobileKeyline;
-    //   border-top: 1px solid $color-light-grey-border;
-    // }
 
     h4 {
       font-size: 20px;
@@ -317,10 +304,8 @@ neon-animated-pages {
   width: calc(100% - 32px);
   max-width: $widgetWidth;
   position: absolute;
-  // top: 100%;
   top: calc(-60vh - 24px);
   right: $mobileKeyline;
-  // margin-bottom: $mobileKeyline;
   cursor: pointer;
   transition: opacity 300ms cubic-bezier(0.4, 0, 0.2, 1);
   font-weight: 500;

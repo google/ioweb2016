@@ -272,11 +272,6 @@ Fired when the mode changes.
 
       _refreshSessionTimeout: { value: null },
 
-      // _videoReady: {
-      //   type: Boolean,
-      //   value: false
-      // },
-
       day1Start: { type: Object },
       day1End: { type: Object },
       day2Start: { type: Object },
@@ -461,7 +456,6 @@ Fired when the mode changes.
 
       IOWA.Request.xhrPromise('GET', '/api/v1/livestream', false).then(function(resp) {
         this._setLiveStreamChannelIds(resp || []);
-        // this._setLiveStreamChannelIds(['7V-fIGMDsmE']);
         return resp;
       }.bind(this));
     },
@@ -600,7 +594,6 @@ Fired when the mode changes.
     },
 
     onVideoReady: function(e, detail) {
-      // this._videoReady = true;
       if (!this.duringKeynote) {
         this.autoOpenFab = true;
       }
@@ -616,7 +609,6 @@ Fired when the mode changes.
           this.wasPaused_ = true;
           break;
         case YT.PlayerState.PLAYING:
-          // this.updateVideoInfo();
           if (!this.wasPaused_) {
             IOWA.Analytics.trackEvent('live', 'channel select', this.selectedVideoId);
           }
@@ -724,18 +716,6 @@ Fired when the mode changes.
       IOWA.Analytics.trackEvent('live', 'fab opened', 'closed');
     },
 
-    // onCountdownTimerThreshold: function(e, detail) {
-    //   if (detail.label === 'Ended' || detail.ended) {
-    //     this.async(function() {
-    //       this.$.livecontainer.querySelector('countdown-timer').style.opacity = 0;
-    //     }, null, 1000);
-    //   }
-    // },
-    // onCountdownFaded: function(e, detail) {
-    //   if (moment() > this.day1Start) {
-    //     this.mode = this._MODES.LIVE;
-    //   }
-    // },
     onPlayKeynote: function(e, detail) {
       var keynoteSession = this.sessions[0];
       if (keynoteSession.id === '__keynote__') {
