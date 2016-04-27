@@ -87,7 +87,7 @@ limitations under the License.
                 iv_load_policy="3" rel="0" autoplay="1"
                 on-google-youtube-ready="onScheduleVideoReady"></google-youtube>
           </template>
-          <div class$="play__button__container [[_addClass('watched', selectedSession.watched)]]"
+          <div class$="play__button__container [[_addWatchedClass(selectedSession.watched)]]"
                on-click="onVideoPlay"
                data-videoid$="[[selectedSession.youtubeUrl]]"
                data-track-link$="[[selectedSession.youtubeUrl]]"
@@ -101,7 +101,7 @@ limitations under the License.
                       aria-hidden="true"></iron-image>
           <paper-fab icon="[[_computeSessionSavedIcon(selectedSession.saved)]]"
                      mini="[[forceMobileUI]]"
-                     class$="[[_addClass('active', selectedSession.saved)]]"
+                     class$="[[_addActiveClass(selectedSession.saved)]]"
                      on-up="_onToggleSaveSession"
                      aria-label$="[[_computeLabel(selectedSession.saved)]]"></paper-fab>
         </div>
@@ -543,7 +543,15 @@ limitations under the License.
     noop: function(e) {
       e.preventDefault();
       e.stopPropagation();
-    }
+    },
+
+    _addActiveClass: function(saved) {
+      return saved ? 'active' : '';
+    },
+
+    _addWatchedClass: function(watched) {
+      return watched ? 'watched' : '';
+    },
 
   });
 }());
