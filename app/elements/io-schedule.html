@@ -330,7 +330,7 @@ Fired when the user toggles bookmarking/removing a session.
 
           <div class="card">
 
-            <div class="card-content card-content--main card-content--no-padding-top card-content--no-padding-right" layout vertical>
+            <div id="main_schedule_results" class="card-content card-content--main card-content--no-padding-top card-content--no-padding-right" layout vertical>
 
               <template id="schedulelist" is="dom-repeat" items="[[sessions]]"
                         as="session" filter="matchesFilters" initial-count="10">
@@ -473,7 +473,8 @@ Fired when the user toggles bookmarking/removing a session.
           // Recalc time blocks when new day is selected or filter is applied.
           '_recalcFirstOfBlock(sessions.length, day, filters.length)',
           '_savedSessionsChanged(savedSessions.splices)',
-          '_watchedVideosChanged(watchedVideos.splices)'
+          '_watchedVideosChanged(watchedVideos.splices)',
+          '_updateNoResultsMsg(day)'
         ],
 
         attached: function() {
@@ -518,7 +519,9 @@ Fired when the user toggles bookmarking/removing a session.
             this.push('filters', radioGroup.selected);
           }
 
-          IOWA.Elements.Template.initFabScroll();
+          this.debounce('checkfilternumresults', function() {
+            IOWA.Elements.Template.initFabScroll();
+          }, 50);
         },
 
         _useFilter: function(e, detail) {
@@ -599,6 +602,7 @@ Fired when the user toggles bookmarking/removing a session.
           var list = Polymer.dom(this.root).querySelector('#schedulelist');
           if (list) {
             list.render();
+            this._updateNoResultsMsg();
           }
 
           history.replaceState({}, '', [
@@ -607,6 +611,19 @@ Fired when the user toggles bookmarking/removing a session.
             search,
             window.location.hash
           ].join(''));
+        },
+
+        _updateNoResultsMsg: function(opt_day) {
+          var day = opt_day || this.day;
+
+          var el = Polymer.dom(this.root).querySelector(
+              '#main_schedule_results');
+          if (el) {
+            var list = Polymer.dom(this.root).querySelector('#schedulelist');
+            var numResults = list.parentElement.querySelectorAll(
+              'io-schedule-row:not([hidden])').length;
+            el.classList.toggle('noresults', !numResults);
+          }
         },
 
         clearFilters: function(e) {
