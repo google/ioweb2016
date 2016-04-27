@@ -134,6 +134,18 @@ Fired when sign in fails for some reason.
                     IOWA.Analytics.customDimensions.SIGNED_IN, false);
               }
 
+              // Track how long it takes for the initial auth attempt to run.
+              if (window.performance && window.performance.now) {
+                var time = Math.ceil(window.performance.now());
+                var label = signedIn ? 'signed in' : 'signed out';
+                debugLog('auth init:', time, 'ms');
+                IOWA.Analytics.trackPerf('auth', 'init', time, label);
+
+                // Track this separately as an event so it can be used in
+                // advanged segments.
+                IOWA.Analytics.trackEvent('auth', 'init', label, time);
+              }
+
               // Listens for future changes to the signin status.
               this.auth2.isSignedIn.listen(this.signinChangedHandler_);
             }.bind(this));
