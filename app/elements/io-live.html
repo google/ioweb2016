@@ -480,6 +480,7 @@ Fired when the mode changes.
 
     openSession: function(e, detail) {
       e.stopPropagation();
+      this.selectedSession = null; // Allows re-selecting the session that was just closed.
       this.selectedSession = detail.session;
     },
 
@@ -702,6 +703,7 @@ Fired when the mode changes.
       this.$.livewidget.classList.remove('transitioning');
       if (!this.openWidget) {
         this.$.schedfab.style.visibility = 'visible';
+        this.selectedSession = null; // De-select a previously viewed session.
       }
     },
 

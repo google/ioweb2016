@@ -183,7 +183,7 @@
 
       var live = document.querySelector('io-live');
       if (live) {
-        live.openWidget = false;
+        live.closeFab();
       }
     }
   });
