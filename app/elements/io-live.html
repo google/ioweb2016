@@ -87,6 +87,7 @@ Fired when the mode changes.
         <neon-animated-pages entry-animation="fade-in-animation"
                              exit-animation="fade-out-animation"
                              selected="[[selectedTab]]"
+                             on-neon-animation-finish="_neonPageTransitionFinish"
                              attr-for-selected="label" fit>
           <section class="schedule__content" label="live" layout vertical>
 
@@ -804,6 +805,12 @@ Fired when the mode changes.
         image = image.replace(sizes[0], 'w' + smallestSize);
       }
       return image;
+    },
+
+    _neonPageTransitionFinish: function(e) {
+      e.stopPropagation();
+      // Hide a selected session when use selects new tab.
+      this.selectedSession = null;
     }
   });
 </script>
