@@ -66,6 +66,7 @@ $color-section-border: #eaeaea;
     height: $subnavHeight;
     margin: 0;
     color: rgba(0,0,0,0.54);
+    z-index: 1;
 
     paper-icon-button {
       margin-left: -4px;// align to subnav's left side.

@@ -51,14 +51,7 @@ limitations under the License.
                 on-iron-overlay-opened="_onSessionDetailsOpen"
                 on-survey-submitted="_showSurveyNotification">
 
-    <div class="fullschedule-banner card-content bg-bluegrey-50-60"
-         layout horizontal center>
-      <paper-icon-button icon="io:arrow-back" dialog-dismiss
-                         aria-label$="[[_computeHeaderMsg(selectedSession.watched)]]"></paper-icon-button>
-      <span>[[_computeHeaderMsg(selectedSession.watched)]]</span>
-      <!-- Manage focus to this element so session details don't scroll -->
-      <span tabindex="-1" autofocus></span>
-    </div>
+    <paper-dialog-scrollable id="scrollable">
 
       <io-survey id="ioSurvey"
                  app="[[app]]"
@@ -67,20 +60,27 @@ limitations under the License.
                  inline>
       </io-survey>
 
-      <paper-dialog-scrollable id="scrollable">
-        <div class="bg-bluegrey-50-20">
-          <div class="card__photo" relative>
+      <div>
 
-            <div id="survey_notification" class="fullschedule-banner card-content"
-              layout horizontal center hidden$="[[!_computeHideSessionRatedNotification(selectedSession, app.savedSurveys)]]">
-              <iron-icon icon="io:stars"></iron-icon>
-              <span>Your feedback has been submitted.  Thanks for participating!</span>
-            </div>
+        <div class="card__photo" relative>
 
-            <template is="dom-if"
-                      if="[[sessionHasVideo(_startScheduleVideo, selectedSession.isLivestream, selectedSession.youtubeUrl)]]"
-                      restamp>
-              <google-youtube
+          <div id="survey_notification" class="fullschedule-banner card-content"
+               layout horizontal center end-justified
+               hidden$="[[!_computeHideSessionRatedNotification(selectedSession, app.savedSurveys)]]">
+            <iron-icon icon="io:stars"></iron-icon>
+            <span>Your feedback has been submitted. Thanks for participating!</span>
+          </div>
+
+          <div class="fullschedule-banner card-content"
+               layout horizontal center fit>
+            <paper-icon-button icon="io:close" dialog-dismiss
+                aria-label="Close session details"></paper-icon-button>
+            <!-- Manage focus to this element so session details don't scroll -->
+            <span tabindex="-1" autofocus></span>
+          </div>
+
+          <template is="dom-if" if="[[sessionHasVideo(_startScheduleVideo, selectedSession.isLivestream, selectedSession.youtubeUrl)]]" restamp>
+            <google-youtube
                 video-id="[[_toVideoIdFilter(selectedSession.youtubeUrl)]]"
                 height="100%" width="100%" fit
                 autohide="1" controls="2" modestbranding="1" showinfo="0"
@@ -252,6 +252,7 @@ limitations under the License.
         value: false
       }
     },
+
     _showSurveyNotification: function() {
       this.$.open_survey.hidden = true;
       this.$.survey_notification.hidden = false;
@@ -334,7 +335,10 @@ limitations under the License.
       }
       var isFinished = new Date(session.startTimestamp) < Date.now();
 
-      return this._computeHideSessionRatedNotification(session, savedSurveys) || session.id === '__afterhours__' || session.id === '__keynote__' || !isFinished;
+      return this._computeHideSessionRatedNotification(session, savedSurveys) ||
+             session.id === '__afterhours__' ||
+             session.id === '__keynote__' ||
+             !isFinished;
     },
 
     _computeSessionSavedIcon: function(saved) {
@@ -510,10 +514,6 @@ limitations under the License.
 
     _computeWatchedVideoMsg: function(watched) {
       return watched ? 'Replay' : 'Watch video';
-    },
-
-    _computeHeaderMsg: function(watched) {
-      return watched ? "You've watched this video" : 'Full Schedule';
     },
 
     _openSurvey: function() {
