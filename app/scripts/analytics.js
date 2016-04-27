@@ -78,7 +78,13 @@ IOWA.Analytics = IOWA.Analytics || (function(exports) {
     // timeout so the promise always resolves. In such cases, some hits
     // will be sent with missing custom dimension values, but that's better
     // than them not being sent at all.
-    setTimeout(this.readyState_.resolve.bind(this), this.READY_STATE_TIMEOUT_);
+    setTimeout(function() {
+      this.readyState_.resolve();
+
+      // Tracks that this happened and when it happened.
+      this.trackEvent('analytics', 'timeout', this.READY_STATE_TIMEOUT_,
+          window.performance && window.performance.now());
+    }.bind(this), this.READY_STATE_TIMEOUT_);
   };
 
   /**
