@@ -21,9 +21,105 @@ $color-session-row-hover: rgba($color-bluegrey-50, 0.4);
 
 $filterBannerHeight: 72px;
 
+@mixin mobile-styles {
+  .card-content--main {
+    padding-top: 0 !important;
+  }
+  .schedule-block-title {
+    h1 {
+      font-size: 24px;
+      font-weight: normal;
+      line-height: 28px;
+    }
+    .schedule-block-meridiem {
+      margin-left: 3px;
+      line-height: 23px;
+    }
+  }
+  .schedule-time {
+    color: rgba(0,0,0,0.4);
+  }
+  .myschedule-day-header {
+    font-size: 14px;
+    line-height: 16px;
+
+    h1 {
+      font-size: 24px;
+      line-height: 28px;
+    }
+
+    > div {
+      padding-bottom: $mobileKeyline / 2;
+    }
+  }
+  .filters__panel {
+    width: 224px;
+    position: absolute;
+    top: $mobileKeyline / 2 !important;
+    z-index: 10;
+    right: $mobileKeyline / 2;
+    @include shadow-z1();
+
+    &:not(.fixed) {
+      top: -($subnavHeight - $mobileKeyline / 2) !important;
+
+      &[filtering] {
+        top: -($subnavHeight + $filterBannerHeight - $mobileKeyline / 2) !important;
+      }
+    }
+
+    &.fixed {
+      position: fixed;
+      top: $navbarHeight;
+
+      &.down {
+        top: 0 !important;
+      }
+    }
+
+    .filters_toggle_button {
+      display: inline-block;
+      position: absolute;
+      top: 15px;
+      right: $mobileKeyline;
+      z-index: 1;
+    }
+  }
+  #filters {
+    background: #fff;
+    overflow-y: auto;
+    height: 75vh;
+    -webkit-overflow-scrolling: touch;
+  }
+  #filters-layout[layout][horizontal].io-schedule {
+    flex-direction: column;
+  }
+  .filter-section {
+    border-top: 1px solid $color-bluegrey-100;
+
+    &:first-of-type {
+      border-top: 0;
+    }
+    &:not(:last-of-type) {
+      margin-bottom: $tabletKeyline;
+    }
+
+    h4 {
+      padding: $tabletKeyline 0;
+    }
+  }
+  .filter-section--clearall {
+    display: none;
+  }
+}
+
 :host {
   display: block;
   position: relative;
+}
+
+:host([mobile]) {
+  @include mobile-styles;
 }
 
 .card-content--myscheduleinfo {
@@ -267,156 +363,73 @@ paper-radio-button {
   padding: $mobileKeyline/4 0;
 }
 
+
 @media (max-width: $phone-breakpoint-max) {
-  .card-content--main {
-    padding-top: 0 !important;
-  }
-  .schedule-block-title {
-    h1 {
-      font-size: 24px;
-      font-weight: normal;
-      line-height: 28px;
-    }
-    .schedule-block-meridiem {
-      margin-left: 3px;
-      line-height: 23px;
-    }
-  }
-  .schedule-time {
-    color: rgba(0,0,0,0.4);
-  }
-  .myschedule-day-header {
-    font-size: 14px;
-    line-height: 16px;
-
-    h1 {
-      font-size: 24px;
-      line-height: 28px;
-    }
-
-    > div {
-      padding-bottom: $mobileKeyline / 2;
-    }
-  }
-  .filters__panel {
-    width: 224px;
-    position: absolute;
-    top: $mobileKeyline / 2 !important;
-    z-index: 10;
-    right: $mobileKeyline / 2;
-    @include shadow-z1();
-
-    &:not(.fixed) {
-      top: -($subnavHeight - $mobileKeyline / 2) !important;
-
-      &[filtering] {
-        top: -($subnavHeight + $filterBannerHeight - $mobileKeyline / 2) !important;
-      }
-    }
-
-    &.fixed {
-      position: fixed;
-      top: $navbarHeight;
-
-      &.down {
-        top: 0 !important;
-      }
-    }
-
-    .filters_toggle_button {
-      display: inline-block;
-      position: absolute;
-      top: 15px;
-      right: $mobileKeyline;
-      z-index: 1;
-    }
-  }
-  #filters {
-    background: #fff;
-    overflow-y: auto;
-    height: 75vh;
-    -webkit-overflow-scrolling: touch;
-  }
-  #filters-layout[layout][horizontal].io-schedule {
-    flex-direction: column;
-  }
-  .filter-section {
-    border-top: 1px solid $color-bluegrey-100;
-
-    &:first-of-type {
-      border-top: 0;
-    }
-    &:not(:last-of-type) {
-      margin-bottom: $tabletKeyline;
-    }
-
-    h4 {
-      padding: $tabletKeyline 0;
-    }
-  }
-  .filter-section--clearall {
-    display: none;
-  }
+  @include mobile-styles;
 }
 
 @media (min-width: $tablet-breakpoint-min) {
-  .schedule-row {
-    padding: $tabletKeyline;
-  }
-  .schedule-block-title {
-    padding: $tabletKeyline 0;
-  }
-  .schedule-title {
-    font-size: 20px;
-    line-height: 24px;
-  }
-  .schedule-time {
-    line-height: 24px;
-  }
-  .schedule-toggle-buttons {
-    display: block;
-    height: 24px;
-    width: 24px;
-  }
-  .schedule-toggle-buttons-mobile {
-    display: none;
-  }
-
-  .filter-section {
-    flex-grow: 1;
-    margin-left: 40px;
-
-    &:first-of-type {
-      margin-left: 0;
+  // Wrapped in selector b/c we don't want these styles to apply on desktop
+  // where <io-schedule-row> is used in the <io-live> widget.
+  :host(:not([mobile])) {
+    .schedule-row {
+      padding: $tabletKeyline;
+    }
+    .schedule-block-title {
+      padding: $tabletKeyline 0;
+    }
+    .schedule-title {
+      font-size: 20px;
+      line-height: 24px;
+    }
+    .schedule-time {
+      line-height: 24px;
+    }
+    .schedule-toggle-buttons {
+      display: block;
+      height: 24px;
+      width: 24px;
+    }
+    .schedule-toggle-buttons-mobile {
+      display: none;
     }
 
-    h4 {
-      border-bottom: 1px solid $color-bluegrey-100;
-      font-weight: 500;
-      margin-bottom: $mobileKeyline;
-      padding-bottom: $mobileKeyline / 2;
-    }
-  }
+    .filter-section {
+      flex-grow: 1;
+      margin-left: 40px;
 
-  .filter-section--types {
-    paper-radio-group {
-      column-count: 3;
-    }
-  }
+      &:first-of-type {
+        margin-left: 0;
+      }
 
-  #filters {
-    padding: $tabletKeyline;
-  }
-
-  .filters__panel {
-    &[filtering] {
-      margin-top: -$filterBannerHeight;
-      z-index: 9;
+      h4 {
+        border-bottom: 1px solid $color-bluegrey-100;
+        font-weight: 500;
+        margin-bottom: $mobileKeyline;
+        padding-bottom: $mobileKeyline / 2;
+      }
     }
 
-    &.fixed {
+    .filter-section--types {
+      paper-radio-group {
+        column-count: 3;
+      }
+    }
+
+    #filters {
+      padding: $tabletKeyline;
+    }
+
+    .filters__panel {
       &[filtering] {
-        margin-top: 0;
+        margin-top: -$filterBannerHeight;
+        z-index: 9;
+      }
+
+      &.fixed {
+        &[filtering] {
+          margin-top: 0;
+        }
       }
     }
   }

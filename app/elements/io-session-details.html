@@ -100,7 +100,7 @@ limitations under the License.
                       sizing="cover" preload fade fit
                       aria-hidden="true"></iron-image>
           <paper-fab icon="[[_computeSessionSavedIcon(selectedSession.saved)]]"
-                     mini="[[app.isPhoneSize]]"
+                     mini="[[forceMobileUI]]"
                      class$="[[_addClass('active', selectedSession.saved)]]"
                      on-up="_onToggleSaveSession"
                      aria-label$="[[_computeLabel(selectedSession.saved)]]"></paper-fab>
@@ -247,6 +247,14 @@ limitations under the License.
         value: false
       },
 
+      /**
+       * When true, the session details panel forces its mobile UI.
+       */
+      forceMobileUI: {
+        type: Boolean,
+        computed: '_computeForceMobileUI(app.isPhoneSize, inline)'
+      },
+
       _startScheduleVideo: {
         type: Boolean,
         value: false
@@ -371,6 +379,10 @@ limitations under the License.
     },
 
     _onSessionDetailsClose: function(e) {
+      if (this.inline) {
+        return;
+      }
+
       // Remove session id hash from URL.
       var search = IOWA.Util.removeSearchParam(window.location.search, 'sid');
       var selectedSubpage = IOWA.Router.parseUrl(window.location.href).subpage;
@@ -394,6 +406,10 @@ limitations under the License.
     },
 
     _onSessionDetailsOpen: function() {
+      if (this.inline) {
+        return;
+      }
+
       document.title = this.selectedSession.title + ' - Google I/O Schedule';
 
       // Update URL with deep link. Always ensure sid parameter is set.
@@ -518,6 +534,10 @@ limitations under the License.
 
     _openSurvey: function() {
       this.$.ioSurvey.open();
+    },
+
+    _computeForceMobileUI: function(isPhone, inline) {
+      return isPhone || inline;
     },
 
     noop: function(e) {

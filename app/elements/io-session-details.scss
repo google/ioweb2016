@@ -18,20 +18,32 @@
 
 $color-section-border: #eaeaea;
 
-:host([inline]) #sessionDetails {
-  // Overrides for paper-dialog
-  position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  height: 100% !important;
-  width: 100% !important;
-  max-height: 100% !important;
-  max-width: 100% !important;
-  z-index: 1 !important;
-  box-shadow: none !important;
+:host([inline]) {
+  #sessionDetails {
+    // Overrides for paper-dialog
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    height: 100% !important;
+    width: 100% !important;
+    max-height: 100% !important;
+    max-width: 100% !important;
+    z-index: 1 !important;
+    box-shadow: none !important;
+  }
+  .fullschedule-banner {
+    padding: $mobileKeyline / 2;
+    padding-top: 0;
+  }
+  #scrollable {
+    background-color: #fff;
+    height: 100%;
+    -webkit-overflow-scrolling: touch;
+    overflow: auto;
+  }
 }
 
 #sessionDetails {
@@ -270,31 +282,33 @@ $color-section-border: #eaeaea;
 }
 
 @media (min-width: $tablet-breakpoint-min) {
-  #sessionDetails {
-    .card__photo {
-      height: 430px;
+  :host(:not([inline])) {
+    #sessionDetails {
+      .card__photo {
+        height: 430px;
+      }
+      paper-fab {
+        bottom: calc(-56px/2); // FAB height / 2
+      }
+      .session__info__section {
+        padding: 40px $desktopKeyline;
+      }
+      .fullschedule-banner {
+        padding: $tabletKeyline;
+      }
     }
-    paper-fab {
-      bottom: calc(-56px/2); // FAB height / 2
+    .session__speakers {
+      .speaker__card {
+        width: calc(50% - 32px);
+      }
     }
-    .session__info__section {
-      padding: 40px $desktopKeyline;
+    .session__related {
+      .related__card {
+        width: calc(50% - 32px);
+      }
     }
-    .fullschedule-banner {
-      padding: $tabletKeyline;
-    }
+    .session__time {
+      line-height: 21px;
   }
-  .session__speakers {
-    .speaker__card {
-      width: calc(50% - 32px);
-    }
-  }
-  .session__related {
-    .related__card {
-      width: calc(50% - 32px);
-    }
-  }
-  .session__time {
-    line-height: 21px;
   }
 }

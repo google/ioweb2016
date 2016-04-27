@@ -6,14 +6,15 @@
       "description":"Join us to learn about product and platform innovation at Google, starting with a live kickoff from Google CEO Sundar Pichai.",
       "startTimestamp":"2016-05-18T17:00:00Z",
       "endTimestamp":"2016-05-18T19:00:00Z",
-      "isLivestream":false,
+      "isLivestream":true,
       "isFeatured":false,
       "tags":[
         "FLAG_KEYNOTE"
       ],
       "speakers":null,
       "room":"Amphitheatre",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/9d72d428-2b03-e611-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/9d72d428-2b03-e611-a517-00155d5066d7.jpg",
+      "youtubeUrl":"https://google.com/events/io",
       "hasRelated":false,
       "day":18,
       "block":"10 AM",
@@ -21,12 +22,12 @@
       "end":"12:00 PM",
       "duration":"2 hours",
       "filters":{
-        "Live streamed":false
+        "Live streamed":true
       }
     },
     {
       "id":"50d50c09-0cef-e511-a517-00155d5066d7",
-      "title":"6 Degree of Freedom Gaming in Android with Project Tango",
+      "title":"6 Degrees of Freedom Gaming in Android with Project Tango",
       "description":"Project Tango transforms the way we play games by understanding your phone’s precise 3D motion. Chase a virtual pet around your home, tag ghosts with your phone and fling rocks at castles in 3D. Gaming is the most popular app category for Project Tango - over 2/3 of all the Project Tango apps on Google Play are games. Learn how to build a simple Project Tango game along with some tips and tricks for development. ",
       "startTimestamp":"2016-05-18T20:00:00Z",
       "endTimestamp":"2016-05-18T21:00:00Z",
@@ -41,7 +42,7 @@
         "3a53e3f3-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 4",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/50d50c09-0cef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/50d50c09-0cef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":18,
       "block":"1 PM",
@@ -72,7 +73,7 @@
         "5acd40c9-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 7",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/91641ff7-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/91641ff7-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":18,
       "block":"1 PM",
@@ -104,7 +105,7 @@
         "d9911d18-c3ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 5",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/a0d50c09-0cef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/a0d50c09-0cef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":18,
       "block":"1 PM",
@@ -124,7 +125,7 @@
       "description":"Come to this session to find out about new developer features in the platform. APIs, functionality, performance - it's all here.",
       "startTimestamp":"2016-05-18T20:00:00Z",
       "endTimestamp":"2016-05-18T21:00:00Z",
-      "isLivestream":false,
+      "isLivestream":true,
       "isFeatured":false,
       "tags":[
         "TRACK_ANDROID",
@@ -132,10 +133,13 @@
         "THEME_DEVELOP"
       ],
       "speakers":[
-        "bc0cbfe1-c2ee-e511-a517-00155d5066d7"
+        "bc0cbfe1-c2ee-e511-a517-00155d5066d7",
+        "c9d67cfa-8007-e611-a517-00155d5066d7",
+        "6fda5c1b-8107-e611-a517-00155d5066d7"
       ],
       "room":"Amphitheatre",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/782d2aeb-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/782d2aeb-0bef-e511-a517-00155d5066d7.jpg",
+      "youtubeUrl":"https://google.com/events/io",
       "hasRelated":false,
       "day":18,
       "block":"1 PM",
@@ -145,7 +149,7 @@
       "filters":{
         "Android":true,
         "Develop":true,
-        "Live streamed":false,
+        "Live streamed":true,
         "Sessions":true
       }
     },
@@ -166,7 +170,7 @@
         "0709dbe7-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 10",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/0b631cfd-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/0b631cfd-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":18,
       "block":"2 PM",
@@ -199,7 +203,7 @@
         "56370681-f3f9-e511-a517-00155d5066d7"
       ],
       "room":"Stage 5",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/72651ff7-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/72651ff7-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":18,
       "block":"2 PM",
@@ -209,6 +213,37 @@
       "filters":{
         "Develop":true,
         "Games":true,
+        "Live streamed":false,
+        "Sessions":true
+      }
+    },
+    {
+      "id":"cfc824f1-0bef-e511-a517-00155d5066d7",
+      "title":"Glide: Easy and efficient image loading for Android",
+      "description":"Image loading on Android can be hard to get right, but it doesn’t have to be! Glide is a library for Android that abstracts away complexity and makes efficient image loading easy. Sam Judd will talk through performance tips and tricks to help developers use Glide to make image loading in their apps smoother and faster. This talk will also use the recently released Google Photos app as a case study to help highlight some of the improvements in API design and performance in the upcoming 4.0 version of Glide. ",
+      "startTimestamp":"2016-05-18T21:00:00Z",
+      "endTimestamp":"2016-05-18T22:00:00Z",
+      "isLivestream":false,
+      "isFeatured":false,
+      "tags":[
+        "TRACK_ANDROID",
+        "TYPE_SESSIONS",
+        "THEME_DEVELOP"
+      ],
+      "speakers":[
+        "1e09dbe7-c2ee-e511-a517-00155d5066d7"
+      ],
+      "room":"Stage 7",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/cfc824f1-0bef-e511-a517-00155d5066d7.jpg",
+      "hasRelated":false,
+      "day":18,
+      "block":"2 PM",
+      "start":"2:00 PM",
+      "end":"3:00 PM",
+      "duration":"1 hour",
+      "filters":{
+        "Android":true,
+        "Develop":true,
         "Live streamed":false,
         "Sessions":true
       }
@@ -230,7 +265,7 @@
         "5153e3f3-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 4",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/8c2d2aeb-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/8c2d2aeb-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":18,
       "block":"2 PM",
@@ -261,7 +296,7 @@
         "cb911d18-c3ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 8",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/f39c1403-0cef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/f39c1403-0cef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":18,
       "block":"2 PM",
@@ -272,37 +307,6 @@
         "Grow \u0026 Earn":true,
         "Live streamed":false,
         "Play":true,
-        "Sessions":true
-      }
-    },
-    {
-      "id":"2dd50c09-0cef-e511-a517-00155d5066d7",
-      "title":"Google.org: Accelerating innovation for people with disabilities",
-      "description":"How can engineering and developer skills be used to tackle some of the world’s biggest challenges? One in seven people in the world has a disability -- a billion people that can benefit tremendously from tools and products that increase their independence. Last year, Google.org launched the Google Impact Challenge: Disabilities with $20M in funding to back innovative solutions that use technology like beacons, 3D scanning and printing, machine learning, and gamification. Hear from technologists working for forward-thinking organizations about how they’re building products that have the potential to transform lives and how you can develop products that make the world more accessible for all. \n",
-      "startTimestamp":"2016-05-18T22:00:00Z",
-      "endTimestamp":"2016-05-18T23:00:00Z",
-      "isLivestream":false,
-      "isFeatured":false,
-      "tags":[
-        "TRACK_MISC",
-        "TYPE_SESSIONS",
-        "THEME_DEVELOP"
-      ],
-      "speakers":[
-        "5491902d-1bef-e511-a517-00155d5066d7"
-      ],
-      "room":"Stage 1",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/2dd50c09-0cef-e511-a517-00155d5066d7.jpg",
-      "hasRelated":false,
-      "day":18,
-      "block":"3 PM",
-      "start":"3:00 PM",
-      "end":"4:00 PM",
-      "duration":"1 hour",
-      "filters":{
-        "Develop":true,
-        "Live streamed":false,
-        "Misc":true,
         "Sessions":true
       }
     },
@@ -323,7 +327,7 @@
         "d30cbfe1-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 6",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/96641ff7-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/96641ff7-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":18,
       "block":"3 PM",
@@ -355,6 +359,7 @@
         "c2d5429b-9ef6-e511-a517-00155d5066d7"
       ],
       "room":"Stage 2",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/2c2d2aeb-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":18,
       "block":"3 PM",
@@ -385,8 +390,7 @@
         "5e5d1cf4-9dfa-e511-a517-00155d5066d7"
       ],
       "room":"Stage 8",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/b9d50c09-0cef-e511-a517-00155d5066d7.jpg",
-      "youtubeUrl":"https://youtu.be/Eg8muhjUi4I",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/b9d50c09-0cef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":18,
       "block":"3 PM",
@@ -417,7 +421,7 @@
         "2609dbe7-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 4",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/d4c824f1-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/d4c824f1-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":18,
       "block":"3 PM",
@@ -450,7 +454,7 @@
         "d8e353b6-33f5-e511-a517-00155d5066d7"
       ],
       "room":"Stage 3",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/6e2d2aeb-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/6e2d2aeb-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":18,
       "block":"3 PM",
@@ -481,7 +485,7 @@
         "3dcd40c9-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 7",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/b4641ff7-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/b4641ff7-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":18,
       "block":"3 PM",
@@ -512,7 +516,7 @@
         "eb6c41c3-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 9",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/d4621cfd-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/d4621cfd-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":18,
       "block":"3 PM",
@@ -544,7 +548,7 @@
         "090ed6d8-79f8-e511-a517-00155d5066d7"
       ],
       "room":"Stage 5",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/89621cfd-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/89621cfd-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":18,
       "block":"3 PM",
@@ -575,7 +579,7 @@
         "25cd40c9-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 10",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/15631cfd-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/15631cfd-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":18,
       "block":"4 PM",
@@ -606,7 +610,7 @@
         "1751e0f9-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 1",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/5ad50c09-0cef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/5ad50c09-0cef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":18,
       "block":"4 PM",
@@ -638,7 +642,7 @@
         "4c083cab-b6f3-e511-a517-00155d5066d7"
       ],
       "room":"Stage 5",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/d59c1403-0cef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/d59c1403-0cef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":18,
       "block":"4 PM",
@@ -670,7 +674,7 @@
         "3d35020c-c3ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 3",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/c32d2aeb-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/c32d2aeb-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":18,
       "block":"5 PM",
@@ -702,7 +706,7 @@
         "b5c5bf13-3bf8-e511-a517-00155d5066d7"
       ],
       "room":"Stage 2",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/e3c824f1-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/e3c824f1-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":18,
       "block":"5 PM",
@@ -733,7 +737,7 @@
         "93720006-c3ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 5",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/bed50c09-0cef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/bed50c09-0cef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":18,
       "block":"5 PM",
@@ -764,7 +768,7 @@
         "4635020c-c3ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 10",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/1a631cfd-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/1a631cfd-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":18,
       "block":"5 PM",
@@ -795,7 +799,7 @@
         "ba4dfcff-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 4",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/592d2aeb-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/592d2aeb-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":18,
       "block":"5 PM",
@@ -811,7 +815,7 @@
     },
     {
       "id":"542d2aeb-0bef-e511-a517-00155d5066d7",
-      "title":"Android Auto for every screen",
+      "title":"Android Auto for everyone",
       "description":"Android Auto brings Android into the car and offers new opportunities for developers to reach users during the valuable hours they spend each week driving.  In this talk, you’ll learn about APIs that allow developers to enable existing applications for the Android Auto platform and reach more users in the car.",
       "startTimestamp":"2016-05-19T01:00:00Z",
       "endTimestamp":"2016-05-19T02:00:00Z",
@@ -828,7 +832,7 @@
         "03e21705-f6fc-e511-a517-00155d5066d7"
       ],
       "room":"Stage 2",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/542d2aeb-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/542d2aeb-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":18,
       "block":"6 PM",
@@ -845,7 +849,7 @@
     {
       "id":"16651ff7-0bef-e511-a517-00155d5066d7",
       "title":"Creating interactive multiplayer experiences with Firebase",
-      "description":"Building realtime features that work on all your different devices is the holy grail of app development. Firebase is a realtime API that lets you store and sync data instantly, and allows you to build a web, mobile or Unity application in minutes without worrying about wiring up a backend. The real time aspect and a number of lesser known, powerful features (such as transactions) make it possible to create a multiplayer gaming experience as well. In this session, you'll learn how to use Firebase to keep track of your online player, synchronize game state across multiple connections, create chat rooms, and match players together for game play.",
+      "description":"Building realtime features that work on all your different devices is the holy grail of app development. The Firebase Realtime Database lets you store and sync data instantly, and allows you to build a web, mobile or Unity application in minutes without worrying about wiring up a backend. The real time aspect and a number of lesser known, powerful features (such as transactions) make it possible to create a multiplayer gaming experience as well. In this session, you'll learn how to use the Firebase Realtime Database to keep track of your online player, synchronize game state across multiple connections, create chat rooms, and match players together for game play.",
       "startTimestamp":"2016-05-19T01:00:00Z",
       "endTimestamp":"2016-05-19T02:00:00Z",
       "isLivestream":false,
@@ -859,7 +863,7 @@
         "01fa3f2c-9efa-e511-a517-00155d5066d7"
       ],
       "room":"Stage 6",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/16651ff7-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/16651ff7-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":18,
       "block":"6 PM",
@@ -890,7 +894,7 @@
         "aa720006-c3ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 5",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/7d641ff7-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/7d641ff7-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":18,
       "block":"6 PM",
@@ -921,7 +925,7 @@
         "714de472-17ef-e511-a517-00155d5066d7"
       ],
       "room":"Stage 10",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/3d631cfd-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/3d631cfd-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":18,
       "block":"6 PM",
@@ -953,7 +957,7 @@
         "380e1b7a-2bf5-e511-a517-00155d5066d7"
       ],
       "room":"Stage 4",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/5f2d2aeb-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/5f2d2aeb-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":18,
       "block":"6 PM",
@@ -968,9 +972,9 @@
       }
     },
     {
-      "id":"edc824f1-0bef-e511-a517-00155d5066d7",
-      "title":"The Evolution of ART",
-      "description":"ART is the runtime which powers the entire Android platform. Come discover how we’ve improved the Android runtime to better serve a rapidly evolving ecosystem. From monthly system updates to incredibly rich and powerful apps, mobile development is growing more and more complex. In this session we will present the strategies we adopted to improve Android performance and minimize update times and disk usage. We will be talking about the new exciting Hybrid JIT-AOT approach, profile guided compilation, the new compiler and application images.",
+      "id":"0bc924f1-0bef-e511-a517-00155d5066d7",
+      "title":"Make shinier, faster mobile games with Vulkan",
+      "description":"Vulkan is designed from the ground up for high-efficiency and unprecedented cross platform usage, introducing a paradigm shift in computer graphics. But what's really involved in adding Vulkan support to an existing code base? This talk covers both logistics and technical details of porting an OpenGL ES framework to Vulkan. In addition to that, it will also address some common post port topics on how to maximize the benefits of Vulkan. ",
       "startTimestamp":"2016-05-19T01:00:00Z",
       "endTimestamp":"2016-05-19T02:00:00Z",
       "isLivestream":false,
@@ -981,18 +985,47 @@
         "THEME_DEVELOP"
       ],
       "speakers":[
-        "69cd40c9-c2ee-e511-a517-00155d5066d7",
-        "e64b9edb-c2ee-e511-a517-00155d5066d7",
-        "ee72244c-11f5-e511-a517-00155d5066d7",
-        "f6a4176d-11f5-e511-a517-00155d5066d7"
+        "fe6fcaa2-83f3-e511-a517-00155d5066d7"
       ],
       "room":"Stage 3",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/edc824f1-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/0bc924f1-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":18,
       "block":"6 PM",
       "start":"6:00 PM",
       "end":"7:00 PM",
+      "duration":"1 hour",
+      "filters":{
+        "Android":true,
+        "Develop":true,
+        "Live streamed":false,
+        "Sessions":true
+      }
+    },
+    {
+      "id":"872d2aeb-0bef-e511-a517-00155d5066d7",
+      "title":"Android themes \u0026 styles demystified",
+      "description":"Themes and styles are the bedrock of styling your Android UI, but do you know how they work? This talk will dive deeper into everything you have ever wanted to know about how styles and themes work together, what attributes really are, and how you can use them to make your styles more manageable.",
+      "startTimestamp":"2016-05-19T16:00:00Z",
+      "endTimestamp":"2016-05-19T17:00:00Z",
+      "isLivestream":false,
+      "isFeatured":false,
+      "tags":[
+        "TRACK_ANDROID",
+        "TYPE_SESSIONS",
+        "THEME_DEVELOP"
+      ],
+      "speakers":[
+        "016d41c3-c2ee-e511-a517-00155d5066d7",
+        "01258cc7-8ff6-e511-a517-00155d5066d7"
+      ],
+      "room":"Stage 4",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/872d2aeb-0bef-e511-a517-00155d5066d7.jpg",
+      "hasRelated":false,
+      "day":19,
+      "block":"9 AM",
+      "start":"9:00 AM",
+      "end":"10:00 AM",
       "duration":"1 hour",
       "filters":{
         "Android":true,
@@ -1018,7 +1051,7 @@
         "fa6c41c3-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 10",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/10631cfd-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/10631cfd-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":19,
       "block":"9 AM",
@@ -1052,6 +1085,7 @@
         "ee18c49a-a2ff-e511-a517-00155d5066d7"
       ],
       "room":"Stage 6",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/3c2d2aeb-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":19,
       "block":"9 AM",
@@ -1066,59 +1100,23 @@
       }
     },
     {
-      "id":"46d50c09-0cef-e511-a517-00155d5066d7",
-      "title":"Google's Vision for VR",
-      "description":"Google's vision for VR: what we have built, what we have learned, and where we are headed.",
+      "id":"f7621cfd-0bef-e511-a517-00155d5066d7",
+      "title":"Progressive Web Apps across all frameworks ",
+      "description":"Progressive Web Apps can be built using any JavaScript library or framework, whether it’s React, Angular 2.0, Ember or Polymer. In this talk, we'll dive into how to craft offline, lightning fast web apps using each of these solutions. Learn how to take advantage of Service Workers, Server-side Rendering and an application \"shell\" architecture to optimise for first meaningful paint, fast-first load and repeat visits. We'll also cover techniques for progressive-enhancement using these libraries so your users still get the best user experience supported by their browser.",
       "startTimestamp":"2016-05-19T16:00:00Z",
       "endTimestamp":"2016-05-19T17:00:00Z",
       "isLivestream":false,
       "isFeatured":false,
       "tags":[
-        "TRACK_VR",
-        "TYPE_SESSIONS",
-        "THEME_WHATSNEXT"
-      ],
-      "speakers":[
-        "0f6d41c3-c2ee-e511-a517-00155d5066d7"
-      ],
-      "room":"Amphitheatre",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/46d50c09-0cef-e511-a517-00155d5066d7.jpg",
-      "hasRelated":false,
-      "day":19,
-      "block":"9 AM",
-      "start":"9:00 AM",
-      "end":"10:00 AM",
-      "duration":"1 hour",
-      "filters":{
-        "Live streamed":false,
-        "Sessions":true,
-        "VR":true,
-        "What's Next":true
-      }
-    },
-    {
-      "id":"962d2aeb-0bef-e511-a517-00155d5066d7",
-      "title":"The experts' guide to Android development tools",
-      "description":"Android Studio has a wide range of features designed for experienced developers. This session will take an in-depth look into some of the advanced features of Android Studio and you can take away new productivity tips to help in app development.",
-      "startTimestamp":"2016-05-19T16:00:00Z",
-      "endTimestamp":"2016-05-19T17:00:00Z",
-      "isLivestream":true,
-      "isFeatured":false,
-      "tags":[
-        "TRACK_ANDROID",
+        "TRACK_MOBILEWEB",
         "TYPE_SESSIONS",
         "THEME_DEVELOP"
       ],
       "speakers":[
-        "6f4dfcff-c2ee-e511-a517-00155d5066d7",
-        "a67b77da-0def-e511-a517-00155d5066d7",
-        "f4dbcfd4-23fc-e511-a517-00155d5066d7",
-        "6a563011-24fc-e511-a517-00155d5066d7",
-        "df985722-0302-e611-a517-00155d5066d7"
+        "964dfcff-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 2",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/962d2aeb-0bef-e511-a517-00155d5066d7.jpg",
-      "youtubeUrl":"https://google.com/events/io",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/f7621cfd-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":19,
       "block":"9 AM",
@@ -1126,16 +1124,16 @@
       "end":"10:00 AM",
       "duration":"1 hour",
       "filters":{
-        "Android":true,
         "Develop":true,
-        "Live streamed":true,
+        "Live streamed":false,
+        "Mobile Web":true,
         "Sessions":true
       }
     },
     {
       "id":"af641ff7-0bef-e511-a517-00155d5066d7",
-      "title":"The key to firebase security",
-      "description":"Data stored in Firebase is public by default, meaning anyone and everyone has full read and write access. While this is great for getting started, productions apps require stronger security. Thankfully, Firebase has your back with Security Rules. They provide a declarative way to specify who can access certain data and what schema that data should have. Take a deep dive into Firebase security to learn the best practices when securing your production Firebase apps.",
+      "title":"The key to Firebase security",
+      "description":"All data stored in Firebase is by default readable and writable by any authenticated user. While this is great for getting started, productions apps require stronger security. Thankfully, Firebase has your back with Security Rules. They provide a declarative way to specify who can access certain data and what schema that data should have. Take a deep dive into Firebase security to learn the best practices when securing your production Firebase apps.",
       "startTimestamp":"2016-05-19T16:00:00Z",
       "endTimestamp":"2016-05-19T17:00:00Z",
       "isLivestream":false,
@@ -1149,7 +1147,7 @@
         "f1911d18-c3ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 7",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/af641ff7-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/af641ff7-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":19,
       "block":"9 AM",
@@ -1159,6 +1157,69 @@
       "filters":{
         "Develop":true,
         "Firebase":true,
+        "Live streamed":false,
+        "Sessions":true
+      }
+    },
+    {
+      "id":"46d50c09-0cef-e511-a517-00155d5066d7",
+      "title":"VR at Google",
+      "description":"What we have built, what we have learned, and where we are headed.",
+      "startTimestamp":"2016-05-19T16:00:00Z",
+      "endTimestamp":"2016-05-19T17:00:00Z",
+      "isLivestream":true,
+      "isFeatured":false,
+      "tags":[
+        "TRACK_VR",
+        "TYPE_SESSIONS",
+        "THEME_WHATSNEXT"
+      ],
+      "speakers":[
+        "0f6d41c3-c2ee-e511-a517-00155d5066d7"
+      ],
+      "room":"Amphitheatre",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/46d50c09-0cef-e511-a517-00155d5066d7.jpg",
+      "youtubeUrl":"https://google.com/events/io",
+      "hasRelated":false,
+      "day":19,
+      "block":"9 AM",
+      "start":"9:00 AM",
+      "end":"10:00 AM",
+      "duration":"1 hour",
+      "filters":{
+        "Live streamed":true,
+        "Sessions":true,
+        "VR":true,
+        "What's Next":true
+      }
+    },
+    {
+      "id":"be2d2aeb-0bef-e511-a517-00155d5066d7",
+      "title":"Best practices in media playback",
+      "description":"Best practices are key to building a great experience for your users, and media playback is no different. Whether it is building a strong app architecture for media playback, playing audio locally, controlling remote playback, being a good citizen for both the system and other apps, or working across form factors to Android Wear and Android Auto, we'll explore the best practices you should be using and how it all comes together.",
+      "startTimestamp":"2016-05-19T17:00:00Z",
+      "endTimestamp":"2016-05-19T18:00:00Z",
+      "isLivestream":false,
+      "isFeatured":false,
+      "tags":[
+        "TRACK_ANDROID",
+        "TYPE_SESSIONS",
+        "THEME_DEVELOP"
+      ],
+      "speakers":[
+        "d119ebed-c2ee-e511-a517-00155d5066d7"
+      ],
+      "room":"Stage 3",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/be2d2aeb-0bef-e511-a517-00155d5066d7.jpg",
+      "hasRelated":false,
+      "day":19,
+      "block":"10 AM",
+      "start":"10:00 AM",
+      "end":"11:00 AM",
+      "duration":"1 hour",
+      "filters":{
+        "Android":true,
+        "Develop":true,
         "Live streamed":false,
         "Sessions":true
       }
@@ -1180,7 +1241,7 @@
         "8f4dfcff-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 10",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/29631cfd-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/29631cfd-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":19,
       "block":"10 AM",
@@ -1214,6 +1275,7 @@
         "5fc79f23-a2ff-e511-a517-00155d5066d7"
       ],
       "room":"Stage 6",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/252d2aeb-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":19,
       "block":"10 AM",
@@ -1223,37 +1285,6 @@
       "filters":{
         "Ads":true,
         "Grow \u0026 Earn":true,
-        "Live streamed":false,
-        "Sessions":true
-      }
-    },
-    {
-      "id":"cfc824f1-0bef-e511-a517-00155d5066d7",
-      "title":"Glide: Easy and efficient image loading for Android",
-      "description":"Image loading on Android can be hard to get right, but it doesn’t have to be! Glide is a library for Android that abstracts away complexity and makes efficient image loading easy. Sam Judd will talk through performance tips and tricks to help developers use Glide to make image loading in their apps smoother and faster. This talk will also use the recently released Google Photos app as a case study to help highlight some of the improvements in API design and performance in the upcoming 4.0 version of Glide. ",
-      "startTimestamp":"2016-05-19T17:00:00Z",
-      "endTimestamp":"2016-05-19T18:00:00Z",
-      "isLivestream":false,
-      "isFeatured":false,
-      "tags":[
-        "TRACK_ANDROID",
-        "TYPE_SESSIONS",
-        "THEME_DEVELOP"
-      ],
-      "speakers":[
-        "1e09dbe7-c2ee-e511-a517-00155d5066d7"
-      ],
-      "room":"Stage 4",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/cfc824f1-0bef-e511-a517-00155d5066d7.jpg",
-      "hasRelated":false,
-      "day":19,
-      "block":"10 AM",
-      "start":"10:00 AM",
-      "end":"11:00 AM",
-      "duration":"1 hour",
-      "filters":{
-        "Android":true,
-        "Develop":true,
         "Live streamed":false,
         "Sessions":true
       }
@@ -1275,7 +1306,7 @@
         "db0cbfe1-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 7",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/30651ff7-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/30651ff7-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":19,
       "block":"10 AM",
@@ -1295,7 +1326,7 @@
       "description":"In this session we will provide an in depth tour of the Android development tools and take a closer look at everything new - along with tips and tricks for getting the most out of them!",
       "startTimestamp":"2016-05-19T17:00:00Z",
       "endTimestamp":"2016-05-19T18:00:00Z",
-      "isLivestream":false,
+      "isLivestream":true,
       "isFeatured":false,
       "tags":[
         "TRACK_ANDROID",
@@ -1308,7 +1339,8 @@
         "5acfb07f-fa00-e611-a517-00155d5066d7"
       ],
       "room":"Amphitheatre",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/912d2aeb-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/912d2aeb-0bef-e511-a517-00155d5066d7.jpg",
+      "youtubeUrl":"https://google.com/events/io",
       "hasRelated":false,
       "day":19,
       "block":"10 AM",
@@ -1318,6 +1350,37 @@
       "filters":{
         "Android":true,
         "Develop":true,
+        "Live streamed":true,
+        "Sessions":true
+      }
+    },
+    {
+      "id":"e1641ff7-0bef-e511-a517-00155d5066d7",
+      "title":"Cross-Platform coding without a net",
+      "description":"Live-coding one app in front of several hundred attendees is dangerous. Live-coding two apps? Crazy. Trying to get them to talk to each other on the same shared backend and get it all working in half an hour? Well, that's moving into \"keeping a pet wolverine\" level of crazy. There will be thrills! There will be chills! There won't be any actual wolverines, though. ",
+      "startTimestamp":"2016-05-19T18:00:00Z",
+      "endTimestamp":"2016-05-19T19:00:00Z",
+      "isLivestream":false,
+      "isFeatured":false,
+      "tags":[
+        "TRACK_FIREBASE",
+        "TYPE_SESSIONS",
+        "THEME_DEVELOP"
+      ],
+      "speakers":[
+        "44b5fde1-11ef-e511-a517-00155d5066d7"
+      ],
+      "room":"Stage 4",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/e1641ff7-0bef-e511-a517-00155d5066d7.jpg",
+      "hasRelated":false,
+      "day":19,
+      "block":"11 AM",
+      "start":"11:00 AM",
+      "end":"12:00 PM",
+      "duration":"1 hour",
+      "filters":{
+        "Develop":true,
+        "Firebase":true,
         "Live streamed":false,
         "Sessions":true
       }
@@ -1339,7 +1402,7 @@
         "ae0cbfe1-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 10",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/2e631cfd-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/2e631cfd-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":19,
       "block":"11 AM",
@@ -1370,7 +1433,7 @@
         "62cd40c9-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 5",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/aad50c09-0cef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/aad50c09-0cef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":19,
       "block":"11 AM",
@@ -1387,7 +1450,7 @@
     {
       "id":"04651ff7-0bef-e511-a517-00155d5066d7",
       "title":"Google SDKs for Android: A tech deep dive",
-      "description":"The best engineers know to seek confidence that the SDKs they put into their apps are fast, small, and reliable. In this session, we'll deep dive into Google SDKs for Android and take a look at how various parts of them are implemented.\nWarning! You will leave this session prepared to design and execute your own Android code-fu. Use this knowledge with extreme caution!",
+      "description":"The best engineers know to seek confidence that the SDKs they put into their apps are fast, small, and reliable.  In this session, we'll deep dive into Google SDKs for Android and take a look at how various parts of them are implemented.\nWarning! You will leave this session prepared to design and execute your own Android code-fu. Use this knowledge with extreme caution!",
       "startTimestamp":"2016-05-19T18:00:00Z",
       "endTimestamp":"2016-05-19T19:00:00Z",
       "isLivestream":false,
@@ -1401,7 +1464,7 @@
         "4e35020c-c3ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 7",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/04651ff7-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/04651ff7-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":19,
       "block":"11 AM",
@@ -1413,6 +1476,37 @@
         "Develop":true,
         "Live streamed":false,
         "Sessions":true
+      }
+    },
+    {
+      "id":"55d50c09-0cef-e511-a517-00155d5066d7",
+      "title":"Project Tango Developer Panel",
+      "description":"Ever dreamed your app could let users play dominos without having to pick up the pieces, or redesign a kitchen without heavy lifting? Project Tango is a set of spatial sensors that allows your device to see the world like you do, giving you a new, interactive way to play games, reimagine spaces, and more. Developers from Lowe’s, Autodesk, Schell Games and Funomena will talk about their experiences building on Project Tango, from tips on how to get started to thoughts on how Project Tango will change the way we play, work and live.",
+      "startTimestamp":"2016-05-19T18:00:00Z",
+      "endTimestamp":"2016-05-19T19:00:00Z",
+      "isLivestream":false,
+      "isFeatured":false,
+      "tags":[
+        "TRACK_VR",
+        "TYPE_SESSIONS",
+        "THEME_WHATSNEXT"
+      ],
+      "speakers":[
+        "a942167a-3ef5-e511-a517-00155d5066d7"
+      ],
+      "room":"Stage 1",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/55d50c09-0cef-e511-a517-00155d5066d7.jpg",
+      "hasRelated":false,
+      "day":19,
+      "block":"11 AM",
+      "start":"11:00 AM",
+      "end":"12:00 PM",
+      "duration":"1 hour",
+      "filters":{
+        "Live streamed":false,
+        "Sessions":true,
+        "VR":true,
+        "What's Next":true
       }
     },
     {
@@ -1432,7 +1526,7 @@
         "c94dfcff-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 8",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/afd50c09-0cef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/afd50c09-0cef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":19,
       "block":"11 AM",
@@ -1444,70 +1538,6 @@
         "Live streamed":false,
         "Sessions":true,
         "What's Next":true
-      }
-    },
-    {
-      "id":"55d50c09-0cef-e511-a517-00155d5066d7",
-      "title":"Tango 3rd Party Developer Panel",
-      "description":"Ever dreamed your app could let users play dominos without having to pick up the pieces, or redesign a kitchen without heavy lifting? Project Tango is a set of spatial sensors that allows your device to see the world like you do, giving you a new, interactive way to play games, reimagine spaces, and more. Developers from Lowe’s, Autodesk, Schell Games and Funomena will talk about their experiences building on Project Tango, from tips on how to get started to thoughts on how Project Tango will change the way we play, work and live.",
-      "startTimestamp":"2016-05-19T18:00:00Z",
-      "endTimestamp":"2016-05-19T19:00:00Z",
-      "isLivestream":false,
-      "isFeatured":false,
-      "tags":[
-        "TRACK_VR",
-        "TYPE_SESSIONS",
-        "THEME_WHATSNEXT"
-      ],
-      "speakers":[
-        "a942167a-3ef5-e511-a517-00155d5066d7"
-      ],
-      "room":"Stage 1",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/55d50c09-0cef-e511-a517-00155d5066d7.jpg",
-      "hasRelated":false,
-      "day":19,
-      "block":"11 AM",
-      "start":"11:00 AM",
-      "end":"12:00 PM",
-      "duration":"1 hour",
-      "filters":{
-        "Live streamed":false,
-        "Sessions":true,
-        "VR":true,
-        "What's Next":true
-      }
-    },
-    {
-      "id":"a1c924f1-0bef-e511-a517-00155d5066d7",
-      "title":"\"I'm Just Trying to Survive\": Ethnographic research on notifications and attention management",
-      "description":"The Android notifications product, engineering, and user experience teams recently conducted an immersive ethnographic study in New York City to better understand how people manage their attention in their daily lives, and how smartphone notifications play a role in that process. Does your app send notifications to users? Come to our talk to learn: WHAT people want to know? WHEN they want to know it? HOW should information be presented to be most actionable and effective?  ",
-      "startTimestamp":"2016-05-19T20:00:00Z",
-      "endTimestamp":"2016-05-19T21:00:00Z",
-      "isLivestream":false,
-      "isFeatured":false,
-      "tags":[
-        "TRACK_DESIGN",
-        "TYPE_SESSIONS",
-        "THEME_DEVELOP"
-      ],
-      "speakers":[
-        "cd6c41c3-c2ee-e511-a517-00155d5066d7",
-        "dc6c41c3-c2ee-e511-a517-00155d5066d7",
-        "f36c41c3-c2ee-e511-a517-00155d5066d7"
-      ],
-      "room":"Stage 5",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/a1c924f1-0bef-e511-a517-00155d5066d7.jpg",
-      "hasRelated":false,
-      "day":19,
-      "block":"1 PM",
-      "start":"1:00 PM",
-      "end":"2:00 PM",
-      "duration":"1 hour",
-      "filters":{
-        "Design":true,
-        "Develop":true,
-        "Live streamed":false,
-        "Sessions":true
       }
     },
     {
@@ -1527,7 +1557,7 @@
         "2609dbe7-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 3",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/1ac924f1-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/1ac924f1-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":19,
       "block":"1 PM",
@@ -1542,25 +1572,23 @@
       }
     },
     {
-      "id":"d2641ff7-0bef-e511-a517-00155d5066d7",
-      "title":"Mobile app user acquisition and retention",
-      "description":"Learn when and how to acquire new users and retain them.",
+      "id":"029d1403-0cef-e511-a517-00155d5066d7",
+      "title":"Grow your app or game business in Japan, Korea, and Southeast Asia",
+      "description":"Unlock new opportunities beyond your current market with Google Play. Japan, Korea, and Southeast Asia are big markets with revenue and install opportunities that will help your app or game business grow. Come and discover what you need to do to succeed in the markets from content localization to local operations. Jihyun Chung will share success cases on Play and explain the differences and habits of Asian users that you can start implementing right away. ",
       "startTimestamp":"2016-05-19T20:00:00Z",
       "endTimestamp":"2016-05-19T21:00:00Z",
       "isLivestream":false,
       "isFeatured":false,
       "tags":[
-        "TRACK_MISC",
+        "TRACK_PLAY",
         "TYPE_SESSIONS",
         "THEME_GROW\u0026EARN"
       ],
       "speakers":[
-        "0d53e3f3-c2ee-e511-a517-00155d5066d7",
-        "2551e0f9-c2ee-e511-a517-00155d5066d7",
-        "94aa85a2-19f8-e511-a517-00155d5066d7"
+        "454053cf-c2ee-e511-a517-00155d5066d7"
       ],
-      "room":"Stage 2",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/d2641ff7-0bef-e511-a517-00155d5066d7.jpg",
+      "room":"Stage 5",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/029d1403-0cef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":19,
       "block":"1 PM",
@@ -1570,7 +1598,7 @@
       "filters":{
         "Grow \u0026 Earn":true,
         "Live streamed":false,
-        "Misc":true,
+        "Play":true,
         "Sessions":true
       }
     },
@@ -1580,7 +1608,7 @@
       "description":"People use Google millions of times per day on their mobile phones. As a primary gateway to discover and engage, you'll learn how Search is evolving well beyond ten blue links to bring your content to people in much richer and faster ways. We’ll discuss how you can surface fresher and more real-time content, introduce new treatments for engaging and content-forward discovery experiences, and we'll let you know how the open source Accelerated Mobile Pages project (AMP) can provide blazing fast reading experiences for all the amazing content that you build.",
       "startTimestamp":"2016-05-19T20:00:00Z",
       "endTimestamp":"2016-05-19T21:00:00Z",
-      "isLivestream":false,
+      "isLivestream":true,
       "isFeatured":false,
       "tags":[
         "TRACK_SEARCH",
@@ -1591,7 +1619,8 @@
         "ee4b9edb-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Amphitheatre",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/8f9c1403-0cef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/8f9c1403-0cef-e511-a517-00155d5066d7.jpg",
+      "youtubeUrl":"https://google.com/events/io",
       "hasRelated":false,
       "day":19,
       "block":"1 PM",
@@ -1600,17 +1629,17 @@
       "duration":"1 hour",
       "filters":{
         "Grow \u0026 Earn":true,
-        "Live streamed":false,
+        "Live streamed":true,
         "Search":true,
         "Sessions":true
       }
     },
     {
-      "id":"872d2aeb-0bef-e511-a517-00155d5066d7",
-      "title":"Android themes \u0026 styles demystified",
-      "description":"Themes and styles are the bedrock of styling your Android UI, but do you know how they work? This talk will dive deeper into everything you have ever wanted to know about how styles and themes work together, what attributes really are, and how you can use them to make your styles more manageable.",
-      "startTimestamp":"2016-05-19T21:00:00Z",
-      "endTimestamp":"2016-05-19T22:00:00Z",
+      "id":"962d2aeb-0bef-e511-a517-00155d5066d7",
+      "title":"The experts' guide to Android development tools",
+      "description":"Android Studio has a wide range of features designed for experienced developers. This session will take an in-depth look into some of the advanced features of Android Studio and you can take away new productivity tips to help in app development.",
+      "startTimestamp":"2016-05-19T20:00:00Z",
+      "endTimestamp":"2016-05-19T21:00:00Z",
       "isLivestream":false,
       "isFeatured":false,
       "tags":[
@@ -1619,16 +1648,18 @@
         "THEME_DEVELOP"
       ],
       "speakers":[
-        "016d41c3-c2ee-e511-a517-00155d5066d7",
-        "01258cc7-8ff6-e511-a517-00155d5066d7"
+        "6f4dfcff-c2ee-e511-a517-00155d5066d7",
+        "f4dbcfd4-23fc-e511-a517-00155d5066d7",
+        "6a563011-24fc-e511-a517-00155d5066d7",
+        "df985722-0302-e611-a517-00155d5066d7"
       ],
-      "room":"Stage 4",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/872d2aeb-0bef-e511-a517-00155d5066d7.jpg",
+      "room":"Stage 2",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/962d2aeb-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":19,
-      "block":"2 PM",
-      "start":"2:00 PM",
-      "end":"3:00 PM",
+      "block":"1 PM",
+      "start":"1:00 PM",
+      "end":"2:00 PM",
       "duration":"1 hour",
       "filters":{
         "Android":true,
@@ -1651,13 +1682,11 @@
         "THEME_GROW\u0026EARN"
       ],
       "speakers":[
-        "0d53e3f3-c2ee-e511-a517-00155d5066d7",
         "2d51e0f9-c2ee-e511-a517-00155d5066d7",
-        "b1720006-c3ee-e511-a517-00155d5066d7",
-        "10921d18-c3ee-e511-a517-00155d5066d7"
+        "b1720006-c3ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 7",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/949c1403-0cef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/949c1403-0cef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":19,
       "block":"2 PM",
@@ -1672,9 +1701,9 @@
       }
     },
     {
-      "id":"029d1403-0cef-e511-a517-00155d5066d7",
-      "title":"Grow your app or game business in Japan, Korea, and Southeast Asia",
-      "description":"Unlock new opportunities beyond your current market with Google Play. Japan, Korea, and Southeast Asia are big markets with revenue and install opportunities that will help your app or game business grow. Come and discover what you need to do to succeed in the markets from content localization to local operations. Jihyun Chung will share success cases on Play and explain the differences and habits of Asian users that you can start implementing right away. ",
+      "id":"079d1403-0cef-e511-a517-00155d5066d7",
+      "title":"How startups are succeeding on Google Play",
+      "description":"Learn how Google Play helps startups succeed in building innovative, beloved, and prosperous apps and games. Startup founders must balance realizing their big vision with the practical realities of building a new product with limited resources. Starting with a minimum viable product, Google Play offers developers special tools to iterate quickly, experiment on their apps and reach out to users. When the app has reached good product-market fit, it’s time to grow and Play helps you reach a large, global audience and reap the rewards.",
       "startTimestamp":"2016-05-19T21:00:00Z",
       "endTimestamp":"2016-05-19T22:00:00Z",
       "isLivestream":false,
@@ -1685,10 +1714,11 @@
         "THEME_GROW\u0026EARN"
       ],
       "speakers":[
-        "454053cf-c2ee-e511-a517-00155d5066d7"
+        "c14dfcff-c2ee-e511-a517-00155d5066d7",
+        "92577170-b6f3-e511-a517-00155d5066d7"
       ],
-      "room":"Stage 8",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/029d1403-0cef-e511-a517-00155d5066d7.jpg",
+      "room":"Stage 5",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/079d1403-0cef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":19,
       "block":"2 PM",
@@ -1703,23 +1733,25 @@
       }
     },
     {
-      "id":"f7621cfd-0bef-e511-a517-00155d5066d7",
-      "title":"Progressive Web Apps across all frameworks ",
-      "description":"Progressive Web Apps can be built using any JavaScript library or framework, whether it’s React, Angular 2.0, Ember or Polymer. In this talk, we'll dive into how to craft offline, lightning fast web apps using each of these solutions. Learn how to take advantage of Service Workers, Server-side Rendering and an application \"shell\" architecture to optimise for first meaningful paint, fast-first load and repeat visits. We'll also cover techniques for progressive-enhancement using these libraries so your users still get the best user experience supported by their browser.",
+      "id":"d2641ff7-0bef-e511-a517-00155d5066d7",
+      "title":"Mobile app user acquisition and retention",
+      "description":"Learn when and how to acquire new users and retain them.",
       "startTimestamp":"2016-05-19T21:00:00Z",
       "endTimestamp":"2016-05-19T22:00:00Z",
       "isLivestream":false,
       "isFeatured":false,
       "tags":[
-        "TRACK_MOBILEWEB",
+        "TRACK_MISC",
         "TYPE_SESSIONS",
-        "THEME_DEVELOP"
+        "THEME_GROW\u0026EARN"
       ],
       "speakers":[
-        "964dfcff-c2ee-e511-a517-00155d5066d7"
+        "0d53e3f3-c2ee-e511-a517-00155d5066d7",
+        "2551e0f9-c2ee-e511-a517-00155d5066d7",
+        "94aa85a2-19f8-e511-a517-00155d5066d7"
       ],
       "room":"Stage 2",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/f7621cfd-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/d2641ff7-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":19,
       "block":"2 PM",
@@ -1727,9 +1759,9 @@
       "end":"3:00 PM",
       "duration":"1 hour",
       "filters":{
-        "Develop":true,
+        "Grow \u0026 Earn":true,
         "Live streamed":false,
-        "Mobile Web":true,
+        "Misc":true,
         "Sessions":true
       }
     },
@@ -1750,7 +1782,7 @@
         "4ccd40c9-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 1",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/5fd50c09-0cef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/5fd50c09-0cef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":19,
       "block":"2 PM",
@@ -1762,6 +1794,39 @@
         "Sessions":true,
         "VR":true,
         "What's Next":true
+      }
+    },
+    {
+      "id":"a1c924f1-0bef-e511-a517-00155d5066d7",
+      "title":"\"I'm Just Trying to Survive\": Ethnographic research on notifications and attention management",
+      "description":"The Android notifications product, engineering, and user experience teams recently conducted an immersive ethnographic study in New York City to better understand how people manage their attention in their daily lives, and how smartphone notifications play a role in that process. Does your app send notifications to users? Come to our talk to learn: WHAT people want to know? WHEN they want to know it? HOW should information be presented to be most actionable and effective?  ",
+      "startTimestamp":"2016-05-19T22:00:00Z",
+      "endTimestamp":"2016-05-19T23:00:00Z",
+      "isLivestream":false,
+      "isFeatured":false,
+      "tags":[
+        "TRACK_DESIGN",
+        "TYPE_SESSIONS",
+        "THEME_DEVELOP"
+      ],
+      "speakers":[
+        "cd6c41c3-c2ee-e511-a517-00155d5066d7",
+        "dc6c41c3-c2ee-e511-a517-00155d5066d7",
+        "f36c41c3-c2ee-e511-a517-00155d5066d7"
+      ],
+      "room":"Stage 8",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/a1c924f1-0bef-e511-a517-00155d5066d7.jpg",
+      "hasRelated":false,
+      "day":19,
+      "block":"3 PM",
+      "start":"3:00 PM",
+      "end":"4:00 PM",
+      "duration":"1 hour",
+      "filters":{
+        "Design":true,
+        "Develop":true,
+        "Live streamed":false,
+        "Sessions":true
       }
     },
     {
@@ -1783,7 +1848,7 @@
         "083cdcf7-b6f3-e511-a517-00155d5066d7"
       ],
       "room":"Stage 5",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/da9c1403-0cef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/da9c1403-0cef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":19,
       "block":"3 PM",
@@ -1815,7 +1880,7 @@
         "5082a340-7af8-e511-a517-00155d5066d7"
       ],
       "room":"Stage 6",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/8e621cfd-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/8e621cfd-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":19,
       "block":"3 PM",
@@ -1846,8 +1911,7 @@
         "a70cbfe1-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 4",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/97c924f1-0bef-e511-a517-00155d5066d7.jpg",
-      "youtubeUrl":"https://youtu.be/zsRnRLh-O34",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/97c924f1-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":19,
       "block":"3 PM",
@@ -1878,7 +1942,7 @@
         "f51387d5-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 10",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/51631cfd-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/51631cfd-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":19,
       "block":"3 PM",
@@ -1895,7 +1959,7 @@
     {
       "id":"4bd50c09-0cef-e511-a517-00155d5066d7",
       "title":"What's New with Project Tango ",
-      "description":"Project Tango unleashes a new way for you to explore the world. With a few sensors and some computer vision software, your phone gets even smarter, and can start to see the world the way you do. Follow guided arrows to know which exit to take when you get off the subway, see how a sofa looks in your living room before you buy it, or watch zombies battle on your dining table. In this session, we will explore the vision of Project Tango and how it will come to life with the launch of our first consumer phone.\n",
+      "description":"Project Tango unleashes a new way for you to explore the world. With a few sensors and some computer vision software, your phone gets even smarter, and can start to see the world the way you do. Follow guided arrows to know which exit to take when you get off the subway, see how a sofa looks in your living room before you buy it, or watch zombies battle on your dining table. In this session, we will explore the vision of Project Tango and how it will come to life with the launch of our first consumer phone, announced earlier this year. \n",
       "startTimestamp":"2016-05-19T22:00:00Z",
       "endTimestamp":"2016-05-19T23:00:00Z",
       "isLivestream":false,
@@ -1909,7 +1973,7 @@
         "f019ebed-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 2",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/4bd50c09-0cef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/4bd50c09-0cef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":19,
       "block":"3 PM",
@@ -1940,7 +2004,7 @@
         "cf4b9edb-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 3",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/38c924f1-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/38c924f1-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":19,
       "block":"4 PM",
@@ -1971,7 +2035,7 @@
         "0f51e0f9-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 10",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/33631cfd-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/33631cfd-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":19,
       "block":"4 PM",
@@ -2005,7 +2069,7 @@
         "e1911d18-c3ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 4",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/a6c924f1-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/a6c924f1-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":19,
       "block":"4 PM",
@@ -2036,7 +2100,7 @@
         "3d51e0f9-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 1",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/a4651ff7-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/a4651ff7-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":19,
       "block":"4 PM",
@@ -2068,7 +2132,7 @@
         "9fedbd57-9efa-e511-a517-00155d5066d7"
       ],
       "room":"Stage 7",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/3b651ff7-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/3b651ff7-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":19,
       "block":"4 PM",
@@ -2096,11 +2160,19 @@
         "THEME_DEVELOP"
       ],
       "speakers":[
-        "bc0cbfe1-c2ee-e511-a517-00155d5066d7",
-        "1e51e0f9-c2ee-e511-a517-00155d5066d7"
+        "c30cbfe1-c2ee-e511-a517-00155d5066d7",
+        "6f4dfcff-c2ee-e511-a517-00155d5066d7",
+        "7f4dfcff-c2ee-e511-a517-00155d5066d7",
+        "ba4dfcff-c2ee-e511-a517-00155d5066d7",
+        "6fda5c1b-8107-e611-a517-00155d5066d7",
+        "70ac8914-da07-e611-a517-00155d5066d7",
+        "9798f155-da07-e611-a517-00155d5066d7",
+        "0f56ed97-da07-e611-a517-00155d5066d7",
+        "38088db8-da07-e611-a517-00155d5066d7",
+        "e82c660e-db07-e611-a517-00155d5066d7"
       ],
       "room":"Stage 2",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/822d2aeb-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/822d2aeb-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":19,
       "block":"5 PM",
@@ -2111,6 +2183,66 @@
         "Android":true,
         "Develop":true,
         "Live streamed":false,
+        "Sessions":true
+      }
+    },
+    {
+      "id":"2dd50c09-0cef-e511-a517-00155d5066d7",
+      "title":"Google.org: Accelerating innovation for people with disabilities",
+      "description":"How can engineering and developer skills be used to tackle some of the world’s biggest challenges? One in seven people in the world has a disability -- a billion people that can benefit tremendously from tools and products that increase their independence. Last year, Google.org launched the Google Impact Challenge: Disabilities with $20M in funding to back innovative solutions that use technology like beacons, 3D scanning and printing, machine learning, and gamification. Hear from technologists working for forward-thinking organizations about how they’re building products that have the potential to transform lives and how you can develop products that make the world more accessible for all. \n",
+      "startTimestamp":"2016-05-20T00:00:00Z",
+      "endTimestamp":"2016-05-20T01:00:00Z",
+      "isLivestream":false,
+      "isFeatured":false,
+      "tags":[
+        "TRACK_MISC",
+        "TYPE_SESSIONS",
+        "THEME_DEVELOP"
+      ],
+      "speakers":[
+        "5491902d-1bef-e511-a517-00155d5066d7"
+      ],
+      "room":"Stage 1",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/2dd50c09-0cef-e511-a517-00155d5066d7.jpg",
+      "hasRelated":false,
+      "day":19,
+      "block":"5 PM",
+      "start":"5:00 PM",
+      "end":"6:00 PM",
+      "duration":"1 hour",
+      "filters":{
+        "Develop":true,
+        "Live streamed":false,
+        "Misc":true,
+        "Sessions":true
+      }
+    },
+    {
+      "id":"d09c1403-0cef-e511-a517-00155d5066d7",
+      "title":"Google Play Awards",
+      "description":"Google Play has seen tremendous growth over the past year, reaching more than 1 billion Android users across 190 countries. As a way to recognize our incredible developer community and highlight some of the best apps and games around the world, we’re kicking off our first-ever Google Play Awards ceremony. \n\nIn this session, we’ll bring on stage the winning apps and games across ten award categories, such as Standout Indie, Best Families App, Best Material Design, Best Overall App/Game and more! The winners will be selected by a panel of experts on the Google Play team based on a criteria set that emphasizes app quality, content cleanliness, great user experience, and high star rating.\n\nCome join us and learn from the top app and game developers in the world on how to build the best Android experience and drive user engagement. ",
+      "startTimestamp":"2016-05-20T02:00:00Z",
+      "endTimestamp":"2016-05-20T03:00:00Z",
+      "isLivestream":false,
+      "isFeatured":false,
+      "tags":[
+        "TRACK_PLAY",
+        "TYPE_SESSIONS",
+        "THEME_GROW\u0026EARN"
+      ],
+      "speakers":null,
+      "room":"Stage 7",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/d09c1403-0cef-e511-a517-00155d5066d7.jpg",
+      "hasRelated":false,
+      "day":19,
+      "block":"7 PM",
+      "start":"7:00 PM",
+      "end":"8:00 PM",
+      "duration":"1 hour",
+      "filters":{
+        "Grow \u0026 Earn":true,
+        "Live streamed":false,
+        "Play":true,
         "Sessions":true
       }
     },
@@ -2131,38 +2263,7 @@
         "44cd40c9-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 4",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/24c924f1-0bef-e511-a517-00155d5066d7.jpg",
-      "hasRelated":false,
-      "day":20,
-      "block":"9 AM",
-      "start":"9:00 AM",
-      "end":"10:00 AM",
-      "duration":"1 hour",
-      "filters":{
-        "Android":true,
-        "Develop":true,
-        "Live streamed":false,
-        "Sessions":true
-      }
-    },
-    {
-      "id":"be2d2aeb-0bef-e511-a517-00155d5066d7",
-      "title":"Best practices in media playback",
-      "description":"Best practices are key to building a great experience for your users, and media playback is no different. Whether it is building a strong app architecture for media playback, playing audio locally, controlling remote playback, being a good citizen for both the system and other apps, or working across form factors to Android Wear and Android Auto, we'll explore the best practices you should be using and how it all comes together.",
-      "startTimestamp":"2016-05-20T16:00:00Z",
-      "endTimestamp":"2016-05-20T17:00:00Z",
-      "isLivestream":false,
-      "isFeatured":false,
-      "tags":[
-        "TRACK_ANDROID",
-        "TYPE_SESSIONS",
-        "THEME_DEVELOP"
-      ],
-      "speakers":[
-        "d119ebed-c2ee-e511-a517-00155d5066d7"
-      ],
-      "room":"Stage 3",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/be2d2aeb-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/24c924f1-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":20,
       "block":"9 AM",
@@ -2194,7 +2295,7 @@
         "4c51e0f9-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 5",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/98621cfd-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/98621cfd-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":20,
       "block":"9 AM",
@@ -2211,7 +2312,7 @@
     {
       "id":"4c631cfd-0bef-e511-a517-00155d5066d7",
       "title":"Bringing seamless checkouts to the mobile web",
-      "description":"In recent years we've seen incredible growth in the number of users shopping on the mobile web. Checkout flows, however, haven't changed and remain stuck in the past. This session will encourage you to \"think outside the app\" to explore how you can bring the seamless, one-tap checkout experience to your mobile website.",
+      "description":"In recent years we've seen incredible growth in the number of users shopping on the mobile web. Checkout flows, however, haven't changed and remain stuck in the past. This session will encourage you to \"think outside the app\" to explore how you can bring a seamless, one-tap checkout experience to your mobile website.",
       "startTimestamp":"2016-05-20T17:00:00Z",
       "endTimestamp":"2016-05-20T18:00:00Z",
       "isLivestream":false,
@@ -2226,7 +2327,7 @@
         "9aba67d4-b4f3-e511-a517-00155d5066d7"
       ],
       "room":"Stage 10",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/4c631cfd-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/4c631cfd-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":20,
       "block":"10 AM",
@@ -2257,7 +2358,7 @@
         "2a1487d5-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 7",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/cd641ff7-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/cd641ff7-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":20,
       "block":"10 AM",
@@ -2289,7 +2390,7 @@
         "a51e44dd-83f3-e511-a517-00155d5066d7"
       ],
       "room":"Stage 9",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/10c924f1-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/10c924f1-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":20,
       "block":"10 AM",
@@ -2320,7 +2421,7 @@
         "4e35020c-c3ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 2",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/c3641ff7-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/c3641ff7-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":20,
       "block":"10 AM",
@@ -2352,7 +2453,7 @@
         "5351e0f9-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 6",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/61d80842-c8f6-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/61d80842-c8f6-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":20,
       "block":"11 AM",
@@ -2383,7 +2484,7 @@
         "f719ebed-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 10",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/1f631cfd-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/1f631cfd-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":20,
       "block":"11 AM",
@@ -2400,7 +2501,7 @@
     {
       "id":"c3d50c09-0cef-e511-a517-00155d5066d7",
       "title":"Election 2016: The big data showdown",
-      "description":"The US election is still months away, but a massive amount of data has already been generated on the topic. From social media to campaign finance disclosures to newspaper articles to poll results, we are awash in data about the candidates. How can we separate the signal from the noise, and figure out what it all means?\n\nThis talk takes a number of disparate sources of data; reddit comments, federal election disclosures, and a global event database as the raw materials to use Dataflow, Datalab, Cloud ML, and BigQuery, to extract meaning from it all. We'll and find out what people are saying, in real-time, about the candidates. We'll show how to build a dashboard that can display front-runners in the campaign donation race, the reddit popularity contest, and more. \n\nYou'll see how you, too, can gain insight from disparate data sources by harnessing the suite of tools in Google's cloud.",
+      "description":"The US election is still months away, but a massive amount of data has already been generated on the topic. From social media to campaign finance disclosures to newspaper articles to poll results, we are awash in data about the candidates. How can we separate the signal from the noise, and figure out what it all means?\n\nThis talk takes a number of disparate sources of data; reddit comments, federal election disclosures, and a global event database as the raw materials to use Dataflow, Datalab, Cloud ML, and BigQuery, to extract meaning from it all. We'll find out what people are saying, in real-time, about the candidates. We'll show how to build a dashboard that can display front-runners in the campaign donation race, the reddit popularity contest, and more. \n\nYou'll see how you, too, can gain insight from disparate data sources by harnessing the suite of tools in Google's cloud.",
       "startTimestamp":"2016-05-20T18:00:00Z",
       "endTimestamp":"2016-05-20T19:00:00Z",
       "isLivestream":false,
@@ -2415,7 +2516,7 @@
         "bee1a8af-9dfa-e511-a517-00155d5066d7"
       ],
       "room":"Stage 5",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/c3d50c09-0cef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/c3d50c09-0cef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":20,
       "block":"11 AM",
@@ -2449,7 +2550,7 @@
         "eb43fb23-8afa-e511-a517-00155d5066d7"
       ],
       "room":"Stage 3",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/dec824f1-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/dec824f1-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":20,
       "block":"11 AM",
@@ -2481,7 +2582,7 @@
         "44cd40c9-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 2",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/1fc924f1-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/1fc924f1-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":20,
       "block":"11 AM",
@@ -2501,7 +2602,7 @@
       "description":"Firebase helps mobile and web developers create extraordinary apps. It abstracts complex infrastructure and simplifies the development process. By using Firebase, developers can build the best user experience in the shortest amount of time, all without having to spin up servers or manage infrastructure. We'll explore how Firebase authenticates users and synchronizes data by creating an app on stage. You'll experience first hand how easy it is to build with Firebase!",
       "startTimestamp":"2016-05-20T18:00:00Z",
       "endTimestamp":"2016-05-20T19:00:00Z",
-      "isLivestream":false,
+      "isLivestream":true,
       "isFeatured":false,
       "tags":[
         "TRACK_FIREBASE",
@@ -2515,7 +2616,8 @@
         "20921d18-c3ee-e511-a517-00155d5066d7"
       ],
       "room":"Amphitheatre",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/c8641ff7-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/c8641ff7-0bef-e511-a517-00155d5066d7.jpg",
+      "youtubeUrl":"https://google.com/events/io",
       "hasRelated":false,
       "day":20,
       "block":"11 AM",
@@ -2525,7 +2627,7 @@
       "filters":{
         "Develop":true,
         "Firebase":true,
-        "Live streamed":false,
+        "Live streamed":true,
         "Sessions":true
       }
     },
@@ -2546,7 +2648,7 @@
         "e25bafd6-14ef-e511-a517-00155d5066d7"
       ],
       "room":"Stage 7",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/fa641ff7-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/fa641ff7-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":20,
       "block":"1 PM",
@@ -2577,7 +2679,7 @@
         "be582512-c3ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 2",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/fc621cfd-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/fc621cfd-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":20,
       "block":"1 PM",
@@ -2588,37 +2690,6 @@
         "Develop":true,
         "Live streamed":false,
         "Mobile Web":true,
-        "Sessions":true
-      }
-    },
-    {
-      "id":"0bc924f1-0bef-e511-a517-00155d5066d7",
-      "title":"Make shinier, faster mobile games with Vulkan",
-      "description":"Vulkan is designed from the ground up for high-efficiency and unprecedented cross platform usage, introducing a paradigm shift in computer graphics. But what's really involved in adding Vulkan support to an existing code base? This talk covers both logistics and technical details of porting an OpenGL ES framework to Vulkan. In addition to that, it will also address some common post port topics on how to maximize the benefits of Vulkan. ",
-      "startTimestamp":"2016-05-20T20:00:00Z",
-      "endTimestamp":"2016-05-20T21:00:00Z",
-      "isLivestream":false,
-      "isFeatured":false,
-      "tags":[
-        "TRACK_ANDROID",
-        "TYPE_SESSIONS",
-        "THEME_DEVELOP"
-      ],
-      "speakers":[
-        "fe6fcaa2-83f3-e511-a517-00155d5066d7"
-      ],
-      "room":"Stage 3",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/0bc924f1-0bef-e511-a517-00155d5066d7.jpg",
-      "hasRelated":false,
-      "day":20,
-      "block":"1 PM",
-      "start":"1:00 PM",
-      "end":"2:00 PM",
-      "duration":"1 hour",
-      "filters":{
-        "Android":true,
-        "Develop":true,
-        "Live streamed":false,
         "Sessions":true
       }
     },
@@ -2639,7 +2710,7 @@
         "d71387d5-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 5",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/8c641ff7-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/8c641ff7-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":20,
       "block":"1 PM",
@@ -2671,7 +2742,7 @@
         "85720006-c3ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 10",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/56631cfd-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/56631cfd-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":20,
       "block":"1 PM",
@@ -2686,8 +2757,74 @@
       }
     },
     {
+      "id":"edc824f1-0bef-e511-a517-00155d5066d7",
+      "title":"The Evolution of ART",
+      "description":"ART is the runtime which powers the entire Android platform. Come discover how we’ve improved the Android runtime to better serve a rapidly evolving ecosystem. From monthly system updates to incredibly rich and powerful apps, mobile development is growing more and more complex. In this session we will present the strategies we adopted to improve Android performance and minimize update times and disk usage. We will be talking about the new exciting Hybrid JIT-AOT approach, profile guided compilation, the new compiler and application images.",
+      "startTimestamp":"2016-05-20T20:00:00Z",
+      "endTimestamp":"2016-05-20T21:00:00Z",
+      "isLivestream":false,
+      "isFeatured":false,
+      "tags":[
+        "TRACK_ANDROID",
+        "TYPE_SESSIONS",
+        "THEME_DEVELOP"
+      ],
+      "speakers":[
+        "69cd40c9-c2ee-e511-a517-00155d5066d7",
+        "e64b9edb-c2ee-e511-a517-00155d5066d7",
+        "ee72244c-11f5-e511-a517-00155d5066d7",
+        "f6a4176d-11f5-e511-a517-00155d5066d7"
+      ],
+      "room":"Stage 3",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/edc824f1-0bef-e511-a517-00155d5066d7.jpg",
+      "hasRelated":false,
+      "day":20,
+      "block":"1 PM",
+      "start":"1:00 PM",
+      "end":"2:00 PM",
+      "duration":"1 hour",
+      "filters":{
+        "Android":true,
+        "Develop":true,
+        "Live streamed":false,
+        "Sessions":true
+      }
+    },
+    {
+      "id":"a5d50c09-0cef-e511-a517-00155d5066d7",
+      "title":"Best practices for orchestrating the Cloud with Kubernetes",
+      "description":"In the last decade, user demand for always-on applications have grown, exponentially. Many developers choose application patterns to meet this need, but what about the infrastructure needed to support these ever growing demands? In this talk, we will introduce you to the next level of automation using hands-on examples of industry standard tooling like Docker, a container format, and Kubernetes, a distributed automation platform. We'll cover the basics of modern day applications and how design patterns like microservices drive the need for more robust infrastructure. Then we’ll cover packaging and distributing apps using Docker. Finally, we’ll up our game to running applications on Kubernetes. By the end of this talk you'll have the knowledge needed to excel at scale.",
+      "startTimestamp":"2016-05-20T21:00:00Z",
+      "endTimestamp":"2016-05-20T22:00:00Z",
+      "isLivestream":false,
+      "isFeatured":false,
+      "tags":[
+        "TRACK_CLOUD",
+        "TYPE_SESSIONS",
+        "THEME_WHATSNEXT"
+      ],
+      "speakers":[
+        "f10cbfe1-c2ee-e511-a517-00155d5066d7",
+        "999cfff9-9cfa-e511-a517-00155d5066d7"
+      ],
+      "room":"Stage 5",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/a5d50c09-0cef-e511-a517-00155d5066d7.jpg",
+      "hasRelated":false,
+      "day":20,
+      "block":"2 PM",
+      "start":"2:00 PM",
+      "end":"3:00 PM",
+      "duration":"1 hour",
+      "filters":{
+        "Cloud":true,
+        "Live streamed":false,
+        "Sessions":true,
+        "What's Next":true
+      }
+    },
+    {
       "id":"d9621cfd-0bef-e511-a517-00155d5066d7",
-      "title":"Bring your Android App to Android TV in minutes",
+      "title":"Bring your Android app to Android TV in minutes",
       "description":"Bringing your app to the living room can be done in less time than you may think. Join us in this talk, where we'll show you how to port your existing Android app over to millions of Android TV devices in minutes. We've also got some great tips on how to make your app shine on the big screen. Lean back and watch how easy Android TV development can really be, using Android Studio, libraries such as Leanback, and the provided Android TV emulator.",
       "startTimestamp":"2016-05-20T21:00:00Z",
       "endTimestamp":"2016-05-20T22:00:00Z",
@@ -2703,7 +2840,7 @@
         "641919aa-bbf3-e511-a517-00155d5066d7"
       ],
       "room":"Stage 1",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/d9621cfd-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/d9621cfd-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":20,
       "block":"2 PM",
@@ -2734,7 +2871,7 @@
         "77582512-c3ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 10",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/5b631cfd-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/5b631cfd-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":20,
       "block":"2 PM",
@@ -2745,38 +2882,6 @@
         "Develop":true,
         "Live streamed":false,
         "Mobile Web":true,
-        "Sessions":true
-      }
-    },
-    {
-      "id":"079d1403-0cef-e511-a517-00155d5066d7",
-      "title":"How startups are succeeding on Google Play",
-      "description":"Learn how Google Play helps startups succeed in building innovative, beloved, and prosperous apps and games. Startup founders must balance realizing their big vision with the practical realities of building a new product with limited resources. Starting with a minimum viable product, Google Play offers developers special tools to iterate quickly, experiment on their apps and reach out to users. When the app has reached good product-market fit, it’s time to grow and Play helps you reach a large, global audience and reap the rewards.",
-      "startTimestamp":"2016-05-20T21:00:00Z",
-      "endTimestamp":"2016-05-20T22:00:00Z",
-      "isLivestream":false,
-      "isFeatured":false,
-      "tags":[
-        "TRACK_PLAY",
-        "TYPE_SESSIONS",
-        "THEME_GROW\u0026EARN"
-      ],
-      "speakers":[
-        "c14dfcff-c2ee-e511-a517-00155d5066d7",
-        "92577170-b6f3-e511-a517-00155d5066d7"
-      ],
-      "room":"Stage 5",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/079d1403-0cef-e511-a517-00155d5066d7.jpg",
-      "hasRelated":false,
-      "day":20,
-      "block":"2 PM",
-      "start":"2:00 PM",
-      "end":"3:00 PM",
-      "duration":"1 hour",
-      "filters":{
-        "Grow \u0026 Earn":true,
-        "Live streamed":false,
-        "Play":true,
         "Sessions":true
       }
     },
@@ -2797,7 +2902,7 @@
         "e36c41c3-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 2",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/f2621cfd-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/f2621cfd-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":20,
       "block":"2 PM",
@@ -2828,7 +2933,7 @@
         "2dcd40c9-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 7",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/ff641ff7-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/ff641ff7-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":20,
       "block":"2 PM",
@@ -2848,7 +2953,7 @@
       "description":"This session will cover various tips and tricks for using the Android animation APIs effectively to enable custom animations, more natural timing and motion, and anything else that we thought would be neat.",
       "startTimestamp":"2016-05-20T21:00:00Z",
       "endTimestamp":"2016-05-20T22:00:00Z",
-      "isLivestream":false,
+      "isLivestream":true,
       "isFeatured":false,
       "tags":[
         "TRACK_ANDROID",
@@ -2856,10 +2961,12 @@
         "THEME_DEVELOP"
       ],
       "speakers":[
-        "bc0cbfe1-c2ee-e511-a517-00155d5066d7"
+        "bc0cbfe1-c2ee-e511-a517-00155d5066d7",
+        "f5da904e-8107-e611-a517-00155d5066d7"
       ],
       "room":"Amphitheatre",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/7d2d2aeb-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/7d2d2aeb-0bef-e511-a517-00155d5066d7.jpg",
+      "youtubeUrl":"https://google.com/events/io",
       "hasRelated":false,
       "day":20,
       "block":"2 PM",
@@ -2869,7 +2976,7 @@
       "filters":{
         "Android":true,
         "Develop":true,
-        "Live streamed":false,
+        "Live streamed":true,
         "Sessions":true
       }
     },
@@ -2892,7 +2999,7 @@
         "c2d5429b-9ef6-e511-a517-00155d5066d7"
       ],
       "room":"Stage 4",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/322d2aeb-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/322d2aeb-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":20,
       "block":"2 PM",
@@ -2923,7 +3030,7 @@
         "3c09dbe7-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 3",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/fcc824f1-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/fcc824f1-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":20,
       "block":"3 PM",
@@ -2956,7 +3063,7 @@
         "e9911d18-c3ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 4",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/642d2aeb-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/642d2aeb-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":20,
       "block":"3 PM",
@@ -2971,44 +3078,12 @@
       }
     },
     {
-      "id":"a5d50c09-0cef-e511-a517-00155d5066d7",
-      "title":"Best practices for orchestrating the Cloud with Kubernetes",
-      "description":"In the last decade, user demand for always-on applications have grown, exponentially. Many developers choose application patterns to meet this need, but what about the infrastructure needed to support these ever growing demands? In this talk, we will introduce you to the next level of automation using hands-on examples of industry standard tooling like Docker, a container format, and Kubernetes, a distributed automation platform. We'll cover the basics of modern day applications and how design patterns like microservices drive the need for more robust infrastructure. Then we’ll cover packaging and distributing apps using Docker. Finally, we’ll up our game to running applications on Kubernetes. By the end of this talk you'll have the knowledge needed to excel at scale.",
-      "startTimestamp":"2016-05-20T22:00:00Z",
-      "endTimestamp":"2016-05-20T23:00:00Z",
-      "isLivestream":false,
-      "isFeatured":false,
-      "tags":[
-        "TRACK_CLOUD",
-        "TYPE_SESSIONS",
-        "THEME_WHATSNEXT"
-      ],
-      "speakers":[
-        "f10cbfe1-c2ee-e511-a517-00155d5066d7",
-        "999cfff9-9cfa-e511-a517-00155d5066d7"
-      ],
-      "room":"Stage 5",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/a5d50c09-0cef-e511-a517-00155d5066d7.jpg",
-      "hasRelated":false,
-      "day":20,
-      "block":"3 PM",
-      "start":"3:00 PM",
-      "end":"4:00 PM",
-      "duration":"1 hour",
-      "filters":{
-        "Cloud":true,
-        "Live streamed":false,
-        "Sessions":true,
-        "What's Next":true
-      }
-    },
-    {
       "id":"e8621cfd-0bef-e511-a517-00155d5066d7",
       "title":"Polymer and Progressive Web Apps: Building on the modern web",
       "description":"The Polymer library, re-written from the ground up with its 1.0 release last year, helps you build composable, interoperable components to use in your web applications. We'll go over the latest features of the library, show how to use some powerful newly-released components, show how Polymer is used in practice, dive into the cutting-edge tools for shipping component-based applications, reveal a brand-new way to get started building Progressive Web Applications with Polymer, and a take sneak peek into the future of the project.",
       "startTimestamp":"2016-05-20T22:00:00Z",
       "endTimestamp":"2016-05-20T23:00:00Z",
-      "isLivestream":false,
+      "isLivestream":true,
       "isFeatured":false,
       "tags":[
         "TRACK_MOBILEWEB",
@@ -3019,7 +3094,8 @@
         "9a720006-c3ee-e511-a517-00155d5066d7"
       ],
       "room":"Amphitheatre",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/e8621cfd-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/e8621cfd-0bef-e511-a517-00155d5066d7.jpg",
+      "youtubeUrl":"https://google.com/events/io",
       "hasRelated":false,
       "day":20,
       "block":"3 PM",
@@ -3028,7 +3104,7 @@
       "duration":"1 hour",
       "filters":{
         "Develop":true,
-        "Live streamed":false,
+        "Live streamed":true,
         "Mobile Web":true,
         "Sessions":true
       }
@@ -3050,7 +3126,7 @@
         "98582512-c3ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 10",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/42631cfd-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/42631cfd-0bef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":20,
       "block":"3 PM",
@@ -3061,37 +3137,6 @@
         "Develop":true,
         "Live streamed":false,
         "Mobile Web":true,
-        "Sessions":true
-      }
-    },
-    {
-      "id":"e1641ff7-0bef-e511-a517-00155d5066d7",
-      "title":"Cross-Platform coding without a net",
-      "description":"Live-coding one app in front of several hundred attendees is dangerous. Live-coding two apps? Crazy. Trying to get them to talk to each other on the same shared backend and get it all working in half an hour? Well, that's moving into \"keeping a pet wolverine\" level of crazy. There will be thrills! There will be chills! There won't be any actual wolverines, though. ",
-      "startTimestamp":"2016-05-20T23:00:00Z",
-      "endTimestamp":"2016-05-21T00:00:00Z",
-      "isLivestream":false,
-      "isFeatured":false,
-      "tags":[
-        "TRACK_FIREBASE",
-        "TYPE_SESSIONS",
-        "THEME_DEVELOP"
-      ],
-      "speakers":[
-        "44b5fde1-11ef-e511-a517-00155d5066d7"
-      ],
-      "room":"Stage 2",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/e1641ff7-0bef-e511-a517-00155d5066d7.jpg",
-      "hasRelated":false,
-      "day":20,
-      "block":"4 PM",
-      "start":"4:00 PM",
-      "end":"5:00 PM",
-      "duration":"1 hour",
-      "filters":{
-        "Develop":true,
-        "Firebase":true,
-        "Live streamed":false,
         "Sessions":true
       }
     },
@@ -3112,7 +3157,7 @@
         "684dfcff-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 4",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/96d50c09-0cef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-festivus/images/sessions/__w-200-400-600-800-1000__/96d50c09-0cef-e511-a517-00155d5066d7.jpg",
       "hasRelated":false,
       "day":20,
       "block":"4 PM",
@@ -3133,7 +3178,7 @@
       "name":"Alan  Viverette",
       "bio":"Alan works on the Android framework's UI Toolkit team and is tech lead for the Android support library. Prior to working at Google, Alan received a bachelor's degree in Computer Science from Stanford University.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/01258cc7-8ff6-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/01258cc7-8ff6-e511-a517-00155d5066d7.jpg",
       "plusoneUrl":"https://plus.google.com/+AlanViverette"
     },
     "016d41c3-c2ee-e511-a517-00155d5066d7":{
@@ -3141,7 +3186,7 @@
       "name":"Chris Banes",
       "bio":"Chris is an engineer working on the Android Support Libraries at Google, most notably AppCompat, Design lib and Palette. He has worked on Android things for over 6 years, from open source libraries to media apps, social networks and most stuff in between.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/016d41c3-c2ee-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/016d41c3-c2ee-e511-a517-00155d5066d7.jpg",
       "plusoneUrl":"https://plus.google.com/+ChrisBanes",
       "twitterUrl":"https://twitter.com/chrisbanes"
     },
@@ -3164,14 +3209,14 @@
     "03e21705-f6fc-e511-a517-00155d5066d7":{
       "id":"03e21705-f6fc-e511-a517-00155d5066d7",
       "name":"Victor Chan",
-      "bio":"Victor is building the future of automotive user experiences as a software engineer on the Android Auto team. Previously, he worked on the Android app for Google+. Prior to Google, Victor was a cofounder of a sports social network startup and a member of technical staff at Oracle Labs. \n\nVictor has S.M. in Computer Science from Harvard University and a bachelor's degree in Computer Science from the University of British Columbia.\n",
+      "bio":"Victor is building the future of automotive user experiences as a software engineer on the Android Auto team. Previously, he worked on the Android app for Google+. Prior to Google, Victor was a cofounder of a sports social network startup and a member of technical staff at Oracle Labs. \n\nVictor has a S.M. in Computer Science from Harvard University and a bachelor's degree in Computer Science from the University of British Columbia.\n",
       "company":"Google"
     },
     "0709dbe7-c2ee-e511-a517-00155d5066d7":{
       "id":"0709dbe7-c2ee-e511-a517-00155d5066d7",
       "name":"Paul Irish",
       "bio":"Paul Irish is a front-end developer who loves the web. He works on Google Chrome, its performance and DevTools.",
-      "company":"Google Chrome ",
+      "company":"Google ",
       "plusoneUrl":"https://plus.google.com/+paulirish",
       "twitterUrl":"https://twitter.com/paul_irish"
     },
@@ -3193,9 +3238,9 @@
     "0d53e3f3-c2ee-e511-a517-00155d5066d7":{
       "id":"0d53e3f3-c2ee-e511-a517-00155d5066d7",
       "name":"Jennifer W. Lin",
-      "bio":"Jennifer is the lead for App Indexing (g.co/AppIndexing).  Prior to that, she worked on Google Sign-In and Mobile Ads at Google.  She earned a master's degree in EECS from MIT.",
+      "bio":"Jennifer is the lead for App Indexing. Prior to that, she worked on Google Sign-In and Mobile Ads at Google. She earned a master's degree in Electrical Engineering \u0026 Computer Science from MIT.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/0d53e3f3-c2ee-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/0d53e3f3-c2ee-e511-a517-00155d5066d7.jpg",
       "plusoneUrl":"https://plus.google.com/+jenlin"
     },
     "0f51e0f9-c2ee-e511-a517-00155d5066d7":{
@@ -3203,31 +3248,30 @@
       "name":"Matt McNulty",
       "bio":"Matthew leads the Polymer team at Google Chrome. Prior to joining Google, he was responsible for the Enyo framework, Ares development environment, and SDK at webOS.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/0f51e0f9-c2ee-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/0f51e0f9-c2ee-e511-a517-00155d5066d7.jpg",
       "twitterUrl":"https://twitter.com/mattsmcnulty"
+    },
+    "0f56ed97-da07-e611-a517-00155d5066d7":{
+      "id":"0f56ed97-da07-e611-a517-00155d5066d7",
+      "name":"Rachel Garb"
     },
     "0f6d41c3-c2ee-e511-a517-00155d5066d7":{
       "id":"0f6d41c3-c2ee-e511-a517-00155d5066d7",
       "name":"Clay Bavor"
-    },
-    "10921d18-c3ee-e511-a517-00155d5066d7":{
-      "id":"10921d18-c3ee-e511-a517-00155d5066d7",
-      "name":"Rosa Wu",
-      "company":"Google"
     },
     "116eb8c4-7df8-e511-a517-00155d5066d7":{
       "id":"116eb8c4-7df8-e511-a517-00155d5066d7",
       "name":"Pasha  Nahass",
       "bio":"Pasha Nahass is a Product Manager at Google working on in-app ad formats.  Prior to Google, he was a software engineer at Amazon.com.  Pasha earned his bachelor's and master's degrees in Computer Science from Stanford University.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/116eb8c4-7df8-e511-a517-00155d5066d7.jpg"
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/116eb8c4-7df8-e511-a517-00155d5066d7.jpg"
     },
     "1751e0f9-c2ee-e511-a517-00155d5066d7":{
       "id":"1751e0f9-c2ee-e511-a517-00155d5066d7",
       "name":"Wim Meeussen",
-      "bio":"Wim joined Google in 2014 and leads the Tango Location team. His mission is to use computer vision to bring location-based experiences to mobile devices. Before joining Google Wim was a co-founder of hiDOF, and worked on personal robotics at Willow Garage.",
+      "bio":"Wim joined Google in 2014 and leads the Tango Location team. His mission is to use computer vision to bring location-based experiences to mobile devices. Before joining Google, Wim was a co-founder of hiDOF, and worked on personal robotics at Willow Garage.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/1751e0f9-c2ee-e511-a517-00155d5066d7.jpg"
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/1751e0f9-c2ee-e511-a517-00155d5066d7.jpg"
     },
     "1b1487d5-c2ee-e511-a517-00155d5066d7":{
       "id":"1b1487d5-c2ee-e511-a517-00155d5066d7",
@@ -3239,7 +3283,7 @@
       "name":"Peter Lubbers",
       "bio":"Peter Lubbers is a Senior Program Manager at Google on the Developer Relations team. He is in charge of all aspects of developer training, developer vIdeo, and developer events. In 2010, he started the San Francisco HTML5 Developer Group, which is now the world’s largest HTML5 developer meetup. He is the author of “Pro HTML5 Programming” (Apress, 2011) and even has the HTML5 license plate on his car! A native of the Netherlands, Peter served as a Special Forces commando in the Royal Dutch Green Berets. When he is not at home or out running triple marathons around Lake Tahoe you might see him jump out of a plane.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/1c53e3f3-c2ee-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/1c53e3f3-c2ee-e511-a517-00155d5066d7.jpg",
       "plusoneUrl":"https://plus.google.com/+PeterLubbers",
       "twitterUrl":"https://twitter.com/peterlubbers"
     },
@@ -3248,21 +3292,12 @@
       "name":"Sam Judd",
       "company":"Google"
     },
-    "1e51e0f9-c2ee-e511-a517-00155d5066d7":{
-      "id":"1e51e0f9-c2ee-e511-a517-00155d5066d7",
-      "name":"Reto Meier",
-      "bio":"Reto Meier has been part of the Android Developer Relations at Google since the launch of Cupcake in 2009. He continues to represent Android and Android Studio as part of Google's Developer Relations team.\n\nHe’s passionate about helping developers build the best possible apps on Android to and is the author of the Professional Android Application Development series of Android books from Wrox.",
-      "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/1e51e0f9-c2ee-e511-a517-00155d5066d7.jpg",
-      "plusoneUrl":"https://plus.google.com/+retomeier",
-      "twitterUrl":"https://www.twitter.com/retomeier"
-    },
     "20921d18-c3ee-e511-a517-00155d5066d7":{
       "id":"20921d18-c3ee-e511-a517-00155d5066d7",
       "name":"Frank van Puffelen",
       "bio":"Frank is an engineer for Firebase at Google. He helps developers build extraordinary apps that use Firebase as their back-end. If you've ever asked a Firebase question on StackOverflow, you've probably met Frank already. Frank has a degree in Medical Computer Science from The Hague University in The Netherlands.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/20921d18-c3ee-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/20921d18-c3ee-e511-a517-00155d5066d7.jpg",
       "twitterUrl":"https://twitter.com/puf"
     },
     "2551e0f9-c2ee-e511-a517-00155d5066d7":{
@@ -3274,14 +3309,14 @@
       "name":"Eric Bidelman",
       "bio":"Eric is a Senior Staff Developer Programs Engineer at Google working with the Chrome team, Polymer, and web components. He's the author of “Using the HTML5 Filesystem API” and has led frontend projects like the Google I/O web app, Google's Santa tracker, chromestatus.com, and html5rocks.com. Prior to Google, Eric worked as a software engineer at the University of Michigan where he designed rich web applications and APIs for the university’s 19 libraries.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/25cd40c9-c2ee-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/25cd40c9-c2ee-e511-a517-00155d5066d7.jpg",
       "plusoneUrl":"https://plus.google.com/+EricBidelman",
       "twitterUrl":"https://twitter.com/ebidel"
     },
     "2609dbe7-c2ee-e511-a517-00155d5066d7":{
       "id":"2609dbe7-c2ee-e511-a517-00155d5066d7",
       "name":"Wojtek Kaliciński",
-      "bio":"Wojtek provides outreach to developers on new Android framework features, tools and testing as part of his job as a senior developer advocate. He has worked with Android since the early days of the platform and enjoys looking for ways to make apps more usable, mostly through better development patterns and code optimizations. Prior to working at Google, Wojtek was a co-founder and CTO at a digital agency startup. For many years he was also involved in organizing and speaking at community events through Google Developer Groups.",
+      "bio":"Wojtek provides outreach to developers on new Android framework features, tools and testing as part of his job as a Senior Developer Advocate. He has worked with Android since the early days of the platform and enjoys looking for ways to make apps more usable, mostly through better development patterns and code optimizations. Prior to working at Google, Wojtek was a co-founder and CTO at a digital agency startup. For many years he was also involved in organizing and speaking at community events through Google Developer Groups.",
       "company":"Google",
       "plusoneUrl":"https://plus.google.com/+WojtekKalicinski",
       "twitterUrl":"https://twitter.com/wkalic"
@@ -3296,21 +3331,21 @@
       "name":"Timo Mertens",
       "bio":"Timo Mertens is a product manager working on Google Search. He has worked on user and developer facing products in the space of App Indexing, Voice Actions and Personalized Search. Before joining Google Timo was at Microsoft where he worked on Voice Recognition for Xbox and Cortana. He also was a visiting researcher at MIT and Microsoft Research, and holds a PhD in Electrical Engineering and Computer Science from NTNU.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/2d51e0f9-c2ee-e511-a517-00155d5066d7.jpg"
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/2d51e0f9-c2ee-e511-a517-00155d5066d7.jpg"
     },
     "2dcd40c9-c2ee-e511-a517-00155d5066d7":{
       "id":"2dcd40c9-c2ee-e511-a517-00155d5066d7",
       "name":"Michael Bleigh",
       "bio":"Michael is the tech lead for Firebase Hosting and the Firebase Command-Line Interface. Prior to Google, Michael was co-founder of developer-focused startup Divshot, whose technology now powers Firebase Hosting. He has also been active in the open-source community, creating popular Ruby libraries such as OmniAuth, Grape, and MultiJson.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/2dcd40c9-c2ee-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/2dcd40c9-c2ee-e511-a517-00155d5066d7.jpg",
       "twitterUrl":"https://twitter.com/mbleigh"
     },
     "2f921d18-c3ee-e511-a517-00155d5066d7":{
       "id":"2f921d18-c3ee-e511-a517-00155d5066d7",
       "name":"Maya Ben Ari",
       "bio":"Maya is leading Android Accessibility efforts to make technology usable for everyone. Previously, she led the next generation of the Android Lock Screen and Fingerprint to give users better security without the hassle of entering passwords. Prior to Google, Maya worked for Microsoft as an on-campus representative and helped design their university strategy. Maya is a technology enthusiast and was heavily involved in the Israeli startup community, co-founding two startups. She earned a bachelor’s and master’s degree in Computer Science from Tel-Aviv University, and an MBA from University of Michigan.\n ",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/2f921d18-c3ee-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/2f921d18-c3ee-e511-a517-00155d5066d7.jpg",
       "plusoneUrl":"https://plus.google.com/+MayaBenAri101"
     },
     "3353e3f3-c2ee-e511-a517-00155d5066d7":{
@@ -3330,19 +3365,25 @@
     "3551e0f9-c2ee-e511-a517-00155d5066d7":{
       "id":"3551e0f9-c2ee-e511-a517-00155d5066d7",
       "name":"Vincent Mo",
-      "bio":"Vincent is a Technical Lead Manager on the Android Auto team.  Previously, Vincent was on the Platforms Infrastructure Engineering team helping keep Google's data centers up and running.  Prior to Google, Vincent was a software engineer at EADS North America Test \u0026 Services.  Vincent earned his Computer and Electrical Engineering degrees from the University of California, Irvine.",
-      "company":"Google"
+      "bio":"Vincent is a Technical Lead Manager on the Android Auto team.  Previously, Vincent was on the Platforms Infrastructure Engineering team helping keep Google's data centers up and running.  Prior to Google, Vincent was a software engineer at EADS North America Test \u0026 Services.  Vincent earned his Computer and Electrical Engineering degrees from the University of California, Irvine. ",
+      "company":"Google",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/3551e0f9-c2ee-e511-a517-00155d5066d7.jpg"
     },
     "3727c482-a2ff-e511-a517-00155d5066d7":{
       "id":"3727c482-a2ff-e511-a517-00155d5066d7",
-      "name":"Alan  Ni "
+      "name":"Alan  Ni ",
+      "company":"Google"
+    },
+    "38088db8-da07-e611-a517-00155d5066d7":{
+      "id":"38088db8-da07-e611-a517-00155d5066d7",
+      "name":"Anwar Ghuloum"
     },
     "380e1b7a-2bf5-e511-a517-00155d5066d7":{
       "id":"380e1b7a-2bf5-e511-a517-00155d5066d7",
       "name":"Andrew Bunner",
       "bio":"Andrew Bunner is the engineering lead for Nearby, Google’s multi-platform proximity solution. Before Google, Andrew lead development teams at several start-ups in ecommerce and web publishing. He received a bachelor’s degree in Computer Science from the University of Illinois at Urbana-Champaign.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/380e1b7a-2bf5-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/380e1b7a-2bf5-e511-a517-00155d5066d7.jpg",
       "plusoneUrl":"https://plus.google.com/+AndrewBunner",
       "twitterUrl":"https://twitter.com/andrewbunner"
     },
@@ -3351,7 +3392,7 @@
       "name":"Eitan Marder-Eppstein",
       "bio":"Eitan Marder-Eppstein is the Developer Engineering Lead for Google's Project Tango - a focused effort to bring computer vision and advanced sensor fusion to mobile platforms. Previously, he worked in robotics as President of hiDOF, and as a core contributor to the Robot Operating System (ROS) at Willow Garage. Eitan has a B.S. and M.S. in Computer Science from Washington University in St. Louis.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/3a53e3f3-c2ee-e511-a517-00155d5066d7.jpg"
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/3a53e3f3-c2ee-e511-a517-00155d5066d7.jpg"
     },
     "3c09dbe7-c2ee-e511-a517-00155d5066d7":{
       "id":"3c09dbe7-c2ee-e511-a517-00155d5066d7",
@@ -3365,7 +3406,7 @@
       "name":"JP Souchak",
       "bio":"JP is a program manager on the Google Developer Training team. In this role, he focuses on developer certification for Android and online training for the Google Cloud Platform. He has also worked on training metrics and developed courseware for Firebase and GCE. Prior to Google, he developed training at Cloudera and managed education, training, and documentation at RightScale and Openwave Systems, Inc.\n\nJP earned master’s degrees from Colorado State University and Pacifica Graduate Institute. He also earned a bachelor’s degree in English from Penn State University.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/3d35020c-c3ee-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/3d35020c-c3ee-e511-a517-00155d5066d7.jpg",
       "plusoneUrl":"https://plus.google.com/+JPSouchak",
       "twitterUrl":"https://twitter.com/jpsouchak"
     },
@@ -3374,15 +3415,15 @@
       "name":"Anirudh Mohan",
       "bio":"Ani is a product manager on the Chrome team focusing on bluetooth and connectivity efforts. Previously, he worked on the Next Billion Users team building hardware and services for users in emerging markets. Ani earned a bachelor’s degree in electrical engineering from Duke University.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/3d51e0f9-c2ee-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/3d51e0f9-c2ee-e511-a517-00155d5066d7.jpg",
       "twitterUrl":"https://twitter.com/ani_c_mohan"
     },
     "3dcd40c9-c2ee-e511-a517-00155d5066d7":{
       "id":"3dcd40c9-c2ee-e511-a517-00155d5066d7",
       "name":"Thomas Bouldin",
-      "bio":"Thomas is the tech lead for [secret Firebase project] as a senior software engineer. His work with the Firebase team ranges from API design to backend reliability and performance. Before Firebase, Thomas was an early engineer at Parse. He had a hand in many Parse products and is best known as the lead developer for Parse Push. Previously Thomas was an engineer on Google’s Image Search infrastructure and Microsoft Windows.\n\nThomas Earned his bachelor’s degree in software engineering at Cal Poly San Luis Obispo with a focus on computer graphics and operating systems \u0026 security.",
+      "bio":"Thomas is a senior software engineer at Google. His work with the Firebase team ranges from API design to backend reliability and performance. Before Firebase, Thomas was an early engineer at Parse. He had a hand in many Parse products and is best known as the lead developer for Parse Push. Previously Thomas was an engineer on Google’s Image Search infrastructure and Microsoft Windows.\n\nThomas Earned his bachelor’s degree in software engineering at Cal Poly San Luis Obispo with a focus on computer graphics and operating systems \u0026 security.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/3dcd40c9-c2ee-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/3dcd40c9-c2ee-e511-a517-00155d5066d7.jpg",
       "twitterUrl":"https://twitter.com/inlined"
     },
     "416d45ad-f5fc-e511-a517-00155d5066d7":{
@@ -3393,7 +3434,7 @@
       "id":"4253e3f3-c2ee-e511-a517-00155d5066d7",
       "name":"Neto Marin",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/4253e3f3-c2ee-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/4253e3f3-c2ee-e511-a517-00155d5066d7.jpg",
       "plusoneUrl":"https://plus.google.com/+netomarin",
       "twitterUrl":"https://www.twitter.com/netomarin"
     },
@@ -3406,23 +3447,23 @@
       "name":"Magnus Hyttsten",
       "bio":"Magnus works a Developer Advocate doing outreach for many of Google’s Mobile Services. He is currently very excited about connecting all mobile devices to the information services Google provides through its data centers. On his spare time, he enjoys fixing errors reported by statically typed language compilers, and playing around with cron jobs running on cloud instances. ",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/44b5fde1-11ef-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/44b5fde1-11ef-e511-a517-00155d5066d7.jpg",
       "plusoneUrl":"https://plus.google.com/+MagnusHyttsten",
       "twitterUrl":"https://twitter.com/MagnusHyttsten"
     },
     "44cd40c9-c2ee-e511-a517-00155d5066d7":{
       "id":"44cd40c9-c2ee-e511-a517-00155d5066d7",
       "name":"Yigit Boyar",
-      "bio":"Yigit works on building UI widgets and improving layout performance as part of Android UI Toolkit Team. Prior to Google, he was the Android Engineering Lead at Path.com where he was mostly focused on building application architecture, real time camera filters and buttery smooth UI performance. He received his bachelor's degree in computer engineering from Middle East Technical University, Turkey",
+      "bio":"Yigit works on building UI widgets and improving layout performance as part of Android UI Toolkit Team. Prior to Google, he was the Android Engineering Lead at Path.com where he was mostly focused on building application architecture, real time camera filters and buttery smooth UI performance. He received his bachelor's degree in computer engineering from Middle East Technical University, Turkey.",
       "company":"Google",
       "twitterUrl":"https://twitter.com/yigitboyar"
     },
     "454053cf-c2ee-e511-a517-00155d5066d7":{
       "id":"454053cf-c2ee-e511-a517-00155d5066d7",
       "name":"Jihyun Chung",
-      "bio":"Jihyun is lead of go global working group of Play that aims to support developers better on their global aspirations. On her daily job she manages top app developers in Korea with focus on lifestyle, shopping, and communications category. Prior to Google, she built her career as marketer, merchandiser and business development manager around content business in top Korean companies. Jihyun earned her MPA degree at New York University specializing in international development and a bachelor’s degree in psychology from Seoul National University.",
+      "bio":"Jihyun leads a team that helps support developers looking to broaden their global reach, using Google Play. In her daily job she works with top app developers in Korea in the lifestyle, shopping, and communications categories. Prior to Google, she built her career as marketer, merchandiser and business development manager around content business at top Korean companies. Jihyun earned her MPA degree at New York University specializing in international development and a bachelor’s degree in psychology from Seoul National University.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/454053cf-c2ee-e511-a517-00155d5066d7.jpg"
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/454053cf-c2ee-e511-a517-00155d5066d7.jpg"
     },
     "4635020c-c3ee-e511-a517-00155d5066d7":{
       "id":"4635020c-c3ee-e511-a517-00155d5066d7",
@@ -3436,7 +3477,7 @@
       "name":"Kobi Glick",
       "bio":"Kobi is a Product Manager on Google Play, and is focused on making Play the best publishing platform for developers. With features like beta testing and store listing experiments, Kobi helps developers launch, iterate, and experiment to improve their apps and their businesses. Kobi earned a B.Sc degree in computer science with minor in cognitive science from the Hebrew University of Jerusalem.\n",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/4c083cab-b6f3-e511-a517-00155d5066d7.jpg"
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/4c083cab-b6f3-e511-a517-00155d5066d7.jpg"
     },
     "4c51e0f9-c2ee-e511-a517-00155d5066d7":{
       "id":"4c51e0f9-c2ee-e511-a517-00155d5066d7",
@@ -3447,7 +3488,7 @@
       "name":"Jessica Brillhart",
       "bio":"Jessica is the principal filmmaker for virtual reality at Google. In 2009, she joined Google's Creative Lab where she spearheaded numerous award winning shorts and documentaries before joining the VR team in 2015. Since directing, WORLD TOUR – the first VR film made with the Jump ecosystem – Brillhart has continued traveling the world, filming and experimenting, all in an effort to better understand and help inform others about this emerging medium.\n",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/4ccd40c9-c2ee-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/4ccd40c9-c2ee-e511-a517-00155d5066d7.jpg",
       "twitterUrl":"https://www.twitter.com/brillhart"
     },
     "4e35020c-c3ee-e511-a517-00155d5066d7":{
@@ -3455,7 +3496,7 @@
       "name":"Doug Stevenson",
       "bio":"Doug is a Developer Advocate working with Google tools and APIs, with a careful eye on the Android developer experience.  He's built many Android apps and tools since starting with the platform in 2009, and has also worked across the full stack of technology for building mobile apps and web sites. Doug has previously bootstrapped the efforts of a number of startups, and has held positions at AOL and CompuServe.  Doug's first programming experience was at age 10 with an Apple II computer.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/4e35020c-c3ee-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/4e35020c-c3ee-e511-a517-00155d5066d7.jpg",
       "plusoneUrl":"https://plus.google.com/+DougStevenson1",
       "twitterUrl":"https://twitter.com/CodingDoug"
     },
@@ -3464,7 +3505,7 @@
       "name":"Elena Kelereva",
       "bio":"Elena Kelareva is the Product Manager for the Google Maps Web APIs, including the JavaScript Maps API, used by over 2 million websites. She has a PhD in Computer Science from the Australian National University, and has previously worked as a Software Engineer at OMC International, building software that improves safety and prevents ship groundings at some of the world’s largest cargo ports.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/5082a340-7af8-e511-a517-00155d5066d7.jpg"
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/5082a340-7af8-e511-a517-00155d5066d7.jpg"
     },
     "5109dbe7-c2ee-e511-a517-00155d5066d7":{
       "id":"5109dbe7-c2ee-e511-a517-00155d5066d7",
@@ -3476,7 +3517,7 @@
       "id":"5153e3f3-c2ee-e511-a517-00155d5066d7",
       "name":"Colt McAnlis",
       "bio":"Colt McAnlis is a Developer Advocate at Google focusing on Performance \u0026 Compression; Before that, he was a graphics programmer in the games industry working at Blizzard, Microsoft (Ensemble), and Petroglyph. He’s been an Adjunct Professor at SMU Guildhall, a UDACITY instructor (twice), and a Book Author. When he's not working with developers, Colt spends his time preparing for an invasion of giant ants from outer space.\n",
-      "company":"Google Inc.",
+      "company":"Google",
       "plusoneUrl":"https://plus.google.com/+ColtMcAnlis",
       "twitterUrl":"https://twitter.com/duhroach"
     },
@@ -3492,7 +3533,7 @@
       "name":"Andrew Brogdon",
       "bio":"As a developer programs engineer on the Ads DevRel team, Andrew coordinates outreach efforts for the Mobile Ads SDK. If you've read guides, downloaded sample code, or seen presentations on how to incorporate ads from AdMob and DFP in mobile applications, chances are you've seen his stuff.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/53cd40c9-c2ee-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/53cd40c9-c2ee-e511-a517-00155d5066d7.jpg",
       "twitterUrl":"https://twitter.com/redbrogdon"
     },
     "543fbf9e-33f5-e511-a517-00155d5066d7":{
@@ -3503,13 +3544,13 @@
       "id":"5491902d-1bef-e511-a517-00155d5066d7",
       "name":"Brigitte Hoyer Gosselink",
       "bio":"Brigitte Gosselink is a Principal at Google.org, where she leads grantmaking around technology and innovation to help address global challenges. Prior to Google.org, Brigitte worked at The Bridgespan Group and in international development for the U.S. Agency for International Development and an international NGO. She has an MBA from the Yale School of Management and a BS in Systems Engineering from the University of Virginia.",
-      "company":"Google.org",
+      "company":"Google",
       "twitterUrl":"https://twitter.com/bhgosselink"
     },
     "56370681-f3f9-e511-a517-00155d5066d7":{
       "id":"56370681-f3f9-e511-a517-00155d5066d7",
       "name":"Ina Fuchs",
-      "bio":"Katharina Fuchs, YouTube Gaming Partnerships Manager EMEA\n\nKatharina is a Strategic Partner Manager on the YouTube Gaming Team, looking after Top Gaming YouTubers and Publishers across all of EMEA. She has been working at Google for more than 5 years, previously as a YouTube Ad Specialist on the Google Sales team and a Manager for Multi Channel Networks on YouTube. \n\nKatharina has earned an MBA from EGADE, where she was awarded for being best of class as well as a Diploma in International Business from the European School of Business, Germany. She speaks 5 languages fluently.\n\n",
+      "bio":"Ina is a Strategic Partner Manager on the YouTube Gaming Team, looking after Top Gaming YouTubers and Publishers across all of EMEA. She has been working at Google for more than 5 years, previously as a YouTube Ad Specialist on the Google Sales team and a Manager for Multi Channel Networks on YouTube. \n\nKatharina has earned an MBA from EGADE, where she was awarded for being best of class as well as a Diploma in International Business from the European School of Business, Germany. She speaks 5 languages fluently.\n\n",
       "company":"YouTube",
       "twitterUrl":"https://twitter.com/InaGames"
     },
@@ -3518,7 +3559,7 @@
       "name":"Nick Butcher",
       "bio":"Nick is an Android designer \u0026 developer who helps other designers and developers to understand and create beautiful material design apps.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/5acd40c9-c2ee-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/5acd40c9-c2ee-e511-a517-00155d5066d7.jpg",
       "plusoneUrl":"https://plus.google.com/+NickButcher",
       "twitterUrl":"https://twitter.com/crafty"
     },
@@ -3531,9 +3572,9 @@
     "5e5d1cf4-9dfa-e511-a517-00155d5066d7":{
       "id":"5e5d1cf4-9dfa-e511-a517-00155d5066d7",
       "name":"Aja Hammerly",
-      "bio":"Aja lives in Seattle where she is a developer advocate at Google and a member of the Seattle Ruby Brigade. Her favorite languages are Ruby and Prolog. She's spent enough time carrying a pager to believe in good monitoring and development practices. In her free time she enjoys skiing, cooking, knitting, and long coding sessions on the beach.\n",
+      "bio":"Aja lives in Seattle where she is a Developer Advocate at Google and a member of the Seattle Ruby Brigade. Her favorite languages are Ruby and Prolog. She's spent enough time carrying a pager to believe in good monitoring and development practices. In her free time she enjoys skiing, cooking, knitting, and long coding sessions on the beach.\n",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/5e5d1cf4-9dfa-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/5e5d1cf4-9dfa-e511-a517-00155d5066d7.jpg",
       "twitterUrl":"https://twitter.com/thagomizer_rb"
     },
     "5fc79f23-a2ff-e511-a517-00155d5066d7":{
@@ -3545,6 +3586,7 @@
       "name":"Milena Nikolic",
       "bio":"Milena is an Engineering Manager on Google Play Developer Console team. In her role she focuses on stellar app publishing experience for developers and on pushing app distribution on Android to the next level. Milena has been at Google for over 7 years, working on number of products related to Mobile, Android and Search. She earned a Masters degree in Computer Science and Electrical Engineering from University of Nis, Serbia.",
       "company":"Google",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/614dfcff-c2ee-e511-a517-00155d5066d7.jpg",
       "plusoneUrl":"https://plus.google.com/+MilenaNikolicX",
       "twitterUrl":"https://twitter.com/nikolicmilena"
     },
@@ -3553,6 +3595,7 @@
       "name":"Francesc Campoy Flores",
       "bio":"Francesc is a Developer Advocate for Google Cloud Platform and an avid gopher (the developer, not the animal) from Barcelona, based in San Francisco.\n\nBefore joining Developer Relations he was a Software Engineer for Google Adwords where he discovered and enjoyed the developer experience that Google offers to its engineers.\n\nNow his mission is to make those technologies known and available to the outside world: Kubernetes, gRPC, and Go are just the beginning.",
       "company":"Google",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/62cd40c9-c2ee-e511-a517-00155d5066d7.jpg",
       "plusoneUrl":"https://plus.google.com/+FrancescCampoyFlores",
       "twitterUrl":"https://twitter.com/francesc"
     },
@@ -3561,7 +3604,7 @@
       "name":"Ryan Seys",
       "bio":"Ryan Seys is a Developer Programs Engineer at Google where he empowers people to build amazing products on top of Google's developer platform. Originally from Canada, Ryan joined Google fresh out of school after receiving a Bachelor of Engineering, Software degree from Carleton University. Prior to joining, Ryan also interned at Google, Mozilla, and various education startups where he discovered the magic of mixing teaching with technology. Ryan loves clean and concise APIs designed to artfully balance simplicity with functionality. He is currently focused on bringing big and beautiful apps to Android TV, while on the side exploring new possibilities for the Internet of Things. He also really likes coffee.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/641919aa-bbf3-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/641919aa-bbf3-e511-a517-00155d5066d7.jpg",
       "plusoneUrl":"https://plus.google.com/+RyanSeysCorp",
       "twitterUrl":"https://twitter.com/ryanseys"
     },
@@ -3570,7 +3613,7 @@
       "name":"Shanee Nishry",
       "bio":"Shanee Nishry is a Software Engineer working on virtual reality experiences as part of the Google VR team. She's been involved with game development from the start of her career and with virtual reality ever since the first public Oculus Rift development kit came out in 2013. Today she is excited to work on new virtual reality experiences and share some of the best practices with you at Google I/O.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/684dfcff-c2ee-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/684dfcff-c2ee-e511-a517-00155d5066d7.jpg",
       "plusoneUrl":"https://plus.google.com/+ShaneeNishry",
       "twitterUrl":"https://twitter.com/Lunarsong"
     },
@@ -3579,7 +3622,7 @@
       "name":"Brian Carlstrom",
       "bio":"Brian Carlstrom was one of the creators of ART and now leads the Android Runtime \u0026 Tools team. Prior to Google, Brian was at Stanford where he researched programming language design and implementation for hardware transactional memory. Previously, Brian was on the first engineering team at e-procurement startup Ariba where he was later product and platform architect. Earlier Brian was a software engineer at ecommerce startup Open Market and mobile device startup General Magic. Brian holds a PhD and MS in computer science from Stanford and an MEng and SB in electrical engineering and computer science from MIT.\n",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/69cd40c9-c2ee-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/69cd40c9-c2ee-e511-a517-00155d5066d7.jpg",
       "plusoneUrl":"https://plus.google.com/115178930560198628935"
     },
     "6a563011-24fc-e511-a517-00155d5066d7":{
@@ -3587,7 +3630,7 @@
       "name":"Esteban de la Canal ",
       "bio":"Esteban is the tech lead for the Android Studio Profiling Tools team and also contributes to the overall Android Studio effort. Prior to Google, Esteban worked in the games industry developing console video games. Esteban holds two Computer Science degrees from the National University of La Plata, Argentina.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/6a563011-24fc-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/6a563011-24fc-e511-a517-00155d5066d7.jpg",
       "plusoneUrl":"https://plus.google.com/+EstebandelaCanal",
       "twitterUrl":"https://twitter.com/estebandlc"
     },
@@ -3596,23 +3639,31 @@
       "name":"Tristan Emrich ",
       "bio":"Tristan works on the Mobile Ads DevRel team where he provides support for AdMob and DFP publishers who use the Google Mobile Ads SDK. He also develops and maintains iOS example apps, written in both Swift and Objective-C, that demonstrate various implementations of the SDK. Tristan earned a bachelor's degree in Operations Management from the University of Wisconsin-Madison and a bachelor's degree in Computer Science from the University of Wisconsin-Milwaukee.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/6f0e1b32-a7fa-e511-a517-00155d5066d7.jpg"
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/6f0e1b32-a7fa-e511-a517-00155d5066d7.jpg"
     },
     "6f4dfcff-c2ee-e511-a517-00155d5066d7":{
       "id":"6f4dfcff-c2ee-e511-a517-00155d5066d7",
       "name":"Tor Norbye",
       "bio":"Tor Norbye is the tech lead for Android Studio, and has worked on many of the features in the IDE (and is also the author of Android Lint.) Prior to joining Google in 2010, he worked for 14 years at Sun Microsystems. He has a master's degree in Computer Science from Stanford University.\n",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/6f4dfcff-c2ee-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/6f4dfcff-c2ee-e511-a517-00155d5066d7.jpg",
       "plusoneUrl":"https://plus.google.com/+TorNorbye",
       "twitterUrl":"https://twitter.com/tornorbye"
+    },
+    "6fda5c1b-8107-e611-a517-00155d5066d7":{
+      "id":"6fda5c1b-8107-e611-a517-00155d5066d7",
+      "name":"Dan Sandler"
+    },
+    "70ac8914-da07-e611-a517-00155d5066d7":{
+      "id":"70ac8914-da07-e611-a517-00155d5066d7",
+      "name":"Dave  Burke"
     },
     "714de472-17ef-e511-a517-00155d5066d7":{
       "id":"714de472-17ef-e511-a517-00155d5066d7",
       "name":"Mat Scales",
       "bio":"Mat is part of the Google Chrome developer relations team, helping developers to make sense of the ever changing Web Platform. Currently Mat spends his time writing tools and libraries to help developers who are making Progessive Web Apps.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/714de472-17ef-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/714de472-17ef-e511-a517-00155d5066d7.jpg",
       "twitterUrl":"https://twitter.com/wibblymat"
     },
     "77582512-c3ee-e511-a517-00155d5066d7":{
@@ -3622,12 +3673,20 @@
       "company":"Google",
       "twitterUrl":"https://twitter.com/DasSurma"
     },
+    "7f4dfcff-c2ee-e511-a517-00155d5066d7":{
+      "id":"7f4dfcff-c2ee-e511-a517-00155d5066d7",
+      "name":"Wale Ogunwale",
+      "bio":"Wale is the Technical Lead Manager for the Android ActivityManager and WindowManager framework components. Him and his team are responsible for developing Multi-Window on Android.",
+      "company":"Google",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/7f4dfcff-c2ee-e511-a517-00155d5066d7.jpg",
+      "plusoneUrl":"https://plus.google.com/+WaleOgunwale"
+    },
     "85720006-c3ee-e511-a517-00155d5066d7":{
       "id":"85720006-c3ee-e511-a517-00155d5066d7",
       "name":"Sam Saccone",
       "bio":"Sam Saccone is an avid OSS contributor and web performance auditor. ",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/85720006-c3ee-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/85720006-c3ee-e511-a517-00155d5066d7.jpg",
       "twitterUrl":"https://samccone"
     },
     "8f4dfcff-c2ee-e511-a517-00155d5066d7":{
@@ -3642,7 +3701,7 @@
       "name":"Noah Falstein",
       "bio":"Noah Falstein has been a professional game developer since 1980 (Sinistar, Indiana Jones and the Fate of Atlantis, Neuroracer), and was one of the first ten employees at LucasArts Entertainment, The 3DO Company, and Dreamworks Interactive.  He headed The Inspiracy, a game consultancy, and was the first elected Chairman of the IGDA, and design columnist for Game Developer magazine for 6 years.  At Google, Falstein contributes to game projects across the company, and engages with game developers as part of the Developer Advocacy team",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/924b9edb-c2ee-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/924b9edb-c2ee-e511-a517-00155d5066d7.jpg",
       "twitterUrl":"https://twitter.com/nfalstein"
     },
     "92577170-b6f3-e511-a517-00155d5066d7":{
@@ -3657,7 +3716,7 @@
       "name":"Kaz Sato",
       "bio":"Kaz Sato is Staff Developer Advocate at Cloud Platform team, Google Inc. He leads the developer advocacy team for Machine Learning and Data Analytics products, such as TensorFlow, Vision API and BigQuery. Kaz also has been leading and supporting developer communities for Google Cloud for over 7 years. He is interested in hardwares and IoT, and has been hosting FPGA meetups as a personal project.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/93720006-c3ee-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/93720006-c3ee-e511-a517-00155d5066d7.jpg",
       "plusoneUrl":"https://plus.google.com/+KazunoriSato",
       "twitterUrl":"https://twitter.com/kazunori_279"
     },
@@ -3670,16 +3729,20 @@
       "name":"Addy Osmani",
       "bio":"Addy Osmani is a Staff engineer working with the Chrome team on apps, libraries and tools for developer productivity. He currently leads up efforts like the Progress libraries and Polymer Starter Kit and has previously worked on projects like Material Design Lite, Yeoman and the Chrome DevTools. Addy has also written books such as Learning JavaScript Design Patterns and has a regular show called Totally Tooling Tips with co-presenter Matt Gaunt.",
       "company":"Google Chrome",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/964dfcff-c2ee-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/964dfcff-c2ee-e511-a517-00155d5066d7.jpg",
       "plusoneUrl":"https://plus.google.com/+AddyOsmani",
       "twitterUrl":"https://twitter.com/addyosmani"
+    },
+    "9798f155-da07-e611-a517-00155d5066d7":{
+      "id":"9798f155-da07-e611-a517-00155d5066d7",
+      "name":"Gabe Cohen"
     },
     "98582512-c3ee-e511-a517-00155d5066d7":{
       "id":"98582512-c3ee-e511-a517-00155d5066d7",
       "name":"Seth Thompson",
       "bio":"Seth Thompson is the product manager of the Chrome V8 JavaScript engine and the upcoming WebAssembly runtime. He is passionate about empowering developers with great tools, expressive languages, and productive open source communities.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/98582512-c3ee-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/98582512-c3ee-e511-a517-00155d5066d7.jpg",
       "twitterUrl":"https://twitter.com/s3ththompson"
     },
     "999cfff9-9cfa-e511-a517-00155d5066d7":{
@@ -3687,14 +3750,15 @@
       "name":"Carter Morgan",
       "bio":"Carter Morgan is a Developer Platforms Engineer at Google, where he gets to write code and give talks about his favorite tools -- Go and Kubernetes. Before Google, Carter was a programer for the United States Air Force and for Microsoft.  In his free time, he does standup comedy and teaches \"Presenting with Charisma\" to other Googlers.  When he’s not writing code or making people laugh, you can find him on twitter @_askcarter.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/999cfff9-9cfa-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/999cfff9-9cfa-e511-a517-00155d5066d7.jpg",
       "twitterUrl":"https://twitter.com/_askcarter"
     },
     "9a4b9edb-c2ee-e511-a517-00155d5066d7":{
       "id":"9a4b9edb-c2ee-e511-a517-00155d5066d7",
       "name":"Kat Fang",
       "bio":"Kat is a software engineer on the Firebase team, working on a range of projects from the iOS clients to the realtime database to keeping the servers humming along. \n\nShe graduated from MIT with a bachelor's and master's degree in Electrical Engineering and Computer Science. Outside of work, she enjoys dancing, robotics, board games, and adventures.",
-      "company":"Google"
+      "company":"Google",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/9a4b9edb-c2ee-e511-a517-00155d5066d7.jpg"
     },
     "9a720006-c3ee-e511-a517-00155d5066d7":{
       "id":"9a720006-c3ee-e511-a517-00155d5066d7",
@@ -3708,14 +3772,14 @@
       "name":"Alex Sieke",
       "bio":"Alex is a Product Manager at Google focused on mobile web payments. Prior to joining Google, he worked as a web developer and product manager in the mobile commerce industry specializing in checkout optimization.  Alex earned a bachelor’s degree in economics and computer science from Princeton University.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/9aba67d4-b4f3-e511-a517-00155d5066d7.jpg"
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/9aba67d4-b4f3-e511-a517-00155d5066d7.jpg"
     },
     "9fedbd57-9efa-e511-a517-00155d5066d7":{
       "id":"9fedbd57-9efa-e511-a517-00155d5066d7",
       "name":"Bret McGowen",
       "bio":"Bret is on the Google Cloud Platform team at Google, focusing on developer-oriented products like App Engine, Compute Engine, the Cloud Vision API, Firebase and more. He's currently an aspiring Node.js developer. Prior to Google, Bret came from Texas, having worked in the cloud industry at Rackspace as a software engineer building the RackConnect hybrid hosting product. Before that, he led engineering teams at e-commerce, non-profit and startup companies. He's often on the running trail, volleyball court or kickball field.\n\nBret earned a bachelor’s degree in computer science from Texas A\u0026M University.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/9fedbd57-9efa-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/9fedbd57-9efa-e511-a517-00155d5066d7.jpg",
       "twitterUrl":"https://twitter.com/bretmcg"
     },
     "a51e44dd-83f3-e511-a517-00155d5066d7":{
@@ -3726,9 +3790,10 @@
     },
     "a67b77da-0def-e511-a517-00155d5066d7":{
       "id":"a67b77da-0def-e511-a517-00155d5066d7",
-      "name":"J. Eason",
+      "name":"Jamal Eason",
       "bio":"Jamal Eason is a product manager for Android developer tools \u0026 products at Google. He is responsible for setting the product roadmap and features that help Android developers make great apps.  Prior to Google, he worked on developer tools at Intel, worked as product manager at a mobile app startup, and was a telecommunications officer in the US Army.\n\nJamal earned a bachelor's degree in computer science from the US Military Academy (West Point), a master’s degree from UMUC, and a MBA from Harvard Business School. ",
       "company":"Google",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/a67b77da-0def-e511-a517-00155d5066d7.jpg",
       "plusoneUrl":"https://plus.google.com/+JamalEason"
     },
     "a70cbfe1-c2ee-e511-a517-00155d5066d7":{
@@ -3742,8 +3807,8 @@
       "id":"a942167a-3ef5-e511-a517-00155d5066d7",
       "name":"Kellee Santiago",
       "bio":"Kellee Santiago works with game developers to bring unique experiences to Google's VR platforms. As former president and co-founder of thatgamecompany, Kellee developed one of the most prominent brands in independent and innovative game development, pushing the communicative possibilities of video games as a medium. She speaks around the world at video game business and entertainment conferences on innovation in games, entrepreneurship, games as art and better methods for video game development. In 2010, she became a TED Fellow and was recognized as one of The Ten Most Influential Women in Games of the Past Decade. ",
-      "company":"Google VR",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/a942167a-3ef5-e511-a517-00155d5066d7.jpg",
+      "company":"Google",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/a942167a-3ef5-e511-a517-00155d5066d7.jpg",
       "twitterUrl":"https://twitter.com/KelleeSan"
     },
     "a94b9edb-c2ee-e511-a517-00155d5066d7":{
@@ -3753,9 +3818,9 @@
     "aa720006-c3ee-e511-a517-00155d5066d7":{
       "id":"aa720006-c3ee-e511-a517-00155d5066d7",
       "name":"John Schlemmer",
-      "bio":"John leads the motion efforts for the Material Design team and authored the new Animation chapter seen in the Material Design guidelines. He also led motion for Google apps like Inbox by Gmail, Google Calendar and Gmail. Before Google, John worked at Chicago-based agencies Razorfish and Design Kitchen doing broadcast and web-based motion graphics for clients like Motorola, Samsung, Target and Kraft. John earned a bachelor's degree in interactive media design with an emphasis on animation at the Illinois Institute of Art.",
+      "bio":"John leads the motion efforts for the Material Design team. He also led motion for Google apps like Inbox by Gmail, Google Calendar and Gmail. Before Google, John worked at Chicago-based agencies Razorfish and Design Kitchen doing broadcast and web-based motion graphics for clients like Motorola, Samsung, Target and Kraft. John earned a bachelor's degree in interactive media design with an emphasis on animation at the Illinois Institute of Art.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/aa720006-c3ee-e511-a517-00155d5066d7.jpg"
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/aa720006-c3ee-e511-a517-00155d5066d7.jpg"
     },
     "ab4dfcff-c2ee-e511-a517-00155d5066d7":{
       "id":"ab4dfcff-c2ee-e511-a517-00155d5066d7",
@@ -3770,7 +3835,7 @@
       "name":"Ram Parameswaran",
       "bio":"Ram is a developer programs engineer on the Google Mobile Ads developer relations team. In this role, his recent areas of focus include support for the Google Mobile Ads Unity plugin, and rewarded video mediation. Ram earned a bachelor's degree in software engineering from Carleton University at Ottawa. \n",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/ae08866e-7ef3-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/ae08866e-7ef3-e511-a517-00155d5066d7.jpg",
       "plusoneUrl":"https://plus.google.com/112603713468268686656"
     },
     "ae0cbfe1-c2ee-e511-a517-00155d5066d7":{
@@ -3778,7 +3843,7 @@
       "name":"Ilya Grigorik",
       "bio":"Ilya Grigorik is a web performance engineer at Google, co-chair of the W3C Web Performance Working group, and author of High Performance Browser Networking (O'Reilly) book. In short, an internet plumber.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/ae0cbfe1-c2ee-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/ae0cbfe1-c2ee-e511-a517-00155d5066d7.jpg",
       "plusoneUrl":"https://plus.google.com/+IlyaGrigorik",
       "twitterUrl":"https://twitter.com/igrigorik"
     },
@@ -3787,15 +3852,15 @@
       "name":"Fabian Schlup",
       "bio":"Fabian is an engineer and technical lead on App Indexing. He has worked on APIs and developer products at Google for the last six years, including as a technical lead for the Google+ Platform and Google Calendar APIs. Fabian holds a Masters in Computer Science from the Swiss Federal Institute of Technology (ETH).",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/b1720006-c3ee-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/b1720006-c3ee-e511-a517-00155d5066d7.jpg",
       "plusoneUrl":"https://plus.google.com/+FabianSchlup"
     },
     "b50cbfe1-c2ee-e511-a517-00155d5066d7":{
       "id":"b50cbfe1-c2ee-e511-a517-00155d5066d7",
       "name":"Kirill Grouchnikov",
-      "bio":"I am a user interface engineer. I have been doing client side development professionally since 1999 in a variety of UI toolkits and libraries that spanned Motif, MFC, VB, Ada, Delphi, Swing and SWT. Since late 2009 I work at Google on the Android team.",
-      "company":"Google Inc",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/b50cbfe1-c2ee-e511-a517-00155d5066d7.jpg",
+      "bio":"Kirill is a user interface engineer working on client side development since 1999 in a variety of UI toolkits and libraries that spanned Motif, MFC, VB, Ada, Delphi, Swing and SWT. He has worked at Google on the Android team since 2009.",
+      "company":"Google",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/b50cbfe1-c2ee-e511-a517-00155d5066d7.jpg",
       "plusoneUrl":"https://plus.google.com/+KirillGrouchnikov"
     },
     "b5c5bf13-3bf8-e511-a517-00155d5066d7":{
@@ -3803,7 +3868,7 @@
       "name":"Ashish Sharma",
       "bio":"Ashish Sharma leads the Volta Team in Android that makes batteries last longer. Previously at Google, he developed the per-application tracking and controls for network data in Android, and also worked on the Google Cloud Messaging infrastructure. In his spare time, he enjoys hiking, meditation, and riding his motorcycle. Ashish earned a Ph.D. in Computer Science from the University of California, Santa Barbara.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/b5c5bf13-3bf8-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/b5c5bf13-3bf8-e511-a517-00155d5066d7.jpg",
       "plusoneUrl":"https://plus.google.com/+AshishSharma1"
     },
     "ba4dfcff-c2ee-e511-a517-00155d5066d7":{
@@ -3811,7 +3876,7 @@
       "name":"Adam Powell",
       "bio":"Adam has been a member of the Android framework team since 2009 working on UI, lifecycle management, support libraries and more. He enjoys helping developers build great experiences that connect people to the world around them.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/ba4dfcff-c2ee-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/ba4dfcff-c2ee-e511-a517-00155d5066d7.jpg",
       "plusoneUrl":"https://plus.google.com/+AdamWPowell",
       "twitterUrl":"https://twitter.com/adamwp"
     },
@@ -3836,7 +3901,7 @@
       "name":"Malte Ubl",
       "bio":"Malte Ubl is the tech lead of the AMP Project. He previously spent 5 years at Google making JavaScript based apps go fast and in his free time, he is one of the co-organizers of JSConf EU.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/be582512-c3ee-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/be582512-c3ee-e511-a517-00155d5066d7.jpg",
       "plusoneUrl":"https://plus.google.com/+MalteUbl",
       "twitterUrl":"https://twitter.com/cramforce"
     },
@@ -3853,31 +3918,43 @@
       "name":"Ellie Powers",
       "bio":"Ellie Powers leads product management for developers on Google Play, enabling them build to successful global businesses and high-quality, innovative apps. Prior to Google, Ellie has built products at large companies and startups in California, Paris, and London. She has a degree in computer science from MIT and was voted funniest person in Silicon Valley in 2016. ",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/c14dfcff-c2ee-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/c14dfcff-c2ee-e511-a517-00155d5066d7.jpg",
       "plusoneUrl":"https://plus.google.com/+ElliePowers",
       "twitterUrl":"https://twitter.com/ElliePowers"
     },
     "c2d5429b-9ef6-e511-a517-00155d5066d7":{
       "id":"c2d5429b-9ef6-e511-a517-00155d5066d7",
       "name":"Fontaine Foxworth",
-      "bio":"Fontaine is a Product Manager focusing on mobile app analytics. Under this umbrella she has worked on features to expand install attribution, publisher reporting, and in-app activity.  Prior to Google she worked as a Product Manager at ModCloth, an eCommerce company. There she was a daily practitioner of Google Analytics while she built a mobile website as well as iOS and Android apps.  She has a BS in Civil Engineering from Stanford University.",
+      "bio":"Fontaine is a Product Manager focusing on mobile app analytics. Under this umbrella she has worked on features to expand install attribution, publisher reporting, and in-app activity.  Prior to Google she worked as a Product Manager at ModCloth, an eCommerce company. There, she was a daily practitioner of Google Analytics while she built a mobile website as well as iOS and Android apps.  She has a BS in Civil Engineering from Stanford University.",
       "company":"Google"
+    },
+    "c30cbfe1-c2ee-e511-a517-00155d5066d7":{
+      "id":"c30cbfe1-c2ee-e511-a517-00155d5066d7",
+      "name":"Dianne Hackborn"
     },
     "c94dfcff-c2ee-e511-a517-00155d5066d7":{
       "id":"c94dfcff-c2ee-e511-a517-00155d5066d7",
       "name":"Dominic Preuss",
       "bio":"Dominic is the product lead for storage and databases on Google Cloud Platform. He is in his second stint with Google where he was previously the product manager for local advertising in Adwords from 2004-2007. In between, Dominic was the Chief Product \u0026 Technology Officer at SecondMarket and worked at several other startups in New York City. Dominic holds a Bachelor of Science in Engineering (BSE) degree in Biomedical Engineering from Duke University. ",
-      "company":"Google Cloud",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/c94dfcff-c2ee-e511-a517-00155d5066d7.jpg",
+      "company":"Google",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/c94dfcff-c2ee-e511-a517-00155d5066d7.jpg",
       "plusoneUrl":"https://plus.google.com/+DominicPreussNYC",
       "twitterUrl":"https://twitter.com/deesix"
+    },
+    "c9d67cfa-8007-e611-a517-00155d5066d7":{
+      "id":"c9d67cfa-8007-e611-a517-00155d5066d7",
+      "name":"Romain Guy",
+      "bio":"Romain works on Android graphics and UI technologies at Google.",
+      "company":"Google",
+      "plusoneUrl":"https://plus.google.com/+romainguy",
+      "twitterUrl":"https://twitter.com/romainguy"
     },
     "ca19ebed-c2ee-e511-a517-00155d5066d7":{
       "id":"ca19ebed-c2ee-e511-a517-00155d5066d7",
       "name":"Ankur Kotwal",
       "bio":"Ankur is a Developer Advocate experienced in building on Android and the Google Maps APIs. Based out of Sydney Australia, Ankur leads the Geo Developer Relations \u0026 Next Billion Users Developer Relations team to inspire developers towards building on the Google developer platform. Ankur is also a founding member and software engineer for Google Santa Tracker on Android.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/ca19ebed-c2ee-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/ca19ebed-c2ee-e511-a517-00155d5066d7.jpg",
       "plusoneUrl":"https://plus.google.com/+AnkurKotwal",
       "twitterUrl":"https://twitter.com/ankurkotwal"
     },
@@ -3886,20 +3963,21 @@
       "name":"Matteo Vallone",
       "bio":"Matteo Vallone is a business development manager at Google Play in London. In his role, he helps apps and games businesses to find success on Android and Google Play. Matteo joined Google 8 years ago as a member of the YouTube strategy team and then worked as a product manager for YouTube, prior to joining Google Play 2 years ago. Before Google, Matteo worked as a consultant for Bain \u0026 Company.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/cb911d18-c3ee-e511-a517-00155d5066d7.jpg"
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/cb911d18-c3ee-e511-a517-00155d5066d7.jpg"
     },
     "cd6c41c3-c2ee-e511-a517-00155d5066d7":{
       "id":"cd6c41c3-c2ee-e511-a517-00155d5066d7",
       "name":"Noor Ali-Hasan",
       "bio":"Noor is a senior user experience researcher at Google, where she has focused on understanding user behavior and needs around various consumer products including the Android smartphone experience, Google Now, and Chromecast.  Prior to Google, Noor's research focused on interactive and smart TV products at Microsoft and Samsung Electronics. Noor holds a masters degree in Human-Computer Interaction from the University of Michigan.",
-      "company":"Google"
+      "company":"Google",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/cd6c41c3-c2ee-e511-a517-00155d5066d7.jpg"
     },
     "cf2ac2bf-b4f3-e511-a517-00155d5066d7":{
       "id":"cf2ac2bf-b4f3-e511-a517-00155d5066d7",
       "name":"Rouslan Solomakhin",
       "bio":"Rouslan is a Chrome software engineer. He works on payments and spellcheck. Prior to Google, Rouslan worked on cloud platforms and full disk encryption suites. Rouslan earned a bachelor's degree in computer science with a minor in software engineering from Clarkson University and a master’s degree in computer science from Dartmouth College.\n",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/cf2ac2bf-b4f3-e511-a517-00155d5066d7.jpg"
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/cf2ac2bf-b4f3-e511-a517-00155d5066d7.jpg"
     },
     "cf4b9edb-c2ee-e511-a517-00155d5066d7":{
       "id":"cf4b9edb-c2ee-e511-a517-00155d5066d7",
@@ -3910,7 +3988,7 @@
       "name":"Ian Lake",
       "bio":"Ian Lake is a developer advocate focused on the Android framework and the Android Support Library, although you'll always find him with at least a few wearable devices on. Prior to Google, he worked as an Android developer at Facebook and Phunware. Ian received his Masters in Computer Science from the University of Southern California and a Bachelors of Science in Computer Science and a Bachelors of Science in Physics from Montana State University.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/d119ebed-c2ee-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/d119ebed-c2ee-e511-a517-00155d5066d7.jpg",
       "plusoneUrl":"https://plus.google.com/+IanLake",
       "twitterUrl":"https://twitter.com/ianhlake"
     },
@@ -3931,12 +4009,12 @@
       "name":"Steve Ganem",
       "bio":"Steve is a Product Manager of Google Analytics, overseeing the SDK and its integrations with other Google products and services.  Prior to Google, Steve spent 19 years in the video game industry, starting with Virgin Interactive (EA) and Neversoft (Activision), where he was the lead tools and online engineer for Tony Hawk's Pro Skater 3, 4 and Underground.  He then went on to found SuperVillain Studios - an independent studio in Southern California - where he served as CTO and CEO for 11 years.  Steve earned a bachelor's degree in Information and Computer Science from the University of California at Irvine.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/d74b9edb-c2ee-e511-a517-00155d5066d7.jpg"
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/d74b9edb-c2ee-e511-a517-00155d5066d7.jpg"
     },
     "d8e353b6-33f5-e511-a517-00155d5066d7":{
       "id":"d8e353b6-33f5-e511-a517-00155d5066d7",
       "name":"David Christie",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/d8e353b6-33f5-e511-a517-00155d5066d7.jpg"
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/d8e353b6-33f5-e511-a517-00155d5066d7.jpg"
     },
     "d9911d18-c3ee-e511-a517-00155d5066d7":{
       "id":"d9911d18-c3ee-e511-a517-00155d5066d7",
@@ -3947,14 +4025,14 @@
       "name":"Todd Hansen",
       "bio":"Todd has been working on Google Cloud Messaging for the past seven years focusing on performance, reliability, and scalability. Before Google, Todd helped build a county scale high performance wireless network while working for the San Diego Supercomputer Center. He earned both a masters degree in Geophysics and a bachelors in Computer Science from UCSD. He enjoys spending time with his family, hiking, woodworking, and amateur radio.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/db0cbfe1-c2ee-e511-a517-00155d5066d7.jpg"
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/db0cbfe1-c2ee-e511-a517-00155d5066d7.jpg"
     },
     "dc6c41c3-c2ee-e511-a517-00155d5066d7":{
       "id":"dc6c41c3-c2ee-e511-a517-00155d5066d7",
       "name":"Julie Aranda",
       "bio":"Julie is a senior UX researcher at Google, focusing on understanding user behaviors on mobile products.  She has been leading ethnographic research efforts on topics such as Accessibility and Notifications. Prior to Google, Julie conducted user research at eBay, Yahoo!, Palm, and LeapFrog.  Julie holds a Bachelor's degree from UC Berkeley and a PhD in Psychology from the University of Oregon.  ",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/dc6c41c3-c2ee-e511-a517-00155d5066d7.jpg"
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/dc6c41c3-c2ee-e511-a517-00155d5066d7.jpg"
     },
     "de1387d5-c2ee-e511-a517-00155d5066d7":{
       "id":"de1387d5-c2ee-e511-a517-00155d5066d7",
@@ -3983,7 +4061,7 @@
       "name":"Carrie Rowe",
       "bio":"Carrie manages Early Access Programs for Google and is a Program Manager with Developer Relations. She has been with Google for six years and enjoys helping make developers successful on Google Platforms. Carrie earned a bachelor degree in finance from New York University.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/e25bafd6-14ef-e511-a517-00155d5066d7.jpg"
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/e25bafd6-14ef-e511-a517-00155d5066d7.jpg"
     },
     "e36c41c3-c2ee-e511-a517-00155d5066d7":{
       "id":"e36c41c3-c2ee-e511-a517-00155d5066d7",
@@ -3992,20 +4070,26 @@
     "e64b9edb-c2ee-e511-a517-00155d5066d7":{
       "id":"e64b9edb-c2ee-e511-a517-00155d5066d7",
       "name":"Nicolas Geoffray",
-      "bio":"Nicolas Geoffray is a software engineer working on the ART project. He is responsible for the new optimizing compiler introduced in Android Marshmallow, and its transition to JIT for the upcoming N release. Before ART, he helped shape the Dart language and its efficient translation to JavaScript.",
-      "company":"Google"
+      "bio":"Nicolas Geoffray is a software engineer working on the ART project. He is responsible for the new optimizing compiler introduced in Android Marshmallow, and its transition to JIT for the upcoming N release. Before ART, he helped shape the Dart language and its efficient translation to JavaScript. Nicolas holds a PhD in computer science from the University of Pierre et Marie Curie, Paris, France.",
+      "company":"Google",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/e64b9edb-c2ee-e511-a517-00155d5066d7.jpg"
     },
     "e805fd81-33f5-e511-a517-00155d5066d7":{
       "id":"e805fd81-33f5-e511-a517-00155d5066d7",
       "name":"Steve Malkos",
-      "bio":"Mr. Malkos is the Technical Program Manager in the Android Location and Context Group at Google.  He manages all engineering aspects for Android’s Location and Context programs.  Mr. Malkos is responsible for defining these initiatives within Google which includes everything from GPS, Fused Location Provider (FLP), Android Sensor Hub, Sensors, and more.  Mr. Malkos has been involved in the field of location now for over 13 years.  Prior to his role at Google, he worked as an Associate Program Management Director at Broadcom, where he managed engineering teams within Broadcom’s GNSS software.   He holds a B.S. in Computer Science from Purdue University, currently holds 8 patents and has many more pending patents in the field of location."
+      "bio":"Mr. Malkos is the Technical Program Manager in the Android Location and Context Group at Google.  He manages all engineering aspects for Android’s Location and Context programs.  Mr. Malkos is responsible for defining these initiatives within Google which includes everything from GPS, Fused Location Provider (FLP), Android Sensor Hub, Sensors, and more.  Mr. Malkos has been involved in the field of location now for over 13 years.  Prior to his role at Google, he worked as an Associate Program Management Director at Broadcom, where he managed engineering teams within Broadcom’s GNSS software.   He holds a B.S. in Computer Science from Purdue University, currently holds 8 patents and has many more pending patents in the field of location.",
+      "company":"Google"
+    },
+    "e82c660e-db07-e611-a517-00155d5066d7":{
+      "id":"e82c660e-db07-e611-a517-00155d5066d7",
+      "name":"Rachad Alao"
     },
     "e9911d18-c3ee-e511-a517-00155d5066d7":{
       "id":"e9911d18-c3ee-e511-a517-00155d5066d7",
       "name":"Ben Weiss",
       "bio":"Ben is a Developer Programs Engineer on the Android Developer Relations team. He focuses on making Android apps more delightful.\n\nBen works within the Android ecosystem since 2009, being driving force behind several Android applications.\nHe also organized the GDG Berlin Android, was an Android GDE and established a Guinness World Record.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/e9911d18-c3ee-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/e9911d18-c3ee-e511-a517-00155d5066d7.jpg",
       "plusoneUrl":"https://plus.google.com/+BenjaminWeiss",
       "twitterUrl":"https://twitter.com/keyboardsurfer"
     },
@@ -4016,9 +4100,9 @@
     "eb6c41c3-c2ee-e511-a517-00155d5066d7":{
       "id":"eb6c41c3-c2ee-e511-a517-00155d5066d7",
       "name":"Marc Bächinger",
-      "bio":"As a Developer Advocate for media Marc works with large media partners to help them being successful on the Google platform. Marc worked with many video apps to help them to adopt ExoPlayer for their application. Prior to Google Marc was a Software Architect and Engineering Consultant since almost two decades. He once earned a degree in Sociology and Economic History at the University of Zürich with a focus on macro economical innovation theories.",
+      "bio":"As a Developer Advocate for media, Marc works with large media partners to help them be successful on the Google platform. Marc worked with many video apps to help them to adopt ExoPlayer for their application. Prior to Google, Marc was a Software Architect and Engineering Consultant for almost two decades. He earned a degree in Sociology and Economic History at the University of Zürich with a focus on macro economical innovation theories.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/eb6c41c3-c2ee-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/eb6c41c3-c2ee-e511-a517-00155d5066d7.jpg",
       "plusoneUrl":"https://plus.google.com/+MarcB",
       "twitterUrl":"https://twitter.com/marcbaechinger"
     },
@@ -4035,7 +4119,8 @@
       "id":"ee72244c-11f5-e511-a517-00155d5066d7",
       "name":"Mathieu Chartier",
       "bio":"Mathieu Chartier is one of the engineers working on ART and wrote a large portion of the ART GC that has been in use since Lollipop. Prior to Google, Mathieu earned a bachelor's degree in computer science from the University of Waterloo.",
-      "company":"Google"
+      "company":"Google",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/ee72244c-11f5-e511-a517-00155d5066d7.jpg"
     },
     "f019ebed-c2ee-e511-a517-00155d5066d7":{
       "id":"f019ebed-c2ee-e511-a517-00155d5066d7",
@@ -4073,12 +4158,16 @@
       "company":"Google",
       "twitterUrl":"https://notwaldorf"
     },
+    "f5da904e-8107-e611-a517-00155d5066d7":{
+      "id":"f5da904e-8107-e611-a517-00155d5066d7",
+      "name":"Doris Liu"
+    },
     "f6a4176d-11f5-e511-a517-00155d5066d7":{
       "id":"f6a4176d-11f5-e511-a517-00155d5066d7",
       "name":"Calin Juravle",
       "bio":"Calin Juravle is a member of the Android Runtime Team.\nPrior to joining Google Calin was a senior engineer at GreenClouds responsible for the cloud provisioning and a co-founder in a startup engaged in providing corporate management solutions. Calin earned his MSc cum laude from Utrecht University, dedicating his research on programming languages and compilers; contributing to Utrecht Haskell Compiler and prototyping automatic GPU parallelization for VectorFabrics. As a valedictorian, Calin’s passion in Computer Science unveiled from his BSc at University Alexandru Ioan Cuza of Iasi, Romania.  ",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/f6a4176d-11f5-e511-a517-00155d5066d7.jpg"
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/f6a4176d-11f5-e511-a517-00155d5066d7.jpg"
     },
     "f719ebed-c2ee-e511-a517-00155d5066d7":{
       "id":"f719ebed-c2ee-e511-a517-00155d5066d7",
@@ -4092,7 +4181,7 @@
       "name":"Felipe Hoffa",
       "bio":"In 2011 Felipe Hoffa moved from Chile to San Francisco to join Google as a Software Engineer. Since 2013 he's been a Developer Advocate on big data - to inspire developers around the world to leverage the Google Cloud Platform tools to analyze and understand their data in ways they could never before. You can find him in several YouTube videos, blog posts, and conferences around the world.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/f80cbfe1-c2ee-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/f80cbfe1-c2ee-e511-a517-00155d5066d7.jpg",
       "plusoneUrl":"https://plus.google.com/+FelipeHoffa",
       "twitterUrl":"https://twitter.com/felipehoffa"
     },
@@ -4101,7 +4190,7 @@
       "name":"Paul Bakaus",
       "bio":"Paul Bakaus is a Developer Advocate at Google, heading up advocacy and outreach for DevTools, AMP and Games. He assists developers, designers, and filmmakers to create better, faster, more immersive and more convincing digital experiences. Prior to joining Google, he created the popular UI library jQuery UI, now being used by over 14% of the popular web. Paul also created the Aves Engine, the worlds first prototype of a fully interactive HTML5 game engine - which he ultimately sold to Zynga.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/fa6c41c3-c2ee-e511-a517-00155d5066d7.jpg",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/fa6c41c3-c2ee-e511-a517-00155d5066d7.jpg",
       "plusoneUrl":"https://plus.google.com/+PaulBakaus",
       "twitterUrl":"https://twitter.com/pbakaus"
     },
@@ -4120,7 +4209,7 @@
       "name":"Paul McCartney",
       "bio":"Paul is a software engineer with Google’s machine perception group.  In his role, he focuses on applying image and video understanding techniques to products and APIs.  Prior to Google, Paul was a key contributor in conceiving and deploying the U.S. Army’s Command Post of the Future system, which provides information visualization and collaboration capabilities for mission critical environments.  \n\nPaul earned a doctorate in computer science from Washington University.  He also attended Carnegie Mellon University, where he received a bachelor’s degree in computer science, mathematics, and cognitive science.",
       "company":"Google",
-      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/ff50e0f9-c2ee-e511-a517-00155d5066d7.jpg"
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-festivus/images/speakers/w200/ff50e0f9-c2ee-e511-a517-00155d5066d7.jpg"
     }
   },
   "tags":{
@@ -4143,7 +4232,7 @@
       "category":"THEME"
     },
     "THEME_WHATSNEXT":{
-      "order_in_category":0,
+      "order_in_category":2,
       "tag":"THEME_WHATSNEXT",
       "name":"What's Next",
       "category":"THEME"
@@ -4197,7 +4286,7 @@
       "category":"TRACK"
     },
     "TRACK_MISC":{
-      "order_in_category":15,
+      "order_in_category":0,
       "tag":"TRACK_MISC",
       "name":"Misc",
       "category":"TRACK"
