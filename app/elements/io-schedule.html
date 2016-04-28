@@ -42,7 +42,7 @@ limitations under the License.
         <span aria-hidden="true" class="schedule-block-meridiem">[[_getMeridiemLetter(session.block)]]</span>
       </h1>
     </div>
-    <div class$="schedule-row [[_addClass('saved', session.saved)]]"
+    <div class$="schedule-row [[_addSavedClass(session.saved)]]"
          layout horizontal center
          on-keyup="onSessionKeyUp">
       <a href$="schedule?sid={{session.id}}"
@@ -141,7 +141,11 @@ limitations under the License.
 
     _getMeridiemLetter: function(sessionBlock) {
       return this._getMeridiemPart(sessionBlock, 1)[0];
-    }
+    },
+
+    _addSavedClass: function(saved) {
+      return saved ? 'saved' : '';
+    },
 
   });
 }());
