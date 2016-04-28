@@ -70,19 +70,21 @@ Fired when the mode changes.
       </div>
     </div>
 
-    <div id="livewidget" class="bg-cyan-400" on-transitionend="onFabTransition">
+    <div id="livewidget" class="bg-bluegrey-50" on-transitionend="onFabTransition">
 
       <div class="middle-content-section" layout vertical>
 
-        <div class="widget-nav" layout horizontal center self-end>
-          <paper-icon-button icon="io:close" on-tap="closeFab"></paper-icon-button>
-        </div>
+        <div class="bg-cyan-400">
+          <div class="widget-nav" layout horizontal center end-justified>
+            <paper-icon-button icon="io:close" on-tap="closeFab"></paper-icon-button>
+          </div>
 
-        <paper-tabs attr-for-selected="label" selected="{{selectedTab}}">
-          <paper-tab label="live" role="">Live sessions</paper-tab>
-          <paper-tab label="schedule" role="" disabled$="[[_equal(mode, _MODES.AFTER)]]">Upcoming</paper-tab>
-          <paper-tab label="hash" role="">Social Feed</paper-tab>
-        </paper-tabs>
+          <paper-tabs attr-for-selected="label" selected="{{selectedTab}}">
+            <paper-tab label="live" role="">Live sessions</paper-tab>
+            <paper-tab label="schedule" role="" disabled$="[[_equal(mode, _MODES.AFTER)]]">Upcoming</paper-tab>
+            <paper-tab label="hash" role="">Social Feed</paper-tab>
+          </paper-tabs>
+        </div>
 
         <neon-animated-pages entry-animation="fade-in-animation"
                              exit-animation="fade-out-animation"
