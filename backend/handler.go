@@ -796,15 +796,13 @@ func handleWipeout(w http.ResponseWriter, r *http.Request) {
 		}(shard)
 	}
 
-	for range config.Firebase.Shards {
+	for _, shard := range config.Firebase.Shards {
 		if err := <-ch; err != nil {
 			w.WriteHeader(500)
-			errorf(c, "wipeout err: %v", err)
+			errorf(c, "wipeout err: %v, shard: %s", err, shard)
 			return
 		}
 	}
-
-	w.WriteHeader(204)
 }
 
 // handleEasterEgg is the easter egg link handler.

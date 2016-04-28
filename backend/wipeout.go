@@ -3,8 +3,8 @@ package backend
 import (
   "encoding/json"
   "fmt"
-  "io/ioutil"
   "net/http"
+  "net/url"
   "strconv"
   "time"
 
@@ -15,23 +15,24 @@ func wipeoutShard(c context.Context, shard string) error {
   // 30 days ago as milliseconds since Unix epoch
   cutoff := time.Now().AddDate(0, 0, -30).Unix() * 1000
 
-  path := `users.json?orderBy="last_activity_timestamp"&endAt=` + strconv.FormatInt(cutoff, 10)
-
-  res, err := firebaseClient(c).Get(shard + path)
+  q := url.Values{
+    "orderBy": {`"last_activity_timestamp"`},
+    "endAt" : {strconv.FormatInt(cutoff, 10)},
+  }
+  u := fmt.Sprintf("%s/users.json?%s", shard, q.Encode())
+  res, err := firebaseClient(c).Get(u)
   if err != nil {
     return err
-  }
-  if res.StatusCode >= 400 {
-    return fmt.Errorf("error (%d) fetching wipeout user list on shard %s", res.StatusCode, shard)
   }
   defer res.Body.Close()
-  body, err := ioutil.ReadAll(res.Body)
-  if err != nil {
-    return err
+  if res.StatusCode >= 400 {
+    return fmt.Errorf("error (%d) fetching wipeout user list", res.StatusCode)
   }
 
-  userData := make(map[string]struct{})
-  json.Unmarshal(body, &userData)
+  var userData map[string]struct{}
+  if err = json.NewDecoder(res.Body).Decode(&userData); err != nil {
+    return err
+  }
 
   if len(userData) == 0 {
     logf(c, "no users for wipeout on shard %q", shard)
@@ -58,34 +59,35 @@ func wipeoutShard(c context.Context, shard string) error {
 func wipeoutUser(c context.Context, shard, uid string) error {
   logf(c, "wipeout for user %s on shard %s", uid, shard)
 
-  dataPath := "data/" + uid + ".json"
-  userPath := "users/" + uid + ".json"
+  client := firebaseClient(c)
 
-  req, err := http.NewRequest("DELETE", shard+dataPath, nil)
+  u := fmt.Sprintf("%s/data/%s.json", shard, uid)
+  req, err := http.NewRequest("DELETE", u, nil)
   if err != nil {
     return err
   }
-  res, err := firebaseClient(c).Do(req)
+  res, err := client.Do(req)
   if err != nil {
     return err
-  }
-  if res.StatusCode >= 400 {
-    return fmt.Errorf("error (%d) deleting session data for user %s on shard %s", res.StatusCode, uid, shard)
   }
   defer res.Body.Close()
-
-  req, err = http.NewRequest("DELETE", shard+userPath, nil)
-  if err != nil {
-    return err
-  }
-  res, err = firebaseClient(c).Do(req)
-  if err != nil {
-    return err
-  }
   if res.StatusCode >= 400 {
-    return fmt.Errorf("error (%d) deleting user data for user %s on shard %s", res.StatusCode, uid, shard)
+    return fmt.Errorf("error (%d) deleting session data for user %s", res.StatusCode, uid)
+  }
+
+  u = fmt.Sprintf("%s/users/%s.json", shard, uid)
+  req, err = http.NewRequest("DELETE", u, nil)
+  if err != nil {
+    return err
+  }
+  res, err = client.Do(req)
+  if err != nil {
+    return err
   }
   defer res.Body.Close()
+  if res.StatusCode >= 400 {
+    return fmt.Errorf("error (%d) deleting user data for user %s", res.StatusCode, uid)
+  }
 
   return nil
 }
