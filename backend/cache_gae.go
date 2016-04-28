@@ -47,7 +47,7 @@ func (mc *gaeMemcache) get(c context.Context, key string) ([]byte, error) {
 	return item.Value, nil
 }
 
-func (mc *gaeMemcache) deleleMulti(c context.Context, keys []string) error {
+func (mc *gaeMemcache) deleteMulti(c context.Context, keys []string) error {
 	return memcache.DeleteMulti(c, keys)
 }
 

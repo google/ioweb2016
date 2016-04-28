@@ -47,7 +47,7 @@ type cacheInterface interface {
 	// it returns errCacheMiss if item is not in the cache or expired.
 	get(c context.Context, key string) ([]byte, error)
 	// deleteMulti removes keys from mecache.
-	deleleMulti(c context.Context, keys []string) error
+	deleteMulti(c context.Context, keys []string) error
 	// flush flushes all items from memcache.
 	flush(c context.Context) error
 }
@@ -114,7 +114,7 @@ func (mc *memoryCache) get(c context.Context, key string) ([]byte, error) {
 	return item.data, nil
 }
 
-func (mc *memoryCache) deleleMulti(c context.Context, keys []string) error {
+func (mc *memoryCache) deleteMulti(c context.Context, keys []string) error {
 	sort.Strings(keys)
 	mc.Lock()
 	defer mc.Unlock()
