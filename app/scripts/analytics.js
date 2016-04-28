@@ -192,7 +192,7 @@ IOWA.Analytics = IOWA.Analytics || (function(exports) {
         eventLabel: opt_label || this.NULL_DIMENSION,
         eventValue: opt_value,
         hitCallback: opt_callback
-      });
+      }.bind(this));
     });
   };
 
