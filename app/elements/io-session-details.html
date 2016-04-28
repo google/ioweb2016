@@ -31,7 +31,7 @@ limitations under the License.
 <link rel="import" href="UtilBehavior.html">
 <link rel="import" href="shared-app-styles.html">
 <link rel="import" href="io-icons.html">
-<link rel="import" href="io-survey.html">
+<!-- <link rel="import" href="io-survey.html"> -->
 
 <dom-module id="io-session-details">
 <link rel="import" type="css" href="io-session-details.css">
@@ -147,7 +147,7 @@ limitations under the License.
               <iron-icon icon="io:post-facebook" class="share-icon"></iron-icon>
             </a>
           </div>
-          <paper-button id="open_survey" on-click="_openSurvey" raised hidden$="[[_computeHideOpenSurveyButton(selectedSession, app.savedSurveys)]]">Rate Session</paper-button>
+          <!-- <paper-button id="open_survey" on-click="_openSurvey" raised hidden$="[[_computeHideOpenSurveyButton(selectedSession, app.savedSurveys)]]">Rate Session</paper-button> -->
         </div>
 
         <div class="session__info__section session__speakers"
@@ -402,7 +402,7 @@ limitations under the License.
       this._startScheduleVideo = false;
 
       // Hide Survey
-      this.$.ioSurvey.closeNoAnimation();
+      // this.$.ioSurvey.closeNoAnimation();
       this.selectedSession = null;
     },
 
