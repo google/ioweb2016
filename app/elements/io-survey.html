@@ -155,10 +155,17 @@ limitations under the License.
          * Open the dialog
          */
         open: function() {
+          this.openNoAnimation();
+          this.playAnimation('entry');
+        },
+
+        /**
+         * Open the dialog with no animation
+         */
+        openNoAnimation: function() {
           this.opened = true;
           this.hidden = false;
           this.scrollTop = 0;
-          this.playAnimation('entry');
           Polymer.IronDropdownScrollManager.pushScrollLock(this);
         },
 
