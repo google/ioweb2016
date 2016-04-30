@@ -571,10 +571,9 @@ Fired when the user toggles bookmarking/removing a session.
             // ?sid= param. If that isn't present, use the parsed id from the fragment.
             var sessionId = IOWA.Util.getURLParameter('sid') || parsedUrl.resourceId;
             if (sessionId) {
-              var hashSplit = parsedUrl.hash.split('/');
               pageIsDeepLinked_ = true;
               this.openSession(IOWA.Schedule.getSessionById(sessionId));
-              if (hashSplit[hashSplit.length - 1] === 'survey') {
+              if (parsedUrl.hash.match(/\/survey/)) {
                 this.$.sessionDetails.openSurveyNoAnimation();
               }
             } else {
