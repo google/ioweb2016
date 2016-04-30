@@ -1,3 +1,5 @@
+[![Build Status](https://ci.cloudware.io/api/badges/GoogleChrome/ioweb2016/status.svg)](https://ci.cloudware.io/GoogleChrome/ioweb2016)
+
 ## Google I/O 2016 web app
 
 ### Setup
