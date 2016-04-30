@@ -8,18 +8,22 @@ cache:
     - node_modules
     - app/bower_components
 build:
-  image: gcr.io/io-webapp-staging/ci-node4-go16
+  image: gcr.io/io-webapp-staging/ci-node4-go162
   commands:
     # install frontend dependencies
     - npm -qq update --no-optional
-    - cd app && ../node_modules/bower/bin/bower install -q --allow-root && cd ..
+    - cd app
+    - ../node_modules/bower/bin/bower install -q --allow-root
+    - cd ..
     # lint & build
     - gulp eslint
     - gulp --env stage # suitable for auto-deployment on staging
     # backend testing
     - gulp godeps
     - gulp backend:config
-    - go test ./backend
+    - cd backend
+    - goapp test
+    - cd ..
     # store ci state in case we're deploying
     - "util/dump-ci-state > .state"
 deploy:
