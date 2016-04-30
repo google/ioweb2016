@@ -17,7 +17,8 @@ package backend
 import (
 	"net/http"
 	"net/textproto"
-	"time"
+
+	"google.golang.org/appengine/urlfetch"
 
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
@@ -25,22 +26,13 @@ import (
 
 // httpTransport returns a suitable HTTP transport for current backend
 // hosting environment.
-// It uses http.DefaultTransport by default.
-var httpTransport = func(_ context.Context) http.RoundTripper {
-	return http.DefaultTransport
+var httpTransport = func(c context.Context) http.RoundTripper {
+	return &urlfetch.Transport{Context: c}
 }
 
-// httpClient create a new HTTP client using httpTransport(),
-// setting request timeout to 10 seconds if supported.
+// httpClient create a new HTTP client using httpTransport().
 func httpClient(c context.Context) *http.Client {
-	cl := &http.Client{Transport: httpTransport(c)}
-	type canceler interface {
-		CancelRequest(*http.Request)
-	}
-	if _, ok := cl.Transport.(canceler); ok {
-		cl.Timeout = 10 * time.Second
-	}
-	return cl
+	return &http.Client{Transport: httpTransport(c)}
 }
 
 // oauth2Client creates a new HTTP client using oauth2.Transport,
@@ -69,7 +61,7 @@ func serviceAccountClient(c context.Context, scopes ...string) (*http.Client, er
 	if config.Google.ServiceAccount.Key == "" {
 		// useful for testing
 		errorf(c, "serviceAccountClient: no credentials provided; using standard httpClient")
-		return httpClient(c), nil
+		return &http.Client{Transport: httpTransport(c)}, nil
 	}
 	cred, err := serviceCredentials(c, scopes...)
 	if err != nil {
@@ -78,19 +70,21 @@ func serviceAccountClient(c context.Context, scopes ...string) (*http.Client, er
 	return oauth2Client(c, cred), nil
 }
 
+// firebaseTransport makes authenticated requests to Firebase.
 type firebaseTransport struct {
-	ctx context.Context
+	base http.RoundTripper
 }
 
-func (t *firebaseTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+func (t firebaseTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	q := req.URL.Query()
 	q.Add("auth", config.Firebase.Secret)
 	req.URL.RawQuery = q.Encode()
-	return httpTransport(t.ctx).RoundTrip(req)
+	return t.base.RoundTrip(req)
 }
 
 func firebaseClient(c context.Context) *http.Client {
-	return &http.Client{Transport: &firebaseTransport{c}}
+	t := httpTransport(c)
+	return &http.Client{Transport: &firebaseTransport{t}}
 }
 
 func typeMimeHeader(contentType string) textproto.MIMEHeader {

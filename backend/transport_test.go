@@ -18,35 +18,28 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-
-	"golang.org/x/net/context"
 )
 
 func TestFirebaseClient(t *testing.T) {
 	ch := make(chan bool, 1)
 	// Check that the Firebase client correctly adds the auth parameter
-	ts := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		defer request.Body.Close()
-
-		if request.URL.Query().Get("auth") != config.Firebase.Secret {
-			t.Errorf("Expected auth query parameter to be the FB secret, URL was %v", request.URL)
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/test" {
+			t.Errorf("r.URL.Path = %q; want /test", r.URL.Path)
 		}
-
+		if v := r.URL.Query().Get("foo"); v != "bar" {
+			t.Errorf("foo = %q; want 'bar'", v)
+		}
+		if v := r.URL.Query().Get("auth"); v != config.Firebase.Secret {
+			// don't expose auth in build logs
+			t.Errorf("want auth query param to be config.Firebase.Secret")
+		}
 		ch <- true
 	}))
 	defer ts.Close()
 
-	oldTransport := httpTransport
-	httpTransport = func(_ context.Context) http.RoundTripper {
-		return &http.Transport{}
-	}
-	defer func() {
-		httpTransport = oldTransport
-	}()
-
 	c := newTestContext()
-
-	if _, err := firebaseClient(c).Get(ts.URL); err != nil {
+	if _, err := firebaseClient(c).Get(ts.URL + "/test?foo=bar"); err != nil {
 		t.Fatal(err)
 	}
 
