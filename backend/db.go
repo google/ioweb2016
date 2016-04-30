@@ -186,7 +186,7 @@ func storeEventData(c context.Context, d *eventData) error {
 		return perr(err)
 	}
 	ent.Etag = hexKey(key)
-	cache.deleleMulti(c, allCachedEventDataKeys)
+	cache.deleteMulti(c, allCachedEventDataKeys)
 	return nil
 }
 

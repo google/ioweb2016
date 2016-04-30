@@ -335,7 +335,7 @@ Fired when the user toggles bookmarking/removing a session.
 
           <div class="card">
 
-            <div id="main_schedule_results" class="card-content card-content--main card-content--no-padding-top card-content--no-padding-right" layout vertical>
+            <div id="main_schedule_results" class$="card-content card-content--main card-content--no-padding-top card-content--no-padding-right [[_addClass('noresults', noResultsForDay)]]" layout vertical>
 
               <template id="schedulelist" is="dom-repeat" items="[[sessions]]"
                         as="session" filter="matchesFilters" initial-count="10">
@@ -391,6 +391,15 @@ Fired when the user toggles bookmarking/removing a session.
             value: function() {
               return this.$.filters;
             }
+          },
+
+          /**
+           * True when there are no filtered results.
+           */
+          noResultsForDay: {
+            type: Boolean,
+            readOnly: true,
+            value: false
           },
 
           /**
@@ -479,7 +488,7 @@ Fired when the user toggles bookmarking/removing a session.
           '_recalcFirstOfBlock(sessions.length, day, filters.length)',
           '_savedSessionsChanged(savedSessions.splices)',
           '_watchedVideosChanged(watchedVideos.splices)',
-          '_updateNoResultsMsg(day)'
+          '_updateNoResultsMsg(day, filters.length)'
         ],
 
         attached: function() {
@@ -607,7 +616,6 @@ Fired when the user toggles bookmarking/removing a session.
           var list = Polymer.dom(this.root).querySelector('#schedulelist');
           if (list) {
             list.render();
-            this._updateNoResultsMsg();
           }
 
           history.replaceState({}, '', [
@@ -618,16 +626,26 @@ Fired when the user toggles bookmarking/removing a session.
           ].join(''));
         },
 
-        _updateNoResultsMsg: function(opt_day) {
+        _updateNoResultsMsg: function(opt_day, filtersLength) {
           var day = opt_day || this.day;
 
-          var el = Polymer.dom(this.root).querySelector(
-              '#main_schedule_results');
-          if (el) {
-            var list = Polymer.dom(this.root).querySelector('#schedulelist');
-            var numResults = list.parentElement.querySelectorAll(
-              'io-schedule-row:not([hidden])').length;
-            el.classList.toggle('noresults', !numResults);
+          if (!this.filters.length) {
+            this._setNoResultsForDay(false);
+            return;
+          }
+
+          if (day) {
+            this.async(function() {
+              var el = Polymer.dom(this.root).querySelector(
+                  '#main_schedule_results');
+              if (el) {
+                var list = Polymer.dom(this.root).querySelector('#schedulelist');
+                var numResults = list.parentElement.querySelectorAll(
+                  'io-schedule-row:not([hidden])').length;
+                this._setNoResultsForDay(!numResults);
+              }
+            }, 100);
+
           }
         },
 

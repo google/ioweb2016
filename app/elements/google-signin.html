@@ -136,14 +136,12 @@ Fired when sign in fails for some reason.
 
               // Track how long it takes for the initial auth attempt to run.
               if (window.performance && window.performance.now) {
+                var MAX_AUTH_INIT_TIMEOUT = 60 * 1000;
                 var time = Math.ceil(window.performance.now());
                 var label = signedIn ? 'signed in' : 'signed out';
                 debugLog('auth init:', time, 'ms');
-                IOWA.Analytics.trackPerf('auth', 'init', time, label);
-
-                // Track this separately as an event so it can be used in
-                // advanged segments.
-                IOWA.Analytics.trackEvent('auth', 'init', label, time);
+                IOWA.Analytics.trackPerf('auth', 'init', time, label,
+                    MAX_AUTH_INIT_TIMEOUT);
               }
 
               // Listens for future changes to the signin status.

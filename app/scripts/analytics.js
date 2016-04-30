@@ -24,6 +24,7 @@ IOWA.Analytics = IOWA.Analytics || (function(exports) {
    * @constructor
    */
   function Analytics() {
+    this.setTrackerDefaults();
     this.initTrackerReadyState();
 
     // Tracks the initial pageview.
@@ -53,6 +54,7 @@ IOWA.Analytics = IOWA.Analytics || (function(exports) {
 
   Analytics.prototype.POLYMER_ANALYTICS_TIMEOUT_ = 60 * 1000;
   Analytics.prototype.READY_STATE_TIMEOUT_ = 5 * 1000;
+  Analytics.prototype.NULL_DIMENSION = '(not set)';
 
   // A map from each custom dimension name to its index in Google Analytics.
   Analytics.prototype.customDimensions = {
@@ -60,6 +62,17 @@ IOWA.Analytics = IOWA.Analytics || (function(exports) {
     ONLINE: 'dimension2',
     SERVICE_WORKER_STATUS: 'dimension3',
     NOTIFICATION_PERMISSION: 'dimension4'
+  };
+
+  /**
+   * Sets a default value for each custom dimension. This is necessary because
+   * GA reports only include results if the result includes a value for every
+   * dimension requested.
+   */
+  Analytics.prototype.setTrackerDefaults = function() {
+    Object.keys(this.customDimensions).forEach(function(key) {
+      ga('set', this.customDimensions[key], this.NULL_DIMENSION);
+    }.bind(this));
   };
 
   /**
@@ -100,7 +113,7 @@ IOWA.Analytics = IOWA.Analytics || (function(exports) {
       ga('set', field, value); // Use the command queue for easier debugging.
       var customDimensionKeys = Object.keys(this.customDimensions);
       if (customDimensionKeys.every(function(key) {
-        return tracker.get(this.customDimensions[key]) !== undefined;
+        return tracker.get(this.customDimensions[key]) !== this.NULL_DIMENSION;
       }.bind(this))) {
         this.readyState_.resolve();
       }
@@ -148,8 +161,16 @@ IOWA.Analytics = IOWA.Analytics || (function(exports) {
       if (opt_maxTime !== null && time > opt_maxTime) {
         variable += ' - outliers';
       }
-      ga('send', 'timing', category, variable, parseInt(time, 10), opt_label, opt_obj);
-    });
+      time = parseInt(time, 10);
+      opt_label = opt_label || this.NULL_DIMENSION;
+
+      // Sends an event and a timing hit. We keep the timing hit for historical
+      // reasons, but since timing hits get sampled at processing time, and
+      // their values can't be used in segments, events are more useful and
+      // more accurate.
+      ga('send', 'event', category, variable, opt_label, time, opt_obj);
+      ga('send', 'timing', category, variable, time, opt_label, opt_obj);
+    }.bind(this));
   };
 
   /**
@@ -168,11 +189,11 @@ IOWA.Analytics = IOWA.Analytics || (function(exports) {
         hitType: 'event',
         eventCategory: category,
         eventAction: action,
-        eventLabel: opt_label,
+        eventLabel: opt_label || this.NULL_DIMENSION,
         eventValue: opt_value,
         hitCallback: opt_callback
       });
-    });
+    }.bind(this));
   };
 
   /**

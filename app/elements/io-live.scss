@@ -88,6 +88,8 @@ io-schedule-row {
   opacity: 0;
   pointer-events: none;
 
+  padding: 0 1px 1px 1px; // renders a "border around the widget"
+
   // box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.25),
               // 0px 2px 3px 0px rgba(0, 0, 0, 0.25);
 

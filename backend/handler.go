@@ -395,8 +395,8 @@ func syncEventData(w http.ResponseWriter, r *http.Request) {
 		return nil
 	})
 
-	if _, cerr := cache.inc(c, syncGCSCacheKey, -1000, 0); cerr != nil {
-		errorf(c, cerr.Error())
+	if err := cache.deleteMulti(c, []string{syncGCSCacheKey}); err != nil {
+		errorf(c, err.Error())
 	}
 
 	if err != nil {
