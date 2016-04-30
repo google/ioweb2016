@@ -188,12 +188,12 @@ func serveTemplate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	errorf(c, "renderTemplate(%q): %v", tplname, err)
 	switch err.(type) {
 	case *os.PathError:
 		w.WriteHeader(http.StatusNotFound)
 		tplname = "error_404"
 	default:
+		errorf(c, "renderTemplate(%q): %v", tplname, err)
 		w.WriteHeader(http.StatusInternalServerError)
 		tplname = "error_500"
 	}
