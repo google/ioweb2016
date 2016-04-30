@@ -18,13 +18,11 @@ import (
 	"net/http"
 	"path"
 	"strings"
-	"time"
 
 	"golang.org/x/net/context"
 
 	"google.golang.org/appengine"
 	"google.golang.org/appengine/log"
-	"google.golang.org/appengine/urlfetch"
 	"google.golang.org/appengine/user"
 )
 
@@ -46,11 +44,6 @@ func init() {
 	}
 	// use built-in memcache service
 	cache = &gaeMemcache{}
-	// apps hosted on GAE use a different HTTP transport
-	httpTransport = func(c context.Context) http.RoundTripper {
-		c, _ = context.WithTimeout(c, 10*time.Second)
-		return &urlfetch.Transport{Context: c}
-	}
 	// allow access only by whitelisted people/domains if not empty
 	if len(config.Whitelist) > 0 {
 		wrapHandler = checkWhitelist
