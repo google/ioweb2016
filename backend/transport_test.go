@@ -18,6 +18,8 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"golang.org/x/net/context"
 )
 
 func TestFirebaseClient(t *testing.T) {
@@ -25,8 +27,6 @@ func TestFirebaseClient(t *testing.T) {
 	// Check that the Firebase client correctly adds the auth parameter
 	ts := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		defer request.Body.Close()
-
-		t.Error("This never happens :(")
 
 		if request.URL.Query().Get("auth") != config.Firebase.Secret {
 			t.Errorf("Expected auth query parameter to be the FB secret, URL was %v", request.URL)
@@ -36,11 +36,18 @@ func TestFirebaseClient(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	r := newTestRequest(t, "GET", ts.URL, nil)
-	c := newContext(r)
+	oldTransport := httpTransport
+	httpTransport = func(_ context.Context) http.RoundTripper {
+		return &http.Transport{}
+	}
+	defer func() {
+		httpTransport = oldTransport
+	}()
 
-	if _, err := firebaseClient(c).Do(r); err != nil {
-		t.Error(err)
+	c := newTestContext()
+
+	if _, err := firebaseClient(c).Get(ts.URL); err != nil {
+		t.Fatal(err)
 	}
 
 	select {
