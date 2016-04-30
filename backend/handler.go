@@ -783,7 +783,7 @@ func handleClock(w http.ResponseWriter, r *http.Request) {
 func handleWipeout(w http.ResponseWriter, r *http.Request) {
 	c := newContext(r)
 	retry, err := taskRetryCount(r)
-	if h := r.Header.Get("x-appengine-cron"); h != "true" && err == nil && retry > 0 {
+	if h := r.Header.Get("x-appengine-cron"); h != "true" || err == nil && retry > 0 {
 		errorf(c, "cron = %s, retry = %d, err: %v", h, retry, err)
 		return
 	}

@@ -23,6 +23,7 @@ import (
 	"net/url"
 	"reflect"
 	"sort"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -1564,6 +1565,76 @@ func TestHandleEasterEgg(t *testing.T) {
 		link := getEasterEggLink(c)
 		if link != test.outLink {
 			t.Errorf("%d: link = %q; want %q", i, link, test.outLink)
+		}
+	}
+}
+
+func TestHandleWipeout(t *testing.T) {
+	defer preserveConfig()()
+
+	wiped := map[string]bool{
+		"/data/google:1.json":  false,
+		"/users/google:1.json": false,
+		"/data/google:2.json":  false,
+		"/users/google:2.json": false,
+	}
+
+	fb := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// query for list of users
+		if r.Method == "GET" {
+			cutoff, err := strconv.ParseInt(r.URL.Query().Get("endAt"), 10, 64)
+			if err != nil {
+				t.Errorf("ParseInt(%q): %v", r.URL.Query().Get("endAt"), err)
+				return
+			}
+			min := time.Now().Add(-744*time.Hour).Unix() * 1000
+			max := time.Now().Add(-696*time.Hour).Unix() * 1000
+			if cutoff < min || cutoff > max {
+				t.Errorf("cutoff = %v; want between %v and %v", cutoff, min, max)
+			}
+			if r.URL.Path != "/users.json" {
+				t.Errorf("r.URL.Path = %q; want /users.json", r.URL.Path)
+			}
+			w.Write([]byte(`{
+				"google:1": {},
+				"google:2": {}
+			}`))
+			return
+		}
+
+		// delete user data
+		if r.Method != "DELETE" {
+			t.Errorf("r.Method = %q; want DELETE", r.Method)
+		}
+		if _, ok := wiped[r.URL.Path]; !ok {
+			t.Errorf("unknown r.URL.Path: %q", r.URL.Path)
+			return
+		}
+		wiped[r.URL.Path] = true
+		// verify DELETE /users/uid comes after /data/uid
+		if !strings.HasPrefix("/users/", r.URL.Path) {
+			return
+		}
+		u := "/data/" + strings.TrimPrefix(r.URL.Path, "/users/")
+		if !wiped[u] {
+			t.Errorf("want %q before %q", u, r.URL.Path)
+		}
+	}))
+	defer fb.Close()
+	config.Firebase.Shards = []string{fb.URL}
+
+	r, _ := aetestInstance.NewRequest("GET", "/task/wipeout", nil)
+	r.Header.Set("x-appengine-cron", "true")
+	r.Header.Set("x-appengine-taskexecutioncount", "1")
+	w := httptest.NewRecorder()
+	handleWipeout(w, r)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("w.Code = %d; want %d", w.Code, http.StatusOK)
+	}
+	for k, ok := range wiped {
+		if !ok {
+			t.Errorf("%q wasn't deleted", k)
 		}
 	}
 }
