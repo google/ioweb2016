@@ -310,6 +310,7 @@ class Schedule {
     return IOWA.Auth.waitForSignedIn('Sign in to submit feedback').then(() => {
       let url = `${this.SURVEY_ENDPOINT}/${sessionId}?uid=${IOWA.IOFirebase.firebaseRef.getAuth().uid}`;
       let callback = () => {
+        IOWA.Elements.Toast.showMessage('Your feedback has been submitted. Thanks for participating!');
         IOWA.Elements.Template.push('app.savedSurveys', sessionId);
       };
       return this.submitSessionRequest(

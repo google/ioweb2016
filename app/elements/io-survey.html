@@ -250,11 +250,13 @@ limitations under the License.
           this._close();
           IOWA.Schedule.saveSurvey(this.session.id, answers).then(function() {
             this.fire('survey-submitted');
+//            this.push('app.savedSurveys', this.session.id);
           }.bind(this));
         },
 
         /**
          * Handles animation finish event and hides the dialog if opened == false
+         *
          * @private
          */
         _onNeonAnimationFinish: function() {
