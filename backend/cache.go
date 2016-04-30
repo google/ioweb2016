@@ -15,12 +15,10 @@
 package backend
 
 import (
-	"encoding/binary"
 	"errors"
-	"fmt"
-	"sort"
-	"sync"
 	"time"
+
+	"google.golang.org/appengine/memcache"
 
 	"golang.org/x/net/context"
 )
@@ -52,84 +50,36 @@ type cacheInterface interface {
 	flush(c context.Context) error
 }
 
-// memoryCache is a very simple in-memory cache.
-type memoryCache struct {
-	sync.Mutex
-	items map[string]*cacheItem
-}
+// cacheInterface implementation using appengine/memcache.
+type gaeMemcache struct{}
 
-// newMemoryCache creates a new memoryCache instance.
-func newMemoryCache() cacheInterface {
-	return &memoryCache{items: make(map[string]*cacheItem)}
-}
-
-// cacheItem is a single item of the memoryCache.
-type cacheItem struct {
-	data []byte
-	exp  time.Time
-}
-
-func (mc *memoryCache) set(c context.Context, key string, data []byte, exp time.Duration) error {
-	mc.Lock()
-	defer mc.Unlock()
-	mc.items[key] = &cacheItem{data, time.Now().Add(exp)}
-	return nil
-}
-
-func (mc *memoryCache) inc(c context.Context, key string, delta int64, initialValue uint64) (uint64, error) {
-	mc.Lock()
-	defer mc.Unlock()
-	item, ok := mc.items[key]
-	if !ok {
-		var z time.Time
-		b := make([]byte, binary.Size(initialValue))
-		binary.PutUvarint(b, initialValue)
-		item = &cacheItem{b, z}
-		mc.items[key] = item
+func (mc *gaeMemcache) set(c context.Context, key string, data []byte, exp time.Duration) error {
+	item := &memcache.Item{
+		Key:        key,
+		Value:      data,
+		Expiration: exp,
 	}
-	v, n := binary.Uvarint(item.data)
-	if n <= 0 {
-		return 0, fmt.Errorf("inc: binary.Uvarint error: %d", n)
-	}
-	switch {
-	case delta < 0 && v < uint64(delta):
-		v = 0
-	case delta < 0:
-		v -= uint64(delta)
-	case delta > 0:
-		v += uint64(delta)
-	}
-	binary.PutUvarint(item.data, v)
-	return v, nil
+	return memcache.Set(c, item)
 }
 
-func (mc *memoryCache) get(c context.Context, key string) ([]byte, error) {
-	mc.Lock()
-	defer mc.Unlock()
-	item, ok := mc.items[key]
-	if !ok || time.Now().After(item.exp) {
-		delete(mc.items, key)
+func (mc *gaeMemcache) inc(c context.Context, key string, delta int64, initial uint64) (uint64, error) {
+	return memcache.Increment(c, key, delta, initial)
+}
+
+func (mc *gaeMemcache) get(c context.Context, key string) ([]byte, error) {
+	item, err := memcache.Get(c, key)
+	if err == memcache.ErrCacheMiss {
 		return nil, errCacheMiss
+	} else if err != nil {
+		return nil, err
 	}
-	return item.data, nil
+	return item.Value, nil
 }
 
-func (mc *memoryCache) deleteMulti(c context.Context, keys []string) error {
-	sort.Strings(keys)
-	mc.Lock()
-	defer mc.Unlock()
-	for k := range mc.items {
-		i := sort.SearchStrings(keys, k)
-		if i < len(keys) && keys[i] == k {
-			delete(mc.items, k)
-		}
-	}
-	return nil
+func (mc *gaeMemcache) deleteMulti(c context.Context, keys []string) error {
+	return memcache.DeleteMulti(c, keys)
 }
 
-func (mc *memoryCache) flush(c context.Context) error {
-	mc.Lock()
-	defer mc.Unlock()
-	mc.items = make(map[string]*cacheItem)
-	return nil
+func (mc *gaeMemcache) flush(c context.Context) error {
+	return memcache.Flush(c)
 }
