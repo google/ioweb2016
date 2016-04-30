@@ -169,17 +169,20 @@ class IOFirebase {
 
   /**
    * Update the user's last activity timestamp and make sure it will be updated when the user
-   * disconnects.
+   * disconnects. Also marks the user as having used the Web App.
    *
    * @private
    * @return {Promise} Promise to track completion.
    */
   _bumpLastActivityTimestamp() {
     let userId = this.firebaseRef.getAuth().uid;
-    this.firebaseRef.child(`users/${userId}/last_activity_timestamp`)
-        .onDisconnect().set(Firebase.ServerValue.TIMESTAMP);
-    return this._setFirebaseUserData('users', 'last_activity_timestamp',
-        Firebase.ServerValue.TIMESTAMP);
+    let operations = [
+      this.firebaseRef.child(`users/${userId}/last_activity_timestamp`)
+          .onDisconnect().set(Firebase.ServerValue.TIMESTAMP),
+      this._setFirebaseUserData('users', 'used_web_app', true),
+      this._setFirebaseUserData('users', 'last_activity_timestamp',
+          Firebase.ServerValue.TIMESTAMP)];
+    return Promise.all(operations);
   }
 
   /**
@@ -210,7 +213,7 @@ class IOFirebase {
     const register = () => {
       const userId = this.firebaseRef.getAuth().uid;
       this.firebaseRef.child(`users/${userId}/web_notifications_enabled`)
-        .on('value', s => callback(s.val()));
+          .on('value', s => callback(s.val()));
     };
 
     if (this.isAuthed()) {
