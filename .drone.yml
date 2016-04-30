@@ -8,7 +8,7 @@ cache:
     - node_modules
     - app/bower_components
 build:
-  image: gcr.io/io-webapp-staging/ci-node4-go16
+  image: gcr.io/io-webapp-staging/ci-node4-go162
   commands:
     # install frontend dependencies
     - npm -qq update --no-optional
