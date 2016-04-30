@@ -1,6 +1,7 @@
 # editorconfig.org
 root = true
 
+; default
 [*]
 indent_style = space
 indent_size = 2
@@ -8,3 +9,12 @@ end_of_line = lf
 charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
+
+; Golang
+[*.go]
+indent_style = tab
+indent_size = 8
+
+; YAML
+[*.{yaml,yml}]
+indent_size = 2
