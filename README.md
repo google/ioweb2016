@@ -172,3 +172,7 @@ and run:
 
     wct
 
+## License
+
+[Apache 2.0](https://github.com/GoogleChrome/ioweb2016/blob/master/LICENSE) © 2016 Google Inc.
+
