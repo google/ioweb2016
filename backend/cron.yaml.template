@@ -8,6 +8,9 @@ cron:
 - description: sync schedule data
   url: $PREFIX$/sync/gcs
   schedule: every 30 minutes
+- description: user data wipeout
+  url: $PREFIX$/task/wipeout
+  schedule: every 24 hours
 #- description: sessions start notifications
 #  url: $PREFIX$/task/clock
 #  schedule: every 1 minutes

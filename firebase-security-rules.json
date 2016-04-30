@@ -1,6 +1,7 @@
 {
   "rules": {
     "users": {
+      ".indexOn": "last_activity_timestamp",
       "$user_id": {
         ".read": "$user_id === auth.uid",
         ".write": "$user_id === auth.uid",

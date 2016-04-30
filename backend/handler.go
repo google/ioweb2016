@@ -73,6 +73,7 @@ func registerHandlers() {
 	handle("/task/ping-user", handlePingUser)
 	handle("/task/ping-device", handlePingDevice)
 	handle("/task/clock", handleClock)
+	handle("/task/wipeout", handleWipeout)
 	// debug handlers; not available in prod
 	if !isProd() || isDevServer() {
 		handle("/debug/srvget", debugServiceGetURL)
@@ -774,6 +775,33 @@ func handleClock(w http.ResponseWriter, r *http.Request) {
 	})
 	if terr != nil {
 		errorf(c, "txn err: %v", terr)
+	}
+}
+
+// handleWipeout deletes any user that has been inactive for 30 days or more
+// It must be run every day
+func handleWipeout(w http.ResponseWriter, r *http.Request) {
+	c := newContext(r)
+	retry, err := taskRetryCount(r)
+	if h := r.Header.Get("x-appengine-cron"); h != "true" && err == nil && retry > 0 {
+		errorf(c, "cron = %s, retry = %d, err: %v", h, retry, err)
+		return
+	}
+
+	ch := make(chan error, 1)
+
+	for _, shard := range config.Firebase.Shards {
+		go func(shard string) {
+			ch <- wipeoutShard(c, shard)
+		}(shard)
+	}
+
+	for _, shard := range config.Firebase.Shards {
+		if err := <-ch; err != nil {
+			w.WriteHeader(500)
+			errorf(c, "wipeout err: %v, shard: %s", err, shard)
+			return
+		}
 	}
 }
 
