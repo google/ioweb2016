@@ -15,15 +15,15 @@
 package backend
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"net/url"
 	"sort"
-	"strconv"
 	"strings"
 	"time"
 
+	"github.com/googlechrome/push-encryption-go/webpush"
 	"golang.org/x/net/context"
 )
 
@@ -40,25 +40,8 @@ const (
 type userPush struct {
 	userID string
 
-	Enabled   bool     `json:"notify" datastore:"on"`
-	IOStart   bool     `json:"iostart" datastore:"io"`
-	Endpoints []string `json:"endpoints" datastore:"urls,noindex"`
-	// TODO: remove this when all existing users are migrated to Endpoints.
-	// Until that is done:
-	// - len(Subscribers) may be less than len(Endpoints)
-	// - first elements of Endpoints will match Subscribers
-	Subscribers []string `json:"-" datastore:"subs,noindex"`
-
-	Ext  ioExtPush  `json:"-" datastore:"ext"`
-	Pext *ioExtPush `json:"ioext,omitempty" datastore:"-"`
-}
-
-// ioExtPush is always embedded in the userPush.
-type ioExtPush struct {
-	Enabled bool    `json:"-" datastore:"on"`
-	Name    string  `json:"name" datastore:"n,noindex"`
-	Lat     float64 `json:"lat" datastore:"lat,noindex"`
-	Lng     float64 `json:"lng" datastore:"lng,noindex"`
+	Enabled       bool              `json:"web_notifications_enabled"`
+	Subscriptions map[string]string `json:"web_push_subscriptions"`
 }
 
 // dataChanges represents a diff between two versions of data.
@@ -69,6 +52,20 @@ type dataChanges struct {
 	Updated time.Time `json:"ts"`
 	eventData
 	// TODO: add ioext data...  anything else?
+}
+
+type pushMessage struct {
+	Notification notification `json:"notification"`
+	Sessions     map[string]string
+}
+
+type notification struct {
+	Title string `json:"title"`
+	Body  string `json:"body"`
+	Tag   string `json:"tag"`
+	Data  struct {
+		URL string `json:"url"`
+	} `json:"data"`
 }
 
 // isEmptyChange returns true if d is nil or its exported fields contain no items.
@@ -113,8 +110,7 @@ func mergeChanges(dst *dataChanges, src *dataChanges) {
 
 // filterUserChanges reduces dc to a subset matching session IDs to bks.
 // It sorts bks with sort.Strings as a side effect.
-// TODO: add ioext to dc and filter on radius for ioExtPush.Lat+Lng.
-func filterUserChanges(dc *dataChanges, bks []string, ext *ioExtPush) {
+func filterUserChanges(dc *dataChanges, bks []string) {
 	sort.Strings(bks)
 	for id, s := range dc.Sessions {
 		if s.Update == updateSurvey {
@@ -128,32 +124,41 @@ func filterUserChanges(dc *dataChanges, bks []string, ext *ioExtPush) {
 	}
 }
 
-// pingDevice sends a "ping" message to the subscribed device.
+// notifySubscription sends a message to a subscribed device.
 // It follows HTTP Push spec https://tools.ietf.org/html/draft-thomson-webpush-http2.
 //
 // In a case where endpoint did not accept push request the return error
 // will be of type *pushError with RetryAfter >= 0.
-// If returned string value is non-zero, it contains a new endpoint
-// to be used instead of the old one from now on.
-func pingDevice(c context.Context, endpoint string) (string, error) {
-	if u := config.Google.GCM.Endpoint; u != "" && strings.HasPrefix(endpoint, u) {
-		return pingGCM(c, endpoint)
+func notifySubscription(c context.Context, s string, msg *pushMessage) error {
+	sub, err := webpush.SubscriptionFromJSON([]byte(s))
+	if err != nil {
+		// invalid subscription
+		return &pushError{msg: fmt.Sprintf("notifySubscription: %v", err), remove: true}
 	}
 
-	logf(c, "pinging generic endpoint: %s", endpoint)
-	req, err := http.NewRequest("PUT", endpoint, nil)
-	if err != nil {
-		// invalid endpoint URL
-		return "", &pushError{msg: fmt.Sprintf("pingDevice: %v", err), remove: true}
+	var auth string
+	if u := config.Google.GCM.Endpoint; u != "" && strings.HasPrefix(sub.Endpoint, u) {
+		auth = config.Google.GCM.Key
 	}
 
-	res, err := httpClient(c).Do(req)
+	// TODO: If subscription does not have keys, or is an old FF sub, send a tickle instead
+
+	ns, err := json.Marshal(msg)
 	if err != nil {
-		return "", &pushError{msg: fmt.Sprintf("pingDevice: %v", err), retry: true}
+		// The notification may be badly-formed
+		// TODO: retry or not?
+		return &pushError{msg: fmt.Sprintf("notifySubscription: %v", err), retry: false}
+	}
+
+	logf(c, "pinging webpush endpoint: %s", sub.Endpoint)
+	res, err := webpush.Send(httpClient(c), sub, string(ns), auth)
+	if err != nil {
+		return &pushError{msg: fmt.Sprintf("notifySubscription: %v", err), retry: true}
 	}
 	defer res.Body.Close()
-	if res.StatusCode == http.StatusOK {
-		return "", nil
+	if res.StatusCode == http.StatusCreated {
+		logf(c, "notify success!")
+		return nil
 	}
 	b, _ := ioutil.ReadAll(res.Body)
 	perr := &pushError{
@@ -164,99 +169,5 @@ func pingDevice(c context.Context, endpoint string) (string, error) {
 		perr.retry = true
 		perr.after = 10 * time.Second
 	}
-	return "", perr
-}
-
-// pingGCM is a special case of pingDevice for GCM endpoints.
-func pingGCM(c context.Context, endpoint string) (string, error) {
-	reg, endpoint := extractGCMRegistration(endpoint)
-	data := url.Values{"registration_id": {reg}}
-	r, err := http.NewRequest("POST", endpoint, strings.NewReader(data.Encode()))
-	if err != nil {
-		// invalid endpoint URL
-		return "", &pushError{msg: fmt.Sprintf("pingGCM: %v", err), remove: true}
-	}
-	r.Header.Set("content-type", "application/x-www-form-urlencoded")
-	r.Header.Set("authorization", "key="+config.Google.GCM.Key)
-
-	logf(c, "DEBUG: posting to %q: %v", endpoint, data)
-	resp, err := httpClient(c).Do(r)
-	if err != nil {
-		return "", &pushError{msg: fmt.Sprintf("pingGCM: %v", err), retry: true}
-	}
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return "", &pushError{msg: fmt.Sprintf("pingGCM: %v", err), retry: true}
-	}
-	logf(c, "pingGCM: response: %s %s", resp.Status, body)
-
-	q, err := url.ParseQuery(string(body))
-	if err != nil {
-		errorf(c, "%v: %s", err, body)
-		q = url.Values{}
-	}
-	errorStr := q.Get("Error")
-	retry, _ := strconv.Atoi(resp.Header.Get("retry-after"))
-	after := time.Duration(retry) * time.Second
-	if after < time.Second {
-		after = 10 * time.Second
-	}
-	if resp.StatusCode != http.StatusOK {
-		return "", &pushError{
-			msg:    fmt.Sprintf("pingGCM: %s %s", resp.Status, body),
-			remove: resp.StatusCode == http.StatusNotFound,
-			retry:  resp.StatusCode >= 500,
-			after:  after,
-		}
-	}
-	if errorStr == "" {
-		return pushEndpointURL(q.Get("registration_id"), ""), nil
-	}
-	pe := &pushError{
-		msg:   "pingDevice: " + errorStr,
-		after: after,
-	}
-	switch errorStr {
-	case "NotRegistered", "MissingRegistration", "InvalidRegistration":
-		pe.remove = true
-	case "Unavailable", "InternalServerError", "DeviceMessageRateExceeded":
-		pe.retry = true
-	}
-	return "", pe
-}
-
-// extractGCMRegistration splits endpoint into registration ID and GCM endpoint URL.
-func extractGCMRegistration(endpoint string) (string, string) {
-	reg := strings.TrimPrefix(endpoint, config.Google.GCM.Endpoint)
-	return strings.TrimLeft(reg, "/"), config.Google.GCM.Endpoint
-}
-
-// pushEndpointURL does the opposite of extractGCMRegistration.
-// endpoint defaults to config.Google.GCM.Endpoint.
-func pushEndpointURL(reg string, endpoint string) string {
-	if reg == "" && endpoint == "" {
-		return ""
-	}
-	if reg == "" {
-		return endpoint
-	}
-	if endpoint == "" {
-		endpoint = config.Google.GCM.Endpoint
-	}
-	endpoint = strings.TrimRight(endpoint, "/")
-	reg = strings.TrimLeft(reg, "/")
-	return endpoint + "/" + reg
-}
-
-// upgradeSubscribers replaces registration IDs regs with GCM-based endpoint URLs
-// using pushEndpointURL() func.
-// Returned value is converted regs and non-GCM endpoints.
-// Original args remain unchanged.
-func upgradeSubscribers(regs []string, endpoints []string) []string {
-	endpoints = append([]string{}, endpoints...)
-	for _, id := range regs {
-		endpoints = append(endpoints, pushEndpointURL(id, ""))
-	}
-	return unique(subslice(endpoints, config.Google.GCM.Endpoint))
+	return perr
 }

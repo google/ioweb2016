@@ -21,10 +21,8 @@ import (
 	"net/url"
 	"path"
 	"strings"
-	"time"
 
 	"golang.org/x/net/context"
-	"google.golang.org/appengine"
 	"google.golang.org/appengine/taskqueue"
 )
 
@@ -44,56 +42,19 @@ func notifySubscribersAsync(c context.Context, d *dataChanges, all bool) error {
 	return err
 }
 
-// pingUserAsync creates an async job to send a push notification to user devices.
-// sessions are session IDs used to compare against user bookmarks.
-// TODO: add ioext support
-func pingUserAsync(c context.Context, uid string, sessions []string, all bool) error {
-	p := path.Join(config.Prefix, "/task/ping-user")
+func notifyUserAsync(c context.Context, uid, shard string, m *pushMessage) error {
+	p := path.Join(config.Prefix, "/task/notify-user")
+	msg, err := json.Marshal(m)
+	if err != nil {
+		return err
+	}
 	t := taskqueue.NewPOSTTask(p, url.Values{
-		"uid":      {uid},
-		"sessions": {strings.Join(sessions, " ")},
-		"all":      {fmt.Sprintf("%v", all)},
+		"uid":     {uid},
+		"shard":   {shard},
+		"message": {string(msg)},
 	})
-	_, err := taskqueue.Add(c, t, "")
+	_, err = taskqueue.Add(c, t, "")
 	return err
-}
-
-// pingDevicesAsync schedules len(endpoints) tasks of /ping-device.
-// d specifies the duration the tasker must wait before executing the task.
-// If scheduling fails for some endpoints, those will be in the returned values
-// along with a non-nil error.
-func pingDevicesAsync(c context.Context, uid string, endpoints []string, d time.Duration) ([]string, error) {
-	if len(endpoints) == 0 {
-		return nil, nil
-	}
-	p := path.Join(config.Prefix, "/task/ping-device")
-	jobs := make([]*taskqueue.Task, 0, len(endpoints))
-	for _, endpoint := range endpoints {
-		t := taskqueue.NewPOSTTask(p, url.Values{
-			"uid":      {uid},
-			"endpoint": {endpoint},
-		})
-		t.Delay = d
-		jobs = append(jobs, t)
-	}
-
-	_, err := taskqueue.AddMulti(c, jobs, "")
-	merr, mok := err.(appengine.MultiError)
-	if !mok {
-		return nil, err
-	}
-
-	var errEndpoints []string
-	for i, e := range merr {
-		if e == nil {
-			continue
-		}
-		errEndpoints = append(errEndpoints, endpoints[i])
-	}
-	if len(errEndpoints) == 0 {
-		return nil, nil
-	}
-	return errEndpoints, fmt.Errorf("pingDevicesAsync: %v", err)
 }
 
 // submitSessionSurveyAsync schedules an async job to submit feedback survey s for session sid.

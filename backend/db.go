@@ -21,6 +21,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"math/rand"
+	"net/http"
 	"strings"
 	"time"
 
@@ -81,64 +82,48 @@ func storeUserPushInfo(c context.Context, p *userPush) error {
 	//return err
 }
 
-// TODO: port to firebase
-//
 // getUserPushInfo fetches user push configuration from a persistent DB.
 // If the configuration does not exist yet, a default one is returned.
 // Default configuration has all notification settings disabled.
-func getUserPushInfo(c context.Context, uid string) (*userPush, error) {
-	return &userPush{userID: uid}, nil
-	//key := datastore.NewKey(c, kindUserPush, uid, 0, nil)
-	//p := &userPush{userID: uid}
-	//err := datastore.Get(c, key, p)
-	//if err == datastore.ErrNoSuchEntity {
-	//	err = nil
-	//}
-	//if err != nil {
-	//	return nil, err
-	//}
-
-	//if p.Ext.Enabled {
-	//	p.Pext = &p.Ext
-	//}
-	//return p, err
+func getUserPushInfo(c context.Context, uid, shard string) (*userPush, error) {
+	u := fmt.Sprintf("%s/users/%s.json", shard, uid)
+	res, err := firebaseClient(c).Get(u)
+	if err != nil {
+		return nil, err
+	}
+	defer res.Body.Close()
+	if res.StatusCode >= 400 {
+		return nil, fmt.Errorf("error (%d) fetching user push info", res.StatusCode)
+	}
+	var pushInfo userPush
+	if err = json.NewDecoder(res.Body).Decode(&pushInfo); err != nil {
+		return nil, err
+	}
+	pushInfo.userID = uid
+	return &pushInfo, nil
 }
 
-// TODO: port to firebase
-//
-// updatePushEndpoint replaces old endpoint with the new URL nurl.
-// It must be run in a transactional context.
-func updatePushEndpoint(c context.Context, uid, endpoint, nurl string) error {
-	pi, err := getUserPushInfo(c, uid)
+
+// deleteSubscription removes key from the list of push subscriptions of user uid.
+func deleteSubscription(c context.Context, uid, shard, key string) error {
+	logf(c, "deleteSubscription\n - Shard: %s\n - User: %s\n - Key: %s", shard, uid, key)
+
+	client := firebaseClient(c)
+
+	u := fmt.Sprintf("%s/users/%s/web_push_subscriptions/%s.json", shard, uid, key)
+	logf(c, "deleting %s", u)
+	req, err := http.NewRequest("DELETE", u, nil)
 	if err != nil {
 		return err
 	}
-	for i, e := range pi.Endpoints {
-		if e == endpoint {
-			pi.Endpoints[i] = nurl
-			return storeUserPushInfo(c, pi)
-		}
-	}
-	return nil
-}
-
-// TODO: port to firebase
-//
-// deletePushEndpoint removes endpoint from the list of push endpoints of user uid.
-// It must be run in a transactional context.
-func deletePushEndpoint(c context.Context, uid, endpoint string) error {
-	pi, err := getUserPushInfo(c, uid)
+	res, err := client.Do(req)
 	if err != nil {
 		return err
 	}
-	for i, e := range pi.Endpoints {
-		if e == endpoint {
-			pi.Endpoints = append(pi.Endpoints[:i], pi.Endpoints[i+1:]...)
-			if i < len(pi.Subscribers) {
-				pi.Subscribers = append(pi.Subscribers[:i], pi.Subscribers[i+1:]...)
-			}
-			return storeUserPushInfo(c, pi)
-		}
+	defer res.Body.Close()
+	if res.StatusCode >= 400 {
+		logf(c, "error (%d) deleting subscription", res.StatusCode)
+		return nil
 	}
 	return nil
 }
