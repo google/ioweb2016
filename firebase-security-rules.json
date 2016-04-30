@@ -1,12 +1,15 @@
 {
   "rules": {
     "users": {
-      ".indexOn": "last_activity_timestamp",
+      ".indexOn": ["last_activity_timestamp", "used_web_app"],
       "$user_id": {
         ".read": "$user_id === auth.uid",
         ".write": "$user_id === auth.uid",
         "last_activity_timestamp": {
           ".validate": "!data.exists() || newData.val() > data.val()"
+        },
+        "used_web_app": {
+          ".validate": "newData.val() === true"
         },
         "web_notifications_enabled": {
           ".validate": "newData.val() === true || newData.val() === false"
