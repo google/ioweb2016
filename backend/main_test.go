@@ -15,14 +15,8 @@
 package backend
 
 import (
-	"crypto/rand"
-	"crypto/rsa"
-	"crypto/x509"
-	"crypto/x509/pkix"
-	"encoding/pem"
 	"fmt"
 	"io"
-	"math/big"
 	"net/http"
 	"os"
 	"sync"
@@ -34,7 +28,7 @@ import (
 	"google.golang.org/appengine/aetest"
 )
 
-const testUserID = "user-12345"
+const testUserID = "google:123"
 
 var (
 	aetInstWg sync.WaitGroup // keeps track of instances being shut down preemptively
@@ -138,37 +132,6 @@ func aetInstance(t *testing.T) aetest.Instance {
 func preserveConfig() func() {
 	orig := config
 	return func() { config = orig }
-}
-
-func jwsTestKey(notBefore, notAfter time.Time) (pemKey []byte, pemCert []byte) {
-	key, err := rsa.GenerateKey(rand.Reader, 1024)
-	if err != nil {
-		panic(fmt.Sprintf("rsa.GenerateKey: %v", err))
-	}
-	pemKey = pem.EncodeToMemory(&pem.Block{
-		Type:  "RSA PRIVATE KEY",
-		Bytes: x509.MarshalPKCS1PrivateKey(key),
-	})
-
-	tcert := x509.Certificate{
-		SerialNumber:          big.NewInt(1),
-		Subject:               pkix.Name{CommonName: "www.example.org"},
-		Issuer:                pkix.Name{CommonName: "www.example.org"},
-		NotBefore:             notBefore,
-		NotAfter:              notAfter,
-		KeyUsage:              x509.KeyUsageKeyEncipherment | x509.KeyUsageDigitalSignature,
-		ExtKeyUsage:           []x509.ExtKeyUsage{x509.ExtKeyUsageClientAuth},
-		BasicConstraintsValid: true,
-	}
-
-	var cert []byte
-	cert, err = x509.CreateCertificate(rand.Reader, &tcert, &tcert, &key.PublicKey, key)
-	if err != nil {
-		panic(fmt.Sprintf("x509.CreateCertificate: %v", err))
-	}
-	pemCert = pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: cert})
-
-	return pemKey, pemCert
 }
 
 func toSessionIDs(a []*eventSession) []string {
