@@ -1,22 +1,29 @@
 # The humans responsible & technology colophon - humanstxt.org
 
-# TEAM -----
+# CORE TEAM -----
 
-  Eric Bidelman (lead dev) - ebidel
-  Jeff Posnick (dev) - jeffposnick
-  Alex Vaghin (dev) - crhym3
-  Nicolas Garnier (dev) - nicolasgarnier
-  Brendan Kenny (dev) - brendankenny
+  Eric Bidelman (ebidel) - lead dev
+  Jeff Posnick (jeffposnick) - service worker, offline
+  Peng Ying (pengying) - session feedback, agenda, misc frontend
+  Alex Vaghin (crhym3) - Go backend, API integration
+  Nicolas Garnier (nicolasgarnier) - firebase, notifications
+  Mat Scales (wibblymat) - notifications
+  Rob Dodson (rob_dodson) - a11y
 
-# THANKS -----
+# THANKS / CONTRIBUTORS -----
 
-  Mat Scales - wibblymat
-  Matthew Gaunt - gauntface
-  Frank van Puffelen - puff
+  Paul Farning (paulfarning) - attend, extended, shuttle schedule
+  Thomas Reynolds (tdreyno) - countdown
+  Sasha Burchuk (sashaburchuk) - frontend
+  Philip Walton (philipwalton) - analytics
+  Brendan Kenny (brendankenny) - perf, build
+  Frank van Puffelen (puff) - firebase consultation
+  Matthew Gaunt (gauntface) - notifications
+  The Polymer team
 
 # TECHNOLOGY -----
 
-FRONTEND
+Frontend
   - Polymer 1.0 (polymer-project.org)
     + web components: html imports, <template>, custom elements, shadow dom
     + iron elements, paper elements, google web components
@@ -50,13 +57,13 @@ APIS
   - Google Picasa
   - YouTube player
 
-BACKEND
+Backend
   - Go
   - App Engine
   - Firebase REST API
   - Google Cloud Messaging (GCM)
 
-BUILD
+Build
  - Gulp
  - Bower
  - npm
