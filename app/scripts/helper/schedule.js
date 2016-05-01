@@ -332,7 +332,8 @@ class Schedule {
       if (saved) {
         return notificationWidget.subscribeIfAble().then(subscribed => {
           if (subscribed) {
-            IOWA.Elements.Toast.showMessage('Added to My Schedule. ' + message);
+            IOWA.Elements.Toast.showMessage('Added to My Schedule. ' + message,
+                                            null, null, null, 5000);
           } else if (Notification.permission === 'denied') {
             // The subscription couldn't be completed due to the page
             // permissions for notifications being set to denied.
@@ -340,11 +341,13 @@ class Schedule {
               null, 'Learn how', () => window.open('permissions', '_blank'));
           } else {
             // Some other reason for not enabling notifications
-            IOWA.Elements.Toast.showMessage('Added to My Schedule.');
+            IOWA.Elements.Toast.showMessage('Added to My Schedule.',
+                                            null, null, null, 5000);
           }
         });
       }
-      IOWA.Elements.Toast.showMessage('Removed from My Schedule');
+      IOWA.Elements.Toast.showMessage('Removed from My Schedule',
+                                      null, null, null, 5000);
     } else {
       // If notificationWidget isn't present and we're not auth'ed, then display
       // a message about the schedule update being queued.
