@@ -188,8 +188,10 @@ limitations under the License.
     },
 
     attached: function() {
-      this.listen(IOWA.Elements.ScrollContainer, 'scroll', '_onPageScroll');
-      this.fetchLocations();
+      Polymer.RenderStatus.afterNextRender(this, function() {
+        this.listen(IOWA.Elements.ScrollContainer, 'scroll', '_onPageScroll');
+        this.fetchLocations();
+      });
     },
 
     detached: function() {

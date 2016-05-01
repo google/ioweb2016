@@ -208,10 +208,12 @@ limitations under the License.
     name: 'widget',
 
     attached: function() {
-      // Reset template variables for when revisiting the page.
-      this.selectedGadgetLayout = 'both';
+      Polymer.RenderStatus.afterNextRender(this, function() {
+        // Reset template variables for when revisiting the page.
+        this.selectedGadgetLayout = 'both';
 
-      this.updateIframeCode(); // Set initial iframe code snippet.
+        this.updateIframeCode(); // Set initial iframe code snippet.
+      });
     },
 
     updateIframeCode: function(e) {

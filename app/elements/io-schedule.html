@@ -492,8 +492,10 @@ Fired when the user toggles bookmarking/removing a session.
         ],
 
         attached: function() {
-          this.listen(window, 'popstate', 'sessionDetailsPopstateHandler');
-          this.listen(window, 'click', '_closeFilters');
+          Polymer.RenderStatus.afterNextRender(this, function() {
+            this.listen(window, 'popstate', 'sessionDetailsPopstateHandler');
+            this.listen(window, 'click', '_closeFilters');
+          });
         },
 
         detached: function() {
