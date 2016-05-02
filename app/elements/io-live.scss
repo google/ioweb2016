@@ -122,6 +122,7 @@ paper-tabs {
 
   paper-tab {
     cursor: pointer;
+    flex: 1;
   }
 
   paper-tab[disabled] {
