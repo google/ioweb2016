@@ -157,14 +157,26 @@ Fired when a new toast appears.
        * @param {string} opt_action Optional action link.
        * @param {function} opt_actionHandler Optional handler to execute when
        *     the action is tapped.
+       * @param {Number} opt_duration Optional duration to show the toast for.
        */
-      showMessage: function(message, opt_tapHandler, opt_action, opt_actionHandler) {
+      showMessage: function(message, opt_tapHandler, opt_action,
+                            opt_actionHandler, opt_duration) {
+        this.close();
+
+        // Override duration just for this toast.
+        var originalDuration = this.duration;
+        if (typeof opt_duration !== 'undefined') {
+          this.duration = opt_duration;
+        }
+
         this.text = message;
         this._tapHandler = opt_tapHandler;
         this.action = opt_action;
         this._actionHandler = opt_actionHandler;
         this.$.internaltoast.show();
         this.fire('toast-message', {message: message});
+
+        this.duration = originalDuration; // reset site-wide duration.
       },
 
       _handleTap: function() {

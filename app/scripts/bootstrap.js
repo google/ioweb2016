@@ -94,7 +94,7 @@
   }
 
   function lazyLoadWCPolyfillsIfNecessary() {
-    var onload = function() {
+    const onload = function() {
       // For native Imports, manually fire WCR so user code
       // can use the same code path for native and polyfill'd imports.
       if (!window.HTMLImports) {
@@ -127,14 +127,7 @@
     document.body.classList.remove('loading');
   }
 
-  function afterImports() {
-    initWorker();
-
-    // Wait for HTMLImportsLoaded to ensure scripts at the bottom of the page
-    // have run. In certain situations, we've seen a race condition where the
-    // elements.html bundle finishes loading before IOWA.Elements is defined.
-    // Since bootstrap is the last js file we load, this should make sure
-    // IOWA.Elements is defined and the import has loaded.
+  function afterCriticalImports() {
     Polymer.Base.importHref('/io2016/elements/elements.html', function() {
       IOWA.Elements.onElementsBundleLoaded();
 
@@ -153,29 +146,12 @@
       }
     }, null, true);
 
-    IOWA.Router = IOWA.Router_(window); // eslint-disable-line new-cap
-    IOWA.Elements.init();
-    IOWA.Router.init(IOWA.Elements.Template);
-
     IOWA.Schedule.loadCachedUserSchedule();
   }
 
   window.addEventListener('keydown', function(e) {
     // ESC closes any overlays.
     if (e.keyCode === 27) {
-      // var template = IOWA.Elements.Template;
-      // if (template.app.fullscreenVideoActive) {
-      //   if (template.closeVideoCard) {
-      //     template.closeVideoCard();
-      //   }
-      //   if (template.closeVideoSection) {
-      //     template.closeVideoSection();
-      //   }
-      // }
-      // if (template.mapGalleryActive) {
-      //   template.closeMapGallery();
-      // }
-
       var subnav = document.querySelector('io-schedule-subnav');
       if (subnav) {
         subnav.closeFilters();
@@ -190,7 +166,8 @@
 
   window.addEventListener('resize', function() {
     // FF mobile sends resize event on page load. Be careful!
-    if (IOWA.Elements && IOWA.Elements.Template) {
+    if (IOWA.Elements && IOWA.Elements.Template &&
+        IOWA.Elements.Template.debounce) {
       IOWA.Elements.Template.debounce('resize', function() {
         this.closeDrawer();
         // remove fab sticky scrolling behavior for mobile. Add for desktop.
@@ -206,15 +183,6 @@
     }
   });
 
-  lazyLoadWCPolyfillsIfNecessary();
-
-  // Wait for critical.html to load if we don't have native HTML imports.
-  if (IOWA.Util.supportsHTMLImports) {
-    afterImports();
-  } else {
-    document.addEventListener('HTMLImportsLoaded', afterImports);
-  }
-
   // See https://developers.google.com/web/fundamentals/engage-and-retain/app-install-banners/advanced
   window.addEventListener('beforeinstallprompt', function(event) {
     IOWA.Analytics.trackEvent('installprompt', 'fired');
@@ -227,4 +195,27 @@
         choiceResult.platform);
     });
   });
+
+  function initApp() {
+    IOWA.Router = IOWA.Router_(window); // eslint-disable-line new-cap
+    IOWA.Elements.init();
+    IOWA.Router.init(IOWA.Elements.Template);
+
+    initWorker(); // Kick off fetching master schedule asap.
+
+    lazyLoadWCPolyfillsIfNecessary();
+
+    // Wait for critical.html to load if we don't have native HTML imports.
+    // Can't use Polymer.RenderStatus.whenReady() b/c potentially, we have
+    // to wait for the polyfills to load (above) and the critical.html to
+    // load so Polymer is defined. Instead, wait for HTMLImportsLoaded if
+    // we're in a polyfilled browser (but go right away if Imports are native).
+    if (IOWA.Util.supportsHTMLImports) {
+      afterCriticalImports();
+    } else {
+      document.addEventListener('HTMLImportsLoaded', afterCriticalImports);
+    }
+  }
+
+  initApp();
 })();

@@ -68,8 +68,14 @@ IOWA.ServiceWorkerRegistration = (function() {
           window.location.reload();
         };
 
-        IOWA.Elements.Toast.showMessage(
-            'Tap here or refresh the page for the latest content.', tapHandler);
+        if (IOWA.Elements && IOWA.Elements.Toast &&
+            IOWA.Elements.Toast.showMessage) {
+          IOWA.Elements.Toast.showMessage(
+            'A new version of this app is available.', tapHandler, 'Refresh',
+            null, 0); // duration 0 indications shows the toast indefinitely.
+        } else {
+          tapHandler(); // Force reload if user never was shown the toast.
+        }
       }
     };
   }
