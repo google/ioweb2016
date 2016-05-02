@@ -27,7 +27,7 @@
         },
         "my_sessions": {
           "$session_id": {
-            ".validate": "(!data.exists() || newData.child('timestamp').val() > data.child('timestamp').val()) && newData.val() < now + 600000"
+            ".validate": "(!data.exists() || newData.child('timestamp').val() > data.child('timestamp').val()) && (newData.child('timestamp').val() < now + 600000)"
           }
         },
         "feedback_submitted_sessions": {
