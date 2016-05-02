@@ -350,16 +350,18 @@ limitations under the License.
     },
 
     attached: function() {
-      this.listen(IOWA.Elements.ScrollContainer, 'scroll', '_onPageScroll');
+      Polymer.RenderStatus.afterNextRender(this, function() {
+        this.listen(IOWA.Elements.ScrollContainer, 'scroll', '_onPageScroll');
 
-      // Calculate top of tweet cycler / hashtag video section.
-      this._lowerScrollThreshold = IOWA.Elements.Footer.clientHeight +
-          parseInt(getComputedStyle(IOWA.Elements.Footer).height) +
-          Polymer.dom(this.root).querySelector('.io__hash').clientHeight;
+        // Calculate top of tweet cycler / hashtag video section.
+        this._lowerScrollThreshold = IOWA.Elements.Footer.clientHeight +
+            parseInt(getComputedStyle(IOWA.Elements.Footer).height) +
+            Polymer.dom(this.root).querySelector('.io__hash').clientHeight;
 
-      // Wait till after subnav effects to look for focusable items
-      this.async(function() {
-        IOWA.A11y.addFocusStates(SUBTAB_SELECTOR);
+        // Wait till after subnav effects to look for focusable items
+        this.async(function() {
+          IOWA.A11y.addFocusStates(SUBTAB_SELECTOR);
+        });
       });
     },
 

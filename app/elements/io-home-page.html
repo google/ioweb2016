@@ -273,30 +273,32 @@ limitations under the License.
     name: 'home',
 
     attached: function() {
-      // Reset template variables for when revisiting the page.
-      this.set('app.fullscreenVideoActive', false);
+      Polymer.RenderStatus.afterNextRender(this, function() {
+        // Reset template variables for when revisiting the page.
+        this.set('app.fullscreenVideoActive', false);
 
-      //this.$.threshold.scrollTarget = IOWA.Elements.ScrollContainer;
+        //this.$.threshold.scrollTarget = IOWA.Elements.ScrollContainer;
 
-      // Calculate top of tweet cycler / hashtag video section.
-      // this.$.threshold.lowerThreshold = IOWA.Elements.Footer.clientHeight +
-      //     parseInt(getComputedStyle(IOWA.Elements.Footer).height) +
-      //     Polymer.dom(this.root).querySelector('.card-content.box').clientHeight;
+        // Calculate top of tweet cycler / hashtag video section.
+        // this.$.threshold.lowerThreshold = IOWA.Elements.Footer.clientHeight +
+        //     parseInt(getComputedStyle(IOWA.Elements.Footer).height) +
+        //     Polymer.dom(this.root).querySelector('.card-content.box').clientHeight;
 
-      if (this.app.isPhoneSize) {
-        this.listen(IOWA.Elements.ScrollContainer, 'scroll', '_onPageScroll');
-      }
+        if (this.app.isPhoneSize) {
+          this.listen(IOWA.Elements.ScrollContainer, 'scroll', '_onPageScroll');
+        }
 
-      // Stop tweet cycler if focused, resume when blurred
-      // Focus and blur events don't bubble so need to use capturing
-      // event handlers.
-      // Keep a reference to the bound functions around so we can clean them up
-      // in detached
-      this._stopTweetCycler = this.stopTweetCycler.bind(this);
-      this._startTweetCycler = this.startTweetCycler.bind(this);
+        // Stop tweet cycler if focused, resume when blurred
+        // Focus and blur events don't bubble so need to use capturing
+        // event handlers.
+        // Keep a reference to the bound functions around so we can clean them up
+        // in detached
+        this._stopTweetCycler = this.stopTweetCycler.bind(this);
+        this._startTweetCycler = this.startTweetCycler.bind(this);
 
-      this.$.social_card.addEventListener('focus', this._stopTweetCycler, true);
-      this.$.social_card.addEventListener('blur', this._startTweetCycler, true);
+        this.$.social_card.addEventListener('focus', this._stopTweetCycler, true);
+        this.$.social_card.addEventListener('blur', this._startTweetCycler, true);
+      });
     },
 
     detached: function() {
