@@ -82,8 +82,8 @@ To deploy complete application on App Engine:
 
 Backend is written in Go, hosted on Google App Engine.
 
-`go test ./backend` will run backend server tests. You'll need to make sure
-there's a `server.config` file in `./backend` dir.
+`cd backend && goapp test` will run backend server tests. You'll need to make sure
+there's a `server.config` file in the `backend` dir.
 
 ## Debugging
 
