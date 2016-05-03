@@ -142,7 +142,8 @@
       var fp = IOWA.Util.getFPIfSupported();
       if (fp) {
         debugLog('first paint:', fp, 'ms');
-        IOWA.Analytics.trackPerf('load', 'firstpaint', fp);
+        IOWA.Analytics.trackPerf(
+            'load', 'firstpaint', fp, null, IOWA.Analytics.FP_TIMEOUT_);
       }
     }, null, true);
 
