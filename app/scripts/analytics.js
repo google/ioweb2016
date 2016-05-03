@@ -53,6 +53,7 @@ IOWA.Analytics = IOWA.Analytics || (function(exports) {
   }
 
   Analytics.prototype.POLYMER_ANALYTICS_TIMEOUT_ = 60 * 1000;
+  Analytics.prototype.FP_TIMEOUT_ = 6 * 1000;
   Analytics.prototype.READY_STATE_TIMEOUT_ = 5 * 1000;
   Analytics.prototype.NULL_DIMENSION = '(not set)';
 
