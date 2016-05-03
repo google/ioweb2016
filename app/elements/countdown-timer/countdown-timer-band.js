@@ -129,8 +129,8 @@ IOWA.CountdownTimer.Band.prototype.update = function() {
   ctx.lineWidth = this.parent.strokeWeight;
   ctx.lineJoin = ctx.lineCap = 'round';
 
-  var overClearX = this.parent.bandGutter / 2;
-  var overClearY = (this.parent.bandGutter + this.parent.bandPadding) / 2;
+  var overClearX = (this.parent.bandGutter / 2) + 2;
+  var overClearY = ((this.parent.bandGutter + this.parent.bandPadding) / 2) + 2;
 
   ctx.clearRect(
     (this.center.x - this.radius) - overClearX / 2,
