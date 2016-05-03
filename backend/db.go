@@ -103,7 +103,6 @@ func getUserPushInfo(c context.Context, uid, shard string) (*userPush, error) {
 	return &pushInfo, nil
 }
 
-
 // deleteSubscription removes key from the list of push subscriptions of user uid.
 func deleteSubscription(c context.Context, uid, shard, key string) error {
 	logf(c, "deleteSubscription\n - Shard: %s\n - User: %s\n - Key: %s", shard, uid, key)

@@ -20,7 +20,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
-	"net/url"
 	"reflect"
 	"sort"
 	"strconv"
@@ -1120,46 +1119,6 @@ func TestSyncEventDataWithDiff(t *testing.T) {
 //	}
 //}
 
-func TestHandlePingDeviceGCMDelete(t *testing.T) {
-	defer preserveConfig()()
-
-	// GCM server
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Error=NotRegistered")
-	}))
-	defer ts.Close()
-	config.Google.GCM.Endpoint = ts.URL
-
-	r, _ := aetestInstance.NewRequest("POST", "/task/ping-device", nil)
-	r.Form = url.Values{
-		"uid":      {testUserID},
-		"endpoint": {ts.URL + "/reg-123"},
-	}
-	r.Header.Set("x-appengine-taskexecutioncount", "1")
-
-	c := newContext(r)
-	storeUserPushInfo(c, &userPush{
-		userID:    testUserID,
-		Enabled:   true,
-		Endpoints: []string{ts.URL + "/reg-123"},
-	})
-
-	w := httptest.NewRecorder()
-	handlePingDevice(w, r)
-
-	if w.Code != http.StatusOK {
-		t.Errorf("w.Code = %d; want 200", w.Code)
-	}
-
-	pi, err := getUserPushInfo(c, testUserID)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if len(pi.Subscribers) != 0 || len(pi.Endpoints) != 0 {
-		t.Errorf("pi.Subscrbers=%v pi.Endpoints=%v; want []", pi.Subscribers, pi.Endpoints)
-	}
-}
-
 // TODO: refactor when ported to firebase
 //
 //func TestHandlePingDeviceGCMReplace(t *testing.T) {
@@ -1204,36 +1163,6 @@ func TestHandlePingDeviceGCMDelete(t *testing.T) {
 //		t.Errorf("len(pi.Subscribers) = %d; want 0", l)
 //	}
 //}
-
-func TestHandlePingDevice(t *testing.T) {
-	defer preserveConfig()()
-
-	count := 0
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if ah := r.Header.Get("authorization"); ah != "" {
-			t.Errorf("ah = %q; want ''", ah)
-		}
-		w.WriteHeader(http.StatusOK)
-		count++
-	}))
-	defer ts.Close()
-
-	r, _ := aetestInstance.NewRequest("POST", "/task/ping-device", nil)
-	r.Form = url.Values{
-		"uid":      {testUserID},
-		"endpoint": {ts.URL + "/reg-123"},
-	}
-	r.Header.Set("x-appengine-taskexecutioncount", "1")
-	w := httptest.NewRecorder()
-	handlePingDevice(w, r)
-
-	if w.Code != http.StatusOK {
-		t.Errorf("w.Code = %d; want 200", w.Code)
-	}
-	if count != 1 {
-		t.Errorf("req count = %d; want 1", count)
-	}
-}
 
 // TODO: refactor when ported to firebase
 //
