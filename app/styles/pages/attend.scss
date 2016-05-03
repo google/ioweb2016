@@ -37,7 +37,6 @@ $name: 'page-attend';
         }
       }
 
-
       p {
         @include typo-heading-2();
         line-height: 32px;
@@ -45,6 +44,10 @@ $name: 'page-attend';
         @media (max-width: $tablet-breakpoint-max) {
           @include typo-mobile-intro-card();
         }
+      }
+
+      .-off-screen-focus:focus {
+        position: static !important;
       }
     }
   }
