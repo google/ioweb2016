@@ -24,6 +24,18 @@ IOWA.CountdownTimer.DESKTOP_BREAKPOINT = 1400;
 IOWA.CountdownTimer.XLARGE_BREAKPOINT = 4000;
 IOWA.CountdownTimer.MAX_WIDTH = 1800;
 IOWA.CountdownTimer.CENTER_OFFSET = 32;
+IOWA.CountdownTimer.ICON_SHAPES = [
+  'infinity',
+  'slash',
+  'square',
+  'arrow',
+  'android',
+  'cloud',
+  'hexagon',
+  'circle-1',
+  'circle-2',
+  'circle-3'
+];
 
 IOWA.CountdownTimer.Core = function(targetDate, elem) {
   this.targetDate = targetDate;
@@ -51,6 +63,10 @@ IOWA.CountdownTimer.Core = function(targetDate, elem) {
 
   this.unitsAdded = false;
   this.drawAll = false;
+  this.shouldRandomize = false;
+  this.currentlyRandomizing = false;
+  this.randomIconStack = IOWA.CountdownTimer.ICON_SHAPES.slice(0);
+  this.isCountdownComplete = (new Date()) >= targetDate;
 
   this.posShift = 0;
 
@@ -131,7 +147,22 @@ IOWA.CountdownTimer.Core.prototype.pause = function() {
   this.isPlaying = false;
 };
 
+IOWA.CountdownTimer.Core.prototype.randomShape = function() {
+  var found = this.randomIconStack.shift();
+  this.randomIconStack.push(found);
+  return found;
+};
+
 IOWA.CountdownTimer.Core.prototype.checkTime = function() {
+  if (this.isCountdownComplete || (new Date()) >= this.targetDate) {
+    if (!this.isCountdownComplete) {
+      this.isCountdownComplete = true;
+      this.containerDomElement.fire('countdown-complete');
+    }
+
+    this.shouldRandomize = true;
+  }
+
   var distance = this.unitDistance(this.targetDate, new Date());
 
   // Only set aria-label once @ page load. Updating it every clock tick is
@@ -164,28 +195,59 @@ IOWA.CountdownTimer.Core.prototype.checkTime = function() {
     this.firstRun = false;
   }
 
-  if (this.firstRun || this.lastNumbers.days !== distance.days) {
-    this.bands[0].changeShape(Math.floor(distance.days / 10));
-    this.bands[1].changeShape(distance.days % 10);
-  }
+  if (this.shouldRandomize || this.currentlyRandomizing) {
+    if (!this.currentlyRandomizing) {
+      this.startRandomizing();
+    }
+  } else {
+    if (this.firstRun || this.lastNumbers.days !== distance.days) {
+      this.bands[0].changeShape(Math.floor(distance.days / 10));
+      this.bands[1].changeShape(distance.days % 10);
+    }
 
-  if (this.firstRun || this.lastNumbers.hours !== distance.hours) {
-    this.bands[2].changeShape(Math.floor(distance.hours / 10));
-    this.bands[3].changeShape(distance.hours % 10);
-  }
+    if (this.firstRun || this.lastNumbers.hours !== distance.hours) {
+      this.bands[2].changeShape(Math.floor(distance.hours / 10));
+      this.bands[3].changeShape(distance.hours % 10);
+    }
 
-  if (this.firstRun || this.lastNumbers.minutes !== distance.minutes) {
-    this.bands[4].changeShape(Math.floor(distance.minutes / 10));
-    this.bands[5].changeShape(distance.minutes % 10);
-  }
+    if (this.firstRun || this.lastNumbers.minutes !== distance.minutes) {
+      this.bands[4].changeShape(Math.floor(distance.minutes / 10));
+      this.bands[5].changeShape(distance.minutes % 10);
+    }
 
-  if (this.firstRun || this.lastNumbers.seconds !== distance.seconds) {
-    this.bands[6].changeShape(Math.floor(distance.seconds / 10));
-    this.bands[7].changeShape(distance.seconds % 10);
-  }
+    if (this.firstRun || this.lastNumbers.seconds !== distance.seconds) {
+      this.bands[6].changeShape(Math.floor(distance.seconds / 10));
+      this.bands[7].changeShape(distance.seconds % 10);
+    }
 
-  this.lastNumbers = distance;
-  this.firstRun = false;
+    this.lastNumbers = distance;
+    this.firstRun = false;
+  }
+};
+
+IOWA.CountdownTimer.Core.prototype.startRandomizing = function() {
+  this.shouldRandomize = false;
+  this.currentlyRandomizing = true;
+
+  this.bands.forEach(function(band) {
+    band.changeShape(this.randomShape(band.currentShape));
+  }.bind(this));
+
+  var setA = [];
+  var setB = this.bands.slice(0);
+
+  this.randomInterval = setInterval(function() {
+    setTimeout(function() {
+      if (setA.length <= 0) {
+        setA = setB.slice(0);
+      }
+
+      var randomIndex = Math.ceil(Math.random() * (setA.length - 1));
+      var band = setA[randomIndex];
+      setA.splice(randomIndex, 1);
+      band.changeShape(this.randomShape(band.currentShape));
+    }.bind(this), Math.random() * 200);
+  }.bind(this), 200);
 };
 
 IOWA.CountdownTimer.Core.prototype.onFrame = function() {
@@ -222,7 +284,7 @@ IOWA.CountdownTimer.Core.prototype.onFrame = function() {
   ctx.restore();
 
   // add units
-  if (!this.unitsAdded || this.drawAll) {
+  if (!this.currentlyRandomizing && (!this.unitsAdded || this.drawAll)) {
     this.addUnits();
     this.unitsAdded = true;
   }
@@ -233,7 +295,7 @@ IOWA.CountdownTimer.Core.prototype.onFrame = function() {
   }
 
   // add separating slashes
-  if (this.format === 'horizontal') {
+  if (!this.currentlyRandomizing && this.format === 'horizontal') {
     this.addSeparators();
   }
 
@@ -429,6 +491,11 @@ IOWA.CountdownTimer.Core.prototype.getDigits = function() {
   for (var i = 0; i < 10; i++) {
     var path = this.getPath('path-' + i);
     this.digits[i] = path;
+  }
+
+  for (var j = 0; j < IOWA.CountdownTimer.ICON_SHAPES.length; j++) {
+    var name = IOWA.CountdownTimer.ICON_SHAPES[j];
+    this.digits[name] = this.getPath('icon-' + name);
   }
 };
 
