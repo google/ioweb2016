@@ -72,6 +72,13 @@ io-schedule-row {
   }
 }
 
+:host([mode="before"]) {
+  #livewidget {
+    // renders a "border" around the widget when the background is white (before the show)
+    padding: 0 1px 1px 1px;
+  }
+}
+
 #livewidget {
   position: absolute;
   right: $mobileKeyline;
@@ -87,8 +94,6 @@ io-schedule-row {
   overflow: hidden;
   opacity: 0;
   pointer-events: none;
-
-  padding: 0 1px 1px 1px; // renders a "border around the widget"
 
   // box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.25),
               // 0px 2px 3px 0px rgba(0, 0, 0, 0.25);
@@ -313,6 +318,11 @@ neon-animated-pages {
   transition: opacity 300ms cubic-bezier(0.4, 0, 0.2, 1);
   font-weight: 500;
   pointer-events: none;
+
+  &.keynote__banner-360 {
+    background: url(../images/home/io16-youtube360_tout.png) no-repeat 50% 50%;
+    background-size: contain;
+  }
 
   &.on {
     opacity: 1;
