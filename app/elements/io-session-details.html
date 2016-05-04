@@ -100,7 +100,7 @@ limitations under the License.
         </div>
         <div class="session__info__section session__details">
           <h3 id="session__title" class="session__title">[[selectedSession.title]]</h3>
-          <h5 class="session__time">May <span>[[selectedSession.day]]</span>, <span>[[selectedSession.start]]</span><span hidden$="{{_equal('__keynote__', selectedSession.id)}}"> - [[selectedSession.end]]</span> / <span>[[selectedSession.room]]</span></h5>
+          <h5 class="session__time">May <span>[[selectedSession.day]]</span>, <span>[[selectedSession.start]]</span><span hidden$="[[_equal('__keynote__', selectedSession.id)]]"> - [[selectedSession.end]]</span> / <span>[[selectedSession.room]]</span></h5>
           <div id="session__desc" class="session__desc">[[selectedSession.description]]</div>
           <div class="session__categories">
             <div class="session__livestream" hidden$="[[!selectedSession.isLivestream]]">
@@ -144,7 +144,7 @@ limitations under the License.
         </div>
 
         <div class="session__info__section session__speakers"
-             hidden$="{{!selectedSession.speakers.length}}">
+             hidden$="[[!selectedSession.speakers.length]]">
           <span class="session__info__section--header">Speakers</span>
           <div layout horizontal justified wrap>
             <template is="dom-repeat" items="[[selectedSession.speakers]]" as="speakerId">
@@ -162,8 +162,8 @@ limitations under the License.
                 <div class="speaker__info" >
                   <div class="speaker__desc">{{_propOfArrayItem(app.scheduleData.speakers, speakerId, 'bio')}}</div>
                   <div class="session__social" layout horizontal center>
-                    <a href$="{{_propOfArrayItem(app.scheduleData.speakers, speakerId, 'plusoneUrl')}}" target="_blank" class="share-icon" hidden$="{{!_propOfArrayItem(app.scheduleData.speakers, speakerId, 'plusoneUrl')}}" aria-label$="Follow {{_propOfArrayItem(app.scheduleData.speakers, speakerId, 'name')}} on G+"><iron-icon icon="io:post-gplus"></iron-icon></a>
-                    <a href$="{{_propOfArrayItem(app.scheduleData.speakers, speakerId, 'twitterUrl')}}" target="_blank" class="share-icon" hidden$="{{!_propOfArrayItem(app.scheduleData.speakers, speakerId, 'twitterUrl')}}" aria-label$="Follow {{_propOfArrayItem(app.scheduleData.speakers, speakerId, 'name')}} on Twitter"><iron-icon icon="io:post-twitter" class="twitter-icon"></iron-icon></a>
+                    <a href$="[[_propOfArrayItem(app.scheduleData.speakers, speakerId, 'plusoneUrl')]]" target="_blank" class="share-icon" hidden$="[[!_propOfArrayItem(app.scheduleData.speakers, speakerId, 'plusoneUrl')]]" aria-label$="Follow [[_propOfArrayItem(app.scheduleData.speakers, speakerId, 'name')]] on G+"><iron-icon icon="io:post-gplus"></iron-icon></a>
+                    <a href$="[[_propOfArrayItem(app.scheduleData.speakers, speakerId, 'twitterUrl')]]" target="_blank" class="share-icon" hidden$="[[!_propOfArrayItem(app.scheduleData.speakers, speakerId, 'twitterUrl')]]" aria-label$="Follow [[_propOfArrayItem(app.scheduleData.speakers, speakerId, 'name')]] on Twitter"><iron-icon icon="io:post-twitter" class="twitter-icon"></iron-icon></a>
                   </div>
                 </div>
               </div>
@@ -173,7 +173,7 @@ limitations under the License.
         </div>
 
         <div class="session__info__section session__related"
-             hidden$="{{!selectedSession.hasRelated}}">
+             hidden$="[[!selectedSession.hasRelated]]">
           <span class="session__info__section--header">Similar Sessions</span>
           <div layout horizontal justified wrap>
             <template is="dom-repeat" items="[[relatedSessions]]" as="session">
