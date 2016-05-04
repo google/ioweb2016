@@ -112,6 +112,10 @@ Fired when sign in fails for some reason.
 
         onLoadAuth: function() {
           gapi.load('auth2', function () {
+            if (!('gapi' in window) || !('auth2' in window.gapi) || !this.clientId) {
+              return;
+            }
+
             var authOpts = {
               client_id: this.clientId,
               scope: this.scopes,

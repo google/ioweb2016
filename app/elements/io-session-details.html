@@ -53,7 +53,7 @@ limitations under the License.
                 on-survey-submitted="_onSurveySubmitted">
 
     <io-survey id="ioSurvey"
-               app="[[app]]"
+               app="{{app}}"
                session="[[selectedSession]]"
                hidden
                inline>
@@ -207,6 +207,11 @@ limitations under the License.
     behaviors: [IOBehaviors.UtilBehavior],
 
     properties: {
+
+      app: {
+        type: Object
+      },
+
       /**
        * IO session object to display details for.
        */
@@ -256,7 +261,8 @@ limitations under the License.
     },
 
     _onSurveySubmitted: function() {
-//      this.$.open_survey.hidden = true;
+      // Kicks the update to occur
+      this.notifyPath('app.savedSurveys', this.app.savedSurveys);
     },
 
     _selectedSessionChanged: function() {
