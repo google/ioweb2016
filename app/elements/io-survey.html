@@ -249,19 +249,22 @@ limitations under the License.
         /**
          * Submits the survey responses
          */
-        _submit: function(event) {
+        _submit: function() {
           var answers = {};
           for (var i in this.surveyQuestions) {
             answers[this.surveyQuestions[i].id] = this.surveyQuestions[i].value.toString();
           }
           this._close();
           IOWA.Schedule.saveSurvey(this.session.id, answers).then(function() {
+            this.push('app.savedSurveys', this.session.id);
             this.fire('survey-submitted');
+            IOWA.Elements.Toast.showMessage('Your feedback has been submitted. Thanks for participating!');
           }.bind(this));
         },
 
         /**
          * Handles animation finish event and hides the dialog if opened == false
+         *
          * @private
          */
         _onNeonAnimationFinish: function() {

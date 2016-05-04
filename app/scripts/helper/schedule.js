@@ -277,12 +277,10 @@ class Schedule {
    * @param {string} method Request method, e.g. 'PUT'.
    * @param {Object} payload JSON payload.
    * @param {string} errorMsg Message to be shown on error.
-   * @param {function} callback Callback to be called with the resource.
    * @return {Promise} Resolves with the server's response.
    */
-  submitSessionRequest(url, method, payload, errorMsg, callback) {
+  submitSessionRequest(url, method, payload, errorMsg) {
     return IOWA.Request.xhrPromise(method, url, true, payload)
-      .then(callback.bind(this))
       .catch(error => {
         // error will be an XMLHttpRequestProgressEvent if the xhrPromise()
         // was rejected due to a network error.
@@ -309,11 +307,8 @@ class Schedule {
 
     return IOWA.Auth.waitForSignedIn('Sign in to submit feedback').then(() => {
       let url = `${this.SURVEY_ENDPOINT}/${sessionId}?uid=${IOWA.IOFirebase.firebaseRef.getAuth().uid}`;
-      let callback = () => {
-        IOWA.Elements.Template.push('app.savedSurveys', sessionId);
-      };
       return this.submitSessionRequest(
-        url, 'PUT', answers, 'Unable to save feedback results.', callback);
+        url, 'PUT', answers, 'Unable to save feedback results.');
     });
   }
 

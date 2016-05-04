@@ -50,27 +50,19 @@ limitations under the License.
                 exit-animation="fade-out-animation"
                 on-iron-overlay-closed="_onSessionDetailsClose"
                 on-iron-overlay-opened="_onSessionDetailsOpen"
-                on-survey-submitted="_showSurveyNotification">
+                on-survey-submitted="_onSurveySubmitted">
+
+    <io-survey id="ioSurvey"
+               app="{{app}}"
+               session="[[selectedSession]]"
+               hidden
+               inline>
+    </io-survey>
 
     <paper-dialog-scrollable id="scrollable">
-
-      <io-survey id="ioSurvey"
-                 app="[[app]]"
-                 session="[[selectedSession]]"
-                 hidden
-                 inline>
-      </io-survey>
-
       <div>
 
         <div class="card__photo" relative>
-
-          <div id="survey_notification" class="fullschedule-banner card-content"
-               layout horizontal center end-justified
-               hidden$="[[!_computeHideSessionRatedNotification(selectedSession, app.savedSurveys)]]">
-            <iron-icon icon="io:stars"></iron-icon>
-            <span>Your feedback has been submitted. Thanks for participating!</span>
-          </div>
 
           <div class="fullschedule-banner card-content"
                layout horizontal center fit>
@@ -107,11 +99,11 @@ limitations under the License.
                      aria-label$="[[_computeLabel(selectedSession.saved)]]"></paper-fab>
         </div>
         <div class="session__info__section session__details">
-          <h3 id="session__title" class="session__title">{{selectedSession.title}}</h3>
-          <h5 class="session__time">May <span>{{selectedSession.day}}</span>, <span>{{selectedSession.start}}</span><span hidden$="{{_equal('__keynote__', selectedSession.id)}}"> - {{selectedSession.end}}</span> / <span>{{selectedSession.room}}</span></h5>
-          <div id="session__desc" class="session__desc">{{selectedSession.description}}</div>
+          <h3 id="session__title" class="session__title">[[selectedSession.title]]</h3>
+          <h5 class="session__time">May <span>[[selectedSession.day]]</span>, <span>[[selectedSession.start]]</span><span hidden$="[[_equal('__keynote__', selectedSession.id)]]"> - [[selectedSession.end]]</span> / <span>[[selectedSession.room]]</span></h5>
+          <div id="session__desc" class="session__desc">[[selectedSession.description]]</div>
           <div class="session__categories">
-            <div class="session__livestream" hidden$="{{!selectedSession.isLivestream}}">
+            <div class="session__livestream" hidden$="[[!selectedSession.isLivestream]]">
               <iron-icon icon="io:videocam"></iron-icon>
               <a href="/io2016/schedule?filters=Live%20Streamed"
                  data-track-link="schedule-details-filter"
@@ -147,11 +139,12 @@ limitations under the License.
               <iron-icon icon="io:post-facebook" class="share-icon"></iron-icon>
             </a>
           </div>
-          <paper-button id="open_survey" on-click="_openSurvey" raised hidden$="[[_computeHideOpenSurveyButton(selectedSession, app.savedSurveys)]]">Rate Session</paper-button>
+          <paper-button id="open_survey" on-click="_openSurvey" raised hidden$="[[_computeHideOpenSurveyButton(selectedSession)]]"
+          disabled$="[[_computeDisableSurveyButton(selectedSession, app.savedSurveys)]]">[[_computeSurveyButtonText(selectedSession, app.savedSurveys)]]</paper-button>
         </div>
 
         <div class="session__info__section session__speakers"
-             hidden$="{{!selectedSession.speakers.length}}">
+             hidden$="[[!selectedSession.speakers.length]]">
           <span class="session__info__section--header">Speakers</span>
           <div layout horizontal justified wrap>
             <template is="dom-repeat" items="[[selectedSession.speakers]]" as="speakerId">
@@ -169,8 +162,8 @@ limitations under the License.
                 <div class="speaker__info" >
                   <div class="speaker__desc">{{_propOfArrayItem(app.scheduleData.speakers, speakerId, 'bio')}}</div>
                   <div class="session__social" layout horizontal center>
-                    <a href$="{{_propOfArrayItem(app.scheduleData.speakers, speakerId, 'plusoneUrl')}}" target="_blank" class="share-icon" hidden$="{{!_propOfArrayItem(app.scheduleData.speakers, speakerId, 'plusoneUrl')}}" aria-label$="Follow {{_propOfArrayItem(app.scheduleData.speakers, speakerId, 'name')}} on G+"><iron-icon icon="io:post-gplus"></iron-icon></a>
-                    <a href$="{{_propOfArrayItem(app.scheduleData.speakers, speakerId, 'twitterUrl')}}" target="_blank" class="share-icon" hidden$="{{!_propOfArrayItem(app.scheduleData.speakers, speakerId, 'twitterUrl')}}" aria-label$="Follow {{_propOfArrayItem(app.scheduleData.speakers, speakerId, 'name')}} on Twitter"><iron-icon icon="io:post-twitter" class="twitter-icon"></iron-icon></a>
+                    <a href$="[[_propOfArrayItem(app.scheduleData.speakers, speakerId, 'plusoneUrl')]]" target="_blank" class="share-icon" hidden$="[[!_propOfArrayItem(app.scheduleData.speakers, speakerId, 'plusoneUrl')]]" aria-label$="Follow [[_propOfArrayItem(app.scheduleData.speakers, speakerId, 'name')]] on G+"><iron-icon icon="io:post-gplus"></iron-icon></a>
+                    <a href$="[[_propOfArrayItem(app.scheduleData.speakers, speakerId, 'twitterUrl')]]" target="_blank" class="share-icon" hidden$="[[!_propOfArrayItem(app.scheduleData.speakers, speakerId, 'twitterUrl')]]" aria-label$="Follow [[_propOfArrayItem(app.scheduleData.speakers, speakerId, 'name')]] on Twitter"><iron-icon icon="io:post-twitter" class="twitter-icon"></iron-icon></a>
                   </div>
                 </div>
               </div>
@@ -180,7 +173,7 @@ limitations under the License.
         </div>
 
         <div class="session__info__section session__related"
-             hidden$="{{!selectedSession.hasRelated}}">
+             hidden$="[[!selectedSession.hasRelated]]">
           <span class="session__info__section--header">Similar Sessions</span>
           <div layout horizontal justified wrap>
             <template is="dom-repeat" items="[[relatedSessions]]" as="session">
@@ -214,6 +207,11 @@ limitations under the License.
     behaviors: [IOBehaviors.UtilBehavior],
 
     properties: {
+
+      app: {
+        type: Object
+      },
+
       /**
        * IO session object to display details for.
        */
@@ -262,9 +260,9 @@ limitations under the License.
       }
     },
 
-    _showSurveyNotification: function() {
-      this.$.open_survey.hidden = true;
-      this.$.survey_notification.hidden = false;
+    _onSurveySubmitted: function() {
+      // Kicks the update to occur
+      this.notifyPath('app.savedSurveys', this.app.savedSurveys);
     },
 
     _selectedSessionChanged: function() {
@@ -331,23 +329,26 @@ limitations under the License.
       return 'images/schedule/profile_placeholder.png';
     },
 
-    _computeHideSessionRatedNotification: function(session, savedSurveys) {
+    _computeDisableSurveyButton: function(session, savedSurveys) {
       if (session === null) {
         return true;
       }
       return savedSurveys.indexOf(session.id) !== -1;
     },
 
-    _computeHideOpenSurveyButton: function(session, savedSurveys) {
+    _computeHideOpenSurveyButton: function(session) {
       if (session === null) {
         return true;
       }
-      var isFinished = new Date(session.startTimestamp) < Date.now();
+      var isStarted = new Date(session.startTimestamp) < Date.now();
 
-      return this._computeHideSessionRatedNotification(session, savedSurveys) ||
-             session.id === '__afterhours__' ||
+      return session.id === '__afterhours__' ||
              session.id === '__keynote__' ||
-             !isFinished;
+             !isStarted;
+    },
+
+    _computeSurveyButtonText: function(session, savedSurveys) {
+      return !this._computeDisableSurveyButton(session, savedSurveys) ? 'Rate Session' : 'Rating Saved';
     },
 
     _computeSessionSavedIcon: function(saved) {
