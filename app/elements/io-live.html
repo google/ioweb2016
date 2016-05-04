@@ -254,8 +254,9 @@ Fired when the mode changes.
     <template is="dom-if" if="[[_equal(mode, _MODES.BEFORE)]]">
       <div class="card__container">
         <countdown-timer id="ctimer" role="timer" date="[[date]]"
-                         current-time="{{currentTime}}"></countdown-timer>
-        </countdown-timer>
+                         current-time="{{currentTime}}"
+                         on-countdown-complete="_onCountdownDone"
+                         on-transitionend="_onCountdownFaded"></countdown-timer>
       </div>
     </template>
 
@@ -289,6 +290,15 @@ Fired when the mode changes.
       day2End: { type: Object },
       day3Start: { type: Object },
       day3End: { type: Object },
+
+      /**
+        * The current time till I/O in string format.
+        * Should be a textual representation of what the canvas is displaying.
+        */
+      currentTime: {
+        type: String,
+        notify: true
+      },
 
       /**
        * True if the keynote has already passed.
@@ -373,7 +383,7 @@ Fired when the mode changes.
       mode: {
         type: String,
         notify: true,
-        computed: '_computeMode(day1Start, day3End)',
+        computed: '_computeMode(day1Start, day3End, _countdownDone)',
         observer: '_modeChanged',
         reflectToAttribute: true
       },
@@ -453,6 +463,11 @@ Fired when the mode changes.
       todaysLiveSessions: {
         type: Array,
         computed: '_computeTodaysLiveSessions(sessions, currentDay)'
+      },
+
+      _countdownDone: {
+        type: Boolean,
+        value: false
       }
     },
 
@@ -835,6 +850,21 @@ Fired when the mode changes.
       e.stopPropagation();
       // Hide a selected session when use selects new tab.
       this.selectedSession = null;
+    },
+
+    _onCountdownDone: function(e) {
+      var timer = this.$.livecontainer.querySelector('countdown-timer');
+      if (timer) {
+        // Keep countdown fun active for a bit, then fade it out.
+        this.async(function() {
+          timer.style.opacity = 0;
+        }, 10000);
+      }
+    },
+
+    _onCountdownFaded: function(e) {
+      e.stopPropagation();
+      this._countdownDone = true;
     }
   });
 </script>
