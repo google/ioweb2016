@@ -44,6 +44,9 @@ $color-section-border: #eaeaea;
     -webkit-overflow-scrolling: touch;
     overflow: auto;
   }
+  .session__info__section {
+    padding: $mobileKeyline !important;
+  }
 }
 
 #sessionDetails {

@@ -194,13 +194,15 @@ Fired when the mode changes.
               </div>
             </template>
 
-            <div class="card schedule-rows" layout vertical flex
+            <div id="liveschedulerows" class="card schedule-rows" layout vertical flex
                  on-session-bookmark="_onToggleSaveSession"
                  on-session-select="openSession" relative>
 
               <io-session-details id="sessionDetails"
                                   selected-session="[[selectedSession]]"
                                   app="[[app]]"
+                                  on-iron-overlay-opened="_onSessionDetailsOpen"
+                                  on-iron-overlay-closed="_onSessionDetailsClose"
                                   inline></io-session-details>
 
               <template id="upcominglist" is="dom-repeat" items="[[sessions]]"
@@ -484,7 +486,21 @@ Fired when the mode changes.
     openSession: function(e, detail) {
       e.stopPropagation();
       this.selectedSession = null; // Allows re-selecting the session that was just closed.
+
+      // Scroll to top of list so session details can be seen.
+      // This causes a visible jump when the details open, but the list's scroll
+      // position is restored when the overlay closes...so :p
+      this.$.liveschedulerows.scrollTop = 0;
+
       this.selectedSession = detail.session;
+    },
+
+    _onSessionDetailsClose: function(e) {
+      this.$.liveschedulerows.style.overflow = 'auto';
+    },
+
+    _onSessionDetailsOpen: function(e) {
+      this.$.liveschedulerows.style.overflow = 'hidden';
     },
 
     _onToggleSaveSession: function(e, detail) {
