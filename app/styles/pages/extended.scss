@@ -133,19 +133,12 @@ $name: 'page-extended';
     }
   }
 
-  .host {
+  .find {
+    border-bottom: none;
+
     @media (max-width: $phone-breakpoint-max) {
       padding-top: 64px;
     }
-
-    .details--icon {
-      background: transparent url(../images/extended/icon-host.svg) center center no-repeat;
-      background-size: 100%;
-    }
-  }
-
-  .find {
-    border-bottom: none;
 
     .details--icon {
       background: transparent url(../images/extended/icon-find.svg) center center no-repeat;
