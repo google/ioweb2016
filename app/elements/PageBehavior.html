@@ -97,11 +97,11 @@ var PageBehavior = {
 
   openDialogVideo: function(e) {
     var target = Polymer.dom(e).rootTarget;
+    var videoId = target.dataset.videoId;
     // Record previous focused element so we can restore focus later
     this._previousFocusedElement = target;
 
-    IOWA.Analytics.trackEvent(
-        'link', 'click', target.getAttribute(this.app.ANALYTICS_LINK_ATTR));
+    IOWA.Analytics.trackEvent('video', 'watch', videoId);
 
     this.set('app.fullscreenVideoActive', true); // stamps template.
 
@@ -109,6 +109,10 @@ var PageBehavior = {
 
     var dialog = Polymer.dom(this.root).querySelector('paper-dialog');
     var video = dialog.querySelector('google-youtube');
+
+    if (videoId) {
+      video.videoId = videoId;
+    }
 
     video.addEventListener('google-youtube-ready', function() {
       dialog.toggle();

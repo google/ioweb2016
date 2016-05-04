@@ -98,41 +98,9 @@ h3 a {
   background-color: $color-bluegrey-700;
 }
 
-.io__hash {
-  background-size: 60%;
-  position: relative;
-}
-
-#social_list {
-  position: relative;
-  height: 100%;
-
-  social-post {
-    display: flex !important; // override iron-pages styling.
-    opacity: 0;
-    visibility: hidden; // Prevent keyboard focus from getting trapped in cycler
-    transition: opacity 800ms ease-in-out;
-    will-change: opacity;
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%; // For IE 11.
-    pointer-events: none;
-  }
-  .iron-selected {
-    opacity: 1;
-    pointer-events: auto;
-  }
-}
-
 #countdown-container {
   width: 100%;
   margin-top: 0;
-}
-
-.card__footerlink {
-  @include typo-button();
 }
 
 @media (max-width: $phone-breakpoint-max) {
@@ -147,6 +115,16 @@ h3 a {
   }
 }
 
+.card__footerlink {
+  @include typo-button();
+
+}
+
+.card__photo .card__footerlink {
+  color: #fff;
+  z-index: 1;
+}
+
 #photo_list {
   overflow: hidden;
 
@@ -159,24 +137,33 @@ h3 a {
     position: absolute;
     top: 0;
     left: 0;
-    height: 100%;
+    height: auto;
     width: 100%;
 
-    @media (min-width: $phone-breakpoint-min-mid-b) and (max-width: $phone-breakpoint-max) {
-      height: auto;
-      top: 50%;
-      transform: translateY(-50%);
+    @media (max-width: $phone-breakpoint-max) {
+      height: 100%;
+      width: auto;
+      left: 50%;
+      transform: translateX(-50%);
     }
 
   }
+
   .iron-selected {
     opacity: 1;
   }
-}
 
-@media (max-width: $phone-breakpoint-max) {
-  .io__hash {
-    background-color: #fff;
+  &:after {
+    background-image: linear-gradient(to bottom, transparent 30%, rgba(0, 0, 0, 0.7));
+    background-position: 50% 50%;
+    background-size: cover;
+    bottom: 0;
+    content: '';
+    display: block;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 50%;
   }
 }
 
@@ -186,10 +173,31 @@ h3 a {
   }
 }
 
-// @media (min-resolution: 2.0dppx), (-webkit-min-device-pixel-ratio: 2), (min-width: $tablet-breakpoint-min) {
-//   .photo__masthead {
-//     background-image: url(../images/home/keynote2015@2x.jpg);
-//   }
-// }
+.featured-session {
+  background-position: 50% 50%;
+  background-size: cover;
+
+  h3 {
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 14px;
+    margin: 4px 0 12px 0;
+  }
+
+  p {
+    font-weight: 400;
+    margin: 0;
+  }
+
+  .byline {
+    color: $color-session-detail-light-grey;
+    font-weight: 400;
+  }
+
+  .photo__recap {
+    background-image: none;
+  }
+}
+
 
 }
