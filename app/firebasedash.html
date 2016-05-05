@@ -1,0 +1,384 @@
+<!--
+Copyright 2016 Google Inc. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1">
+<title>I/O Apps Firebase dashboard</title>
+
+<script src="https://cdn.firebase.com/js/client/2.4.2/firebase.js"></script>
+<link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.blue_grey-blue.min.css">
+
+<!-- <link rel="import" href="https://polygit2.appspot.com/components/polymer/polymer.html"> -->
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<script defer src="https://code.getmdl.io/1.1.3/material.min.js"></script>
+
+<style>
+  html, body {
+    font-family: 'Roboto', 'Helvetica', sans-serif;
+    font-size: 14px;
+    font-weight:
+  }
+
+  h3 {
+    font-weight: 300;
+  }
+  .mdl-grid {
+    max-width: 1024px;
+    margin: auto;
+  }
+  .mdl-layout__header-row {
+    padding: 0;
+  }
+
+  #shards {
+    border-bottom: 1px solid #ccc;
+  }
+
+  #shards .shard {
+    padding: 16px;
+    font-weight: 300;
+  }
+
+  .shard-title {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+
+  #totals {
+    min-height: 225px;
+    padding: 0 16px;
+  }
+
+  #piechart {
+    width: 400px;
+    height: 400px;
+  }
+
+  .total-users {
+    font-size: 28px;
+    margin-right: 40px;
+  }
+
+  .total-breakdown {
+    margin-top: 16px;
+  }
+
+  .total-breakdown span {
+    margin-top: 8px;
+  }
+
+  [layout] {
+    display: flex;
+  }
+  [horizontal] {
+    flex-direction: row;
+  }
+  [layout][horizontal][justified] {
+    justify-content: space-between;
+  }
+  [vertical] {
+    flex-direction: column;
+  }
+  [center] {
+    align-items: center;
+  }
+  [wrap] {
+    flex-wrap: wrap;
+  }
+</style>
+</head>
+
+<body class="mdl-color-text--blue-grey-500">
+
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+
+  <!-- Header section containing title -->
+  <header class="mdl-layout__header mdl-color-text--blue-grey-50 mdl-color--primary">
+    <div class="mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-grid">
+      <div class="mdl-layout__header-row mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-cell--8-col-desktop">
+        <h3>Google I/O Apps Firebase Dashboard</h3>
+      </div>
+    </div>
+  </header>
+
+  <main class="mdl-layout__content mdl-color--grey-100">
+    <div class="mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-grid">
+
+      <form id="secret-form">
+      Enter the IOWA Firebase Shards Admin Secret:
+      <input type="password" id="secret"> <button type="submit">Go</button>
+      </form>
+
+      <div id="numusers" class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop" hidden>
+        <div class="mdl-card__title mdl-color--blue-grey-200">
+          <h2 class="mdl-card__title-text mdl-color-text--blue-grey-700">Shard breakdown</h2>
+        </div>
+        <div>
+          <div id="shards" layout horizontal wrap>
+            <div class="shard" layout vertical>
+              <span class="shard-title">Shard 1</span><span id="shard1users"></span><span id="shard1-webusers"></span>
+            </div>
+            <div class="shard" layout vertical>
+              <span class="shard-title">Shard 2</span><span id="shard2users"></span><span id="shard2-webusers"></td>
+            </div>
+            <div class="shard" layout vertical>
+              <span class="shard-title">Shard 3</span><span id="shard3users"></span><span id="shard3-webusers"></td>
+            </div>
+            <div class="shard" layout vertical>
+              <span class="shard-title">Shard 4</span><span id="shard4users"></span><span id="shard4-webusers"></td>
+            </div>
+            <div class="shard" layout vertical>
+              <span class="shard-title">Shard 5</span><span id="shard5users"></span><span id="shard5-webusers"></td>
+            </div>
+            <div class="shard" layout vertical>
+              <span class="shard-title">Shard 6</span><span id="shard6users"></span><span id="shard6-webusers"></td>
+            </div>
+            <div class="shard" layout vertical>
+              <span class="shard-title">Shard 7</span><span id="shard7users"></span><span id="shard7-webusers"></td>
+            </div>
+            <div class="shard" layout vertical>
+              <span class="shard-title">Shard 8</span><span id="shard8users"></span><span id="shard8-webusers"></td>
+            </div>
+            <div class="shard" layout vertical>
+              <span class="shard-title">Shard 9</span><span id="shard9users"></span><span id="shard9-webusers"></td>
+            </div>
+            <div class="shard" layout vertical>
+              <span class="shard-title">Shard 10</span><span id="shard10users"></span><span id="shard10-webusers"></td>
+            </div>
+          </div>
+          <div id="totals" layout horizontal center>
+            <div layout vertical>
+              <div class="total-users">Total users: <span id="totalUserCount"></span></div>
+              <!-- <div class="total-breakdown" layout vertical>
+                <span><a href="https://events.google.com/io2016/" target="_blank">IOWA</a> users (signed-in): <span id="totalWebUserCount"></span></span>
+                <span><a href="https://play.google.com/store/apps/details?id=com.google.samples.apps.iosched&hl=en" target="_blank">IOSched</a> users: <span id="totalNonWebUserCount"></span></span>
+                <span>Using both: <span id="numSharedUsers"></span></span>
+              </div> -->
+            </div>
+            <!-- <div id="chart"><img src=""></div> -->
+            <div id="piechart"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  const NUM_SHARDS = 10;
+  let AUTH_TOKEN = null;
+
+  const numUsersEl = document.querySelector('#numusers');
+  const secretEl = document.querySelector('#secret');
+  const secretFormEl = document.querySelector('#secret-form');
+
+  let totalUsers = {};
+  let totalUserCount = 0;
+  let totalWebUserCount = 0;
+  let nonWebUserCount = 0;
+
+  const formatNumber = function(num) {
+    return num.toLocaleString();
+  };
+
+  const debounce = function(func, wait, immediate) {
+    var timeout;
+    return function() {
+      var context = this, args = arguments;
+      var later = function() {
+        timeout = null;
+        if (!immediate) {
+          func.apply(context, args);
+        }
+      };
+      var callNow = immediate && !timeout;
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+      if (callNow) {
+        func.apply(context, args);
+      }
+    };
+  };
+
+  // const drawChart = function(percent) {
+  //   var chart = document.querySelector('#chart img');
+  //   let newSrc = `https://chart.googleapis.com/chart?cht=p3&chd=t:${percent.web},${percent.non}&chs=450x200&chl=Web ${percent.web}%|Android ${percent.non}%`;
+
+  //   // Make request if the URL has changed.
+  //   if (chart.src !== newSrc) {
+  //     chart.src = newSrc;
+  //   }
+  // };
+
+  const drawChart = function(users) {
+    if (!(google && google.charts)) {
+      return;
+    }
+
+    var data = google.visualization.arrayToDataTable([
+      ['User type', '# users'],
+      ['Web (signed-in)', users.web],
+      ['Android', users.other],
+      ['Both', users.shared]
+    ]);
+
+    var options = {
+      //title: '% users on each platform',
+      pieHole: 0.4,
+      chartArea:{width:'100%',height:'100%', left: 20},
+      legend: {alignment: 'center', position: 'right'}
+    };
+
+    var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+    chart.draw(data, options);
+  }
+
+  const getNonWebUsers = function(shard) {
+    var url = `https://io-2016-prod-${shard}.firebaseio.com/data.json?auth=${AUTH_TOKEN}`;
+
+    return fetch(url).then(resp => resp.json()).then(data => {
+      let nonWebUsers = [];
+
+      for (let userId in data) {
+        if (data[userId].gcm_key) {
+          nonWebUsers.push(userId);
+        }
+      }
+      return nonWebUsers;
+    });
+  };
+
+  const getWebUsers = function(shard) {
+    let params = `orderBy="used_web_app"&equalTo=true&auth=${AUTH_TOKEN}`;
+    let url = `https://io-2016-prod-${shard}.firebaseio.com/users.json?${params}`;
+    return fetch(url).then(resp => resp.json()).then(webUsers => Object.keys(webUsers));
+  };
+
+  const collectUsersAcrossShards = function() {
+    let webShardPromises = [];
+    let nonWebShardPromises = [];
+
+    for (let i = 1; i <= NUM_SHARDS; i++) {
+      webShardPromises.push(getWebUsers(i));
+      nonWebShardPromises.push(getNonWebUsers(i));
+    }
+
+    let webUsersPromise = Promise.all(webShardPromises);
+    let nonWebPromise = Promise.all(nonWebShardPromises);
+
+    return Promise.all([webUsersPromise, nonWebPromise]).then(values => {
+      let shardWebUsers = values[0];
+      let shardNonWebUsers = values[1];
+
+      let webUsers = new Set(shardWebUsers.reduce((prev, curr) => prev.concat(curr)));
+      let allUsersWithGCMKeys = new Set(shardNonWebUsers.reduce((prev, curr) => prev.concat(curr)));
+
+      let allUsers = new Set([...webUsers, ...allUsersWithGCMKeys]);
+
+      let shared = Array.from(allUsers).filter(userId => {
+        return webUsers.has(userId) && allUsersWithGCMKeys.has(userId);
+      });
+      shared = new Set(shared);
+
+      return {
+        total: allUsers.size,
+        web: webUsers.size,
+        other: allUsers.size - webUsers.size,
+        shared: shared.size
+      };
+    });
+  }
+
+  const debounceChartUpdate = debounce(function() {
+    drawChart(totalUsers);
+  }, 3 * 1000);
+
+  const debounceShareduserUpdate = debounce(function() {
+    collectUsersAcrossShards().then(users => {
+      totalUsers = users;
+      //document.querySelector('#numSharedUsers').textContent = totalUsers.shared;
+    });
+  }, 30 * 1000, true);
+
+  const start = function(e) {
+    if (e) {
+      e.preventDefault();
+    }
+
+    secretFormEl.hidden = true;
+    numUsersEl.hidden = false;
+    AUTH_TOKEN = secretEl.value;
+
+    for (let i = 1; i <= NUM_SHARDS; i++) {
+      let shardRef = new Firebase(`https://io-2016-prod-${i}.firebaseio.com/users/`);
+      shardRef.authWithCustomToken(AUTH_TOKEN).then(function() {
+        this.shardRef.on('child_added', data => {
+          console.log("new user on shard " + this.i);
+          this.counter++;
+
+          if (data.child('used_web_app').val() === true) {
+            this.webUsers++;
+            totalWebUserCount++;
+          } else {
+            //console.log(i, data.key());
+            nonWebUserCount++;
+          }
+
+          totalUserCount++;
+
+          document.querySelector(`#shard${this.i}users`).textContent = `Total: ${formatNumber(this.counter)}`;
+          document.querySelector(`#shard${this.i}-webusers`).textContent =
+              `web: ${formatNumber(this.webUsers)}`;
+          document.querySelector('#totalUserCount').textContent = formatNumber(totalUserCount);
+
+          // let percentWeb = Math.round((totalWebUserCount / totalUserCount) * 100);
+          // document.querySelector('#totalWebUserCount').textContent =
+          //     `${formatNumber(totalWebUserCount)}`;
+
+          // let percentNonWeb = Math.round((nonWebUserCount / totalUserCount) * 100);
+          // document.querySelector('#totalNonWebUserCount').textContent =
+          //     `${formatNumber(nonWebUserCount)}`;
+
+          debounceChartUpdate();
+          debounceShareduserUpdate()
+        });
+      }.bind({shardRef: shardRef, i: i, counter: 0, webUsers: 0}));
+    }
+  };
+
+  google.charts.load('current', {packages:['corechart']});
+  //google.charts.setOnLoadCallback(drawChart);
+
+  let hash = window.location.hash.replace('#', '');
+  if (hash.length > 0) {
+    secretEl.value = hash;
+    start();
+  } else {
+    secretFormEl.onsubmit = e => {
+      e.preventDefault();
+      start();
+    };
+  }
+
+})();
+</script>
+</body>
+</html>
