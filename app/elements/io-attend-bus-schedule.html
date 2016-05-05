@@ -1,0 +1,574 @@
+<!--
+Copyright 2016 Google Inc. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/iron-dropdown/iron-dropdown-scroll-manager.html">
+<link rel="import" href="../bower_components/neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="../bower_components/neon-animation/animations/fade-out-animation.html">
+
+<link rel="import" href="UtilBehavior.html">
+<link rel="import" href="shared-app-styles.html">
+
+<dom-module id="io-attend-bus-schedule">
+<link rel="import" type="css" href="io-attend-bus-schedule.css">
+<template>
+  <style include="shared-app-styles">
+    paper-dropdown-menu.route-stop {
+      --paper-input-container: {
+        padding: 0;
+      };
+      --paper-input-container-label: {
+        color: rgba(0, 0, 0, .54);
+        font-size: 14px;
+        line-height: 20px;
+      };
+      --paper-input-container-input: {
+        color: rgba(0, 0, 0, .7);
+        line-height: 20px;
+      };
+      --paper-dropdown-menu-icon: {
+        color: rgba(0, 0, 0, .7);
+        height: 20px;
+      }
+      --paper-input-container-underline: {
+        display: none;
+      };
+      /* Hack to hide the focus underline. */
+      --paper-input-container-focus-color: rgba(0, 0, 0, 0);
+    }
+  </style>
+
+  <iron-ajax id="busScheduleData"
+        url="https://io-bus-tracker.appspot.com/schedule.json"
+        handle-as="json"
+        on-response="onAjaxResponse"
+        on-error="onAjaxError"></iron-ajax>
+
+  <paper-dialog id="busSchedule"
+      restore-focus-on-close
+      with-backdrop="[[!app.isIOS]]"
+      entry-animation="scale-up-animation"
+      exit-animation="fade-out-animation"
+      on-iron-overlay-opened="onOpenBusSchedule"
+      on-iron-overlay-closed="onCloseBusSchedule"
+      layout vertical>
+
+    <div class="bus-schedule-banner bg-cyan-300" layout vertical left-clip right-clip>
+      <div class="bus-schedule-route" layout horizontal>
+        <paper-icon-button class="bus-schedule-close" icon="io:close" dialog-dismiss aria-label="Close bus schedule"></paper-icon-button>
+        <span tabindex="-1" autofocus></span>
+        <div id="route-select" class="route-fields" layout vertical flex>
+          <div class="route-field bg-cyan-200" layout horizontal>
+            <span class="route-label">[[directionPrefixStop]]</span>
+            <paper-dropdown-menu id="bus-stop-dropdown"
+                                class="route-stop"
+                                label="[[selectLabel]]"
+                                on-iron-select="onSelectStop"
+                                no-label-float
+                                noink flex
+                                disabled$="[[_isDataError]]">
+              <paper-listbox class="dropdown-content">
+                <template is="dom-repeat" items="[[stopsList]]">
+                  <paper-item value$="[[item.stop_id]]">[[item.stop_name]]</paper-item>
+                </template>
+              </paper-listbox>
+            </paper-dropdown-menu>
+          </div>
+
+          <div class="route-field bg-cyan-200" layout horizontal>
+            <span class="route-label">[[directionPrefixIO]]</span>
+            <span class="route-value" flex>I/O</span>
+          </div>
+        </div>
+        <paper-icon-button class="schedule-swap-button" icon="io:swap-vert" aria-label="Reverse route" on-click="swapRouteDirection" disabled$="[[_isDataError]]"></paper-icon-button>
+      </div>
+      <div id="bus-schedule-nav" class$="bus-schedule-nav [[busNavState]]" layout horizontal justified>
+        <paper-tabs id="bus-schedule-tabs"
+                    attr-for-selected="label"
+                    selected="{{activeDay}}">
+          <paper-tab label="2016-05-17" link>
+            <a href="#2016-05-17" data-ajax-link
+               layout horizontal center-center
+               tabindex="-1">May 17</a>
+          </paper-tab>
+          <paper-tab label="2016-05-18" link>
+            <a href="#2016-05-18" data-ajax-link
+               layout horizontal center-center
+               tabindex="-1">May 18</a>
+          </paper-tab>
+          <paper-tab label="2016-05-19" link>
+            <a href="#2016-05-19" data-ajax-link
+               layout horizontal center-center
+               tabindex="-1">May 19</a>
+          </paper-tab>
+          <paper-tab label="2016-05-20" link>
+            <a href="#2016-05-20" data-ajax-link
+               layout horizontal center-center
+               tabindex="-1">May 20</a>
+          </paper-tab>
+        </paper-tabs>
+      </div>
+    </div>
+
+    <div class="scrollable schedule-scrollable" flex>
+
+      <iron-pages id="bus-schedule-pages"
+                  class="bus-schedule-content"
+                  attr-for-selected="label"
+                  selected=[[activePage]]>
+
+        <section class="bus-schedule-page" label="intro">
+          <p>
+            Event shuttles will be provided to Google I/O attendess at no charge from all Google-recommended hotels and with select service from San Francisco and other locations along the Peninsula. <strong>You must show your Google I/O confirmation email of conference badge to board all Google I/O event shuttles.</strong>
+          </p>
+          <p hidden$="[[!_isDataLoaded]]">
+            Select a location above to see the corresponding I/O shuttle schedule.
+          </p>
+          <p class="-error" hidden$="[[!_isDataError]]">
+            There was an error loading the shuttle schedule. Please try again later.
+          </p>
+        </section>
+
+        <section class="bus-schedule-page" label="loop">
+          <p class="-bordered">
+            A looping shuttle service between the following stops and Shoreline Amphitheatre will run all day for attendees to pick up their conference badges.
+            Shuttle frequency: [[loopService.frequency]].
+          </p>
+          <p class="-error" hidden$="[[isScheduleDataValid]]">
+            No shuttle service available for the selected stops and date combination.
+          </p>
+          <div hidden$=[[!isScheduleDataValid]]>
+            <div class="bus-schedule-loop-container" hidden$=[[!isScheduleDataValid]]>
+              <p class="loop-pickup"><span class="loop-type">First Pickup</span> <span class="loop-time">[[loopService.firstPickup]]</span></p>
+              <p class="loop-depart"><span class="loop-type">Last Departure</span> <span class="loop-time">[[loopService.lastDeparture]]</span></p>
+
+              <div class="bus-schedule-loop-list-container">
+                <span class="loop-bar" style$="background:#[[loopService.color.hex]]"></span>
+                <ol>
+                  <template is="dom-repeat" items=[[loopService.stops]]>
+                    <li>[[item.stop_name]]</li>
+                  </template>
+                  <li>Shoreline Amphitheatre</li>
+                </ol>
+              </div>
+            </div>
+            <p class="loop-type">
+              *Order of stops may vary depending on time of day.
+            </p>
+          </div>
+        </section>
+
+        <section class="bus-schedule-page" label="schedule">
+          <p class="-error" hidden$="[[isScheduleDataValid]]">
+            No shuttle service available for the selected stops and date combination.
+          </p>
+          <div class="bus-schedule-table" hidden$=[[!isScheduleDataValid]]>
+            <h3 class="-off-screen">[[activeDayLabel]] Shuttle Schedule</h3>
+            <div class="schedule-headers" layout horizontal aria-hidden="true">
+              <span class="shuttle-start-header">Departure</span>
+              <span class="shuttle-end-header">Arrival</span>
+            </div>
+            <ol>
+              <template is="dom-repeat" items="[[activeSchedule]]">
+                <li class$="bg-[[item.color.shade]]" layout horizontal>
+                  <div class="shuttle-cell shuttle-start-cell">
+                    <span class="-off-screen">Departure:</span>
+                    <span class="shuttle-start"><span class="shuttle-bar" style$="background:#[[item.color.hex]]"></span>[[item.depart]]</span>
+                  </div>
+                  <div class="shuttle-cell shuttle-end-cell">
+                    <span class="-off-screen">Arrival:</span>
+                    <span class="shuttle-end"><span class="shuttle-bar" style$="background:#[[item.color.hex]]"></span>[[item.arrive]]</span>
+                  </div>
+                  <div class="shuttle-cell shuttle-duration-cell" style$="width:[[item.percentLess]]%;">
+                    <span class="-off-screen">Duration:</span>
+                    <span class="shuttle-duration" style$="width:[[item.percentTravel]]%;">[[item.duration]] minutes</span>
+                  </div>
+                </li>
+              </template>
+            </ol>
+          </div>
+        </section>
+
+      </iron-pages>
+
+    </div>
+
+  </paper-dialog>
+
+</template>
+<script>
+(function () {
+  'use strict';
+
+  var BUSTAB_SELECTOR = '#bus-schedule-nav a';
+
+  Polymer({
+    is: 'io-attend-bus-schedule',
+
+    behaviors: [IOBehaviors.UtilBehavior],
+
+    properties: {
+      // Selected day string.
+      activeDay: {
+        type: String,
+        observer: 'onSelectDay'
+      },
+
+      // Selected day as readable string.
+      activeDayLabel: {
+        type: String,
+        value: 'May 18'
+      },
+
+      // Selected tab content page.
+      activePage: {
+        type: String,
+        value: 'intro'
+      },
+
+      // Hash of active schedule properties.
+      activeSchedule: Array,
+
+      // Selected stop id.
+      activeStop: Number,
+
+      // Class to enabled or disable elements based on whether a stop is selected.
+      busNavState: {
+        type: String,
+        value: '-disabled'
+      },
+
+      // Look up of machine date string to label date string.
+      dayLabels: {
+        type: Object,
+        readOnly: true,
+        value: {
+          '2016-05-17': 'May 17',
+          '2016-05-18': 'May 18',
+          '2016-05-19': 'May 19',
+          '2016-05-20': 'May 20'
+        }
+      },
+
+      // Prefixes for indicating whether traveling to or from IO.
+      directionPrefixes: {
+        type: Object,
+        value: {
+          from: 'from',
+          to: 'to'
+        }
+      },
+
+      // Prefix for IO field.
+      directionPrefixIO: {
+        type: String,
+        computed: '_computeDirectionPrefixIO(isToIO, directionPrefixes)'
+      },
+
+      // Prefix for stop field.
+      directionPrefixStop: {
+        type: String,
+        computed: '_computeDirectionPrefixStop(isToIO, directionPrefixes)'
+      },
+
+      // Whether have already loaded data.
+      _isDataLoaded: {
+        type: Boolean,
+        value: false
+      },
+
+      // Whether error loading data.
+      _isDataError: {
+        type: Boolean,
+        value: false
+      },
+
+      // Whether shuttle service schedule data is valid.
+      isScheduleDataValid: {
+        type: Boolean,
+        value: false
+      },
+
+      // Whether destination is IO.
+      isToIO: {
+        type: Boolean,
+        value: true
+      },
+
+      // Hash of loop service properties.
+      loopService: Object,
+
+      // Label for location dropdown.
+      selectLabel: {
+        type: String,
+        computed: '_computeSelectLabel(isToIO, selectLabelOptions)'
+      },
+
+      // Label options for location dropdown.
+      selectLabelOptions: {
+        type: Object,
+        value: {
+          to: 'Choose pickup location',
+          from: 'Choose dropoff location'
+        }
+      },
+
+      // Start date.
+      startDate: {
+        type: String,
+        value: '2016-05-17',
+        readOnly: true
+      },
+
+      // List of stops.
+      stopsList: {
+        type: Array,
+        value: function() { return []; }
+      }
+
+    },
+
+    attached: function() {
+      Polymer.RenderStatus.afterNextRender(this, function() {
+        // Wait till after subnav effects to look for focusable items
+        this.async(function() {
+          IOWA.A11y.addFocusStates(BUSTAB_SELECTOR);
+        });
+      });
+    },
+
+    detached: function() {
+      IOWA.A11y.removeFocusStates(BUSTAB_SELECTOR);
+    },
+
+    onSelectDay: function() {
+      this.activeDayLabel = this.dayLabels[this.activeDay];
+
+      if (this.activeDay === 'intro') {
+        this.activePage = 'intro';
+      } else if (this.activeDay === this.startDate) {
+        this.activePage = 'loop';
+      } else {
+        this.activePage = 'schedule';
+      }
+
+      this.setSchedule();
+    },
+
+    onSelectStop: function() {
+      var dropdown = this.$['bus-stop-dropdown'];
+      this.activeStop = parseInt(dropdown.selectedItem.getAttribute('value'), 10);
+      this.busNavState = '-enabled';
+      this.setSchedule();
+    },
+
+    onOpenBusSchedule: function(e) {
+      if (!this._isDataLoaded) {
+        this.$.busScheduleData.generateRequest();
+      }
+      if (!this.inline) {
+        Polymer.IronDropdownScrollManager.pushScrollLock(this);
+      }
+    },
+
+    onCloseBusSchedule: function(e) {
+      if (e.target === this.$.busSchedule && !this.inline) {
+        Polymer.IronDropdownScrollManager.removeScrollLock(this);
+      }
+    },
+
+    swapRouteDirection: function(e) {
+      e.preventDefault();
+
+      var container = this.$['route-select'];
+      var field = container.querySelector('.route-field');
+      this.isToIO = !this.isToIO;
+
+      container.appendChild(field);
+
+      this.setSchedule();
+    },
+
+    onAjaxResponse: function() {
+      this._isDataLoaded = true;
+      this.setStops();
+    },
+
+    onAjaxError: function() {
+      this._isDataLoaded = false;
+      this._isDataError = true;
+    },
+
+    setStops: function() {
+      if (!this._isDataLoaded) {
+        return;
+      }
+
+      this.stopsList = this.$.busScheduleData.lastResponse.stops;
+      this.stopsList.map(function(item, index) {
+        item.stop_id = index;
+      });
+
+      this.shift('stopsList'); // Remove Shoreline.
+    },
+
+    setSchedule: function() {
+      if (!this._isDataLoaded) {
+        return;
+      }
+
+      if (this.activeDay === this.startDate) {
+        this.setLoopSchedule();
+      } else {
+        this.setRouteSchedule();
+      }
+
+      this.$.busSchedule.center();
+    },
+
+    setLoopSchedule: function() {
+      var scheduleData = this.$.busScheduleData.lastResponse.loop_services;
+      scheduleData = this.getSchedulesByStop(scheduleData, this.activeStop)[0];
+      this.activeSchedule = [];
+      this.isScheduleDataValid = typeof scheduleData !== 'undefined';
+
+      if (!this.isScheduleDataValid) {
+        return;
+      }
+
+      this.loopService = {
+        frequency: scheduleData[this.activeDay].frequency,
+        firstPickup: this.formatScheduleTime(scheduleData[this.activeDay].first_pickup),
+        lastDeparture: this.formatScheduleTime(scheduleData[this.activeDay].last_departure),
+        stops: scheduleData.stops_served,
+        color: this.$.busScheduleData.lastResponse.colors[scheduleData.route_color]
+      };
+    },
+
+    setRouteSchedule: function() {
+      var direction = this.isToIO ? 'to_shoreline' : 'from_shoreline';
+      var scheduleData = this.$.busScheduleData.lastResponse[direction];
+      var page = this;
+      var temp = [];
+      var maxDuration;
+
+      scheduleData = this.getSchedulesByStop(scheduleData, this.activeStop);
+
+      this.isScheduleDataValid = !!scheduleData.length;
+
+      if (!this.isScheduleDataValid) {
+        return;
+      }
+
+      scheduleData.map(function(item) {
+        var color = page.$.busScheduleData.lastResponse.colors[item.route_color];
+
+        if (!item[page.activeDay]) {
+          page.isScheduleDataValid = false;
+          return;
+        }
+
+        item[page.activeDay].map(function(trip) {
+          var stop;
+          var io;
+          var depart;
+          var arrive;
+
+          trip.map(function(route) {
+            if (route.stop_id === page.activeStop) {
+              stop = route;
+            } else if (route.stop_id === 0) {
+              io = route;
+            }
+          });
+
+          if (stop && io) {
+            depart = page.isToIO ? stop : io;
+            arrive = page.isToIO ? io : stop;
+
+            temp.push({
+              'depart': page.formatScheduleTime(depart.departure_time),
+              'arrive': page.formatScheduleTime(arrive.departure_time),
+              'duration': page.getDurationMinutes(depart.departure_time, arrive.departure_time),
+              'color': color
+            });
+          }
+        })
+      });
+
+      maxDuration = Math.max.apply(Math, temp.map(function(o) { return o.duration; }));
+
+      temp.map(function(o) {
+        var percent = o.duration / maxDuration;
+        o.percentTravel = percent * 100;
+        o.percentLess = 100 - (percent * 100);
+      });
+
+      this.activeSchedule = temp;
+    },
+
+    getSchedulesByStop: function(data, stop) {
+      return data.filter(function(item) {
+        return item.stops_served.map(function(o) {
+          return o.stop_id === stop;
+        }).indexOf(true) !== -1;
+      });
+    },
+
+    formatScheduleTime: function(time) {
+      var parts = time.split(' ').pop().split(':');
+      var hours = parseInt(parts[0], 10);
+      var minutes = parts[1] === '00' ? '' : parts[1];
+      var twelveHours = Math.floor(hours > 12 ? hours - 12 : hours);
+      var meridiem = hours >= 12 ? 'P' : 'A';
+
+      if (twelveHours === 0) {
+        twelveHours = hours >= 12 ? 12 : 1;
+      }
+
+      return twelveHours + minutes + meridiem;
+    },
+
+    getDurationMinutes: function(depart, arrive) {
+      var start = new Date(depart);
+      var end = new Date(arrive);
+
+      return (end - start) / 60000; // milliseconds to minutes
+    },
+
+    _computeSelectLabel: function(isToIO, selectLabelOptions) {
+      return isToIO ? selectLabelOptions.to : selectLabelOptions.from;
+    },
+
+    _computeDirectionPrefixIO: function(isToIO, directionPrefixes) {
+      return isToIO ? directionPrefixes.to : directionPrefixes.from;
+    },
+
+    _computeDirectionPrefixStop: function(isToIO, directionPrefixes) {
+      return isToIO ? directionPrefixes.from : directionPrefixes.to;
+    }
+
+  });
+
+}());
+</script>
+</dom-module>
