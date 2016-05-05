@@ -1,0 +1,346 @@
+/**
+ * Copyright 2016 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+@import '_elements';
+
+$border-radius: 3px;
+$schedule-bar-radius: 10px;
+$color-white: #fff;
+$color-medium-grey: rgba(0, 0, 0, .7);
+$color-light-grey: rgba(0, 0, 0, .54);
+$content-padding: 70px;
+$content-padding-mobile: 16px;
+
+:host([inline]) #busSchedule {
+  // Overrides for paper-dialog
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  height: 100% !important;
+  width: 100% !important;
+  max-height: 100% !important;
+  max-width: 100% !important;
+  z-index: 1 !important;
+  box-shadow: none !important;
+}
+
+#busSchedule {
+  border-radius: $border-radius;
+  font-size: 16px;
+  height: 90%;
+  max-width: $tablet-breakpoint-min;
+  width: 80%;
+}
+
+@media (max-width: $phone-breakpoint-max) {
+  #busSchedule {
+    height: 100%;
+    left: 0 !important;
+    margin: 0;
+    max-width: 100%;
+    top: 0 !important;
+    width: 100%;
+    position: fixed !important;
+  }
+}
+
+.bus-schedule-banner {
+  border-radius: $border-radius $border-radius 0 0;
+  margin: 0;
+  padding: 24px 24px 0 24px;
+
+  @media (max-width: $phone-breakpoint-max) {
+    padding: 16px 16px 0 16px;
+  }
+}
+
+.bus-schedule-nav {
+  margin: 0 33px;
+
+  &.-disabled {
+    opacity: 0.54;
+    pointer-events: none;
+  }
+}
+
+.schedule-scrollable {
+  margin: 0;
+  padding: 0;
+}
+
+.bus-schedule-content {
+  border-radius: 0 0 $border-radius $border-radius;
+  padding: 24px $content-padding 72px $content-padding;
+
+  @media (max-width: $phone-breakpoint-max) {
+    padding: 20px $content-padding-mobile 72px $content-padding-mobile;
+
+  }
+}
+
+.-error {
+  color: $color-text-error;
+}
+
+.bus-schedule-close {
+  margin: -8px 0 0 -8px;
+}
+
+.route-fields {
+  padding: 0 12px;
+}
+
+.route-field {
+  border-radius: $border-radius;
+  margin: 0 0 12px 0;
+  padding: 2px 8px 2px 16px;
+}
+
+.route-label {
+  font-size: 14px;
+  opacity: 0.54;
+  padding-right: 4px;
+
+  &.-disabled {
+    display: none;
+  }
+}
+
+.schedule-swap-button {
+  margin-top: 10px;
+}
+
+.bus-schedule-table {
+  position: relative;
+  width: 100%;
+
+  .shuttle-start,
+  .shuttle-end {
+    color: $color-medium-grey;
+    display: block;
+    position: relative;
+
+    .shuttle-bar {
+      display: block;
+      height: 20px;
+      position: absolute;
+      top: -26px;
+      width: 100%;
+    }
+
+    &:after {
+      border-radius: 50%;
+      content: '';
+      display: block;
+      height: 12px;
+      position: absolute;
+      top: -22px;
+      width: 12px;
+    }
+  }
+
+  .shuttle-start {
+    .shuttle-bar {
+      border-radius: $schedule-bar-radius 0 0 $schedule-bar-radius;
+    }
+
+    &:after {
+      background: $color-white;
+      left: 4px;
+    }
+  }
+
+  .shuttle-end {
+    text-align: right;
+
+    .shuttle-bar {
+      border-radius: 0 $schedule-bar-radius $schedule-bar-radius 0;
+    }
+
+    &:after {
+      background: $color-light-grey;
+      right: 4px;
+    }
+  }
+
+  .shuttle-duration {
+    color: $color-light-grey;
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    left: 0;
+    line-height: 20px;
+    margin: -26px 0 0 0;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+  }
+
+  .bg-dark .shuttle-duration {
+    color: $color-white;
+  }
+
+  .schedule-headers {
+    color: $color-light-grey;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 22px;
+  }
+
+  .shuttle-start-header {
+    text-align: left;
+  }
+
+  .shuttle-end-header {
+    flex: auto;
+    text-align: right;
+  }
+
+  .shuttle-duration-header {
+    width: 0;
+  }
+
+  ol {
+    margin: 0;
+    padding: 0;
+  }
+
+  li {
+    color: #000;
+
+    &:before {
+      background: #eceff1;
+      border-radius: $schedule-bar-radius;
+      content: '';
+      height: 20px;
+      position: absolute;
+      width: 100%;
+    }
+  }
+
+  .shuttle-cell {
+    margin-bottom: 18px;
+    padding: 26px 0 0 0;
+
+
+    &.shuttle-start-cell {
+      flex: 0 0 1px;
+    }
+
+
+    &.shuttle-end-cell {
+      flex: auto;
+      color: #333;
+    }
+
+
+    &.shuttle-duration-cell {
+      width: 0;
+    }
+  }
+}
+
+.bus-schedule-loop-container {
+  margin: 24px 0 18px -28px;
+  padding: 0 0 2em 0;
+  position: relative;
+
+
+  @media (max-width: $phone-breakpoint-max) {
+    margin-left: -6px;
+  }
+}
+
+.bus-schedule-loop-list-container {
+  position: relative;
+
+  ol {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 80px;
+    position: relative;
+  }
+
+  li {
+    font-weight: 500;
+    margin: 0 0 42px 0;
+    position: relative;
+
+    &:last-of-type {
+      margin-bottom: 18px;
+    }
+
+    &:before {
+      background: $color-white;
+      border-radius: 50%;
+      content: '';
+      display: block;
+      height: 12px;
+      left: -32px;
+      margin: -6px 0 0 0;
+      position: absolute;
+      top: 50%;
+      width: 12px;
+    }
+  }
+}
+
+.loop-bar {
+  border-radius: 10px;
+  bottom: 3px;
+  display: block;
+  left: 44px;
+  position: absolute;
+  top: 3px;
+  width: 20px;
+}
+
+.loop-pickup {
+  margin-bottom: 12px;
+}
+
+.loop-depart {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+}
+
+.loop-time {
+  color: $color-medium-grey;
+  display: block;
+  float: left;
+  margin: 0 16px 0 0;
+  text-align: right;
+  width: 64px;
+}
+
+.loop-type {
+  color: $color-light-grey;
+  font-size: 13px;
+}
+
+.-bordered {
+  border-bottom: 1px solid $color-bluegrey-100;
+  margin: 0 (-$content-padding) 24px (-$content-padding);
+  padding: 0 $content-padding 18px $content-padding;
+
+  @media (max-width: $phone-breakpoint-max) {
+    margin: 0 (-$content-padding-mobile) 24px (-$content-padding-mobile);
+    padding: 0 $content-padding-mobile 18px $content-padding-mobile;
+  }
+}
