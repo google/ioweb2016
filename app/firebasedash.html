@@ -262,23 +262,14 @@ limitations under the License.
           nonWebUsers.push(userId);
         }
       }
-      return Promise.resolve(nonWebUsers);
+      return nonWebUsers;
     });
   };
 
   const getWebUsers = function(shard) {
-    let url = `https://io-2016-prod-${shard}.firebaseio.com/users.json?auth=${AUTH_TOKEN}`;
-
-    return fetch(url).then(resp => resp.json()).then(data => {
-      let webUsers = [];
-
-      for (let userId in data) {
-        if (data[userId].used_web_app) {
-          webUsers.push(userId);
-        }
-      }
-      return Promise.resolve(webUsers);
-    });
+    let params = `orderBy="used_web_app"&equalTo=true&auth=${AUTH_TOKEN}`;
+    let url = `https://io-2016-prod-${shard}.firebaseio.com/users.json?${params}`;
+    return fetch(url).then(resp => resp.json()).then(webUsers => Object.keys(webUsers));
   };
 
   const collectUsersAcrossShards = function() {
