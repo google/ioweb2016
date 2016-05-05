@@ -27,12 +27,6 @@ handlers:
   http_headers:
     Access-Control-Allow-Origin: "*"
 
-- url: $PREFIX$/experiment
-  static_dir: app/experiment
-  secure: always
-  http_headers:
-    Access-Control-Allow-Origin: "*"
-
 - url: $PREFIX$/fonts
   static_dir: app/fonts
   secure: always
