@@ -1516,8 +1516,8 @@ func TestHandleWipeout(t *testing.T) {
 				t.Errorf("ParseInt(%q): %v", r.URL.Query().Get("endAt"), err)
 				return
 			}
-			min := time.Now().Add(-744*time.Hour).Unix() * 1000
-			max := time.Now().Add(-696*time.Hour).Unix() * 1000
+			min := time.Now().Add(-1464*time.Hour).Unix() * 1000 // 61 days
+			max := time.Now().Add(-1416*time.Hour).Unix() * 1000 // 59 days
 			if cutoff < min || cutoff > max {
 				t.Errorf("cutoff = %v; want between %v and %v", cutoff, min, max)
 			}
