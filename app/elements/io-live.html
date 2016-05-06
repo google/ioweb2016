@@ -72,7 +72,7 @@ Fired when the mode changes.
 
     <div class$="keynote__banner card [[_computeKeynoteBannerClass(afterKeynote, openWidget)]]" layout horizontal on-tap="onPlayKeynote">
       <div class="card-content" layout horizontal center>
-        <div><iron-icon icon="io:play-circle-fill" self-center></iron-icon> Watch the keynote</div>
+        <iron-icon icon="io:play-circle-fill"></iron-icon><span>Watch the keynote</span>
       </div>
     </div>
 
@@ -171,13 +171,13 @@ Fired when the mode changes.
                 </template>
               </paper-menu>
 
-              <div class="card card__bottom-links" hidden$="[[!_equal(mode, _MODES.LIVE)]]">
-                <div class="card-content" layout horizontal justified>
-                  <a href$="/io2016/schedule#day[[dayView]]"
-                     data-ajax-link data-track-link="live-fullschedule" >Full schedule</a>
-                </div>
-              </div>
+            </div>
 
+            <div class="card card__bottom-links" hidden$="[[_computeHideFirstTabLinks(mode, duringKeynote)]]">
+              <div class="card-content" layout horizontal justified>
+                <a href$="/io2016/schedule#day[[dayView]]"
+                   data-ajax-link data-track-link="live-fullschedule">Full schedule</a>
+              </div>
             </div>
 
           </section>
@@ -828,6 +828,10 @@ Fired when the mode changes.
 
     _computeKeynoteBannerClass: function(afterKeynote, openWidget) {
       return afterKeynote && openWidget ? 'on' : '';
+    },
+
+    _computeHideFirstTabLinks: function(mode, duringKeynote) {
+      return mode !== this._MODES.LIVE || duringKeynote;
     },
 
     startCountdown: function() {

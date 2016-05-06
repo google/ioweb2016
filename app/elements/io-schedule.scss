@@ -120,6 +120,10 @@ $filterBannerHeight: 72px;
 
 :host([mobile]) {
   @include mobile-styles;
+
+  .schedule-time {
+    width: calc(100% - 16px);
+  }
 }
 
 .card-content--myscheduleinfo {
@@ -283,11 +287,18 @@ $filterBannerHeight: 72px;
   color: $color-session-detail-light-grey;
   font-size: 16px;
   line-height: 28px;
+  white-space: nowrap;
+}
+
+.schedule-time-dur-room {
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .schedule-livestream {
   margin-left: $mobileKeyline / 2;
   color: rgba(0,0,0,0.25);
+  flex-shrink: 0;
 }
 
 .filters__panel {
