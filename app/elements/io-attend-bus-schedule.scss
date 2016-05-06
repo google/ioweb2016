@@ -59,6 +59,12 @@ $content-padding-mobile: 16px;
   }
 }
 
+.bus-schedule-header {
+  margin: 0;
+  padding: 0;
+  z-index: 1; // Keeps dropdown menu in front of schedule content.
+}
+
 .bus-schedule-banner {
   border-radius: $border-radius $border-radius 0 0;
   margin: 0;
