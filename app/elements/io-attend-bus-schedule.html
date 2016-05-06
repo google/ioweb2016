@@ -12,6 +12,8 @@ limitations under the License.
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/effects/waterfall.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
@@ -72,64 +74,66 @@ limitations under the License.
       on-iron-overlay-closed="onCloseBusSchedule"
       layout vertical>
 
-    <div class="bus-schedule-banner bg-cyan-300" layout vertical left-clip right-clip>
-      <div class="bus-schedule-route" layout horizontal>
-        <paper-icon-button class="bus-schedule-close" icon="io:close" dialog-dismiss aria-label="Close bus schedule"></paper-icon-button>
-        <span tabindex="-1" autofocus></span>
-        <div id="route-select" class="route-fields" layout vertical flex>
-          <div class="route-field bg-cyan-200" layout horizontal>
-            <span class="route-label">[[directionPrefixStop]]</span>
-            <paper-dropdown-menu id="bus-stop-dropdown"
-                                class="route-stop"
-                                label="[[selectLabel]]"
-                                on-iron-select="onSelectStop"
-                                no-label-float
-                                noink flex
-                                disabled$="[[_isDataError]]">
-              <paper-listbox class="dropdown-content">
-                <template is="dom-repeat" items="[[stopsList]]">
-                  <paper-item value$="[[item.stop_id]]">[[item.stop_name]]</paper-item>
-                </template>
-              </paper-listbox>
-            </paper-dropdown-menu>
-          </div>
+    <app-header class="bus-schedule-header" effects="waterfall" scroll-target="busScrollRegion" fixed>
+      <div class="bus-schedule-banner bg-cyan-300" layout vertical left-clip right-clip>
+        <div class="bus-schedule-route" layout horizontal>
+          <paper-icon-button class="bus-schedule-close" icon="io:close" dialog-dismiss aria-label="Close bus schedule"></paper-icon-button>
+          <span tabindex="-1" autofocus></span>
+          <div id="route-select" class="route-fields" layout vertical flex>
+            <div class="route-field bg-cyan-200" layout horizontal>
+              <span class="route-label">[[directionPrefixStop]]</span>
+              <paper-dropdown-menu id="bus-stop-dropdown"
+                                  class="route-stop"
+                                  label="[[selectLabel]]"
+                                  on-iron-select="onSelectStop"
+                                  no-label-float
+                                  noink flex
+                                  disabled$="[[_isDataError]]">
+                <paper-listbox class="dropdown-content">
+                  <template is="dom-repeat" items="[[stopsList]]">
+                    <paper-item value$="[[item.stop_id]]">[[item.stop_name]]</paper-item>
+                  </template>
+                </paper-listbox>
+              </paper-dropdown-menu>
+            </div>
 
-          <div class="route-field bg-cyan-200" layout horizontal>
-            <span class="route-label">[[directionPrefixIO]]</span>
-            <span class="route-value" flex>I/O</span>
+            <div class="route-field bg-cyan-200" layout horizontal>
+              <span class="route-label">[[directionPrefixIO]]</span>
+              <span class="route-value" flex>I/O</span>
+            </div>
           </div>
+          <paper-icon-button class="schedule-swap-button" icon="io:swap-vert" aria-label="Reverse route" on-click="swapRouteDirection" disabled$="[[_isDataError]]"></paper-icon-button>
         </div>
-        <paper-icon-button class="schedule-swap-button" icon="io:swap-vert" aria-label="Reverse route" on-click="swapRouteDirection" disabled$="[[_isDataError]]"></paper-icon-button>
+        <div id="bus-schedule-nav" class$="bus-schedule-nav [[busNavState]]" layout horizontal justified>
+          <paper-tabs id="bus-schedule-tabs"
+                      attr-for-selected="label"
+                      selected="{{activeDay}}">
+            <paper-tab label="2016-05-17" link>
+              <a href="#2016-05-17" data-ajax-link
+                 layout horizontal center-center
+                 tabindex="-1">May 17</a>
+            </paper-tab>
+            <paper-tab label="2016-05-18" link>
+              <a href="#2016-05-18" data-ajax-link
+                 layout horizontal center-center
+                 tabindex="-1">May 18</a>
+            </paper-tab>
+            <paper-tab label="2016-05-19" link>
+              <a href="#2016-05-19" data-ajax-link
+                 layout horizontal center-center
+                 tabindex="-1">May 19</a>
+            </paper-tab>
+            <paper-tab label="2016-05-20" link>
+              <a href="#2016-05-20" data-ajax-link
+                 layout horizontal center-center
+                 tabindex="-1">May 20</a>
+            </paper-tab>
+          </paper-tabs>
+        </div>
       </div>
-      <div id="bus-schedule-nav" class$="bus-schedule-nav [[busNavState]]" layout horizontal justified>
-        <paper-tabs id="bus-schedule-tabs"
-                    attr-for-selected="label"
-                    selected="{{activeDay}}">
-          <paper-tab label="2016-05-17" link>
-            <a href="#2016-05-17" data-ajax-link
-               layout horizontal center-center
-               tabindex="-1">May 17</a>
-          </paper-tab>
-          <paper-tab label="2016-05-18" link>
-            <a href="#2016-05-18" data-ajax-link
-               layout horizontal center-center
-               tabindex="-1">May 18</a>
-          </paper-tab>
-          <paper-tab label="2016-05-19" link>
-            <a href="#2016-05-19" data-ajax-link
-               layout horizontal center-center
-               tabindex="-1">May 19</a>
-          </paper-tab>
-          <paper-tab label="2016-05-20" link>
-            <a href="#2016-05-20" data-ajax-link
-               layout horizontal center-center
-               tabindex="-1">May 20</a>
-          </paper-tab>
-        </paper-tabs>
-      </div>
-    </div>
+    </app-header>
 
-    <div class="scrollable schedule-scrollable" flex>
+    <div id="busScrollRegion" class="scrollable schedule-scrollable" flex>
 
       <iron-pages id="bus-schedule-pages"
                   class="bus-schedule-content"
@@ -434,6 +438,10 @@ limitations under the License.
     setSchedule: function() {
       if (!this._isDataLoaded) {
         return;
+      }
+
+      if (typeof this.activeDay === 'undefined') {
+        this.activeDay = this.startDate;
       }
 
       if (this.activeDay === this.startDate) {
