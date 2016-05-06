@@ -373,6 +373,13 @@ limitations under the License.
             parseInt(getComputedStyle(IOWA.Elements.Footer).height) +
             Polymer.dom(this.root).querySelector('.io__hash').clientHeight;
 
+
+        // Deep link into shuttle schedule.
+        var parsedUrl = IOWA.Router.parseUrl(window.location.toString());
+        if (parsedUrl.hash.match(/bus/)) {
+          this.openBusSchedule();
+        }
+
         // Wait till after subnav effects to look for focusable items
         this.async(function() {
           IOWA.A11y.addFocusStates(SUBTAB_SELECTOR);
@@ -404,12 +411,13 @@ limitations under the License.
     },
 
     openBusSchedule: function(e) {
-      e.preventDefault();
+      e && e.preventDefault();
+
       this._loadSchedule = true;
 
       this.async(function() {
-        this.$$('#busScheduleElement').$.busSchedule.open();
-      }.bind(this));
+        this.$$('#busScheduleElement').open();
+      });
     }
 
   });

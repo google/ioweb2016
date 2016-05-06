@@ -385,6 +385,10 @@ limitations under the License.
       this.setSchedule();
     },
 
+    open: function() {
+      this.$.busSchedule.open();
+    },
+
     onOpenBusSchedule: function(e) {
       if (!this._isDataLoaded) {
         this.$.busScheduleData.generateRequest();
