@@ -26,8 +26,8 @@ import (
 )
 
 func wipeoutShard(c context.Context, shard string) error {
-	// 30 days ago as milliseconds since Unix epoch
-	cutoff := time.Now().AddDate(0, 0, -30).Unix() * 1000
+	// 60 days ago as milliseconds since Unix epoch
+	cutoff := time.Now().AddDate(0, 0, -60).Unix() * 1000
 
 	q := url.Values{
 		"orderBy": {`"last_activity_timestamp"`},
