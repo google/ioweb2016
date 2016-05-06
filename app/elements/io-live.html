@@ -13,6 +13,10 @@ limitations under the License.
 
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/effects/waterfall.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+
 <link rel="import" href="../bower_components/google-youtube/google-youtube.html">
 
 <link rel="import" href="../bower_components/neon-animation/neon-animated-pages.html">
@@ -80,7 +84,8 @@ Fired when the mode changes.
 
       <div class="middle-content-section" layout vertical>
 
-        <div class="bg-cyan-400">
+        <app-header id="header" class="bg-cyan-400" effects="waterfall" fixed
+                    scroll-target="liveschedulerows">
           <div class="widget-nav" layout horizontal center end-justified>
             <paper-icon-button icon="io:close" on-tap="closeFab"></paper-icon-button>
           </div>
@@ -90,13 +95,13 @@ Fired when the mode changes.
             <paper-tab label="schedule" role="" disabled$="[[_equal(mode, _MODES.AFTER)]]">Upcoming</paper-tab>
             <paper-tab label="hash" role="">Social</paper-tab>
           </paper-tabs>
-        </div>
+        </app-header>
 
         <neon-animated-pages entry-animation="fade-in-animation"
                              exit-animation="fade-out-animation"
                              selected="[[selectedTab]]"
                              on-neon-animation-finish="_neonPageTransitionFinish"
-                             attr-for-selected="label" fit>
+                             attr-for-selected="label">
           <section class="schedule__content" label="live" layout vertical>
 
             <div hidden$="[[!_equal(mode, _MODES.BEFORE)]]" fit layout vertical>
@@ -133,7 +138,8 @@ Fired when the mode changes.
               </div>
             </div>
 
-            <div class="card schedule-rows" layout vertical flex hidden$="[[duringKeynote]]">
+            <div id="liveScrollRegion" class="card schedule-rows" layout vertical
+                 flex hidden$="[[duringKeynote]]">
 
               <paper-menu id="live-channel-menu" class="schedule__content"
                           attr-for-selected="videoid" selected="{{selectedVideoId}}">
@@ -631,6 +637,19 @@ Fired when the mode changes.
 
     selectedTabChanged: function() {
       IOWA.Analytics.trackEvent('live', 'tab select', this.selectedTab);
+
+      switch (this.selectedTab) {
+        case 'live':
+          this.$.header.scrollTarget = this.$.liveScrollRegion;
+          break;
+        case 'hash':
+          this.$.header.scrollTarget = this.$.hashtab;
+          break;
+        case 'schedule':
+          // fall through to default.
+        default:
+          this.$.header.scrollTarget = this.$.liveschedulerows;
+      }
     },
 
     onVideoReady: function(e, detail) {

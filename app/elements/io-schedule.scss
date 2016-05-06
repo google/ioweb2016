@@ -124,6 +124,9 @@ $filterBannerHeight: 72px;
   .schedule-time {
     width: calc(100% - 16px);
   }
+  .schedule-block-title {
+    width: 65px;
+  }
 }
 
 .card-content--myscheduleinfo {
@@ -265,6 +268,8 @@ $filterBannerHeight: 72px;
 }
 
 .schedule-toggle-buttons-mobile {
+  cursor: pointer;
+
   .schedule-add-button {
     color: $color-bluegrey-200;
     display: none;

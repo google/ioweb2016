@@ -167,10 +167,15 @@ paper-tabs {
   }
 }
 
+#header {
+  z-index: 1; // scroll shadow above scrolling region.
+}
+
 neon-animated-pages {
-  margin-top: $paperTabsHeight * 2;
+  // margin-top: $paperTabsHeight * 2;
   overflow: hidden;
-  z-index: 1; // force layer so no rendering artifacts.
+  height: 100%;
+  //z-index: 1; // force layer so no rendering artifacts.
   background-color: #fff;
   border-bottom-left-radius: 2px;
   border-bottom-right-radius: 2px;
