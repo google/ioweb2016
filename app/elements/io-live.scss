@@ -73,6 +73,10 @@ io-schedule-row {
   }
 }
 
+#livebanner {
+  visibility: hidden; // Hide for a11y
+}
+
 :host([mode="before"]) {
   #livewidget {
     // renders a "border" around the widget when the background is white (before the show)
@@ -94,6 +98,7 @@ io-schedule-row {
   max-height: 500px;
   overflow: hidden;
   opacity: 0;
+  visibility: hidden; // Hide for a11y
   pointer-events: none;
 
   // box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.25),
@@ -374,5 +379,3 @@ neon-animated-pages {
     max-height: 360px;
   }
 }
-
-

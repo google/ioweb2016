@@ -66,6 +66,7 @@ Fired when the mode changes.
                on-tap="onFabClick"></paper-fab>
 
     <a href="https://www.youtube.com/watch?v=lFm4s50PnmY" target="_blank"
+       id="livebanner"
        data-track-link="live-yt360">
       <div class$="keynote__banner keynote__banner-360 card [[_computeKeynoteBannerClass(duringKeynote, openWidget)]]"></div>
     </a>
@@ -734,6 +735,8 @@ Fired when the mode changes.
       e && e.stopPropagation();
       this.$.livewidget.classList.remove('transitioning');
       if (!this.openWidget) {
+        this.$.livebanner.style.visibility = 'hidden';
+        this.$.livewidget.style.visibility = 'hidden';
         this.$.schedfab.style.visibility = 'visible';
         this.selectedSession = null; // De-select a previously viewed session.
       }
@@ -746,6 +749,8 @@ Fired when the mode changes.
     },
 
     openFab: function() {
+      this.$.livebanner.style.visibility = 'visible';
+      this.$.livewidget.style.visibility = 'visible';
       this.$.schedfab.style.visibility = 'hidden';
       this.openWidget = true;
     },
