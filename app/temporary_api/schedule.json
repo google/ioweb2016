@@ -14,7 +14,7 @@
       "speakers":null,
       "room":"Amphitheatre",
       "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/9d72d428-2b03-e611-a517-00155d5066d7.jpg",
-      "youtubeUrl":"https://google.com/events/io",
+      "youtubeUrl":"7V-fIGMDsmE",
       "hasRelated":false,
       "day":18,
       "block":"10 AM",
@@ -64,7 +64,7 @@
       "startTimestamp":"2016-05-18T20:00:00Z",
       "endTimestamp":"2016-05-18T21:00:00Z",
       "isLivestream":true,
-      "isFeatured":false,
+      "isFeatured":true,
       "tags":[
         "TRACK_ANDROID",
         "TYPE_SESSIONS",
@@ -768,7 +768,7 @@
       "startTimestamp":"2016-05-19T01:00:00Z",
       "endTimestamp":"2016-05-19T02:00:00Z",
       "isLivestream":true,
-      "isFeatured":false,
+      "isFeatured":true,
       "tags":[
         "TRACK_ANDROID",
         "TYPE_SESSIONS",
@@ -1104,7 +1104,7 @@
       ],
       "room":"Amphitheatre",
       "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/46d50c09-0cef-e511-a517-00155d5066d7.jpg",
-      "youtubeUrl":"https://google.com/events/io",
+      "youtubeUrl":"7V-fIGMDsmE",
       "hasRelated":false,
       "day":19,
       "block":"9 AM",
@@ -1298,7 +1298,7 @@
       ],
       "room":"Amphitheatre",
       "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/912d2aeb-0bef-e511-a517-00155d5066d7.jpg",
-      "youtubeUrl":"https://google.com/events/io",
+      "youtubeUrl":"7V-fIGMDsmE",
       "hasRelated":false,
       "day":19,
       "block":"10 AM",
@@ -1328,8 +1328,40 @@
       "speakers":[
         "44b5fde1-11ef-e511-a517-00155d5066d7"
       ],
-      "room":"Stage 4 | Ursa Major",
+      "room":"Stage 3 | Ursa Minor",
       "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/e1641ff7-0bef-e511-a517-00155d5066d7.jpg",
+      "youtubeUrl":"7V-fIGMDsmE",
+      "hasRelated":false,
+      "day":19,
+      "block":"11 AM",
+      "start":"11:00 AM",
+      "end":"12:00 PM",
+      "duration":"1 hour",
+      "filters":{
+        "Develop":true,
+        "Firebase":true,
+        "Live streamed":true,
+        "Sessions":true
+      }
+    },
+    {
+      "id":"cd641ff7-0bef-e511-a517-00155d5066d7",
+      "title":"Deep Dive into the Realtime Database",
+      "description":"Let the Firebase Realtime Database be your backend. Build your app faster, and sync your data in realtime. Come listen to David East speak how the Realtime Database is optimized for speed, security, and offline use. In this talk we'll take a look at how you can use the Realtime Database across Android, iOS, and the Web to build powerful realtime experiences.",
+      "startTimestamp":"2016-05-19T18:00:00Z",
+      "endTimestamp":"2016-05-19T19:00:00Z",
+      "isLivestream":true,
+      "isFeatured":false,
+      "tags":[
+        "TRACK_FIREBASE",
+        "TYPE_SESSIONS",
+        "THEME_DEVELOP"
+      ],
+      "speakers":[
+        "2a1487d5-c2ee-e511-a517-00155d5066d7"
+      ],
+      "room":"Stage 4 | Ursa Major",
+      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/cd641ff7-0bef-e511-a517-00155d5066d7.jpg",
       "youtubeUrl":"7V-fIGMDsmE",
       "hasRelated":false,
       "day":19,
@@ -1533,7 +1565,7 @@
     },
     {
       "id":"10631cfd-0bef-e511-a517-00155d5066d7",
-      "title":"Chrome's Developer Tools: Superpowers for web developers",
+      "title":"DevTools in 2016: Accelerate your workflow",
       "description":"What's the ideal web developer’s workflow? The Chrome DevTools team has asked this question over and over, only to realize that there isn't just one! So rather than bringing you to the DevTools, we're bringing the DevTools to you, wherever you are.\n\nLearn how far our upcoming integration with your favorite editors goes, our new supercharged console with ES6, the new command palette and much much more.",
       "startTimestamp":"2016-05-19T20:00:00Z",
       "endTimestamp":"2016-05-19T21:00:00Z",
@@ -1612,7 +1644,7 @@
       ],
       "room":"Amphitheatre",
       "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/8f9c1403-0cef-e511-a517-00155d5066d7.jpg",
-      "youtubeUrl":"https://google.com/events/io",
+      "youtubeUrl":"7V-fIGMDsmE",
       "hasRelated":false,
       "day":19,
       "block":"1 PM",
@@ -1803,7 +1835,8 @@
       ],
       "speakers":[
         "cd6c41c3-c2ee-e511-a517-00155d5066d7",
-        "dc6c41c3-c2ee-e511-a517-00155d5066d7"
+        "dc6c41c3-c2ee-e511-a517-00155d5066d7",
+        "f36c41c3-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 8 | Crater",
       "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/a1c924f1-0bef-e511-a517-00155d5066d7.jpg",
@@ -1934,7 +1967,7 @@
       ],
       "room":"Amphitheatre",
       "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/e8621cfd-0bef-e511-a517-00155d5066d7.jpg",
-      "youtubeUrl":"https://google.com/events/io",
+      "youtubeUrl":"7V-fIGMDsmE",
       "hasRelated":false,
       "day":19,
       "block":"3 PM",
@@ -2078,7 +2111,7 @@
     {
       "id":"3b651ff7-0bef-e511-a517-00155d5066d7",
       "title":"Supercharging Firebase with Google Cloud Platform",
-      "description":"Firebase allows you to build awesome real time apps quickly and easily. Google Cloud Platform lets you build powerful services that scale. Combining these two platforms gives you the power to build amazing experiences without worrying about infrastructure and operations. In this talk, we will take a look at how you can use Firebase to build a real time application and Google Container Engine to run a containerized backend that interacts with Firebase in real time.",
+      "description":"Firebase allows you to build awesome real time apps quickly and easily. Google Cloud Platform lets you build powerful services that scale. Combining these two platforms gives you the power to build amazing experiences without worrying about infrastructure and operations. Join us as we show you step by step how we built our application in just a few days. You will walk away ready to build an amazing application with Firebase and Google Cloud Platform",
       "startTimestamp":"2016-05-19T23:00:00Z",
       "endTimestamp":"2016-05-20T00:00:00Z",
       "isLivestream":true,
@@ -2115,7 +2148,7 @@
       "startTimestamp":"2016-05-20T00:00:00Z",
       "endTimestamp":"2016-05-20T01:00:00Z",
       "isLivestream":true,
-      "isFeatured":false,
+      "isFeatured":true,
       "tags":[
         "TRACK_ANDROID",
         "TYPE_SESSIONS",
@@ -2408,38 +2441,6 @@
       }
     },
     {
-      "id":"cd641ff7-0bef-e511-a517-00155d5066d7",
-      "title":"Deep Dive into the Realtime Database",
-      "description":"Let the Firebase Realtime Database be your backend. Build your app faster, and sync your data in realtime. Come listen to David East speak how the Realtime Database is optimized for speed, security, and offline use. In this talk we'll take a look at how you can use the Realtime Database across Android, iOS, and the Web to build powerful realtime experiences.",
-      "startTimestamp":"2016-05-20T17:00:00Z",
-      "endTimestamp":"2016-05-20T18:00:00Z",
-      "isLivestream":true,
-      "isFeatured":false,
-      "tags":[
-        "TRACK_FIREBASE",
-        "TYPE_SESSIONS",
-        "THEME_DEVELOP"
-      ],
-      "speakers":[
-        "2a1487d5-c2ee-e511-a517-00155d5066d7"
-      ],
-      "room":"Stage 7 | Leo",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/cd641ff7-0bef-e511-a517-00155d5066d7.jpg",
-      "youtubeUrl":"7V-fIGMDsmE",
-      "hasRelated":false,
-      "day":20,
-      "block":"10 AM",
-      "start":"10:00 AM",
-      "end":"11:00 AM",
-      "duration":"1 hour",
-      "filters":{
-        "Develop":true,
-        "Firebase":true,
-        "Live streamed":true,
-        "Sessions":true
-      }
-    },
-    {
       "id":"10c924f1-0bef-e511-a517-00155d5066d7",
       "title":"Mobile Vision API: Providing on-device vision for applications",
       "description":"On-device image and video analysis is simple with the Mobile Vision API. On-device analysis provides low latency for real-time applications, data stays private on the device, and requires no network connection. In this talk, developers will learn how to adopt visual sensing capabilities into their apps. We will focus on real-world coding examples and demonstrations of the Mobile Vision technology for detecting and tracking barcodes and faces.",
@@ -2524,7 +2525,7 @@
       ],
       "room":"Amphitheatre",
       "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/c8641ff7-0bef-e511-a517-00155d5066d7.jpg",
-      "youtubeUrl":"https://google.com/events/io",
+      "youtubeUrl":"7V-fIGMDsmE",
       "hasRelated":false,
       "day":20,
       "block":"10 AM",
@@ -2702,9 +2703,9 @@
       }
     },
     {
-      "id":"fc621cfd-0bef-e511-a517-00155d5066d7",
-      "title":"How AMP achieves its speed",
-      "description":"The Accelerated Mobile Pages (AMP) project’s primary goal is to make mobile web pages ridiculously fast, to the point where they appear to load instantly. Watch AMP engineering lead Malte Ubl dissect the anatomy of AMP and all of its performance insights and optimizations, to ultimately give you the power to control your own performance destiny.",
+      "id":"f7621cfd-0bef-e511-a517-00155d5066d7",
+      "title":"Progressive Web Apps across all frameworks ",
+      "description":"Progressive Web Apps can be built using any JavaScript library or framework, whether it's React, Angular 2.0, Ember or Polymer. In this talk, we'll dive into how to craft offline, lightning fast web apps using each of these solutions. Learn how to take advantage of Service Workers, Server-side Rendering and an application \"shell\" architecture to optimise for first meaningful paint, fast-first load and repeat visits. We'll also cover techniques for progressive-enhancement using these libraries so your users still get the best user experience supported by their browser.",
       "startTimestamp":"2016-05-20T20:00:00Z",
       "endTimestamp":"2016-05-20T21:00:00Z",
       "isLivestream":true,
@@ -2715,10 +2716,10 @@
         "THEME_DEVELOP"
       ],
       "speakers":[
-        "be582512-c3ee-e511-a517-00155d5066d7"
+        "964dfcff-c2ee-e511-a517-00155d5066d7"
       ],
       "room":"Stage 2 | Hydra",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/fc621cfd-0bef-e511-a517-00155d5066d7.jpg",
+      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/f7621cfd-0bef-e511-a517-00155d5066d7.jpg",
       "youtubeUrl":"7V-fIGMDsmE",
       "hasRelated":false,
       "day":20,
@@ -2894,6 +2895,38 @@
       }
     },
     {
+      "id":"fc621cfd-0bef-e511-a517-00155d5066d7",
+      "title":"How AMP achieves its speed",
+      "description":"The Accelerated Mobile Pages (AMP) project’s primary goal is to make mobile web pages ridiculously fast, to the point where they appear to load instantly. Watch AMP engineering lead Malte Ubl dissect the anatomy of AMP and all of its performance insights and optimizations, to ultimately give you the power to control your own performance destiny.",
+      "startTimestamp":"2016-05-20T21:00:00Z",
+      "endTimestamp":"2016-05-20T22:00:00Z",
+      "isLivestream":true,
+      "isFeatured":false,
+      "tags":[
+        "TRACK_MOBILEWEB",
+        "TYPE_SESSIONS",
+        "THEME_DEVELOP"
+      ],
+      "speakers":[
+        "be582512-c3ee-e511-a517-00155d5066d7"
+      ],
+      "room":"Stage 2 | Hydra",
+      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/fc621cfd-0bef-e511-a517-00155d5066d7.jpg",
+      "youtubeUrl":"7V-fIGMDsmE",
+      "hasRelated":false,
+      "day":20,
+      "block":"2 PM",
+      "start":"2:00 PM",
+      "end":"3:00 PM",
+      "duration":"1 hour",
+      "filters":{
+        "Develop":true,
+        "Live streamed":true,
+        "Mobile Web":true,
+        "Sessions":true
+      }
+    },
+    {
       "id":"2c2d2aeb-0bef-e511-a517-00155d5066d7",
       "title":"Improve user acquisition campaigns with analytics",
       "description":"Got a great app and want more users? Having a user acquisition strategy is crucial to global app domination, but it doesn't have to be a leap in the dark! This talk shines a light on how you can run both organic and paid app install campaigns to deliver real results in a cost-effective way -- and how analytics ties it all together. You'll learn how to track user acquisition performance, understand the right metrics to compare ad networks and see why lifetime value really matters.",
@@ -2923,38 +2956,6 @@
         "Ads":true,
         "Grow \u0026 Earn":true,
         "Live streamed":true,
-        "Sessions":true
-      }
-    },
-    {
-      "id":"f7621cfd-0bef-e511-a517-00155d5066d7",
-      "title":"Progressive Web Apps across all frameworks ",
-      "description":"Progressive Web Apps can be built using any JavaScript library or framework, whether it's React, Angular 2.0, Ember or Polymer. In this talk, we'll dive into how to craft offline, lightning fast web apps using each of these solutions. Learn how to take advantage of Service Workers, Server-side Rendering and an application \"shell\" architecture to optimise for first meaningful paint, fast-first load and repeat visits. We'll also cover techniques for progressive-enhancement using these libraries so your users still get the best user experience supported by their browser.",
-      "startTimestamp":"2016-05-20T21:00:00Z",
-      "endTimestamp":"2016-05-20T22:00:00Z",
-      "isLivestream":true,
-      "isFeatured":false,
-      "tags":[
-        "TRACK_MOBILEWEB",
-        "TYPE_SESSIONS",
-        "THEME_DEVELOP"
-      ],
-      "speakers":[
-        "964dfcff-c2ee-e511-a517-00155d5066d7"
-      ],
-      "room":"Stage 2 | Hydra",
-      "photoUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/sessions/__w-200-400-600-800-1000__/f7621cfd-0bef-e511-a517-00155d5066d7.jpg",
-      "youtubeUrl":"7V-fIGMDsmE",
-      "hasRelated":false,
-      "day":20,
-      "block":"2 PM",
-      "start":"2:00 PM",
-      "end":"3:00 PM",
-      "duration":"1 hour",
-      "filters":{
-        "Develop":true,
-        "Live streamed":true,
-        "Mobile Web":true,
         "Sessions":true
       }
     },
@@ -3142,7 +3143,11 @@
     },
     "01cad1a5-a70f-e611-a517-00155d5066d7":{
       "id":"01cad1a5-a70f-e611-a517-00155d5066d7",
-      "name":"Glen  Shires"
+      "name":"Glen  Shires",
+      "bio":"Glen Shires is a speech software engineer who led the development of the Google Cloud Speech API and the Chrome Web Speech API. He also chaired the W3C Speech API group and has been granted over a dozen patents. Prior to joining Google in 2010, he led development teams for voice and speech products at Intel, General Magic and Picazo Communications. Glen received his bachelor's and master's degrees in electrical and computer engineering from the University of Wisconsin - Madison, where he developed a speech-recognition engine for his master's thesis.",
+      "company":"Google",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/01cad1a5-a70f-e611-a517-00155d5066d7.jpg",
+      "plusoneUrl":"https://plus.google.com/+GlenShires"
     },
     "01fa3f2c-9efa-e511-a517-00155d5066d7":{
       "id":"01fa3f2c-9efa-e511-a517-00155d5066d7",
@@ -3185,7 +3190,9 @@
     },
     "083cdcf7-b6f3-e511-a517-00155d5066d7":{
       "id":"083cdcf7-b6f3-e511-a517-00155d5066d7",
-      "name":"Kunal Soni"
+      "name":"Kunal Soni",
+      "bio":"Kunal has been with Google for over five years and currently leads partnerships and business development for Google Play in South East Asia, India and Australia. ",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/083cdcf7-b6f3-e511-a517-00155d5066d7.jpg"
     },
     "090ed6d8-79f8-e511-a517-00155d5066d7":{
       "id":"090ed6d8-79f8-e511-a517-00155d5066d7",
@@ -3459,7 +3466,10 @@
     },
     "4c51e0f9-c2ee-e511-a517-00155d5066d7":{
       "id":"4c51e0f9-c2ee-e511-a517-00155d5066d7",
-      "name":"Laurence Moroney"
+      "name":"Laurence Moroney",
+      "bio":"Laurence Moroney is a Developer Advocate at Google, working on mobile services, specializing in cross-platform developer technologies. He's the host of 'Coffee with a Googler' on the Google Developers channel, as well as countless Dev Bytes about mobile development topics. He's the author of more books than he can count, including best-selling programming and Science Fiction ones. When he's not Googling, he's currently working on the revival comics for the Stargate TV shows, and enjoying the geek cred that this brings!",
+      "company":"Google",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/4c51e0f9-c2ee-e511-a517-00155d5066d7.jpg"
     },
     "4ccd40c9-c2ee-e511-a517-00155d5066d7":{
       "id":"4ccd40c9-c2ee-e511-a517-00155d5066d7",
@@ -3644,7 +3654,7 @@
     },
     "77582512-c3ee-e511-a517-00155d5066d7":{
       "id":"77582512-c3ee-e511-a517-00155d5066d7",
-      "name":"Surma Surma",
+      "name":"Surma",
       "bio":"Surma is an engineer working with the Chrome team. He likes to cut himself on the bleeding edge, goes full-stack every once in a while and prefers good code over functional one.",
       "company":"Google",
       "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/77582512-c3ee-e511-a517-00155d5066d7.jpg",
@@ -3930,6 +3940,7 @@
     "c319ebed-c2ee-e511-a517-00155d5066d7":{
       "id":"c319ebed-c2ee-e511-a517-00155d5066d7",
       "name":"Purnima Kochikar",
+      "bio":"Purnima Kochikar is the Global Director of Apps and Games business development at Google Play where she oversees all aspects of the app ecosystem including strategy, operations, partnership management, technical support and developer marketing. Her team helps the world’s leading companies and fledgling entrepreneurs build successful mobile businesses. \n\nPurnima is passionate about K-12 education and entrepreneurship. A self professed geek, she is a tinkerer (her first toy was a meccano set), traveller, bookworm and budding chef. She serves on the board of Silicon Valley Forum.",
       "company":"Google",
       "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/c319ebed-c2ee-e511-a517-00155d5066d7.jpg"
     },
@@ -4183,6 +4194,13 @@
       "company":"Google",
       "twitterUrl":"https://twitter.com/_jwngr"
     },
+    "f36c41c3-c2ee-e511-a517-00155d5066d7":{
+      "id":"f36c41c3-c2ee-e511-a517-00155d5066d7",
+      "name":"Safia Baig",
+      "bio":"Safia is User Experience Researcher on Android. In this role, she focuses on mobile phone experiences. Prior to Google, she was a UX Researcher at a research and design consultancy. Safia earned a master's degree in Psychology from California State University, Long Beach. ",
+      "company":"Google",
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/f36c41c3-c2ee-e511-a517-00155d5066d7.jpg"
+    },
     "f4dbcfd4-23fc-e511-a517-00155d5066d7":{
       "id":"f4dbcfd4-23fc-e511-a517-00155d5066d7",
       "name":"Siva Velusamy",
@@ -4195,7 +4213,8 @@
       "name":"Monica Dinculescu",
       "bio":"Monica works on the Polymer Elements team, making pretty and accessible widgets for everyone to use. Before this, she worked on Chrome for two years, so she's pretty sure she has at least once broken the Internet for you. ",
       "company":"Google",
-      "twitterUrl":"https://notwaldorf"
+      "thumbnailUrl":"https://storage.googleapis.com/io2016-bucket-dev/images/speakers/w200/f51387d5-c2ee-e511-a517-00155d5066d7.jpg",
+      "twitterUrl":"https://twitter.com/notwaldorf"
     },
     "f6a4176d-11f5-e511-a517-00155d5066d7":{
       "id":"f6a4176d-11f5-e511-a517-00155d5066d7",
