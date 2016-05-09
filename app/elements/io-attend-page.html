@@ -278,7 +278,7 @@ limitations under the License.
                     There is no event parking along Amphitheater Parkway or Charleston Road. If you plan to drive, we recommend carpooling with other attendees due to limited parking availability at the venue. Preferred parking spaces will be available for cars containing 2 or more people.
                   </p>
                 </div>
-                <div class="details--info-block">
+                <div class="details--info-block" id="uberPOOL">
                   <h5 class="detail__heading">uberPOOL</h5>
                   <p class="detail__text">
                     Download the Uber app from <a href="https://play.google.com/store/apps/details?id=com.ubercab" target="_blank">Google Play</a> or the <a href="https://itunes.apple.com/us/app/uber/id368677368?mt=8" target="_blank">App Store</a> to use uberPOOL to share a ride with another rider along the same route for a cheaper fare.
@@ -378,6 +378,14 @@ limitations under the License.
         var parsedUrl = IOWA.Router.parseUrl(window.location.toString());
         if (parsedUrl.hash.match(/bus/)) {
           this.openBusSchedule();
+        } else if (parsedUrl.hash.match(/uber/)) {
+          this.async(function() {
+            Polymer.AppLayout.scroll({
+              top: this.$.uberPOOL.getBoundingClientRect().top - 100,
+              behavior: 'smooth',
+              target: IOWA.Elements.Scroller
+            });
+          }, 1000);
         }
 
         // Wait till after subnav effects to look for focusable items
