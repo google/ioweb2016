@@ -18,6 +18,7 @@
 
 $ytVideoControlsHeight: $desktopKeyline;
 $widgetWidth: 360px;
+$widgetHeight: 500px;
 
 :host {
   background-color: #fff;
@@ -92,10 +93,9 @@ io-schedule-row {
   -webkit-clip-path: circle(28px at bottom 28px right 28px);
   clip-path: circle(32px at center);
   transition: -webkit-clip-path 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  height: 60vh;
+  height: $widgetHeight;
   width: calc(100% - 32px);
   max-width: $widgetWidth;
-  max-height: 500px;
   overflow: hidden;
   opacity: 0;
   visibility: hidden; // Hide for a11y
@@ -172,10 +172,15 @@ paper-tabs {
   }
 }
 
+#header {
+  z-index: 1; // scroll shadow above scrolling region.
+}
+
 neon-animated-pages {
-  margin-top: $paperTabsHeight * 2;
+  // margin-top: $paperTabsHeight * 2;
   overflow: hidden;
-  z-index: 1; // force layer so no rendering artifacts.
+  height: 100%;
+  //z-index: 1; // force layer so no rendering artifacts.
   background-color: #fff;
   border-bottom-left-radius: 2px;
   border-bottom-right-radius: 2px;
@@ -318,7 +323,7 @@ neon-animated-pages {
   width: calc(100% - 32px);
   max-width: $widgetWidth;
   position: absolute;
-  top: calc(-60vh - 24px);
+  bottom: calc(#{$widgetHeight} + #{$mobileKeyline});
   right: $mobileKeyline;
   cursor: pointer;
   transition: opacity 300ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -333,6 +338,10 @@ neon-animated-pages {
   &.on {
     opacity: 1;
     pointer-events: all;
+  }
+
+  iron-icon {
+    margin-right: $mobileKeyline / 2;
   }
 }
 
@@ -349,15 +358,6 @@ neon-animated-pages {
   }
   #livewidget, .keynote__banner {
     right: $desktopKeyline;
-  }
-  .keynote__banner {
-    top: calc(-60vh - 12px);
-  }
-}
-
-@media (min-width: $desktop-breakpoint-mid) {
-  .keynote__banner {
-    top: calc(-60vh + 32px);
   }
 }
 
