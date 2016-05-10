@@ -6,7 +6,7 @@
         ".read": "$user_id === auth.uid",
         ".write": "$user_id === auth.uid",
         "last_activity_timestamp": {
-          ".validate": "(!data.exists() || newData.val() > data.val()) && newData.val() < now + 600000"
+          ".validate": "(!data.exists() || newData.val() > data.val()) && (newData.val() < now + 600000)"
         },
         "used_web_app": {
           ".validate": "newData.val() === true"
@@ -17,6 +17,7 @@
       }
     },
     "data": {
+      ".indexOn": "gcm_key",
       "$user_id": {
         ".read": "$user_id === auth.uid",
         ".write": "$user_id === auth.uid",
