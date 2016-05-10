@@ -32,10 +32,6 @@ IOWA.A11y = IOWA.A11y || (function() {
     document.addEventListener('toast-message', announceLiveChange);
     document.addEventListener('page-transition-done', focusNewPage);
     document.addEventListener('app-drawer-transitioned', focusDrawer.bind(this));
-
-    // Hold a reference to the first focusable item in the drawer so we
-    // can send focus to it anytime the drawer is opened
-    this._drawerAnchor = IOWA.Elements.Drawer.querySelector('a');
   }
 
   // Handlers managed by the addFocusStates and removeFocusStates methods.
@@ -116,7 +112,10 @@ IOWA.A11y = IOWA.A11y || (function() {
 
   function focusDrawer() {
     if (IOWA.Elements.Drawer.opened) {
-      this._drawerAnchor.focus();
+      var selected = IOWA.Elements.Drawer.querySelector('.iron-selected');
+      if (selected) {
+        selected.focus();
+      }
     }
   }
 
