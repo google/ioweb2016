@@ -73,7 +73,7 @@
     "paper-tabs": "PolymerElements/paper-tabs#^1.0.0",
     "paper-toast": "PolymerElements/paper-toast#^1.0.0",
     "polymer": "Polymer/polymer#^1.3.1",
-    "simpledb_polyfill": "https://gist.githubusercontent.com/inexorabletash/c8069c042b734519680c/raw/167655a70ddd100b4a6a3a2060e24566be9883bc/simpledb_polyfill.js",
+    "simpledb_polyfill": "https://gist.githubusercontent.com/jeffposnick/be45fa60b53f6d41dfc1c525e9dc22e3/raw/fd67d5fea8b00e7aa86d967585a1b3869c5053e0/simpledb_polyfill.js",
     "sw-toolbox": "^3.1.1",
     "web-animations-js": "web-animations/web-animations-js#^2.2.1",
     "gsap": "^1.18.2",
