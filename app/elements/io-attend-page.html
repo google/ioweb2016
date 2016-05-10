@@ -290,6 +290,18 @@ limitations under the License.
                     The only valid passenger pick-up and drop-off location is located in the Google I/O parking lot across from Shoreline Amphitheatre and next to the fire station.
                   </p>
                 </div>
+                <div class="details--info-block" id="lyftLine">
+                  <h5 class="detail__heading">Lyft Line</h5>
+                  <p class="detail__text">
+                    Download the Lyft app from <a href="https://play.google.com/store/apps/details?id=me.lyft.android&hl=enor" target="_blank">Google Play</a> or the <a href="https://itunes.apple.com/us/app/lyft-taxi-app-alternative/id529379082?mt=8" target="_blank">App Store</a> and use Lyft Line to share a ride with others going the same way for less.
+                  </p>
+                  <p class="detail__text">
+                    Enter the code <b>GOOGLEIO16</b> to receive up to $10 off a Lyft Line ride. Rides must begin or end at Shoreline Amphitheatre and take place within the <a href="https://www.lyft.com/cities/silicon-valley" target="_blank">Silicon Valley</a> region. The code is valid from May 18-20 for the first 1,000 attendees to redeem.
+                  </p>
+                  <p class="detail__text">
+                    The Lyft Line pick-up and drop-off location is located in the Google I/O parking lot across from Shoreline Amphitheatre and next to the fire station.
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -382,6 +394,14 @@ limitations under the License.
           this.async(function() {
             Polymer.AppLayout.scroll({
               top: this.$.uberPOOL.getBoundingClientRect().top - 100,
+              behavior: 'smooth',
+              target: IOWA.Elements.Scroller
+            });
+          }, 1000);
+        } else if (parsedUrl.hash.match(/lyft/)) {
+          this.async(function() {
+            Polymer.AppLayout.scroll({
+              top: this.$.lyftLine.getBoundingClientRect().top - 100,
               behavior: 'smooth',
               target: IOWA.Elements.Scroller
             });
