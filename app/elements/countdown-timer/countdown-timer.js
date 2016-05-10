@@ -63,6 +63,7 @@ IOWA.CountdownTimer.Core = function(targetDate, elem) {
 
   this.unitsAdded = false;
   this.drawAll = false;
+  this.showCurrentTime = false;
   this.shouldRandomize = false;
   this.currentlyRandomizing = false;
   this.randomIconStack = IOWA.CountdownTimer.ICON_SHAPES.slice(0);
@@ -106,7 +107,7 @@ IOWA.CountdownTimer.Core.prototype.setUp = function(opt_skipIntro) {
   }
 
   this.getDigits();
-  this.lastNumbers = this.unitDistance(this.targetDate, new Date());
+  this.lastNumbers = this.nextColumnValues(this.targetDate, new Date());
   this.bands = this.createBands();
 
   if (!opt_skipIntro) {
@@ -157,26 +158,39 @@ IOWA.CountdownTimer.Core.prototype.checkTime = function() {
   if (this.isCountdownComplete || (new Date()) >= this.targetDate) {
     if (!this.isCountdownComplete) {
       this.isCountdownComplete = true;
+      this.resetCanvas();
       this.containerDomElement.fire('countdown-complete');
     }
 
     this.shouldRandomize = true;
   }
 
-  var distance = this.unitDistance(this.targetDate, new Date());
+  var nextValues = this.nextColumnValues(this.targetDate, new Date());
 
   // Only set aria-label once @ page load. Updating it every clock tick is
   // showing style recalcs in the timeline.
   if (this.firstRun) {
-    var computedDistance = distance.days + ' days, ' +
-                           distance.hours + ' hours, ' +
-                           distance.minutes + ' minutes, ' +
-                           distance.seconds + ' seconds until Google I/O';
+    var countdownDescription;
 
-    this.containerDomElement.setAttribute('aria-label', computedDistance);
+    if (this.showCurrentTime) {
+      countdownDescription = nextValues.column1 + ':' +
+                             nextValues.column2 + ':' +
+                             nextValues.column3;
+    } else {
+      countdownDescription = nextValues.column1 + ' days, ' +
+                             nextValues.column2 + ' hours, ' +
+                             nextValues.column3 + ' minutes, ' +
+                             nextValues.column4 + ' seconds until Google I/O';
+    }
+
+    this.containerDomElement.setAttribute('aria-label', countdownDescription);
     // Exposing distance as a bindable property. This is so we can bind it to
     // a hidden div to work around a bug in Chrome and VoiceOver
-    this.containerDomElement.currentTime = computedDistance;
+    this.containerDomElement.currentTime = countdownDescription;
+
+    if (this.showCurrentTime) {
+      this.randomizeBands(this.bands.slice(this.bands.length - 2), 1000);
+    }
   }
 
   if (this.isMobile && this.firstRun) {
@@ -189,7 +203,7 @@ IOWA.CountdownTimer.Core.prototype.checkTime = function() {
     this.bands[6].renderFlat();
     this.bands[7].renderFlat();
     // reset default band used in logo
-    var d = distance.minutes % 10;
+    var d = nextValues.column3 % 10;
     this.bands[5].oldShape = d;
     this.bands[5].currentShape = d;
     this.firstRun = false;
@@ -200,27 +214,29 @@ IOWA.CountdownTimer.Core.prototype.checkTime = function() {
       this.startRandomizing();
     }
   } else {
-    if (this.firstRun || this.lastNumbers.days !== distance.days) {
-      this.bands[0].changeShape(Math.floor(distance.days / 10));
-      this.bands[1].changeShape(distance.days % 10);
+    if (this.firstRun || this.lastNumbers.column1 !== nextValues.column1) {
+      this.bands[0].changeShape(Math.floor(nextValues.column1 / 10));
+      this.bands[1].changeShape(nextValues.column1 % 10);
     }
 
-    if (this.firstRun || this.lastNumbers.hours !== distance.hours) {
-      this.bands[2].changeShape(Math.floor(distance.hours / 10));
-      this.bands[3].changeShape(distance.hours % 10);
+    if (this.firstRun || this.lastNumbers.column2 !== nextValues.column2) {
+      this.bands[2].changeShape(Math.floor(nextValues.column2 / 10));
+      this.bands[3].changeShape(nextValues.column2 % 10);
     }
 
-    if (this.firstRun || this.lastNumbers.minutes !== distance.minutes) {
-      this.bands[4].changeShape(Math.floor(distance.minutes / 10));
-      this.bands[5].changeShape(distance.minutes % 10);
+    if (this.firstRun || this.lastNumbers.column3 !== nextValues.column3) {
+      this.bands[4].changeShape(Math.floor(nextValues.column3 / 10));
+      this.bands[5].changeShape(nextValues.column3 % 10);
     }
 
-    if (this.firstRun || this.lastNumbers.seconds !== distance.seconds) {
-      this.bands[6].changeShape(Math.floor(distance.seconds / 10));
-      this.bands[7].changeShape(distance.seconds % 10);
+    if (this.firstRun || this.lastNumbers.column4 !== nextValues.column4) {
+      if (!this.showCurrentTime) {
+        this.bands[6].changeShape(Math.floor(nextValues.column4 / 10));
+        this.bands[7].changeShape(nextValues.column4 % 10);
+      }
     }
 
-    this.lastNumbers = distance;
+    this.lastNumbers = nextValues;
     this.firstRun = false;
   }
 };
@@ -228,13 +244,16 @@ IOWA.CountdownTimer.Core.prototype.checkTime = function() {
 IOWA.CountdownTimer.Core.prototype.startRandomizing = function() {
   this.shouldRandomize = false;
   this.currentlyRandomizing = true;
+  this.randomizeBands(this.bands, 200);
+};
 
-  this.bands.forEach(function(band) {
+IOWA.CountdownTimer.Core.prototype.randomizeBands = function(bands, delay) {
+  bands.forEach(function(band) {
     band.changeShape(this.randomShape(band.currentShape));
   }.bind(this));
 
   var setA = [];
-  var setB = this.bands.slice(0);
+  var setB = bands.slice(0);
 
   this.randomInterval = setInterval(function() {
     setTimeout(function() {
@@ -247,7 +266,7 @@ IOWA.CountdownTimer.Core.prototype.startRandomizing = function() {
       setA.splice(randomIndex, 1);
       band.changeShape(this.randomShape(band.currentShape));
     }.bind(this), Math.random() * 200);
-  }.bind(this), 200);
+  }.bind(this), delay);
 };
 
 IOWA.CountdownTimer.Core.prototype.onFrame = function() {
@@ -325,7 +344,16 @@ IOWA.CountdownTimer.Core.prototype._onIntroFrame = function() {
   }
 };
 
-IOWA.CountdownTimer.Core.prototype.unitDistance = function(target, now) {
+IOWA.CountdownTimer.Core.prototype.nextColumnValues = function(target, now) {
+  if (this.showCurrentTime) {
+    var currentTime = new Date();
+    return {
+      column1: currentTime.getHours(),
+      column2: currentTime.getMinutes(),
+      column3: currentTime.getSeconds()
+    };
+  }
+
   var difference = (new Date(target - now)).getTime() / 1000;
 
   var secondsInMinutes = 60;
@@ -344,10 +372,10 @@ IOWA.CountdownTimer.Core.prototype.unitDistance = function(target, now) {
   var seconds = Math.floor(difference);
 
   return {
-    days: days,
-    hours: hours,
-    minutes: minutes,
-    seconds: seconds
+    column1: days,
+    column2: hours,
+    column3: minutes,
+    column4: seconds
   };
 };
 
@@ -395,18 +423,19 @@ IOWA.CountdownTimer.Core.prototype.setQuality = function(n) {
 IOWA.CountdownTimer.Core.prototype.createBands = function() {
   var n = 8;
   var bands = [];
+
   var time = {
-    digit_0: Math.floor(this.lastNumbers.days / 10),
-    digit_1: this.lastNumbers.days % 10,
+    digit_0: Math.floor(this.lastNumbers.column1 / 10),
+    digit_1: this.lastNumbers.column1 % 10,
 
-    digit_2: Math.floor(this.lastNumbers.hours / 10),
-    digit_3: this.lastNumbers.hours % 10,
+    digit_2: Math.floor(this.lastNumbers.column2 / 10),
+    digit_3: this.lastNumbers.column2 % 10,
 
-    digit_4: Math.floor(this.lastNumbers.minutes / 10),
-    digit_5: this.lastNumbers.minutes % 10,
+    digit_4: Math.floor(this.lastNumbers.column3 / 10),
+    digit_5: this.lastNumbers.column3 % 10,
 
-    digit_6: Math.floor(this.lastNumbers.seconds / 10),
-    digit_7: this.lastNumbers.seconds % 10
+    digit_6: this.lastNumbers.column4 ? Math.floor(this.lastNumbers.column4 / 10) : 'android',
+    digit_7: this.lastNumbers.column4 ? this.lastNumbers.column4 % 10 : 'infinity'
   };
 
   for (var i = 0; i < n; i++) {
@@ -450,10 +479,17 @@ IOWA.CountdownTimer.Core.prototype.addUnits = function() {
   ctx.fillStyle = '#78909C'; // blue grey 400
   ctx.textAlign = 'center';
 
-  ctx.fillText('Days', this.bands[0].center.x + this.layout.radius + this.bandPadding / 2, this.bands[0].center.y + this.layout.radius + offset);
-  ctx.fillText('Hours', this.bands[2].center.x + this.layout.radius + this.bandPadding / 2, this.bands[2].center.y + this.layout.radius + offset);
-  ctx.fillText('Minutes', this.bands[4].center.x + this.layout.radius + this.bandPadding / 2, this.bands[4].center.y + this.layout.radius + offset);
-  ctx.fillText('Seconds', this.bands[6].center.x + this.layout.radius + this.bandPadding / 2, this.bands[6].center.y + this.layout.radius + offset);
+  if (this.showCurrentTime) {
+    ctx.fillText('Hours', this.bands[0].center.x + this.layout.radius + this.bandPadding / 2, this.bands[0].center.y + this.layout.radius + offset);
+    ctx.fillText('Minutes', this.bands[2].center.x + this.layout.radius + this.bandPadding / 2, this.bands[2].center.y + this.layout.radius + offset);
+    ctx.fillText('Seconds', this.bands[4].center.x + this.layout.radius + this.bandPadding / 2, this.bands[4].center.y + this.layout.radius + offset);
+  } else {
+    ctx.fillText('Days', this.bands[0].center.x + this.layout.radius + this.bandPadding / 2, this.bands[0].center.y + this.layout.radius + offset);
+    ctx.fillText('Hours', this.bands[2].center.x + this.layout.radius + this.bandPadding / 2, this.bands[2].center.y + this.layout.radius + offset);
+    ctx.fillText('Minutes', this.bands[4].center.x + this.layout.radius + this.bandPadding / 2, this.bands[4].center.y + this.layout.radius + offset);
+    ctx.fillText('Seconds', this.bands[6].center.x + this.layout.radius + this.bandPadding / 2, this.bands[6].center.y + this.layout.radius + offset);
+  }
+
   ctx.restore();
 };
 
@@ -463,27 +499,46 @@ IOWA.CountdownTimer.Core.prototype.addSeparators = function() {
   ctx.save();
   ctx.scale(this.pixelRatio, this.pixelRatio);
 
-  for (var i = 0; i < this.separators.length; i++) {
-    ctx.clearRect(this.separators[i].x - 2, this.separators[i].y - 2, this.separators[i].w + 4, this.separators[i].h + 4);
-    ctx.beginPath();
-    ctx.moveTo(this.separators[i].x, this.separators[i].y);
-    ctx.lineTo(this.separators[i].x + this.separators[i].w, this.separators[i].y + this.separators[i].h);
-    ctx.lineWidth = this.strokeWeight;
+  if (this.showCurrentTime) {
+    ctx.fillStyle = '#78909C';
+    for (var i = 0; i < this.colonSeparators.length; i++) {
+      ctx.clearRect(this.colonSeparators[i].x - this.colonSeparators[i].radius - 2, this.colonSeparators[i].y - this.colonSeparators[i].radius - 2, (this.colonSeparators[i].radius * 2) + 4, (this.colonSeparators[i].radius * 2) + 4);
+      ctx.beginPath();
+      ctx.arc(this.colonSeparators[i].x, this.colonSeparators[i].y, this.colonSeparators[i].radius, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  } else {
     ctx.strokeStyle = '#78909C';
-    ctx.lineCap = 'round';
-    ctx.stroke();
+    for (var j = 0; j < this.commaSeparators.length; j++) {
+      ctx.clearRect(this.commaSeparators[j].x - 2, this.commaSeparators[j].y - 2, this.commaSeparators[j].w + 4, this.commaSeparators[j].h + 4);
+      ctx.beginPath();
+      ctx.moveTo(this.commaSeparators[j].x, this.commaSeparators[j].y);
+      ctx.lineTo(this.commaSeparators[j].x + this.commaSeparators[j].w, this.commaSeparators[j].y + this.commaSeparators[j].h);
+      ctx.lineWidth = this.strokeWeight;
+      ctx.stroke();
+    }
   }
 
   ctx.restore();
 };
 
 IOWA.CountdownTimer.Core.prototype.getSeparators = function() {
-  this.separators = [];
+  this.commaSeparators = [];
+  this.colonSeparators = [];
 
   for (var i = 1; i <= 3; i++) {
     var x = this.bands[i * 2].center.x - this.layout.radius - (this.bandPadding + this.bandGutter) / 2;
     var y = this.bands[i * 2].center.y + this.layout.radius - this.bandGutter / 1.6;
-    this.separators.push({x: x, y: y, w: this.bandGutter / 2, h: this.bandGutter / 1.8});
+    this.commaSeparators.push({x: x, y: y, w: this.bandGutter / 2, h: this.bandGutter / 1.8});
+  }
+
+  for (var j = 1; j <= 2; j++) {
+    var colonX = Math.round(this.bands[j * 2].center.x - this.layout.radius - (this.bandGutter / 2));
+    var y1 = Math.round(this.bands[j * 2].center.y - (this.layout.radius * 0.5));
+    var y2 = Math.round(this.bands[j * 2].center.y + (this.layout.radius * 0.5));
+    var radius = Math.round(this.bandGutter / 4);
+    this.colonSeparators.push({x: colonX, y: y1, radius: radius});
+    this.colonSeparators.push({x: colonX, y: y2, radius: radius});
   }
 };
 

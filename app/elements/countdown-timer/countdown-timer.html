@@ -121,6 +121,14 @@ Fired when the intro sequence starts or finishes.
           },
 
           /**
+           * If true, the countdown shows the current time.
+           */
+          showCurrentTime: {
+            type: Boolean,
+            value: false
+          },
+
+          /**
            * If true, starts the countdown timer.
            */
           autoStart: {
@@ -134,6 +142,7 @@ Fired when the intro sequence starts or finishes.
          */
         attached: function() {
           this.countdownController = new IOWA.CountdownTimer.Core(new Date(this.date), Polymer.dom(this).node);
+          this.countdownController.showCurrentTime = this.showCurrentTime;
           this.countdownController.setUp(_skipIntro);
           this.countdownController.attachEvents();
 
