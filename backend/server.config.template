@@ -46,53 +46,11 @@
     "id": "survey-id",
     "reg": "registrant-id",
     "key": "api-key",
-    "endpoint": "https://api.eventpoint.com/2.3/eval/submitsurvey",
-    "disabled": ["__afterhours__"],
+    "endpoint": "https://eventpoint-gschedule2016-services.azurewebsites.net/eval/save",
     "smap": {},
-    "qmap": {
-      "q1": {
-        "name": "q10",
-        "answers": {
-          "1": "a-11",
-          "2": "a-12",
-          "3": "a-13",
-          "4": "a-14",
-          "5": "a-15"
-        }
-      },
-      "q2": {
-        "name": "q20",
-        "answers": {
-          "1": "a-21",
-          "2": "a-22",
-          "3": "a-23",
-          "4": "a-24",
-          "5": "a-25"
-        }
-      },
-      "q3": {
-        "name": "q30",
-        "answers": {
-          "1": "a-31",
-          "2": "a-32",
-          "3": "a-33",
-          "4": "a-34",
-          "5": "a-35"
-        }
-      },
-      "q4": {
-        "name": "q40",
-        "answers": {
-          "1": "a-41",
-          "2": "a-42",
-          "3": "a-43",
-          "4": "a-44",
-          "5": "a-45"
-        }
-      },
-      "q5": {
-        "name": "q50"
-      }
-    }
+    "q1": "q1",
+    "q2": "q2",
+    "q3": "q3",
+    "q4": "q4"
   }
 }

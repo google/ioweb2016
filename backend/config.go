@@ -16,6 +16,7 @@ package backend
 
 import (
 	"encoding/json"
+	"hash/crc32"
 	"os"
 	"path/filepath"
 	"sort"
@@ -126,30 +127,12 @@ type appConfig struct {
 		Reg      string
 		// Session IDs map
 		Smap map[string]string
-		// Don't accept feedback for these sessions
-		Disabled []string
-		// Question answers map
-		Qmap struct {
-			Q1 struct {
-				Name    string
-				Answers map[string]string
-			}
-			Q2 struct {
-				Name    string
-				Answers map[string]string
-			}
-			Q3 struct {
-				Name    string
-				Answers map[string]string
-			}
-			Q4 struct {
-				Name    string
-				Answers map[string]string
-			}
-			Q5 struct {
-				Name string
-			}
-		}
+		// Question IDs
+		Q1      string
+		Q2      string
+		Q3      string
+		Q4      string
+		Answers []string // valid answer values
 	}
 }
 
@@ -174,10 +157,7 @@ func initConfig(configPath, addr string) error {
 		config.Prefix = "/" + config.Prefix
 	}
 	sort.Strings(config.Whitelist)
-	sort.Strings(config.Survey.Disabled)
-	if config.Survey.Smap == nil {
-		config.Survey.Smap = make(map[string]string)
-	}
+	sort.Strings(config.Survey.Answers)
 
 	// init http/2 preload manifest even if the file doesn't exist
 	p := filepath.Dir(configPath)
@@ -206,4 +186,17 @@ func isWhitelisted(email string) bool {
 	}
 	// check the @domain of this email
 	return isWhitelisted(email[i:])
+}
+
+// firebaseShard returns shard URL for user uid.
+// The uid must by a google user ID, with google: prefix stripped.
+func firebaseShard(uid string) string {
+	n := len(config.Firebase.Shards)
+	if n == 0 {
+		return ""
+	}
+
+	v := crc32.ChecksumIEEE([]byte(uid))
+	i := int(v) % n
+	return config.Firebase.Shards[i]
 }

@@ -15,93 +15,136 @@
 package backend
 
 import (
+	"bytes"
+	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"sort"
+	"strings"
 
 	"golang.org/x/net/context"
+
+	"google.golang.org/appengine/log"
 )
 
+type epointPayload struct {
+	SurveyID   string           `json:"SurveyId"`
+	ObjectID   string           `json:"ObjectId"`
+	Registrant string           `json:"RegistrantKey"`
+	Responses  []epointResponse `json:"Responses"`
+}
+
+type epointResponse struct {
+	Question string `json:"QuestionId"`
+	Answer   string `json:"Response"`
+}
+
 type sessionSurvey struct {
-	Overall   string `json:"overall"`
-	Relevance string `json:"relevance"`
-	Content   string `json:"content"`
-	Speaker   string `json:"speaker"`
-	Comment   string `json:"comment"`
+	Overall   string `json:"overall"`   // Q1
+	Relevance string `json:"relevance"` // Q2
+	Content   string `json:"content"`   // Q3
+	Speaker   string `json:"speaker"`   // Q4
 }
 
-// valid validates sessionSurvey data.
 func (s *sessionSurvey) valid() bool {
-	if s.Overall != "" && config.Survey.Qmap.Q1.Answers[s.Overall] == "" {
-		return false
+	ok := func(v string) bool {
+		i := sort.SearchStrings(config.Survey.Answers, v)
+		return i < len(config.Survey.Answers) && config.Survey.Answers[i] == v
 	}
-	if s.Relevance != "" && config.Survey.Qmap.Q2.Answers[s.Relevance] == "" {
-		return false
-	}
-	if s.Content != "" && config.Survey.Qmap.Q3.Answers[s.Content] == "" {
-		return false
-	}
-	if s.Speaker != "" && config.Survey.Qmap.Q4.Answers[s.Speaker] == "" {
-		return false
-	}
-	return true
+	return ok(s.Overall) && ok(s.Relevance) && ok(s.Content) && ok(s.Speaker)
 }
 
-func (s *sessionSurvey) String() string {
-	return fmt.Sprintf("o=%s r=%s c=%s s=%s %s",
-		s.Overall, s.Relevance, s.Content, s.Speaker, s.Comment)
-}
-
-// disabledSurvey returns true if sid is found in config.Survey.Disabled.
-func disabledSurvey(sid string) bool {
-	if sid == "" {
-		return true
-	}
-	i := sort.SearchStrings(config.Survey.Disabled, sid)
-	return i < len(config.Survey.Disabled) && config.Survey.Disabled[i] == sid
-}
-
-// TODO: port to firebase
+// addSessionSurvey marks session sid bookmarked by user uid as "feedback submitted",
+// using token tok as firebase auth token.
 //
-// submittedSurveySessions returns a slice of session IDs which user uid
-// has already submitted a feedback survey for.
-// It fetches data from Google Drive AppData folder.
-func submittedSurveySessions(c context.Context, uid string) ([]string, error) {
-	return nil, nil
-	//cred, err := getCredentials(c, uid)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//var data *appFolderData
-	//if data, err = getAppFolderData(c, cred, false); err != nil {
-	//	return nil, err
-	//}
-	//return data.Survey, nil
+// The uid is either a firebase user ID of google:123 form, or a google user ID
+// with the google: prefix stripped.
+func addSessionSurvey(ctx context.Context, tok, uid, sid string) error {
+	data := map[string]bool{sid: true}
+	payload, err := json.Marshal(data)
+	if err != nil {
+		return err
+	}
+
+	gid := strings.TrimPrefix("google:", uid)
+	shard := firebaseShard(gid)
+	url := fmt.Sprintf("%s/data/%s/feedback_submitted_sessions?auth=%s", shard, uid, tok)
+	req, err := http.NewRequest("PATCH", url, bytes.NewReader(payload))
+	if err != nil {
+		return err
+	}
+
+	res, err := httpClient(ctx).Do(req)
+	if err != nil {
+		return err
+	}
+	defer res.Body.Close()
+	if res.StatusCode < 299 {
+		return nil
+	}
+	b, _ := ioutil.ReadAll(res.Body)
+	return errors.New(string(b))
 }
 
 // submitSessionSurvey sends a request to config.Survey.Endpoint with s data
 // according to https://api.eventpoint.com/2.3/Home/REST#evals docs.
 func submitSessionSurvey(c context.Context, sid string, s *sessionSurvey) error {
-	perr := prefixedErr("submitSessionSurvey")
-	r, err := http.NewRequest("GET", config.Survey.Endpoint, nil)
-	if err != nil {
-		return perr(err)
+	// dev config doesn't normally have a valid endpoint
+	if config.Survey.Endpoint == "" {
+		return nil
 	}
+
+	perr := prefixedErr("submitSessionSurvey")
 	if v, ok := config.Survey.Smap[sid]; ok {
 		sid = v
 	}
-	q := r.URL.Query()
-	q.Set(config.Survey.Qmap.Q1.Name, config.Survey.Qmap.Q1.Answers[s.Overall])
-	q.Set(config.Survey.Qmap.Q2.Name, config.Survey.Qmap.Q2.Answers[s.Relevance])
-	q.Set(config.Survey.Qmap.Q3.Name, config.Survey.Qmap.Q3.Answers[s.Content])
-	q.Set(config.Survey.Qmap.Q4.Name, config.Survey.Qmap.Q4.Answers[s.Speaker])
-	q.Set(config.Survey.Qmap.Q5.Name, s.Comment)
-	q.Set("surveyId", config.Survey.ID)
-	q.Set("registrantKey", config.Survey.Reg)
-	q.Set("objectid", sid)
-	r.URL.RawQuery = q.Encode()
+	p := &epointPayload{
+		SurveyID:   config.Survey.ID,
+		ObjectID:   sid,
+		Registrant: config.Survey.Reg,
+		Responses:  make([]epointResponse, 0, 4),
+	}
+	if s.Overall != "" {
+		p.Responses = append(p.Responses, epointResponse{
+			Question: config.Survey.Q1,
+			Answer:   s.Overall,
+		})
+	}
+	if s.Relevance != "" {
+		p.Responses = append(p.Responses, epointResponse{
+			Question: config.Survey.Q2,
+			Answer:   s.Relevance,
+		})
+	}
+	if s.Content != "" {
+		p.Responses = append(p.Responses, epointResponse{
+			Question: config.Survey.Q3,
+			Answer:   s.Content,
+		})
+	}
+	if s.Speaker != "" {
+		p.Responses = append(p.Responses, epointResponse{
+			Question: config.Survey.Q4,
+			Answer:   s.Speaker,
+		})
+	}
+
+	b, err := json.Marshal(p)
+	if err != nil {
+		return perr(err)
+	}
+	if isStaging() {
+		// log request body on staging for debugging
+		log.Debugf(c, "%s: %s", config.Survey.Endpoint, b)
+	}
+	r, err := http.NewRequest("POST", config.Survey.Endpoint, bytes.NewReader(b))
+	if err != nil {
+		return perr(err)
+	}
 	r.Header.Set("apikey", config.Survey.Key)
+	r.Header.Set("content-type", "application/json")
 	res, err := httpClient(c).Do(r)
 	if err != nil {
 		return perr(err)
@@ -110,6 +153,6 @@ func submitSessionSurvey(c context.Context, sid string, s *sessionSurvey) error 
 	if res.StatusCode == http.StatusOK {
 		return nil
 	}
-	b, _ := ioutil.ReadAll(res.Body)
+	b, _ = ioutil.ReadAll(res.Body)
 	return perr(res.Status + ": " + string(b))
 }
