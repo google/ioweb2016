@@ -103,6 +103,7 @@
 
       a {
         display: block;
+        outline: 0;
 
         &.iron-selected {
           background-color: $color-bluegrey-50;
