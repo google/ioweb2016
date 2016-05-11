@@ -62,16 +62,10 @@ func (s *sessionSurvey) valid() bool {
 // The uid is either a firebase user ID of google:123 form, or a google user ID
 // with the google: prefix stripped.
 func addSessionSurvey(ctx context.Context, tok, uid, sid string) error {
-	data := map[string]bool{sid: true}
-	payload, err := json.Marshal(data)
-	if err != nil {
-		return err
-	}
-
 	gid := strings.TrimPrefix("google:", uid)
 	shard := firebaseShard(gid)
-	url := fmt.Sprintf("%s/data/%s/feedback_submitted_sessions?auth=%s", shard, uid, tok)
-	req, err := http.NewRequest("PATCH", url, bytes.NewReader(payload))
+	url := fmt.Sprintf("%s/data/%s/feedback_submitted_sessions/%s?auth=%s", shard, uid, sid, tok)
+	req, err := http.NewRequest("PUT", url, strings.NewReader("true"))
 	if err != nil {
 		return err
 	}

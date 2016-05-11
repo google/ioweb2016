@@ -18,6 +18,7 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
@@ -527,7 +528,7 @@ func TestSubmitUserSurvey(t *testing.T) {
 	var fbupdated bool
 	firestub := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fbupdated = true
-		p := "/data/google:123/feedback_submitted_sessions"
+		p := "/data/google:123/feedback_submitted_sessions/session-id"
 		if r.URL.Path != p {
 			t.Errorf("r.URL.Path = %q; want %q", r.URL.Path, p)
 		}
@@ -535,16 +536,12 @@ func TestSubmitUserSurvey(t *testing.T) {
 			t.Errorf("a = %q; want %q", a, fbtoken)
 		}
 
-		if r.Method != "PATCH" {
-			t.Errorf("r.Method = %q; want PATCH", r.Method)
+		if r.Method != "PUT" {
+			t.Errorf("r.Method = %q; want PUT", r.Method)
 		}
-		var body map[string]bool
-		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-			t.Errorf("r.Body: %v", err)
-			return
-		}
-		if v, ok := body["session-id"]; !ok || !v {
-			t.Errorf("body = %+v; want map['session-id'] = true", body)
+		b, _ := ioutil.ReadAll(r.Body)
+		if string(b) != "true" {
+			t.Errorf("r.Body = %q; want 'true'", b)
 		}
 	}))
 	defer firestub.Close()
