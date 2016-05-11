@@ -34,7 +34,6 @@
     "gulp-concat": "^2.4.3",
     "gulp-crisper": "^1.0.0",
     "gulp-eslint": "^1.1.1",
-    "gulp-exec": "^2.1.2",
     "gulp-filter": "^3.0.1",
     "gulp-help": "^1.6.1",
     "gulp-if": "^2.0.0",
