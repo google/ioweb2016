@@ -49,6 +49,10 @@
   });
 
   function initWorker() {
+    if (!('Worker' in window)) {
+      return;
+    }
+
     var MAX_WORKER_TIMEOUT_ = 10 * 1000; // 10s
     var worker;
 
