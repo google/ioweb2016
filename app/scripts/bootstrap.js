@@ -93,13 +93,16 @@
     worker.postMessage({cmd: 'FETCH_SCHEDULE'});
   }
 
-  function lazyLoadWCPolyfillsIfNecessary() {
+  function lazyLoadWCPolyfillsIfNecessary(callback = null) {
     const onload = function() {
       // For native Imports, manually fire WCR so user code
       // can use the same code path for native and polyfill'd imports.
       if (!window.HTMLImports) {
         document.dispatchEvent(
             new CustomEvent('WebComponentsReady', {bubbles: true}));
+      }
+      if (callback) {
+        callback();
       }
     };
 
@@ -198,13 +201,17 @@
   });
 
   function initApp() {
-    IOWA.Router = IOWA.Router_(window); // eslint-disable-line new-cap
-    IOWA.Elements.init();
-    IOWA.Router.init(IOWA.Elements.Template);
-
     initWorker(); // Kick off fetching master schedule asap.
 
-    lazyLoadWCPolyfillsIfNecessary();
+    // wc.js brings in a URL() polyfill that we need to wait for in unsupported
+    // browsers. In Chrome, lazyLoadWCPolyfillsIfNecessary is effectively not
+    // async. It's a noop and its callback gets invoked right away. Therefore,
+    // this shouldn't slow anything down.
+    lazyLoadWCPolyfillsIfNecessary(() => {
+      IOWA.Router = IOWA.Router_(window); // eslint-disable-line new-cap
+      IOWA.Elements.init();
+      IOWA.Router.init(IOWA.Elements.Template);
+    });
 
     // Wait for critical.html to load if we don't have native HTML imports.
     // Can't use Polymer.RenderStatus.whenReady() b/c potentially, we have
