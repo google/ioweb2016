@@ -481,69 +481,43 @@ func syncEventData(w http.ResponseWriter, r *http.Request) {
 //	}
 //}
 
-// TODO: port to 2016
-//
 // submitUserSurvey submits survey responses for a specific session or a batch.
 func submitUserSurvey(w http.ResponseWriter, r *http.Request) {
-	//c, err := authUser(newContext(r), r.Header.Get("authorization"))
-	//if err != nil {
-	//	writeJSONError(c, w, errStatus(err), err)
-	//	return
-	//}
+	ctx := newContext(r)
+	survey := &sessionSurvey{}
+	if err := json.NewDecoder(r.Body).Decode(survey); err != nil {
+		writeJSONError(ctx, w, http.StatusBadRequest, err)
+		return
+	}
+	if !survey.valid() {
+		writeJSONError(ctx, w, http.StatusBadRequest, "invalid data")
+		return
+	}
 
-	//survey := &sessionSurvey{}
-	//if err := json.NewDecoder(r.Body).Decode(survey); err != nil {
-	//	writeJSONError(c, w, http.StatusBadRequest, err)
-	//	return
-	//}
-	//if !survey.valid() {
-	//	writeJSONError(c, w, http.StatusBadRequest, "invalid data")
-	//	return
-	//}
+	// accept only for existing sessions
+	sid := path.Base(r.URL.Path)
+	s, err := getSessionByID(ctx, sid)
+	if err != nil {
+		writeJSONError(ctx, w, http.StatusNotFound, err)
+		return
+	}
+	// don't allow early submissions on prod
+	if isProd() && time.Now().Before(s.StartTime) {
+		writeJSONError(ctx, w, http.StatusBadRequest, "too early")
+		return
+	}
 
-	//sid := path.Base(r.URL.Path)
-	//if isDev() {
-	//	w.Write([]byte(`["` + sid + `"]`))
-	//	return
-	//}
-
-	//// we don't accept feedback for certain sessions
-	//if disabledSurvey(sid) {
-	//	writeJSONError(c, w, http.StatusBadRequest, "survey feedback not allowed for this session")
-	//	return
-	//}
-	//// accept only for existing sessions
-	//s, err := getSessionByID(c, sid)
-	//if err != nil {
-	//	writeJSONError(c, w, http.StatusNotFound, err)
-	//	return
-	//}
-	//// don't allow early submissions on prod
-	//if isProd() && time.Now().Before(s.StartTime) {
-	//	writeJSONError(c, w, http.StatusBadRequest, "too early")
-	//	return
-	//}
-
-	//data, err := addSessionSurvey(c, contextUser(c), sid)
-	//if err != nil {
-	//	writeJSONError(c, w, errStatus(err), err)
-	//	return
-	//}
-	//err = submitSessionSurvey(c, sid, survey)
-	//if err != nil {
-	//	errorf(c, err.Error())
-	//	// try async if it didn't work right away; at most 3 retries
-	//	for i := 0; i < 4 && err != nil; i += 1 {
-	//		time.Sleep(time.Duration(i) * time.Second)
-	//		err = submitSessionSurveyAsync(c, sid, survey)
-	//	}
-	//}
-	//if err != nil {
-	//	// we could still recover feedback data from the logs in the worst case
-	//	errorf(c, "could not submit feedback for %s: %s", sid, survey)
-	//}
-	//w.WriteHeader(http.StatusCreated)
-	//json.NewEncoder(w).Encode(data)
+	tok := fbtoken(r.Header.Get("authorization"))
+	uid := r.FormValue("uid")
+	if err := addSessionSurvey(ctx, tok, uid, sid); err != nil {
+		writeJSONError(ctx, w, errStatus(err), err)
+		return
+	}
+	if err := submitSessionSurvey(ctx, sid, survey); err != nil {
+		errorf(ctx, err.Error())
+		writeJSONError(ctx, w, errStatus(err), "internal error")
+	}
+	w.WriteHeader(http.StatusCreated)
 }
 
 // TODO: update for Firebase and webpush
@@ -1216,4 +1190,13 @@ func h2preload(h http.Header, host, tplname string) {
 		s = "http"
 	}
 	http2preload.AddHeader(h, s, path.Join(host, config.Prefix), a)
+}
+
+// fbtoken extracts firebase auth token from s.
+func fbtoken(s string) string {
+	i := strings.IndexRune(s, ' ')
+	if i >= 0 {
+		s = s[i+1:]
+	}
+	return s
 }

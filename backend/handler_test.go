@@ -18,6 +18,7 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
@@ -509,162 +510,110 @@ func TestServeManifest(t *testing.T) {
 	}
 }
 
-// TODO: refactor when ported to firebase and 2016 eventpoint.
-//
-//func TestSubmitUserSurvey(t *testing.T) {
-//	defer resetTestState(t)
-//	defer preserveConfig()()
-//
-//	c := newContext(newTestRequest(t, "GET", "/dummy", nil))
-//	if err := storeCredentials(c, &oauth2Credentials{
-//		userID:      testUserID,
-//		Expiry:      time.Now().Add(2 * time.Hour),
-//		AccessToken: "dummy-access",
-//	}); err != nil {
-//		t.Fatal(err)
-//	}
-//	if err := storeLocalAppFolderMeta(c, testUserID, &appFolderData{
-//		FileID: "file-123",
-//		Etag:   "xxx",
-//	}); err != nil {
-//		t.Fatal(err)
-//	}
-//	if err := storeEventData(c, &eventData{Sessions: map[string]*eventSession{
-//		"ok":        {Id: "ok", StartTime: time.Now().Add(-10 * time.Minute)},
-//		"submitted": {Id: "submitted", StartTime: time.Now().Add(-10 * time.Minute)},
-//		"disabled":  {Id: "disabled", StartTime: time.Now().Add(-10 * time.Minute)},
-//		"too-early": {Id: "too-early", StartTime: time.Now().Add(10 * time.Minute)},
-//	}}); err != nil {
-//		t.Fatal(err)
-//	}
-//
-//	// Google Drive API endpoint
-//	feedbackIDs := []string{"submitted", "ok"}
-//	gdrive := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-//		w.Header().Set("Content-Type", "application/json")
-//		if r.Method == "GET" {
-//			w.Write([]byte(`{
-//				"starred_sessions": ["submitted", "too-early", "disabled"],
-//				"feedback_submitted_sessions": ["submitted"]
-//			}`))
-//			return
-//		}
-//		data := &appFolderData{}
-//		if err := json.NewDecoder(r.Body).Decode(data); err != nil {
-//			t.Error(err)
-//			http.Error(w, err.Error(), http.StatusBadRequest)
-//			return
-//		}
-//		if v := []string{"submitted", "too-early", "disabled"}; !compareStringSlices(data.Bookmarks, v) {
-//			t.Errorf("data.Bookmarks = %v; want %v", data.Bookmarks, v)
-//		}
-//		if !compareStringSlices(data.Survey, feedbackIDs) {
-//			t.Errorf("data.Survey = %v; want %v", data.Survey, feedbackIDs)
-//		}
-//	}))
-//	defer gdrive.Close()
-//
-//	// Survey API endpoint
-//	submitted := false
-//	ep := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-//		defer func() { submitted = true }()
-//		if h := r.Header.Get("code"); h != "ep-code" {
-//			t.Errorf("code = %q; want 'ep-code'", h)
-//		}
-//		if h := r.Header.Get("apikey"); h != "ep-key" {
-//			t.Errorf("apikey = %q; want 'ep-key'", h)
-//		}
-//		if err := r.ParseForm(); err != nil {
-//			t.Errorf("r.ParseForm: %v", err)
-//			return
-//		}
-//		params := url.Values{
-//			"surveyId":      {"io-survey"},
-//			"objectid":      {"ok-mapped"},
-//			"registrantKey": {"registrant"},
-//			"q1-param":      {"five"},
-//			"q2-param":      {"four"},
-//			"q3-param":      {"three"},
-//			"q4-param":      {"two"},
-//			"q5-param":      {""},
-//		}
-//		if !reflect.DeepEqual(r.Form, params) {
-//			t.Errorf("r.Form = %v; want %v", r.Form, params)
-//		}
-//	}))
-//	defer ep.Close()
-//
-//	config.Env = "prod"
-//	config.Google.Drive.FilesURL = gdrive.URL
-//	config.Google.Drive.UploadURL = gdrive.URL
-//	config.Survey.Endpoint = ep.URL + "/"
-//	config.Survey.ID = "io-survey"
-//	config.Survey.Reg = "registrant"
-//	config.Survey.Key = "ep-key"
-//	config.Survey.Code = "ep-code"
-//	config.Survey.Disabled = []string{"disabled"}
-//	config.Survey.Smap = map[string]string{
-//		"ok": "ok-mapped",
-//	}
-//	config.Survey.Qmap.Q1.Name = "q1-param"
-//	config.Survey.Qmap.Q1.Answers = map[string]string{"5": "five"}
-//	config.Survey.Qmap.Q2.Name = "q2-param"
-//	config.Survey.Qmap.Q2.Answers = map[string]string{"4": "four"}
-//	config.Survey.Qmap.Q3.Name = "q3-param"
-//	config.Survey.Qmap.Q3.Answers = map[string]string{"3": "three"}
-//	config.Survey.Qmap.Q4.Name = "q4-param"
-//	config.Survey.Qmap.Q4.Answers = map[string]string{"2": "two"}
-//	config.Survey.Qmap.Q5.Name = "q5-param"
-//
-//	const feedback = `{
-//		"overall": "5",
-//		"relevance": "4",
-//		"content": "3",
-//		"speaker": "2"
-//	}`
-//
-//	table := []*struct {
-//		sid  string
-//		code int
-//	}{
-//		{"ok", http.StatusCreated},
-//		{"not-there", http.StatusNotFound},
-//		{"submitted", http.StatusBadRequest},
-//		{"disabled", http.StatusBadRequest},
-//		{"too-early", http.StatusBadRequest},
-//		{"", http.StatusNotFound},
-//	}
-//
-//	for i, test := range table {
-//		submitted = false
-//		r := newTestRequest(t, "PUT", "/api/v1/user/survey/"+test.sid, strings.NewReader(feedback))
-//		r.Header.Set("authorization", bearerHeader+testIDToken)
-//		w := httptest.NewRecorder()
-//		handleUserSurvey(w, r)
-//
-//		if w.Code != test.code {
-//			t.Errorf("%d: w.Code = %d; want %d\nResponse: %s", i, w.Code, test.code, w.Body.String())
-//		}
-//		if test.code > 299 {
-//			if submitted {
-//				t.Errorf("%d: submitted = true; want false", i)
-//			}
-//			continue
-//		}
-//
-//		var list []string
-//		if err := json.Unmarshal(w.Body.Bytes(), &list); err != nil {
-//			t.Fatalf("%d: %v", i, err)
-//		}
-//		if !compareStringSlices(list, feedbackIDs) {
-//			t.Errorf("%d: list = %v; want %v", i, list, feedbackIDs)
-//		}
-//
-//		if !submitted {
-//			t.Errorf("%d: submitted = false; want true", i)
-//		}
-//	}
-//}
+func TestSubmitUserSurvey(t *testing.T) {
+	defer resetTestState(t)
+	defer preserveConfig()()
+
+	r := newTestRequest(t, "GET", "/", nil)
+	ctx := newContext(r)
+	data := &eventData{Sessions: map[string]*eventSession{
+		"session-id": {ID: "session-id", StartTime: time.Now().Add(-10 * time.Minute)},
+	}}
+	if err := storeEventData(ctx, data); err != nil {
+		t.Fatal(err)
+	}
+
+	// firebase endpoint
+	const fbtoken = "fbtoken"
+	var fbupdated bool
+	firestub := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fbupdated = true
+		p := "/data/google:123/feedback_submitted_sessions/session-id"
+		if r.URL.Path != p {
+			t.Errorf("r.URL.Path = %q; want %q", r.URL.Path, p)
+		}
+		if a := r.FormValue("auth"); a != fbtoken {
+			t.Errorf("a = %q; want %q", a, fbtoken)
+		}
+
+		if r.Method != "PUT" {
+			t.Errorf("r.Method = %q; want PUT", r.Method)
+		}
+		b, _ := ioutil.ReadAll(r.Body)
+		if string(b) != "true" {
+			t.Errorf("r.Body = %q; want 'true'", b)
+		}
+	}))
+	defer firestub.Close()
+
+	// survey API endpoint
+	var submitted bool
+	epoint := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		submitted = true
+		if r.Method != "POST" {
+			t.Errorf("r.Method = %q; want POST", r.Method)
+		}
+		if v := r.Header.Get("content-type"); v != "application/json" {
+			t.Errorf("content-type: %q; want application/json", v)
+		}
+		if v := r.Header.Get("apikey"); v != "ep-key" {
+			t.Errorf("apikey = %q; want 'ep-key'", v)
+		}
+		want := &epointPayload{
+			SurveyID:   "io-survey",
+			ObjectID:   "session-id",
+			Registrant: "registrant",
+			Responses: []epointResponse{
+				{Question: "q1", Answer: "5"},
+				{Question: "q2", Answer: "4"},
+				{Question: "q3", Answer: "3"},
+				{Question: "q4", Answer: "2"},
+			},
+		}
+		body := &epointPayload{}
+		if err := json.NewDecoder(r.Body).Decode(body); err != nil {
+			t.Errorf("r.Body: %v", err)
+		}
+		if !reflect.DeepEqual(body, want) {
+			t.Errorf("body = %+v; want %+v", body, want)
+		}
+	}))
+	defer epoint.Close()
+
+	config.Env = "prod"
+	config.Firebase.Shards = []string{firestub.URL}
+	config.Survey.Endpoint = epoint.URL + "/"
+	config.Survey.ID = "io-survey"
+	config.Survey.Reg = "registrant"
+	config.Survey.Key = "ep-key"
+	config.Survey.Q1 = "q1"
+	config.Survey.Q2 = "q2"
+	config.Survey.Q3 = "q3"
+	config.Survey.Q4 = "q4"
+	config.Survey.Answers = []string{"1", "2", "3", "4", "5"}
+
+	const body = `{
+		"overall": "5",
+		"relevance": "4",
+		"content": "3",
+		"speaker": "2"
+	}`
+	u := "/api/v1/user/survey/session-id?uid=google:123"
+	r = newTestRequest(t, "PUT", u, strings.NewReader(body))
+	r.Header.Set("authorization", "bearer "+fbtoken)
+	w := httptest.NewRecorder()
+	submitUserSurvey(w, r)
+
+	if w.Code != http.StatusCreated {
+		t.Errorf("w.Code = %d; want %d", w.Code, http.StatusCreated)
+	}
+	if !submitted {
+		t.Errorf("never submitted survey to epoint")
+	}
+	if !fbupdated {
+		t.Errorf("never updated firebase")
+	}
+}
 
 func TestFirstSyncEventData(t *testing.T) {
 	defer resetTestState(t)
