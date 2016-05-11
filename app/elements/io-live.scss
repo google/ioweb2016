@@ -32,6 +32,7 @@ countdown-timer {
 
 io-schedule-row {
   padding-left: $mobileKeyline;
+  flex-shrink: 0; // Make sure Safari 9.1 doesn't shrink the content.
 }
 
 .card {
@@ -114,6 +115,11 @@ io-schedule-row {
     -webkit-clip-path: circle(400px at center);
     clip-path: circle(400px at center);
   }
+
+  &[safari] {
+    -webkit-clip-path: none !important;
+    clip-path: none !important;
+  }
 }
 
 .widget-nav {
@@ -174,6 +180,7 @@ paper-tabs {
 
 #header {
   z-index: 1; // scroll shadow above scrolling region.
+  flex-shrink: 0; // Safari needs help making sure the header doesn't shrink.
 }
 
 neon-animated-pages {
