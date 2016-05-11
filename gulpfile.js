@@ -31,6 +31,7 @@ var merge = require('merge-stream');
 var opn = require('opn');
 var glob = require('glob');
 var pagespeed = require('psi');
+var cssslam = require('css-slam');
 
 var generateServiceWorker = require('./gulp_scripts/service-worker');
 var backend = require('./gulp_scripts/backend');
@@ -322,8 +323,8 @@ gulp.task('vulcanize-elements', false, ['sass'], function() {
     }))
     .on('error', console.error.bind(console))
     .pipe($.crisper({scriptInHead: true}))
-    // Minify html output
-    .pipe($.if('*.html', minifyHtml()))
+    .pipe($.if('*.html', minifyHtml())) // Minify html output
+    .pipe($.if('*.html', cssslam.gulp())) // Minify css in HTML output
     // Minifiy js output
     .pipe($.if('*.js', uglifyJS()))
     .pipe(gulp.dest(IOWA.distDir + '/' + IOWA.appDir + '/elements/'));
@@ -340,8 +341,8 @@ gulp.task('vulcanize-critical-elements', false, ['sass'], function() {
       inlineScripts: true,
       dest: IOWA.appDir + '/elements'
     }))
-    // Minify html output
-    .pipe($.if('*.html', minifyHtml()))
+    .pipe($.if('*.html', minifyHtml())) // Minify html output
+    .pipe($.if('*.html', cssslam.gulp())) // Minify css in HTML output
     .pipe(gulp.dest(IOWA.distDir + '/' + IOWA.appDir + '/elements/'));
 });
 
@@ -357,8 +358,8 @@ gulp.task('vulcanize-gadget-elements', false, ['sass'], function() {
       dest: IOWA.appDir + '/elements'
     }))
     .pipe($.crisper({scriptInHead: true}))
-    // Minify html output
-    .pipe($.if('*.html', minifyHtml()))
+    .pipe($.if('*.html', minifyHtml())) // Minify html output
+    .pipe($.if('*.html', cssslam.gulp())) // Minify css in HTML output
     // Minifiy js output
     .pipe($.if('*.js', uglifyJS()))
     .pipe(gulp.dest(IOWA.distDir + '/' + IOWA.appDir + '/elements/'));
@@ -383,8 +384,8 @@ gulp.task('vulcanize-extended-elements', false, ['sass'], function() {
       ]
     }))
     .pipe($.crisper({scriptInHead: true}))
-    // Minify html output
-    .pipe($.if('*.html', minifyHtml()))
+    .pipe($.if('*.html', minifyHtml())) // Minify html output
+    .pipe($.if('*.html', cssslam.gulp())) // Minify css in HTML output
     // Minifiy js output
     .pipe($.if('*.js', uglifyJS()))
     .pipe(gulp.dest(IOWA.distDir + '/' + IOWA.appDir + '/elements/'));
