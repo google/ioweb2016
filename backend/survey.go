@@ -135,7 +135,7 @@ func submitSessionSurvey(c context.Context, sid string, s *sessionSurvey) error 
 	if err != nil {
 		return perr(err)
 	}
-	if isStaging() {
+	if !isProd() {
 		// log request body on staging for debugging
 		log.Debugf(c, "%s: %s", config.Survey.Endpoint, b)
 	}
