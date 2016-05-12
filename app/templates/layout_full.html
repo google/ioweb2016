@@ -222,6 +222,22 @@ limitations under the License.
       --paper-tabs-selection-bar-color: var(--paper-blue-grey-600);
     }
   </style>
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Event",
+      "name": {% .Title %},
+      "description": {% .Desc %}
+      "startDate": "2016-05-18",
+      {% if .Canonical %}"url": {% .Canonical %},{% end %}
+      "location": {
+        "@type" : "Place",
+        "name" : "Shoreline Amphitheatre",
+        "address": "1 Amphitheatre Pkwy, Mountain View, CA 94043"
+      }
+    }
+  </script>
 </head>
 <body id="page-{% .Slug %}" class="loading bg-white">
 
