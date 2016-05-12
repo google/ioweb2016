@@ -362,7 +362,6 @@ func TestServeEmbed(t *testing.T) {
 	lookup := []string{
 		`<link rel="canonical" href="http://example.org/pref/embed">`,
 		`start-date="` + now.Format(time.RFC3339) + `"`,
-		`video-ids='["keynote","live"]'`,
 	}
 	err := false
 	for _, v := range lookup {
