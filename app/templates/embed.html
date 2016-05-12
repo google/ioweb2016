@@ -37,8 +37,7 @@
 <body id="page-embed" fullbleed>
 
 <!-- Note: First video should be the keynote -->
-<io-gadget start-date="{% .StartDateStr %}"
-           {% .LiveIDs | json | safeAttr "video-ids" %}></io-gadget>
+<io-gadget start-date="{% .StartDateStr %}"></io-gadget>
 
 <script>
 (function() {
