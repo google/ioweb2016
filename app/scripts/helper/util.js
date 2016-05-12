@@ -262,7 +262,7 @@ IOWA.Util = IOWA.Util || (function() {
     } else if ('performance' in window) {
       let navTiming = window.performance.timing;
       // See http://msdn.microsoft.com/ff974719
-      if (navTiming.msFirstPaint && navTiming.navigationStart !== 0) {
+      if (navTiming && navTiming.msFirstPaint && navTiming.navigationStart !== 0) {
         // See http://msdn.microsoft.com/ff974719
         return navTiming.msFirstPaint - navTiming.navigationStart;
       }
