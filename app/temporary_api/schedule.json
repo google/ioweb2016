@@ -225,7 +225,7 @@
       "startTimestamp":"2016-05-18T22:00:00Z",
       "endTimestamp":"2016-05-18T23:00:00Z",
       "isLivestream":false,
-      "isFeatured":false,
+      "isFeatured":true,
       "tags":[
         "TRACK_MOBILEWEB",
         "TYPE_SESSIONS",
@@ -480,7 +480,7 @@
       "startTimestamp":"2016-05-18T23:00:00Z",
       "endTimestamp":"2016-05-19T00:00:00Z",
       "isLivestream":false,
-      "isFeatured":false,
+      "isFeatured":true,
       "tags":[
         "TRACK_MOBILEWEB",
         "TYPE_SESSIONS",
@@ -576,7 +576,7 @@
       "startTimestamp":"2016-05-19T00:00:00Z",
       "endTimestamp":"2016-05-19T01:00:00Z",
       "isLivestream":false,
-      "isFeatured":false,
+      "isFeatured":true,
       "tags":[
         "TRACK_MOBILEWEB",
         "TYPE_SESSIONS",
@@ -1924,7 +1924,7 @@
       "startTimestamp":"2016-05-19T22:00:00Z",
       "endTimestamp":"2016-05-19T23:00:00Z",
       "isLivestream":true,
-      "isFeatured":false,
+      "isFeatured":true,
       "tags":[
         "TRACK_MOBILEWEB",
         "TYPE_SESSIONS",
