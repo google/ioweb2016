@@ -528,7 +528,7 @@ func TestSubmitUserSurvey(t *testing.T) {
 	var fbupdated bool
 	firestub := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fbupdated = true
-		p := "/data/google:123/feedback_submitted_sessions/session-id"
+		p := "/data/google:123/feedback_submitted_sessions/session-id.json"
 		if r.URL.Path != p {
 			t.Errorf("r.URL.Path = %q; want %q", r.URL.Path, p)
 		}
