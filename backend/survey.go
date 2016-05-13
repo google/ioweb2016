@@ -50,6 +50,9 @@ type sessionSurvey struct {
 
 func (s *sessionSurvey) valid() bool {
 	ok := func(v string) bool {
+		if v == "" {
+			return true
+		}
 		i := sort.SearchStrings(config.Survey.Answers, v)
 		return i < len(config.Survey.Answers) && config.Survey.Answers[i] == v
 	}
