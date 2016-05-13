@@ -71,6 +71,13 @@
   line-height: 24px;
 }
 
+@mixin typo-heading-6() {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+}
+
 @mixin typo-mobile-intro-card() {
   font-family: 'Roboto', sans-serif;
   font-size: 20px;
