@@ -39,6 +39,10 @@ io-faq-page {
   h5 {
     margin: $desktopKeyline 0 $mobileKeyline 0;
   }
+
+  h6 {
+    margin: $desktopKeyline 0 0 0;
+  }
 }
 
 .card-content--top {
