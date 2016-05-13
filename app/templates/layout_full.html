@@ -22,6 +22,12 @@ limitations under the License.
   <meta name="google-site-verification" content="ZuttP0TBQxWoi679sPXHsxrWLCIW1kaJKEnHt2t2yU0" />
   <title>{% .Title %}</title>
 
+  <link rel="dns-prefetch" href="https://www.google-analytics.com">
+  <link rel="dns-prefetch" href="https://apis.google.com">
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- <link rel="preload" href="/io2016/elements/elements.js" as="script"> -->
+
   <!-- See http://updates.html5rocks.com/2014/11/Support-for-installable-web-apps-with-webapp-manifest-in-chrome-38-for-Android -->
   <link rel="manifest" href="manifest.json">
   <!-- See http://updates.html5rocks.com/2014/11/Support-for-theme-color-in-Chrome-39-for-Android -->
@@ -440,7 +446,7 @@ limitations under the License.
 
 
   <!-- Remove hidden after live stream -->
-  <footer class="bg-bluegrey-50-40" layout horizontal center hidden>
+  <footer class="bg-bluegrey-50-40" layout horizontal center hidden$="[[_isPage('home', selectedPage)]]">
 
     <div flex>
 
