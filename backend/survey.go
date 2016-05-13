@@ -67,7 +67,7 @@ func (s *sessionSurvey) valid() bool {
 func addSessionSurvey(ctx context.Context, tok, uid, sid string) error {
 	gid := strings.TrimPrefix("google:", uid)
 	shard := firebaseShard(gid)
-	url := fmt.Sprintf("%s/data/%s/feedback_submitted_sessions/%s?auth=%s", shard, uid, sid, tok)
+	url := fmt.Sprintf("%s/data/%s/feedback_submitted_sessions/%s.json?auth=%s", shard, uid, sid, tok)
 	req, err := http.NewRequest("PUT", url, strings.NewReader("true"))
 	if err != nil {
 		return err
