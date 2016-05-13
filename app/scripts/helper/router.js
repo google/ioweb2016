@@ -185,12 +185,6 @@ IOWA.Router_ = function(window) {
         // Select page in lazy-pages. In its own promise so the router state
         // happens in the next tick.
         IOWA.Elements.LazyPages.selected = router.state.end.page;
-
-        // Wait 1 tick for IOWA.Elements.LazyPages.selectedPage to be set.
-        // Note: not a problem in Chrome 50 but a problem in Chrome 48.
-        return new Promise(function(resolve) {
-          router.t.async(resolve);
-        });
       })
       .then(function() {
         // Update state of the page in Router.
