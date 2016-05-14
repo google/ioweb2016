@@ -150,11 +150,16 @@ var PageBehavior = {
    * @param {HTMLElement} container The container to
    * @param {boolean} opt_enableAfter Optional number of ms to enable
    *     interaction on the container after the user has stopped scrolling.
+   * @param {Function} opt_callback Optional callback, invoked when the user
+   *   has stopped scrolling after opt_enableAfter ms (or default 250ms).
    */
-  disableElementOnScroll: function(container, opt_enableAfter) {
+  disableElementOnScroll: function(container, opt_enableAfter, opt_callback) {
     container.style.pointerEvents = 'none';
     this.debounce('disable_container_interaction', function() {
       container.style.pointerEvents = 'auto';
+      if (opt_callback) {
+        opt_callback();
+      }
     }, opt_enableAfter || 250);
   },
 
