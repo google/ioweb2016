@@ -15,9 +15,11 @@
 package backend
 
 import (
+	"math/rand"
 	"net/http"
 	"path"
 	"strings"
+	"time"
 
 	"golang.org/x/net/context"
 
@@ -35,15 +37,18 @@ var passthruPrefixes = []string{
 }
 
 func init() {
+	rand.Seed(time.Now().UnixNano())
 	if err := initConfig("server.config", ""); err != nil {
 		panic("initConfig: " + err.Error())
 	}
+	// TODO: remove cache and use memcache directly
+	cache = &gaeMemcache{}
+	initCache()
+
 	// prepend config.Prefix to bypass prefixes
 	for i, p := range passthruPrefixes {
 		passthruPrefixes[i] = path.Join(config.Prefix, p)
 	}
-	// use built-in memcache service
-	cache = &gaeMemcache{}
 	// allow access only by whitelisted people/domains if not empty
 	if len(config.Whitelist) > 0 {
 		wrapHandler = checkWhitelist

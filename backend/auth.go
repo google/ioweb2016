@@ -45,7 +45,10 @@ func (t *twitterCredentials) Token() (*oauth2.Token, error) {
 	basic = base64.StdEncoding.EncodeToString([]byte(basic))
 
 	params := url.Values{"grant_type": {"client_credentials"}}
-	req, _ := http.NewRequest("POST", config.Twitter.TokenURL, strings.NewReader(params.Encode()))
+	req, err := http.NewRequest("POST", config.Twitter.TokenURL, strings.NewReader(params.Encode()))
+	if err != nil {
+		return nil, err
+	}
 	req.Header.Set("Authorization", "Basic "+basic)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
@@ -63,10 +66,10 @@ func (t *twitterCredentials) Token() (*oauth2.Token, error) {
 		return nil, fmt.Errorf("twitterCredentials: got %d status", resp.StatusCode)
 	}
 
-	token := &struct {
+	var token struct {
 		AccessToken string `json:"access_token"`
-	}{}
-	if err := json.Unmarshal(body, token); err != nil {
+	}
+	if err := json.Unmarshal(body, &token); err != nil {
 		return nil, err
 	}
 	if token.AccessToken == "" {

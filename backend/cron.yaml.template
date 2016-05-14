@@ -3,7 +3,7 @@ cron:
   url: $PREFIX$/api/v1/extended?refresh
   schedule: every 1 hours
 - description: refresh social entries
-  url: $PREFIX$/api/v1/social?refresh
+  url: $PREFIX$/task/social
   schedule: every 8 minutes
 - description: sync schedule data
   url: $PREFIX$/sync/gcs

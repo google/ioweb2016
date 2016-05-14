@@ -80,7 +80,7 @@ type appConfig struct {
 
 	// Twitter credentials
 	Twitter struct {
-		Account     string
+		Accounts    []string
 		Filter      string
 		Key         string
 		Secret      string

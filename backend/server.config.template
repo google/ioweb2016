@@ -34,7 +34,7 @@
     }
   },
   "twitter": {
-    "account": "googledevs",
+    "accounts": ["googledevs", "google", "android", "sundarpichai"],
     "filter": "#io16",
     "key": "an-app-key",
     "secret": "very-secret",

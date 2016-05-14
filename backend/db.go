@@ -20,7 +20,6 @@ import (
 	"encoding/gob"
 	"encoding/json"
 	"fmt"
-	"math/rand"
 	"net/http"
 	"strings"
 	"time"
@@ -41,23 +40,6 @@ type eventDataCache struct {
 	Etag      string    `datastore:"-"`
 	Timestamp time.Time `datastore:"ts"`
 	Bytes     []byte    `datastore:"data"`
-}
-
-var (
-	cachedEventDataKey     string
-	allCachedEventDataKeys []string
-)
-
-func init() {
-	rand.Seed(time.Now().UnixNano())
-	// shard the memcache key across 4 instances
-	cachedEventDataKey = fmt.Sprintf("%s-%d", kindEventData, rand.Intn(4))
-	allCachedEventDataKeys = []string{
-		kindEventData + "-0",
-		kindEventData + "-1",
-		kindEventData + "-2",
-		kindEventData + "-3",
-	}
 }
 
 // RunInTransaction runs f in a transaction.
