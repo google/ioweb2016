@@ -15,7 +15,8 @@ limitations under the License.
 <link rel="import" href="../bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
 <link rel="import" href="../bower_components/google-youtube/google-youtube.html">
-<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html"
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="social-post.html">
 <link rel="import" href="social-poller.html">
@@ -63,7 +64,7 @@ The `<io-gadget>` element renders a youtube video + social feed.
           <div class="preroll" layout vertical center-center flex two>
             <div class="preroll-content" layout vertical self-start>
               <h1>I/O Live</h1>
-              <h3>Tune in here again on May 19, starting at 9AM PDT.<br>
+              <h3>Tune in again tomorrow, starting at 9AM PDT.<br>
               Meanwhile, watch the 2016 keynote and sessions at <a href="/io2016/" target="_blank">events.google.com/io2016</a>.</h3>
               <h4>#io16</h4>
             </div>
@@ -90,7 +91,7 @@ The `<io-gadget>` element renders a youtube video + social feed.
                    class="play__button">
 
               <google-youtube id="video" height="100%" width="100%" fit
-                  video-id="{{selectedVideoId}}" autohide="1" controls="2"
+                  video-id="[[selectedVideoId]]" autohide="1" controls="2"
                   modestbranding="1" showinfo="0" iv_load_policy="3" rel="0" autoplay="0"
                   on-google-youtube-ready="_onVideoReady"
                   on-google-youtube-state-change="_onStateChange"></google-youtube>
@@ -102,18 +103,18 @@ The `<io-gadget>` element renders a youtube video + social feed.
                 <!-- <div class="video-author">{{videoAuthor}}</div> -->
               </div>
               <div>
-                <paper-dropdown-menu label="Switch channel">
-                  <paper-menu class="dropdown-content" attr-for-selected="videoid"
-                              selected="{{selectedVideoId}}">
+                <paper-dropdown-menu label="Switch channel" vertical-align="bottom">
+                  <paper-listbox class="dropdown-content" attr-for-selected="videoid"
+                                 selected="{{selectedVideoId}}">
                     <template is="dom-repeat" items="[[videoIds]]" as="video" index-as="i">
                       <template is="dom-if" if="[[_isFirstItem(i)]]">
                         <paper-item videoid$="[[video]]">Keynote</paper-item>
                       </template>
                       <template is="dom-if" if="[[!_isFirstItem(i)]]">
-                        <paper-item videoid$="[[video]]">Channel <span>{{i}}</span></paper-item>
+                        <paper-item videoid$="[[video]]">Channel <span>[[i]]</span></paper-item>
                       </template>
                     </template>
-                  </paper-menu>
+                  </paper-listbox>
                 </paper-dropdown-menu>
               </div>
             </div>
@@ -186,7 +187,7 @@ The `<io-gadget>` element renders a youtube video + social feed.
            * The selected YouTube video id to play.
            */
           videoIds: {
-            value: function() { return []; }
+            type: Array
           },
 
           /**
@@ -209,9 +210,7 @@ The `<io-gadget>` element renders a youtube video + social feed.
            * The selected video from the list of videoIds
            */
           selectedVideoId: {
-            type: String,
-            value: null,
-            observer: '_selectedVideoIdChanged'
+            type: String
           },
 
           /**
@@ -224,15 +223,10 @@ The `<io-gadget>` element renders a youtube video + social feed.
 
           /**
            * The start date of the event.
-           *
-           * @property startDate
-           * @type string
-           * @default null
            */
           startDate: {
-            value: null,
-            notify: true,
-            observer: '_startDateChanged'
+            type: String,
+            value: null
           },
 
           /**
@@ -262,45 +256,64 @@ The `<io-gadget>` element renders a youtube video + social feed.
           _wasPaused: {
             type: Boolean,
             value: false
+          },
+
+          _videoReady: {
+            type: Boolean,
+            value: false
           }
         },
 
-        _startDateChanged: function() {
-          this.setView();
+        observers: [
+          'setView(startDate, videoIds.length)',
+          'playVideo(selectedVideoId, _videoReady)'
+        ],
+
+        ready: function() {
+          IOWA.Request.xhrPromise('GET', '/api/v1/livestream', false).then(function(resp) {
+            this.videoIds = resp;
+          }.bind(this));
         },
 
-        _updateVideoInfo: function () {
+        _updateVideoInfo: function() {
           var video = this.$.gadgetcontent.querySelector('google-youtube');
-          var meta = video.player.getVideoData();
-          this.videoTitle = meta.title;
-          this.videoAuthor = meta.author;
+          if (video) {
+            var meta = video._player.getVideoData();
+            this.videoTitle = meta.title;
+            this.videoAuthor = meta.author;
+          }
         },
 
-        _onVideoReady: function (e, detail, sender) {
+        _onVideoReady: function(e, detail) {
+          this._videoReady = true;
           this._updateVideoInfo();
         },
 
-        _onStateChange: function (e, detail) {
+        _onStateChange: function(e, detail) {
           var video = this.$.gadgetcontent.querySelector('google-youtube');
           switch (detail.data) {
-          case YT.PlayerState.CUED:
-            this._wasPaused = false;
-            video.play();
-            break;
-          case YT.PlayerState.PAUSED:
-            this._wasPaused = true;
-            break;
-          case YT.PlayerState.PLAYING:
-            this._updateVideoInfo();
-            if (!this._wasPaused) {
-              ga('send', 'event', 'gadget', 'video', this.selectedVideoId);
-            }
-            this._wasPaused = false;
-            break;
+            case YT.PlayerState.CUED:
+              this._wasPaused = false;
+              video.play();
+              break;
+            case YT.PlayerState.PAUSED:
+              this._wasPaused = true;
+              break;
+            case YT.PlayerState.PLAYING:
+              this._updateVideoInfo();
+              if (!this._wasPaused) {
+                ga('send', 'event', 'gadget', 'video', this.selectedVideoId);
+              }
+              this._wasPaused = false;
+              break;
           }
         },
 
-        _selectedVideoIdChanged: function() {
+        playVideo: function() {
+          if (!this._videoReady) {
+            return;
+          }
+
           var video = this.$.gadgetcontent.querySelector('google-youtube');
           if (video && this.videoIds.indexOf(this.selectedVideoId) !== -1) {
             video.play(); // Start auto-playing video when new one was selected.
@@ -311,13 +324,16 @@ The `<io-gadget>` element renders a youtube video + social feed.
           ga('send', 'event', 'gadget', 'link', 'open-schedule-link');
         },
 
-        setView: function () {
+        setView: function() {
           var today = moment();
           // Gadget starts showing content at 8:30am PDT.
           var day1Start = moment(this.startDate).subtract(1, 'hours');
-          var day1End = moment(day1Start).hours(17).minutes(0);
-          var day2Start = moment(day1Start).add(1, 'days');
-          var day2End = moment(day2Start).hours(17).minutes(0);
+          var day1End = moment(day1Start).hours(19).startOf('hour'); // 7pm
+          var day2Start = moment(day1Start).add(1, 'days').hours(9); // 9am
+          var day2End = moment(day2Start).hours(20).startOf('hour'); // 8pm
+          var day3Start = moment(day2Start).add(1, 'days').hours(9); // 9am
+          var day3End = moment(day3Start).hours(16).startOf('hour'); // 4pm
+
           var timeout;
           var offset = 50;
           if (today.isBefore(day1Start)) {
@@ -328,21 +344,24 @@ The `<io-gadget>` element renders a youtube video + social feed.
             return;
           } else if (today.isBetween(day1Start, day1End)) {
             this.view = this._VIEWS.LIVE;
-            timeout = day1End - today + offset;
-          } else // refresh view when day 1 ends.
-          if (today.isBetween(day2Start, day2End)) {
+            timeout = day1End - today + offset;  // refresh view when day 1 ends.
+          } else if (today.isBetween(day2Start, day2End)) {
             this.view = this._VIEWS.LIVE;
-            timeout = day2End - today + offset;
-          } else // refresh view when day 2 ends.
-          if (today.isBetween(day1End, day2Start)) {
+            timeout = day2End - today + offset;  // refresh view when day 2 ends.
+          } else if (today.isBetween(day3Start, day3End)) {
             this.view = this._VIEWS.BETWEEN;
-            timeout = day2Start - today + offset;
-          } else // refresh view when day2 starts.
-          if (today.isAfter(day2End)) {
+            timeout = day3End - today + offset;  // refresh view when day 3 ends.
+          } else if (today.isBetween(day1End, day2Start)) {
+            this.view = this._VIEWS.BETWEEN;
+            timeout = day2Start - today + offset; // refresh view when day 2 starts.
+          } else if (today.isBetween(day2End, day3Start)) {
+            this.view = this._VIEWS.BETWEEN;
+            timeout = day3Start - today + offset; // refresh view when day 3 starts.
+          } else if (today.isAfter(day3End)) {
             this.view = this._VIEWS.AFTER;
-            return;
+            return; // don't refresh view.
           }
-          // don't refresh view.
+
           // Select a random channel if we're after the keynote.
           this.afterKeynote = today.isAfter(moment(this.startDate).add(2, 'hours').add(30, 'minutes'));
           if (this.afterKeynote) {

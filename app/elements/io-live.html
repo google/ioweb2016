@@ -601,7 +601,7 @@ Fired when the mode changes.
       this.day2Start = moment(this.day1Start).add(1, 'days').hours(9); // 9am
       this.day2End = moment(this.day2Start).hours(20).startOf('hour'); // 8pm
       this.day3Start = moment(this.day2Start).add(1, 'days').hours(9); // 9am
-      this.day3End = moment(this.day3Start).hours(17).startOf('hour'); // 5pm
+      this.day3End = moment(this.day3Start).hours(16).startOf('hour'); // 4pm
     },
 
     _computeMode: function(day1Start, day3End) {
