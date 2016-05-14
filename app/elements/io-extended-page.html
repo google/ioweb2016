@@ -97,16 +97,12 @@ limitations under the License.
           </div>
 
           <!-- <google-map-markerclusterer map="[[map]]" id="cluster"></google-map-markerclusterer> -->
-          <google-map id="map"
-                      map="{{map}}"
-                      client-id="google-io"
-                      on-google-map-ready="_onMapReady"
-                      fit
-                      disable-default-ui
-                      single-info-window
-                      zoom="2"
-                      additional-map-options='{"backgroundColor":"none", "zoomControl":true}'>
-            <template is="dom-repeat" items="[[extendedLocations]]" as="marker">
+          <google-map id="map" client-id="google-io" map="{{map}}"
+                      disable-default-ui single-info-window zoom="2" fit
+                      additional-map-options='{"backgroundColor":"none", "zoomControl":true}'
+                      on-google-map-ready="_onMapReady">
+            <template is="dom-repeat" items="[[extendedLocations]]" as="marker"
+                      initial-count="50">
               <google-map-marker latitude="[[marker.lat]]"
                                   longitude="[[marker.lng]]"
                                   icon="/io2016/images/extended/pin.svg">
@@ -184,13 +180,24 @@ limitations under the License.
         type: Array,
         readOnly: true,
         value: function() { return []; }
+      },
+
+      _scrolledToMapSection: false,
+
+      _loadMap: {
+        type: Boolean,
+        computed: '_computeLoadMap(app.pageTransitionDone, _scrolledToMapSection)',
+        observer: 'fetchLocations'
       }
     },
 
     attached: function() {
       Polymer.RenderStatus.afterNextRender(this, function() {
+        // Calculate bottom of map section.
+        this._lowerScrollThreshold = IOWA.Elements.Footer.clientHeight +
+            Polymer.dom(this.root).querySelector('.io__hash').clientHeight;
+
         this.listen(IOWA.Elements.ScrollContainer, 'scroll', '_onPageScroll');
-        this.fetchLocations();
       });
     },
 
@@ -198,14 +205,24 @@ limitations under the License.
       this.unlisten(IOWA.Elements.ScrollContainer, 'scroll', '_onPageScroll');
     },
 
+    _computeLoadMap: function(pageTransitionDone, scrolledEnough) {
+      return pageTransitionDone && scrolledEnough;
+    },
+
     fetchLocations: function() {
+      if (!this._loadMap || this.extendedLocations.length) {
+        return;
+      }
       extendedLocationsPromise().then(function(locations) {
         this._setExtendedLocations(locations);
       }.bind(this));
     },
 
     _onPageScroll: function() {
-      this.disableElementOnScroll(this.$.mapContainer);
+      this.disableElementOnScroll(this.$.mapContainer, null, function() {
+        var scrollY = IOWA.Elements.ScrollContainer.scrollY;
+        this._scrolledToMapSection = scrollY > this._lowerScrollThreshold;
+      }.bind(this));
     },
 
     _onMapReady: function() {
