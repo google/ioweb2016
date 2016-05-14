@@ -282,16 +282,16 @@ class Schedule {
   submitSessionRequest(url, method, payload, errorMsg) {
     return IOWA.Request.xhrPromise(method, url, true, payload)
       .catch(error => {
-        // error will be an XMLHttpRequestProgressEvent if the xhrPromise()
+        // error will be an ProgressEvent if the xhrPromise()
         // was rejected due to a network error.
         // Otherwise, error will be a Error object.
-        if ('serviceWorker' in navigator && XMLHttpRequestProgressEvent &&
-          error instanceof XMLHttpRequestProgressEvent) {
-          IOWA.Elements.Toast.showMessage(
-            errorMsg + ' The change will be retried on your next visit.');
-        } else {
-          IOWA.Elements.Toast.showMessage(errorMsg);
-        }
+        // if ('serviceWorker' in navigator && ProgressEvent &&
+        //   error instanceof ProgressEvent) {
+        //   IOWA.Elements.Toast.showMessage(
+        //     errorMsg + ' The change will be retried on your next visit.');
+        // } else {
+        IOWA.Elements.Toast.showMessage(errorMsg);
+        // }
         throw error;
       });
   }
