@@ -548,6 +548,7 @@ func TestSubmitUserSurvey(t *testing.T) {
 
 	config.Env = "prod"
 	config.Firebase.Shards = []string{firestub.URL}
+	config.Survey.Answers = []string{"1", "2", "3", "4", "5"}
 
 	const body = `{
 		"overall": "5",
@@ -616,7 +617,6 @@ func TestSubmitTaskSurvey(t *testing.T) {
 	config.Survey.Q2 = "q2"
 	config.Survey.Q3 = "q3"
 	config.Survey.Q4 = "q4"
-	config.Survey.Answers = []string{"1", "2", "3", "4", "5"}
 
 	const body = `{
 		"overall": "5",
