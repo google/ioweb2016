@@ -153,12 +153,15 @@ limitations under the License.
         </section>
 
         <section class="bus-schedule-page" label="loop">
-          <p class="-bordered">
+          <p class="-bordered" hidden$="[[!isScheduleDataValid]]">
             A looping shuttle service between the following stops and Shoreline Amphitheatre will run all day for attendees to pick up their conference badges.
             Shuttle frequency: [[loopService.frequency]].
           </p>
-          <p class="-error" hidden$="[[isScheduleDataValid]]">
-            No shuttle service available for the selected stops and date combination.
+          <p class="-error" hidden$="[[!showDefaultError]]">
+            No shuttle service available for the selected stop and date combination.
+          </p>
+          <p class="-error" hidden$="[[!showAirportMessage]]">
+            Airport shuttles are only available on the afternoon of May 20 departing from I/O.
           </p>
           <div hidden$=[[!isScheduleDataValid]]>
             <div class="bus-schedule-loop-container" hidden$=[[!isScheduleDataValid]]>
@@ -182,8 +185,11 @@ limitations under the License.
         </section>
 
         <section class="bus-schedule-page" label="schedule">
-          <p class="-error" hidden$="[[isScheduleDataValid]]">
-            No shuttle service available for the selected stops and date combination.
+          <p class="-error" hidden$="[[!showDefaultError]]">
+            No shuttle service available for the selected stop and date combination.
+          </p>
+          <p class="-error" hidden$="[[!showAirportMessage]]">
+            Airport shuttles are only available on the afternoon of May 20 departing from I/O.
           </p>
           <div class="bus-schedule-table" hidden$=[[!isScheduleDataValid]]>
             <h3 class="-off-screen">[[activeDayLabel]] Shuttle Schedule</h3>
@@ -316,6 +322,18 @@ limitations under the License.
       isToIO: {
         type: Boolean,
         value: true
+      },
+
+      // Whether to show airport message.
+      showAirportMessage: {
+        type: Boolean,
+        computed: '_computeAirportMessage(isScheduleDataValid, activeStop)'
+      },
+
+      // Whether to show default error message.
+      showDefaultError: {
+        type: Boolean,
+        computed: '_computeDefaultError(isScheduleDataValid, showAirportMessage)'
       },
 
       // Hash of loop service properties.
@@ -577,6 +595,15 @@ limitations under the License.
 
     _computeDirectionPrefixStop: function(isToIO, directionPrefixes) {
       return isToIO ? directionPrefixes.from : directionPrefixes.to;
+    },
+
+    _computeAirportMessage: function(isScheduleDataValid, activeStop) {
+      // Test if stop ids for SJC and SFO.
+      return !isScheduleDataValid && (activeStop === 19 || activeStop === 20);
+    },
+
+    _computeDefaultError: function(isScheduleDataValid, showAirportMessage) {
+      return !isScheduleDataValid && !showAirportMessage;
     }
 
   });
