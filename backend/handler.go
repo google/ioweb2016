@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"html/template"
 	"io"
+	"math/rand"
 	"net/http"
 	"net/url"
 	"os"
@@ -63,7 +64,7 @@ func registerHandlers() {
 	handle("/api/v1/extended", serveIOExtEntries)
 	handle("/api/v1/social", serveSocial)
 	handle("/api/v1/schedule", serveSchedule)
-	handle("/api/v1/easter-egg", handleEasterEgg)
+	handle("/api/v1/topsecret", serveEasterEgg)
 	handle("/api/v1/photoproxy", servePhotosProxy)
 	handle("/api/v1/livestream", serveLivestream)
 	handle("/api/v1/user/survey/", submitUserSurvey)
@@ -844,38 +845,24 @@ func handleWipeout(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// handleEasterEgg is the easter egg link handler.
-// It replaces current link with the new one.
-func handleEasterEgg(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "GET" {
-		serveEasterEgg(w, r)
-		return
-	}
-
-	c := newContext(r)
-	if v := r.Header.Get("authorization"); v != config.SyncToken {
-		writeJSONError(c, w, http.StatusForbidden, errAuthInvalid)
-		return
-	}
-	egg := &easterEgg{}
-	if err := json.NewDecoder(r.Body).Decode(egg); err != nil {
-		writeJSONError(c, w, errStatus(err), err)
-		return
-	}
-	if err := storeEasterEgg(c, egg); err != nil {
-		writeJSONError(c, w, errStatus(err), err)
-	}
-}
-
-// serveEasterEgg responds with current egg link
+// serveEasterEgg responds with an array of ASCII keys represented as integers.
 func serveEasterEgg(w http.ResponseWriter, r *http.Request) {
-	c := newContext(r)
-	link := getEasterEggLink(c)
-	if link == "" && isDev() {
-		link = "http://example.org/test"
-	}
 	w.Header().Set("content-type", "application/json")
-	fmt.Fprintf(w, `{"link": %q}`, link)
+	ctx := newContext(r)
+
+	const alpha = "abcdefghijklmnopqrstuvwxyz"
+	secret := make([]rune, 3)
+	for i := range secret {
+		n := rand.Intn(len(alpha))
+		secret[i] = rune(alpha[n])
+	}
+
+	b, err := json.Marshal(secret)
+	if err != nil {
+		writeJSONError(ctx, w, http.StatusInternalServerError, err)
+		return
+	}
+	w.Write(b)
 }
 
 // servePhotosProxy serves as a server proxy for Picasa's JSON feeds.

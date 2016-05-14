@@ -31,7 +31,6 @@ var passthruPrefixes = []string{
 	"/manifest.json",
 	"/sync",
 	"/api/v1/user",
-	"/api/v1/easter-egg",
 }
 
 func init() {

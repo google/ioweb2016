@@ -97,16 +97,6 @@ type templateData struct {
 	LiveIDs []string
 }
 
-// easterEgg's link is embedded in pages, for fun.
-type easterEgg struct {
-	Link    string    `datastore:"link,noindex"`
-	Expires time.Time `datastore:"expires,noindex"`
-}
-
-func (egg *easterEgg) expired() bool {
-	return egg.Expires.Before(time.Now())
-}
-
 type sitemap struct {
 	XMLName xml.Name `xml:"http://www.sitemaps.org/schemas/sitemap/0.9 urlset"`
 	Items   []*sitemapItem
