@@ -174,8 +174,7 @@ limitations under the License.
       Polymer.RenderStatus.afterNextRender(this, function() {
         // Calculate bottom of map section.
         this._lowerScrollThreshold = IOWA.Elements.Footer.clientHeight +
-            Polymer.dom(this.root).querySelector('.io__hash').clientHeight +
-            Polymer.dom(this.root).querySelector('.embed').clientHeight;
+            Polymer.dom(this.root).querySelector('.io__hash').clientHeight;
 
         this.listen(IOWA.Elements.ScrollContainer, 'scroll', '_onPageScroll');
       });
