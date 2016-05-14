@@ -62,8 +62,8 @@ limitations under the License.
   <meta itemprop="description" content="{% .Desc %}">
   <meta itemprop="image" content="{% url .OgImage %}">
   <!-- May 18 10:00am PDT through May 20 5pm PDT -->
-  <meta itemprop="startDate" content="2016-05-18T17:00:00Z">
-  <meta itemprop="endDate" content="2016-05-20T23:59:59Z">
+  <meta itemprop="startDate" content="{% .StartDateStr %}">
+  <meta itemprop="endDate" content="2016-05-20T23:00:00Z">
 
   <!-- Facebook sharing meta data -->
   <meta property="og:title" content="{% .OgTitle %}">
@@ -234,8 +234,13 @@ limitations under the License.
       "@context": "http://schema.org",
       "@type": "Event",
       "name": {% .Title %},
-      "description": {% .Desc %}
-      "startDate": "2016-05-18",
+      "description": {% .Desc %},
+      {% if not .SessionStart.IsZero %}
+      "startDate": {% .SessionStart.Format "2006-01-02T15:04:05Z07:00" %},
+      "endDate": {% .SessionEnd.Format "2006-01-02T15:04:05Z07:00" %},
+      {% else %}
+      "startDate": {% .StartDateStr %},
+      {% end %}
       {% if .Canonical %}"url": {% .Canonical %},{% end %}
       "location": {
         "@type" : "Place",
