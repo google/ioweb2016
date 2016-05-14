@@ -61,21 +61,29 @@ limitations under the License.
       </a>
 
       <div class="schedule-toggle-buttons">
-        <iron-icon icon="io:add-circle"
-                   class="schedule-add-button"
-                   on-click="onAddSession"></iron-icon>
-        <iron-icon icon="io:remove-circle"
-                   class="schedule-remove-button"
-                   on-click="onRemoveSession"></iron-icon>
+        <button class="schedule-add-button"
+                aria-label="Add session"
+                on-click="onAddSession">
+          <iron-icon icon="io:add-circle-outline"></iron-icon>
+        </button>
+        <button class="schedule-remove-button"
+                aria-label="Remove session"
+                on-click="onRemoveSession">
+          <iron-icon icon="io:remove-circle-outline"></iron-icon>
+        </button>
       </div>
 
       <div class="schedule-toggle-buttons-mobile">
-        <iron-icon icon="io:add-circle-outline"
-                   class="schedule-add-button"
-                   on-click="onAddSession"></iron-icon>
-        <iron-icon icon="io:remove-circle-outline"
-                   class="schedule-remove-button"
-                   on-click="onRemoveSession"></iron-icon>
+        <button class="schedule-add-button"
+                aria-label="Add session"
+                on-click="onAddSession">
+          <iron-icon icon="io:add-circle-outline"></iron-icon>
+        </button>
+        <button class="schedule-remove-button"
+                aria-label="Remove session"
+                on-click="onRemoveSession">
+          <iron-icon icon="io:remove-circle-outline"></iron-icon>
+        </button>
       </div>
 
     </div>
