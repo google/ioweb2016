@@ -107,7 +107,7 @@ Fired when the mode changes.
           <section class="schedule__content" label="live" layout vertical>
 
             <div hidden$="[[!_equal(mode, _MODES.BEFORE)]]" fit layout vertical>
-              <div class="card__photo card__photo--live bg-indigo-400" flex two></div>
+              <div class="card__photo card__photo--live bg-indigo-400" flex two style="z-index:1"></div>
               <div class="card card__photo--live-desc">
                 <div class="card-content">Join us to learn about product and platform innovation at Google, starting with a live kickoff from Google CEO Sundar Pichai.</div>
               </div>
@@ -290,6 +290,35 @@ Fired when the mode changes.
         }
       },
 
+      _CHANNELS: {
+        type: Object,
+        readOnly: true,
+        value: function() {
+          return {
+            '360': 'lFm4s50PnmY',
+            keynote: '862r3XS2YB0',
+            day1: {
+              track1: 'P5VjylR2zTo',
+              track2: '--LMflqDH7I',
+              track3: 'LykS5KLkmHg',
+              track4: 'dE_4HxMne4o'
+            },
+            day2: {
+              track1: 'mKOyI-A3rS0',
+              track2: 'uKhpLRv-uxg',
+              track3: 'ha5pAYSd64Q',
+              track4: 'FiMz9VIVtLw'
+            },
+            day3: {
+              track1: 'QsrLzu7gu0g',
+              track2: 'qde9DRS_TfY',
+              track3: 'jxYsPYdHtjI',
+              track4: 'f8eyz3NyUuc'
+            }
+          };
+        }
+      },
+
       _refreshSessionTimeout: { value: null },
 
       day1Start: { type: Object },
@@ -362,7 +391,8 @@ Fired when the mode changes.
        */
       dayView: {
         type: Number,
-        computed: '_computeDayIndex(currentDay, day1Start)'
+        computed: '_computeDayIndex(currentDay, day1Start)',
+        observer: '_dayViewChanged'
       },
 
       /**
@@ -423,16 +453,12 @@ Fired when the mode changes.
         observer: 'selectedTabChanged'
       },
 
-      _selectedVideoId: {
-        type: String
-      },
-
       /**
        * The selected video from the list of current live streaming videos.
        */
       selectedVideoId: {
         type: String,
-        computed: '_computeSelectedVideo(_selectedVideoId)'
+        observer: '_selectedVideoIdChanged'
       },
 
       /**
@@ -488,10 +514,21 @@ Fired when the mode changes.
     ready: function () {
       this._loadedOnDate = moment();
 
-      IOWA.Request.xhrPromise('GET', '/api/v1/livestream', false).then(function(resp) {
-        this._setLiveStreamChannelIds(resp || []);
-        return resp;
-      }.bind(this));
+      // TODO: temp replaced by _dayViewChanged.
+      // IOWA.Request.xhrPromise('GET', '/api/v1/livestream', false).then(function(resp) {
+      //   this._setLiveStreamChannelIds(resp || []);
+      //   return resp;
+      // }.bind(this));
+    },
+
+    _dayViewChanged: function() {
+      var tracksForDay = this._CHANNELS['day' + this.dayView];
+      var trackNames = Object.keys(tracksForDay);
+      var ids = [this._CHANNELS.keynote];
+      for (var i = 0, track; track = trackNames[i]; ++i) {
+        ids.push(tracksForDay[track]);
+      }
+      this._setLiveStreamChannelIds(ids);
     },
 
     attached: function() {
@@ -553,11 +590,9 @@ Fired when the mode changes.
       }
     },
 
-    _computeSelectedVideo: function(selectedVideoId) {
-      if (!selectedVideoId) {
-        return null;
-      }
-      return selectedVideoId.replace(/https?:\/\/youtu\.be\//, '');
+    _selectedVideoIdChanged: function() {
+      this.selectedVideoId = this.selectedVideoId.replace(
+          /https?:\/\/youtu\.be\//, '');
     },
 
     _dateChanged: function() {
@@ -685,7 +720,7 @@ Fired when the mode changes.
 
       // If currently during the keynote, set it as the playing video.
       if (duringKeynote) {
-        this._selectedVideoId = currentLiveSessions[0].youtubeUrl;
+        this.selectedVideoId = currentLiveSessions[0].youtubeUrl;
       }
 
       return duringKeynote;
@@ -728,11 +763,13 @@ Fired when the mode changes.
       // playing the first one. Otherwise default to the first non-streaming
       // channel.
       if (this.currentLiveSessions.length) {
-        this._selectedVideoId = this.currentLiveSessions[0].youtubeUrl;
-      } else if (this.mode === this._MODES.AFTER || now.isBetween(this.day1End, this.day2Start)) {
+        this.selectedVideoId = this.currentLiveSessions[0].youtubeUrl;
+      } else if (this.mode === this._MODES.AFTER ||
+                 now.isBetween(this.day1End, this.day2Start) ||
+                 now.isBetween(this.day2End, this.day3Start)) {
         this.onPlayKeynote();
       } else {
-        this._selectedVideoId = liveStreamChannelIds[0];
+        this.selectedVideoId = liveStreamChannelIds[0];
       }
 
       // Refresh live stream views when the next timeblock hits, either at the
@@ -784,7 +821,7 @@ Fired when the mode changes.
     onPlayKeynote: function(e, detail) {
       var keynoteSession = this.sessions[0];
       if (keynoteSession.id === '__keynote__') {
-        this._selectedVideoId = keynoteSession.youtubeUrl;
+        this.selectedVideoId = keynoteSession.youtubeUrl;
         IOWA.Analytics.trackEvent('live', 'play keynote video');
       }
     },
