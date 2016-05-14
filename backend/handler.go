@@ -171,6 +171,8 @@ func serveTemplate(w http.ResponseWriter, r *http.Request) {
 		data.OgTitle = data.Title
 		data.OgImage = s.Photo
 		data.Desc = s.Desc
+		data.SessionStart = s.StartTime
+		data.SessionEnd = s.EndTime
 	}
 
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")

@@ -90,6 +90,8 @@ type templateData struct {
 	OgTitle        string
 	OgImage        string
 	StartDateStr   string
+	SessionStart   time.Time
+	SessionEnd     time.Time
 	FirebaseShards []string
 	// livestream youtube video IDs
 	LiveIDs []string
