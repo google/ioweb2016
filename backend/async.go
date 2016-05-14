@@ -20,7 +20,6 @@ import (
 	"net/http"
 	"net/url"
 	"path"
-	"strings"
 
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/taskqueue"
@@ -28,15 +27,25 @@ import (
 
 // notifySubscriberAsync creates an async job to begin notify subscribers.
 func notifySubscribersAsync(c context.Context, d *dataChanges, all bool) error {
-	skeys := make([]string, 0, len(d.Sessions))
-	for id := range d.Sessions {
-		skeys = append(skeys, id)
+	changes, err := json.Marshal(d)
+	if err != nil {
+		return err
 	}
 	p := path.Join(config.Prefix, "/task/notify-subscribers")
-	// TODO: add ioext to the payload
 	t := taskqueue.NewPOSTTask(p, url.Values{
-		"sessions": {strings.Join(skeys, " ")},
-		"all":      {fmt.Sprintf("%v", all)},
+		"changes": {string(changes)},
+		"all":     {fmt.Sprintf("%v", all)},
+	})
+	_, err = taskqueue.Add(c, t, "")
+	return err
+}
+
+func notifyShardAsync(c context.Context, shard, changes string, all bool) error {
+	p := path.Join(config.Prefix, "/task/notify-shard")
+	t := taskqueue.NewPOSTTask(p, url.Values{
+		"shard":   {shard},
+		"changes": {changes},
+		"all":     {fmt.Sprintf("%v", all)},
 	})
 	_, err := taskqueue.Add(c, t, "")
 	return err

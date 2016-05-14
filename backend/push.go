@@ -51,20 +51,19 @@ type dataChanges struct {
 	Token   string    `json:"token"`
 	Updated time.Time `json:"ts"`
 	eventData
-	// TODO: add ioext data...  anything else?
 }
 
 type pushMessage struct {
-	Notification notification `json:"notification"`
-	Sessions     map[string]string
+	Notification *notification            `json:"notification"`
+	Sessions     map[string]*eventSession `json:"sessions,omitempty"`
 }
 
 type notification struct {
 	Title string `json:"title"`
 	Body  string `json:"body"`
-	Tag   string `json:"tag"`
+	Tag   string `json:"tag,omitempty"`
 	Data  struct {
-		URL string `json:"url"`
+		URL string `json:"url,omitempty"`
 	} `json:"data"`
 }
 
@@ -110,7 +109,18 @@ func mergeChanges(dst *dataChanges, src *dataChanges) {
 
 // filterUserChanges reduces dc to a subset matching session IDs to bks.
 // It sorts bks with sort.Strings as a side effect.
-func filterUserChanges(dc *dataChanges, bks []string) {
+func filterUserChanges(d *dataChanges, bks []string) *dataChanges {
+	// Operate on a copy
+	sCopy := make(map[string]*eventSession)
+	var dc dataChanges
+	dc = *d
+
+	for k, v := range d.Sessions {
+		sCopy[k] = v
+	}
+
+	dc.Sessions = sCopy
+
 	sort.Strings(bks)
 	for id, s := range dc.Sessions {
 		if s.Update == updateSurvey {
@@ -122,6 +132,7 @@ func filterUserChanges(dc *dataChanges, bks []string) {
 			delete(dc.Sessions, id)
 		}
 	}
+	return &dc
 }
 
 // notifySubscription sends a message to a subscribed device.
@@ -170,4 +181,121 @@ func notifySubscription(c context.Context, s string, msg *pushMessage) error {
 		perr.after = 10 * time.Second
 	}
 	return perr
+}
+
+func userNotifications(c context.Context, dc *dataChanges, bks []string) []*notification {
+	fdc := filterUserChanges(dc, bks)
+
+	logsess := make([]string, 0, len(fdc.Sessions))
+	var s []*eventSession
+	updates := make(map[string][]*eventSession)
+	for k, v := range fdc.Sessions {
+		logsess = append(logsess, k)
+		s = append(s, v)
+		logf(c, "update: %v", v.Update)
+		updates[v.Update] = append(updates[v.Update], v)
+	}
+	logf(c, "sending %d updated sessions to user: %s", len(logsess), strings.Join(logsess, ", "))
+	logf(c, "updates: %v", updates)
+
+	var n []*notification
+
+	if len(updates[updateDetails]) > 0 {
+		n = append(n, detailsNotification(updates[updateDetails]))
+	}
+
+	if len(updates[updateSoon]) > 0 {
+		n = append(n, soonNotification())
+	}
+
+	if len(updates[updateStart]) > 0 {
+		n = append(n, startNotification(updates[updateStart]))
+	}
+
+	if len(updates[updateVideo]) > 0 {
+		n = append(n, videoNotification(updates[updateVideo]))
+	}
+
+	if len(updates[updateSurvey]) > 0 {
+		n = append(n, surveyNotification())
+	}
+
+	return n
+}
+
+func formatSessionTitles(sessions []*eventSession) string {
+	var titles []string
+	for _, s := range sessions {
+		titles = append(titles, s.Title)
+	}
+
+	return strings.Join(titles, ", ")
+}
+
+func detailsNotification(sessions []*eventSession) *notification {
+	vrb := "was"
+	if len(sessions) != 1 {
+		vrb = "were"
+	}
+	return &notification{
+		Title: "Some events in My Schedule have been updated",
+		Body:  fmt.Sprintf("%s %s updated", formatSessionTitles(sessions), vrb),
+		Tag:   "session-details",
+	}
+}
+
+func soonNotification() *notification {
+	return &notification{
+		Title: "Google I/O is starting soon",
+		Body:  "Watch the Keynote live at 10:00am PDT on May 18.",
+		Tag:   "io-soon",
+		Data: struct {
+			URL string `json:"url,omitempty"`
+		}{"./"},
+	}
+}
+
+func surveyNotification() *notification {
+	return &notification{
+		Title: "Remember to rate the events you attended",
+		Body:  "We value your feedback!",
+		Tag:   "survey",
+	}
+}
+
+func videoNotification(sessions []*eventSession) *notification {
+	// Special-case logic to handle the case where there's just one new video, since we can
+	// make the clickthrough go directly to the session page.
+	if len(sessions) == 1 {
+		return &notification{
+			Title: "The video for " + sessions[0].Title + " is available",
+			Body:  "",
+			Tag:   "video-available",
+			Data: struct {
+				URL string `json:"url,omitempty"`
+			}{fmt.Sprintf("schedule?sid=%[1]s#/%[1]s", sessions[0].ID)},
+		}
+	}
+
+	return &notification{
+		Title: "Some events in My Schedule have new videos",
+		Body:  fmt.Sprintf("New videos are available for %s", formatSessionTitles(sessions)),
+		Tag:   "video-available",
+	}
+}
+
+func startNotification(sessions []*eventSession) *notification {
+	vrb := "is"
+	if len(sessions) != 1 {
+		vrb = "are"
+	}
+
+	// New notifications with the same tag will replace any previous notifications with the same
+	// tag, so there's no use sending multiple notifications with the same tag. Instead, create
+	// one notification that has the list of all the sessions starting soon.
+	return &notification{
+		Title: "Some events in My Schedule are starting",
+		Body:  fmt.Sprintf("%s %s starting soon", formatSessionTitles(sessions), vrb),
+		Tag:   "session-start",
+	}
 }
