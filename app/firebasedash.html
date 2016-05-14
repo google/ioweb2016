@@ -190,42 +190,10 @@ limitations under the License.
   const secretFormEl = document.querySelector('#secret-form');
 
   let totalUsers = {};
-  let totalUserCount = 0;
-  let totalWebUserCount = 0;
-  let nonWebUserCount = 0;
 
   const formatNumber = function(num) {
     return num.toLocaleString();
   };
-
-  const debounce = function(func, wait, immediate) {
-    var timeout;
-    return function() {
-      var context = this, args = arguments;
-      var later = function() {
-        timeout = null;
-        if (!immediate) {
-          func.apply(context, args);
-        }
-      };
-      var callNow = immediate && !timeout;
-      clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
-      if (callNow) {
-        func.apply(context, args);
-      }
-    };
-  };
-
-  // const drawChart = function(percent) {
-  //   var chart = document.querySelector('#chart img');
-  //   let newSrc = `https://chart.googleapis.com/chart?cht=p3&chd=t:${percent.web},${percent.non}&chs=450x200&chl=Web ${percent.web}%|Android ${percent.non}%`;
-
-  //   // Make request if the URL has changed.
-  //   if (chart.src !== newSrc) {
-  //     chart.src = newSrc;
-  //   }
-  // };
 
   const drawChart = function(users) {
     if (!(google && google.charts)) {
@@ -251,25 +219,30 @@ limitations under the License.
     chart.draw(data, options);
   }
 
+  const getTotalUsersPerShard = function() {
+    for (let i = 1; i <= NUM_SHARDS; i++) {
+      let params = `auth=${AUTH_TOKEN}`;
+      let url = `https://io-2016-prod-${i}.firebaseio.com/users.json?${params}`;
+      fetch(url).then(resp => resp.json()).then(users => {
+        let numUsers = Object.keys(users).length;
+        document.querySelector(`#shard${i}users`).textContent =
+            `Total: ${formatNumber(numUsers)}`;
+        // document.querySelector(`#shard${i}-webusers`).textContent =
+            // `web: ${formatNumber(this.webUsers)}`;
+      });
+    }
+  };
+
   const getNonWebUsers = function(shard) {
-    var url = `https://io-2016-prod-${shard}.firebaseio.com/data.json?auth=${AUTH_TOKEN}`;
-
-    return fetch(url).then(resp => resp.json()).then(data => {
-      let nonWebUsers = [];
-
-      for (let userId in data) {
-        if (data[userId].gcm_key) {
-          nonWebUsers.push(userId);
-        }
-      }
-      return nonWebUsers;
-    });
+    let params = `orderBy="gcm_key"&startAt=""&auth=${AUTH_TOKEN}`;
+    let url = `https://io-2016-prod-${shard}.firebaseio.com/data.json?${params}`;
+    return fetch(url).then(resp => resp.json()).then(users => Object.keys(users));
   };
 
   const getWebUsers = function(shard) {
     let params = `orderBy="used_web_app"&equalTo=true&auth=${AUTH_TOKEN}`;
     let url = `https://io-2016-prod-${shard}.firebaseio.com/users.json?${params}`;
-    return fetch(url).then(resp => resp.json()).then(webUsers => Object.keys(webUsers));
+    return fetch(url).then(resp => resp.json()).then(users => Object.keys(users));
   };
 
   const collectUsersAcrossShards = function() {
@@ -305,18 +278,18 @@ limitations under the License.
         shared: shared.size
       };
     });
-  }
+  };
 
-  const debounceChartUpdate = debounce(function() {
-    drawChart(totalUsers);
-  }, 3 * 1000);
+  const updateData = function() {
+    getTotalUsersPerShard();
 
-  const debounceShareduserUpdate = debounce(function() {
     collectUsersAcrossShards().then(users => {
       totalUsers = users;
-      //document.querySelector('#numSharedUsers').textContent = totalUsers.shared;
+      document.querySelector('#totalUserCount').textContent =
+          formatNumber(totalUsers.total);
+      drawChart(totalUsers);
     });
-  }, 30 * 1000, true);
+  }
 
   const start = function(e) {
     if (e) {
@@ -327,41 +300,10 @@ limitations under the License.
     numUsersEl.hidden = false;
     AUTH_TOKEN = secretEl.value;
 
-    for (let i = 1; i <= NUM_SHARDS; i++) {
-      let shardRef = new Firebase(`https://io-2016-prod-${i}.firebaseio.com/users/`);
-      shardRef.authWithCustomToken(AUTH_TOKEN).then(function() {
-        this.shardRef.on('child_added', data => {
-          console.log("new user on shard " + this.i);
-          this.counter++;
+    updateData();
 
-          if (data.child('used_web_app').val() === true) {
-            this.webUsers++;
-            totalWebUserCount++;
-          } else {
-            //console.log(i, data.key());
-            nonWebUserCount++;
-          }
-
-          totalUserCount++;
-
-          document.querySelector(`#shard${this.i}users`).textContent = `Total: ${formatNumber(this.counter)}`;
-          document.querySelector(`#shard${this.i}-webusers`).textContent =
-              `web: ${formatNumber(this.webUsers)}`;
-          document.querySelector('#totalUserCount').textContent = formatNumber(totalUserCount);
-
-          // let percentWeb = Math.round((totalWebUserCount / totalUserCount) * 100);
-          // document.querySelector('#totalWebUserCount').textContent =
-          //     `${formatNumber(totalWebUserCount)}`;
-
-          // let percentNonWeb = Math.round((nonWebUserCount / totalUserCount) * 100);
-          // document.querySelector('#totalNonWebUserCount').textContent =
-          //     `${formatNumber(nonWebUserCount)}`;
-
-          debounceChartUpdate();
-          debounceShareduserUpdate()
-        });
-      }.bind({shardRef: shardRef, i: i, counter: 0, webUsers: 0}));
-    }
+    // Update data from firebase every 30sec.
+    setInterval(() => updateData(), 30 * 1000);
   };
 
   google.charts.load('current', {packages:['corechart']});
