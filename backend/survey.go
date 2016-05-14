@@ -127,16 +127,16 @@ func submitSessionSurvey(c context.Context, sid string, s *sessionSurvey) error 
 			Answer:   s.Speaker,
 		})
 	}
-
-	b, err := json.Marshal(p)
+	body, err := json.Marshal(p)
 	if err != nil {
 		return perr(err)
 	}
 	if !isProd() {
 		// log request body on staging for debugging
-		log.Debugf(c, "%s: %s", config.Survey.Endpoint, b)
+		log.Debugf(c, "%s: %s", config.Survey.Endpoint, body)
 	}
-	r, err := http.NewRequest("POST", config.Survey.Endpoint, bytes.NewReader(b))
+
+	r, err := http.NewRequest("POST", config.Survey.Endpoint, bytes.NewReader(body))
 	if err != nil {
 		return perr(err)
 	}
@@ -148,9 +148,14 @@ func submitSessionSurvey(c context.Context, sid string, s *sessionSurvey) error 
 		return perr(err)
 	}
 	defer res.Body.Close()
+
+	rb, _ := ioutil.ReadAll(res.Body)
+	// log response on non-prod env for debugging
+	if !isProd() {
+		log.Debugf(c, string(rb))
+	}
 	if res.StatusCode == http.StatusOK {
 		return nil
 	}
-	b, _ = ioutil.ReadAll(res.Body)
-	return perr(res.Status + ": " + string(b))
+	return perr(res.Status + ": " + string(rb))
 }
