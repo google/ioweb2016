@@ -71,6 +71,7 @@ func registerHandlers() {
 	handle("/sync/gcs", syncEventData)
 	handle("/task/notify-subscribers", handleNotifySubscribers)
 	handle("/task/notify-user", handleNotifyUser)
+	handle("/task/survey/", submitTaskSurvey)
 	handle("/task/clock", handleClock)
 	handle("/task/wipeout", handleWipeout)
 	// debug handlers; not available in prod
@@ -513,11 +514,35 @@ func submitUserSurvey(w http.ResponseWriter, r *http.Request) {
 		writeJSONError(ctx, w, errStatus(err), err)
 		return
 	}
-	if err := submitSessionSurvey(ctx, sid, survey); err != nil {
-		errorf(ctx, err.Error())
-		writeJSONError(ctx, w, errStatus(err), "internal error")
+	for i := 0; i < 4; i++ {
+		err := submitSurveyAsync(ctx, sid, survey)
+		if err == nil {
+			w.WriteHeader(http.StatusCreated)
+			return
+		}
+		errorf(ctx, "retry %d: %v", i, err)
 	}
-	w.WriteHeader(http.StatusCreated)
+	errorf(ctx, "could not submit survey for %s: %+v", sid, survey)
+}
+
+// submitTaskSurvey submits survey responses from the task queue.
+func submitTaskSurvey(w http.ResponseWriter, r *http.Request) {
+	ctx := newContext(r)
+	if retry, err := taskRetryCount(r); err != nil || retry > 10 {
+		errorf(ctx, "retry: %d; err = %v", retry, err)
+		return
+	}
+
+	sid := path.Base(r.URL.Path)
+	survey := &sessionSurvey{}
+	err := json.NewDecoder(r.Body).Decode(survey)
+	if err == nil {
+		err = submitSessionSurvey(ctx, sid, survey)
+	}
+	if err != nil {
+		errorf(ctx, "%s: %v", sid, err)
+		w.WriteHeader(http.StatusInternalServerError)
+	}
 }
 
 // TODO: update for Firebase and webpush
