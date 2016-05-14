@@ -17,12 +17,12 @@ package backend
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"sort"
 	"strings"
+	"time"
 
 	"golang.org/x/net/context"
 
@@ -82,7 +82,7 @@ func addSessionSurvey(ctx context.Context, tok, uid, sid string) error {
 		return nil
 	}
 	b, _ := ioutil.ReadAll(res.Body)
-	return errors.New(string(b))
+	return fmt.Errorf("firebase: %s", b)
 }
 
 // submitSessionSurvey sends a request to config.Survey.Endpoint with s data
@@ -142,6 +142,7 @@ func submitSessionSurvey(c context.Context, sid string, s *sessionSurvey) error 
 	}
 	r.Header.Set("apikey", config.Survey.Key)
 	r.Header.Set("content-type", "application/json")
+	c, _ = context.WithTimeout(c, 30*time.Second)
 	res, err := httpClient(c).Do(r)
 	if err != nil {
 		return perr(err)

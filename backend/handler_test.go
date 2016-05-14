@@ -546,6 +546,33 @@ func TestSubmitUserSurvey(t *testing.T) {
 	}))
 	defer firestub.Close()
 
+	config.Env = "prod"
+	config.Firebase.Shards = []string{firestub.URL}
+
+	const body = `{
+		"overall": "5",
+		"relevance": "4",
+		"content": "3",
+		"speaker": "2"
+	}`
+	u := "/api/v1/user/survey/session-id?uid=google:123"
+	r = newTestRequest(t, "PUT", u, strings.NewReader(body))
+	r.Header.Set("authorization", "bearer "+fbtoken)
+	w := httptest.NewRecorder()
+	submitUserSurvey(w, r)
+
+	if w.Code != http.StatusCreated {
+		t.Errorf("w.Code = %d; want %d", w.Code, http.StatusCreated)
+	}
+	if !fbupdated {
+		t.Errorf("never updated firebase")
+	}
+}
+
+func TestSubmitTaskSurvey(t *testing.T) {
+	defer resetTestState(t)
+	defer preserveConfig()()
+
 	// survey API endpoint
 	var submitted bool
 	epoint := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -581,7 +608,6 @@ func TestSubmitUserSurvey(t *testing.T) {
 	defer epoint.Close()
 
 	config.Env = "prod"
-	config.Firebase.Shards = []string{firestub.URL}
 	config.Survey.Endpoint = epoint.URL + "/"
 	config.Survey.ID = "io-survey"
 	config.Survey.Reg = "registrant"
@@ -598,20 +624,17 @@ func TestSubmitUserSurvey(t *testing.T) {
 		"content": "3",
 		"speaker": "2"
 	}`
-	u := "/api/v1/user/survey/session-id?uid=google:123"
-	r = newTestRequest(t, "PUT", u, strings.NewReader(body))
-	r.Header.Set("authorization", "bearer "+fbtoken)
+	u := "/task/survey/session-id"
+	r := newTestRequest(t, "POST", u, strings.NewReader(body))
+	r.Header.Set("x-appengine-taskexecutioncount", "1")
 	w := httptest.NewRecorder()
-	submitUserSurvey(w, r)
+	submitTaskSurvey(w, r)
 
-	if w.Code != http.StatusCreated {
-		t.Errorf("w.Code = %d; want %d", w.Code, http.StatusCreated)
+	if w.Code != http.StatusOK {
+		t.Errorf("w.Code = %d; want %d", w.Code, http.StatusOK)
 	}
 	if !submitted {
 		t.Errorf("never submitted survey to epoint")
-	}
-	if !fbupdated {
-		t.Errorf("never updated firebase")
 	}
 }
 

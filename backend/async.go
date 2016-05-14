@@ -17,6 +17,7 @@ package backend
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"net/url"
 	"path"
 	"strings"
@@ -52,6 +53,22 @@ func notifyUserAsync(c context.Context, uid, shard string, m *pushMessage) error
 		"shard":   {shard},
 		"message": {string(msg)},
 	})
+	_, err = taskqueue.Add(c, t, "")
+	return err
+}
+
+// submitSurveyAsync schedules an async job to submit feedback survey s for session sid.
+func submitSurveyAsync(c context.Context, sid string, s *sessionSurvey) error {
+	payload, err := json.Marshal(s)
+	if err != nil {
+		return err
+	}
+	t := &taskqueue.Task{
+		Path:    path.Join(config.Prefix, "/task/survey", sid),
+		Payload: payload,
+		Header:  http.Header{"Content-Type": {"application/json"}},
+		Method:  "POST",
+	}
 	_, err = taskqueue.Add(c, t, "")
 	return err
 }
