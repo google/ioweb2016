@@ -62,8 +62,17 @@ IOWA.Analytics = IOWA.Analytics || (function(exports) {
     SIGNED_IN: 'dimension1',
     ONLINE: 'dimension2',
     SERVICE_WORKER_STATUS: 'dimension3',
-    NOTIFICATION_PERMISSION: 'dimension4'
+    NOTIFICATION_PERMISSION: 'dimension4',
+    METRIC_VALUE: 'dimension5'
   };
+
+  // A list of dimensions that must be set before the first hit is sent.
+  Analytics.prototype.requiredDimensions = [
+    Analytics.prototype.customDimensions.SIGNED_IN,
+    Analytics.prototype.customDimensions.ONLINE,
+    Analytics.prototype.customDimensions.SERVICE_WORKER_STATUS,
+    Analytics.prototype.customDimensions.NOTIFICATION_PERMISSION
+  ];
 
   /**
    * Sets a default value for each custom dimension. This is necessary because
@@ -71,9 +80,9 @@ IOWA.Analytics = IOWA.Analytics || (function(exports) {
    * dimension requested.
    */
   Analytics.prototype.setTrackerDefaults = function() {
-    Object.keys(this.customDimensions).forEach(function(key) {
+    Object.keys(this.customDimensions).forEach(key => {
       ga('set', this.customDimensions[key], this.NULL_DIMENSION);
-    }.bind(this));
+    });
   };
 
   /**
@@ -92,33 +101,34 @@ IOWA.Analytics = IOWA.Analytics || (function(exports) {
     // timeout so the promise always resolves. In such cases, some hits
     // will be sent with missing custom dimension values, but that's better
     // than them not being sent at all.
-    setTimeout(function() {
+    setTimeout(() => {
       this.readyState_.resolve();
 
       // Tracks that this happened and when it happened.
       this.trackEvent('analytics', 'timeout', this.READY_STATE_TIMEOUT_,
-          window.performance && window.performance.now());
-    }.bind(this), this.READY_STATE_TIMEOUT_);
+          window.performance && Math.round(window.performance.now()));
+    }, this.READY_STATE_TIMEOUT_);
   };
 
   /**
    * Updates the tracker field with the specified value.
-   * This logic also checks to see if all custom dimension values have been
+   * This logic also checks to see if all required dimension values have been
    * set and if so, resolves the ready state so future tracking calls happen
    * right away.
    * @param {string} field The analytics.js field name.
    * @param {value} value The field's value.
    */
   Analytics.prototype.updateTracker = function(field, value) {
-    ga(function(tracker) {
+    ga(tracker => {
       ga('set', field, value); // Use the command queue for easier debugging.
-      var customDimensionKeys = Object.keys(this.customDimensions);
-      if (customDimensionKeys.every(function(key) {
-        return tracker.get(this.customDimensions[key]) !== this.NULL_DIMENSION;
-      }.bind(this))) {
+      var requiredDimensionKeys = Object.keys(this.requiredDimensions);
+      var hasAllRequiredDimensions = requiredDimensionKeys.every(key =>
+          tracker.get(this.requiredDimensions[key]) !== this.NULL_DIMENSION);
+
+      if (hasAllRequiredDimensions) {
         this.readyState_.resolve();
       }
-    }.bind(this));
+    });
   };
 
   /**
@@ -158,12 +168,17 @@ IOWA.Analytics = IOWA.Analytics || (function(exports) {
    * @param {object=} opt_obj Optional field object for additional params to send to GA.
    */
   Analytics.prototype.trackPerf = function(category, variable, time, opt_label, opt_maxTime, opt_obj) {
-    this.waitForTrackerReady().then(function() {
+    this.waitForTrackerReady().then(() => {
       if (opt_maxTime !== null && time > opt_maxTime) {
         variable += ' - outliers';
       }
       time = parseInt(time, 10);
       opt_label = opt_label || this.NULL_DIMENSION;
+
+      // Sets the time value as a dimension so it can be more usefully reported
+      // on (e.g. median, distribution, etc).
+      opt_obj = opt_obj || {};
+      opt_obj[this.customDimensions.METRIC_VALUE] = time;
 
       // Sends an event and a timing hit. We keep the timing hit for historical
       // reasons, but since timing hits get sampled at processing time, and
@@ -171,7 +186,7 @@ IOWA.Analytics = IOWA.Analytics || (function(exports) {
       // more accurate.
       ga('send', 'event', category, variable, opt_label, time, opt_obj);
       ga('send', 'timing', category, variable, time, opt_label, opt_obj);
-    }.bind(this));
+    });
   };
 
   /**
@@ -185,7 +200,7 @@ IOWA.Analytics = IOWA.Analytics || (function(exports) {
    *                   hit is recorded.
    */
   Analytics.prototype.trackEvent = function(category, action, opt_label, opt_value, opt_callback) {
-    this.waitForTrackerReady().then(function() {
+    this.waitForTrackerReady().then(() => {
       ga('send', {
         hitType: 'event',
         eventCategory: category,
@@ -194,7 +209,7 @@ IOWA.Analytics = IOWA.Analytics || (function(exports) {
         eventValue: opt_value,
         hitCallback: opt_callback
       });
-    }.bind(this));
+    });
   };
 
   /**
@@ -297,10 +312,10 @@ IOWA.Analytics = IOWA.Analytics || (function(exports) {
   Analytics.prototype.trackOnlineStatus = function() {
     this.updateTracker(this.customDimensions.ONLINE, navigator.onLine);
 
-    var updateOnlineStatus = function(event) {
+    var updateOnlineStatus = event => {
       this.updateTracker(this.customDimensions.ONLINE, navigator.onLine);
       this.trackEvent('network', 'change', event.type);
-    }.bind(this);
+    };
 
     window.addEventListener('online', updateOnlineStatus);
     window.addEventListener('offline', updateOnlineStatus);
@@ -319,13 +334,13 @@ IOWA.Analytics = IOWA.Analytics || (function(exports) {
     this.trackEvent('notifications', 'startup', notificationPermission);
 
     if (navigator.permissions) {
-      navigator.permissions.query({name: 'notifications'}).then(function(p) {
-        p.onchange = function(event) {
+      navigator.permissions.query({name: 'notifications'}).then(p => {
+        p.onchange = event => {
           this.updateTracker(this.customDimensions.NOTIFICATION_PERMISSION,
               this.getNotificationPermission());
           this.trackEvent('notifications', 'change', event.target.state);
-        }.bind(this);
-      }.bind(this));
+        };
+      });
     }
   };
 
