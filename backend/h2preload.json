@@ -1,2 +1,16 @@
 {
+  "home": {
+    "elements/elements.html": {
+      "type": "document"
+    },
+    "elements/elements.js": {
+      "type": "script"
+    },
+    "styles/main.css": {
+      "type": "style"
+    },
+    "scripts/site-scripts.js": {
+      "type": "script"
+    }
+  }
 }
