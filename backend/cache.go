@@ -16,6 +16,7 @@ package backend
 
 import (
 	"errors"
+	"math/rand"
 	"time"
 
 	"google.golang.org/appengine/memcache"
@@ -30,7 +31,30 @@ var (
 
 	// TODO: rename this to errNotFound and move to errors.go
 	errCacheMiss = errors.New("cache: miss")
+
+	// shard the memcache keys across multiple instances
+	cachedEventDataKey     string
+	allCachedEventDataKeys = []string{
+		kindEventData + "-0",
+		kindEventData + "-1",
+		kindEventData + "-2",
+		kindEventData + "-3",
+	}
+	cachedSocialKey     string
+	allCachedSocialKeys = []string{
+		"social-0",
+		"social-1",
+		"social-2",
+		"social-3",
+	}
 )
+
+func initCache() {
+	i := rand.Intn(len(allCachedEventDataKeys))
+	cachedEventDataKey = allCachedEventDataKeys[i]
+	i = rand.Intn(len(allCachedSocialKeys))
+	cachedSocialKey = allCachedSocialKeys[i]
+}
 
 // cacheIterface unifies different types of caches,
 // e.g. memoryCache and appengine/memcache.

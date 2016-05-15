@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/http/httptest"
 	"os"
 	"sync"
 	"testing"
@@ -40,11 +41,16 @@ var (
 )
 
 func TestMain(m *testing.M) {
+	oauth1 := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte(`{"access_token": "oauth1-token"}`))
+	}))
+
 	config.Dir = "app"
 	config.Env = "dev"
 	config.Prefix = "/myprefix"
 	config.Google.Auth.Client = "test-client-id"
 	config.Google.ServiceAccount.Key = ""
+	config.Twitter.TokenURL = oauth1.URL + "/"
 	config.SyncToken = "sync-token"
 	config.Schedule.Start = time.Date(2015, 5, 28, 9, 0, 0, 0, time.UTC)
 	config.Schedule.Timezone = "America/Los_Angeles"
@@ -55,12 +61,18 @@ func TestMain(m *testing.M) {
 		os.Exit(1)
 	}
 
+	// a test instance shared across multiple tests
 	if aetestInstance, err = aetest.NewInstance(nil); err != nil {
 		panic(fmt.Sprintf("aetestInstance: %v", err))
 	}
+
+	// run all tests
 	code := m.Run()
+	// cleanup
+	oauth1.Close()
 	aetestInstance.Close()
 	cleanupTests()
+
 	os.Exit(code)
 }
 

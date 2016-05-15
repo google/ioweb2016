@@ -46,14 +46,14 @@ func oauth2Client(c context.Context, ts oauth2.TokenSource) *http.Client {
 }
 
 // twitterClient creates a new HTTP client based on oauth2Client() and httpTransport().
-func twitterClient(c context.Context) (*http.Client, error) {
+func twitterClient(c context.Context) *http.Client {
 	cred := &twitterCredentials{
 		key:       config.Twitter.Key,
 		secret:    config.Twitter.Secret,
 		transport: httpTransport(c),
 		cache:     cache,
 	}
-	return oauth2Client(c, cred), nil
+	return oauth2Client(c, cred)
 }
 
 // serviceAccountClient creates a new HTTP client using serviceCredentials() and oauth2Client().

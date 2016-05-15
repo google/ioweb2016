@@ -14,7 +14,51 @@
 
 package backend
 
-import "testing"
+import (
+	"fmt"
+	"net/http"
+	"net/http/httptest"
+	"testing"
+
+	"google.golang.org/appengine/memcache"
+)
+
+func TestRefreshSocialEntries(t *testing.T) {
+	defer preserveConfig()()
+	defer resetTestState(t)
+
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		name := r.FormValue("screen_name")
+		text := fmt.Sprintf("#io16 tweet from %s", name)
+		id := fmt.Sprintf("%s-id", name)
+		w.Write([]byte(fmt.Sprintf(`[{
+			"id_str": %q,
+			"created_at": "Mon Jan 02 15:04:05 -0700 2006",
+			"text": %q,
+			"user": {"screen_name": %q}
+		}]`, id, text, name)))
+	}))
+	defer ts.Close()
+	config.Twitter.TimelineURL = ts.URL + "/"
+	config.Twitter.Accounts = []string{"a1", "a1"}
+	config.Twitter.Filter = "#io16"
+
+	r := newTestRequest(t, "GET", "/", nil)
+	ctx := newContext(r)
+	if err := refreshSocialEntries(ctx); err != nil {
+		t.Fatal(err)
+	}
+	for _, k := range allCachedSocialKeys {
+		var entries []*socEntry
+		if _, err := memcache.JSON.Get(ctx, k, &entries); err != nil {
+			t.Errorf("%s: %v", k, err)
+			continue
+		}
+		if len(entries) != 2 {
+			t.Errorf("%s: len(entries) = %d; want 2", k, len(entries))
+		}
+	}
+}
 
 func TestIncludesWord(t *testing.T) {
 	t.Parallel()

@@ -73,6 +73,7 @@ func registerHandlers() {
 	handle("/task/notify-subscribers", handleNotifySubscribers)
 	handle("/task/notify-user", handleNotifyUser)
 	handle("/task/survey/", submitTaskSurvey)
+	handle("/task/social", refreshSocial)
 	handle("/task/clock", handleClock)
 	handle("/task/wipeout", handleWipeout)
 	// debug handlers; not available in prod
@@ -276,13 +277,9 @@ func serveIOExtEntries(w http.ResponseWriter, r *http.Request) {
 // serveSocial responds with 10 most recent tweets.
 // See socEntry struct for fields format.
 func serveSocial(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()
-	_, refresh := r.Form["refresh"]
-
-	c := newContext(r)
+	ctx := newContext(r)
 	w.Header().Set("Cache-Control", "public, max-age=60")
 	w.Header().Set("Content-Type", "application/json;charset=utf-8")
-
 	// respond with stubbed JSON entries in dev mode
 	if isDev() {
 		f := filepath.Join(config.Dir, "temporary_api", "social_feed.json")
@@ -290,22 +287,22 @@ func serveSocial(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	entries, err := socialEntries(c, refresh)
+	entries := socialEntries(ctx)
+	b, err := json.Marshal(entries)
 	if err != nil {
-		errorf(c, "socialEntries: %v", err)
-		writeJSONError(c, w, http.StatusInternalServerError, err)
+		writeJSONError(ctx, w, http.StatusInternalServerError, err)
 		return
 	}
+	w.Write(b)
+}
 
-	body, err := json.Marshal(entries)
-	if err != nil {
-		errorf(c, "json.Marshal: %v", err)
-		writeJSONError(c, w, http.StatusInternalServerError, err)
+func refreshSocial(w http.ResponseWriter, r *http.Request) {
+	if r.Header.Get("x-appengine-cron") != "true" {
 		return
 	}
-
-	if _, err := w.Write(body); err != nil {
-		errorf(c, "w.Write: %v", err)
+	ctx := newContext(r)
+	if err := refreshSocialEntries(ctx); err != nil {
+		errorf(ctx, err.Error())
 	}
 }
 

@@ -21,19 +21,13 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"sort"
 	"strings"
 	"time"
 
+	"google.golang.org/appengine/memcache"
+
 	"golang.org/x/net/context"
-)
-
-const (
-	// socialCacheTimeout is how long until social entries are expired.
-	// The content is still refreshed much earlier via cron jobs.
-	socialCacheTimeout = 48 * time.Hour
-
-	// tweetURL is a single tweet URL format.
-	tweetURL = "https://twitter.com/%s/status/%v"
 )
 
 // socEntry is an item of the response from /api/social.
@@ -47,107 +41,125 @@ type socEntry struct {
 	Media  interface{} `json:"media"`
 }
 
-// socialEntries returns a list of the most recent social posts.
-func socialEntries(c context.Context, refresh bool) ([]*socEntry, error) {
-	cacheKey := "social-" + config.Twitter.Account
-
-	if !refresh {
-		entries, err := socialEntriesFromCache(c, cacheKey)
-		if err == nil {
-			return entries, nil
-		}
-	}
-
-	tc := make(chan *tweetEntry)
-	go fetchTweets(c, config.Twitter.Account, tc)
+// socialEntries always picks twitter entries from cache,
+// using shared memcache key.
+//
+// It returns nil if memcache call resulted in an error.
+func socialEntries(c context.Context) []*socEntry {
 	var entries []*socEntry
-	for t := range tc {
-		e := &socEntry{
-			Kind:   "tweet",
-			URL:    fmt.Sprintf(tweetURL, config.Twitter.Account, t.ID),
-			Text:   html.UnescapeString(t.Text),
-			Author: "@" + t.User.ScreenName,
-			When:   time.Time(t.CreatedAt),
-			Media:  t.Entities.Media,
-			URLs:   t.Entities.URLs,
-		}
-		entries = append(entries, e)
+	if _, err := memcache.JSON.Get(c, cachedSocialKey, &entries); err != nil {
+		errorf(c, "socialEntries(%q): %v", cachedSocialKey, err)
+		return nil
 	}
-
-	data, err := json.Marshal(entries)
-	if err != nil {
-		errorf(c, "socialEntries: %v", err)
-	} else if err := cache.set(c, cacheKey, data, socialCacheTimeout); err != nil {
-		errorf(c, "cache.put(%q): %v", cacheKey, err)
-	}
-
-	return entries, nil
+	return entries
 }
 
-// socialEntriesFromCache is the same as socialEntries but uses only cached entries.
-// It returns error if cached entries do not exist or expired.
-func socialEntriesFromCache(c context.Context, key string) ([]*socEntry, error) {
-	data, err := cache.get(c, key)
-	if err != nil {
-		return nil, err
+// refreshSocialEntries fetches social entries from the network
+// and updates cached copy on all memcache shards.
+func refreshSocialEntries(c context.Context) error {
+	client := twitterClient(c)
+	ch := make(chan *tweetEntry, 100)
+	done := make(chan struct{}, len(config.Twitter.Accounts))
+	for _, a := range config.Twitter.Accounts {
+		go func(a string) {
+			ent, err := fetchTweets(client, a)
+			if err != nil {
+				errorf(c, "%s: %v", a, err)
+			}
+			for _, e := range ent {
+				ch <- e
+			}
+			done <- struct{}{}
+		}(a)
 	}
+
 	var entries []*socEntry
-	err = json.Unmarshal(data, &entries)
-	return entries, err
+	var count int
+loop:
+	for {
+		select {
+		case t := <-ch:
+			u := fmt.Sprintf("https://twitter.com/%s/status/%v", t.User.ScreenName, t.ID)
+			se := &socEntry{
+				Kind:   "tweet",
+				URL:    u,
+				Text:   html.UnescapeString(t.Text),
+				Author: "@" + t.User.ScreenName,
+				When:   time.Time(t.CreatedAt),
+				Media:  t.Entities.Media,
+				URLs:   t.Entities.URLs,
+			}
+			entries = append(entries, se)
+		case <-done:
+			count++
+			if count == len(config.Twitter.Accounts) {
+				// all goroutines have exited
+				// no more tweets will be sent over ch
+				close(done)
+				close(ch)
+				break loop
+			}
+		}
+	}
+	if len(entries) == 0 {
+		// no reason to update cache with empty results
+		return nil
+	}
+
+	entries = append(entries, socialEntries(c)...)
+	sort.Sort(sortableSocial(entries))
+	// take a max of n most recent tweets
+	n := 10
+	if len(entries) < n {
+		n = len(entries)
+	}
+	entries = entries[:n]
+	items := make([]*memcache.Item, len(allCachedSocialKeys))
+	for i, k := range allCachedSocialKeys {
+		items[i] = &memcache.Item{Key: k, Object: entries}
+	}
+	return memcache.JSON.SetMulti(c, items)
 }
 
 // fetchTweets retrieves tweet entries of the given account using User Timeline Twitter API.
-// It usess app authentication.
-func fetchTweets(c context.Context, account string, tc chan *tweetEntry) {
-	defer close(tc)
-	client, err := twitterClient(c)
-	if err != nil {
-		errorf(c, "fetchTweets: %v", err)
-		return
-	}
-
+// It returns the tweets that match config.Twitter.Filter.
+func fetchTweets(client *http.Client, account string) ([]*tweetEntry, error) {
 	params := url.Values{
-		"screen_name": {config.Twitter.Account},
+		"screen_name": {account},
 		"count":       {"200"},
 		"include_rts": {"false"},
 	}
 	url := config.Twitter.TimelineURL + "?" + params.Encode()
-	req, nil := http.NewRequest("GET", url, nil)
-	if nil != nil {
-		errorf(c, "fetchTweets: NewRequest(%q): %v", url, err)
-		return
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
 	}
 
 	resp, err := client.Do(req)
 	if err != nil {
-		errorf(c, "%v", err)
-		return
+		return nil, err
 	}
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		errorf(c, "%v", err)
-		return
-	}
+	body, _ := ioutil.ReadAll(resp.Body)
 	if resp.StatusCode != http.StatusOK {
-		errorf(c, "fetchTweets: Twitter replied with %d: %v", resp.StatusCode, string(body))
-		return
+		return nil, fmt.Errorf("fetchTweets(%q): %s: %s", account, resp.Status, body)
 	}
 
 	var tweets []*tweetEntry
 	if err := json.Unmarshal(body, &tweets); err != nil {
-		errorf(c, "fetchTweets: %v", err)
+		return nil, err
 	}
-
+	res := make([]*tweetEntry, 0, len(tweets))
 	for _, t := range tweets {
 		if includesWord(t.Text, config.Twitter.Filter) {
-			tc <- t
+			res = append(res, t)
 		}
 	}
+	return res, nil
 }
 
 // includesWord returns true if s contains w followed by a space or a word delimiter.
-func includesWord(s, w string) (ret bool) {
+func includesWord(s, w string) bool {
 	lenw := len(w)
 	for {
 		i := strings.Index(s, w)
@@ -194,3 +206,10 @@ func (t *twitterTime) UnmarshalJSON(b []byte) error {
 	*t = twitterTime(pt)
 	return nil
 }
+
+// sortableSocial implements sort.Sort interface using When field, in descending order.
+type sortableSocial []*socEntry
+
+func (s sortableSocial) Len() int           { return len(s) }
+func (s sortableSocial) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }
+func (s sortableSocial) Less(i, j int) bool { return s[i].When.After(s[j].When) }
