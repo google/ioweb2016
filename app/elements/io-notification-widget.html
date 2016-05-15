@@ -12,7 +12,6 @@ limitations under the License.
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/iron-label/iron-label.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="shared-app-styles.html">
@@ -28,11 +27,10 @@ The `<io-notification-widget>` element renders the notification toggle UI.
       <h4>Notifications</h4>
       <iron-pages id="pages" selected="0">
         <div>
-          <iron-label horizontal layout center>
-            <paper-checkbox checked="{{checked}}" disabled="{{disabled}}">
-            </paper-checkbox>
-            <b>I want to receive notifications from the Google I/O 2016 web app.</b>
-          </iron-label>
+          <label horizontal layout center>
+            <paper-checkbox checked="{{checked}}" disabled="{{disabled}}"></paper-checkbox>
+            <b on-click="_toggleCheck">I want to receive notifications from the Google I/O 2016 web app.</b>
+          </label>
           <p>If this option is deselected, I understand I won't be notified when:</p>
           <ul>
             <li>I/O is about to start</li>
@@ -232,6 +230,10 @@ The `<io-notification-widget>` element renders the notification toggle UI.
           this.disabled = false;
           this.checked = false;
         }
+      },
+
+      _toggleCheck: function() {
+        this.checked = !this.checked;
       },
 
       _checkedChanged: function() {

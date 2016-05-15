@@ -312,7 +312,6 @@ gulp.task('vulcanize-elements', false, ['sass'], function() {
       ],
       stripExcludes: [
         'roboto.html', // Web fonts are loaded in the main page.
-        'iron-label.html',
         'iron-selector.html',
         'paper-tabs.html',
         'polymer.html',

@@ -195,8 +195,9 @@ paper-tabs {
   font-size: 14px;
   line-height: 18px;
 
-  iron-label {
+  iron-label, label {
     padding: $mobileKeyline 0;
+    cursor: pointer;
   }
 
   ul {
