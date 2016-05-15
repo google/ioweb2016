@@ -108,8 +108,17 @@ loop:
 
 	entries = append(entries, socialEntries(c)...)
 	sort.Sort(sortableSocial(entries))
+	// de-dup
+	seen := make(map[string]struct{})
+	for _, e := range entries {
+		if _, ok := seen[e.URL]; !ok {
+			entries[len(seen)] = e
+			seen[e.URL] = struct{}{}
+		}
+	}
+	entries = entries[:len(seen)]
 	// take a max of n most recent tweets
-	n := 10
+	n := 30
 	if len(entries) < n {
 		n = len(entries)
 	}

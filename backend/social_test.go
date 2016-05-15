@@ -40,7 +40,7 @@ func TestRefreshSocialEntries(t *testing.T) {
 	}))
 	defer ts.Close()
 	config.Twitter.TimelineURL = ts.URL + "/"
-	config.Twitter.Accounts = []string{"a1", "a1"}
+	config.Twitter.Accounts = []string{"a1", "a2"}
 	config.Twitter.Filter = "#io16"
 
 	r := newTestRequest(t, "GET", "/", nil)
