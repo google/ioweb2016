@@ -128,16 +128,15 @@ The `<io-gadget>` element renders a youtube video + social feed.
         <div id="social-feed" class="card" layout vertical flex>
           <div class="card-content">
             <h3>Google I/O Social Feed</h3>
-            <div><a href="https://twitter.com/googledevs" target="_blank" class="typo-cyan-800">@googledevs</a></div>
           </div>
           <div id="post-container" class="card-content" flex>
             <div layout vertical>
               <social-poller url="/io2016/api/v1/social"
                              posts="{{socialPosts}}" interval="30000"></social-poller>
               <template is="dom-repeat" items="[[socialPosts]]" as="post">
-                <social-post kind="{{post.kind}}" author="{{post.author}}"
-                             url="{{post.url}}" text="{{post.text}}"
-                             when="{{post.when}}" hide-author>
+                <social-post kind="[[post.kind]]" author="[[post.author]]"
+                             url="[[post.url]]" text="[[post.text]]"
+                             when="[[post.when]]" media="[[post.media]]">
                 </social-post>
               </template>
             </div>
