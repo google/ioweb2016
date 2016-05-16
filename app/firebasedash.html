@@ -283,7 +283,7 @@ limitations under the License.
       // TODO: create index for gcm_tokens.
       let iosUsers = [];
       for (let userId in data) {
-        if (data[userId].gcm_tokens) {
+        if (data[userId].gcm_tokens && data[userId].gcm_tokens.ios) {
           iosUsers.push(userId);
         }
       }
