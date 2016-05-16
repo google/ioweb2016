@@ -53,7 +53,7 @@ The `<io-gadget>` element renders a youtube video + social feed.
           <div class="preroll" layout center flex two>
             <div class="preroll-content" layout vertical self-start>
               <h1>I/O Live</h1>
-              <h3>Tune in here on May 18, starting at 9AM PDT.<br>
+              <h3>Tune in here on May 18, starting at 10AM PDT.<br>
               Learn more about Google I/O at <a href="https://google.com/io" target="_blank">google.com/io</a>.</h3>
               <h4>#io16</h4>
             </div>
@@ -325,8 +325,8 @@ The `<io-gadget>` element renders a youtube video + social feed.
 
         setView: function() {
           var today = moment();
-          // Gadget starts showing content at 8:30am PDT.
-          var day1Start = moment(this.startDate).subtract(1, 'hours');
+          // Gadget starts showing content at 10am PDT.
+          var day1Start = moment(this.startDate); // 10am
           var day1End = moment(day1Start).hours(19).startOf('hour'); // 7pm
           var day2Start = moment(day1Start).add(1, 'days').hours(9); // 9am
           var day2End = moment(day2Start).hours(20).startOf('hour'); // 8pm
