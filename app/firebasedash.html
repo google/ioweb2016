@@ -64,13 +64,19 @@ limitations under the License.
   }
 
   #piechart {
+    width: 300px;
+    height: 300px;
+  }
+
+  #chart2 {
     width: 400px;
-    height: 400px;
+    height: 300px;
   }
 
   .total-users {
     font-size: 28px;
     margin-right: 40px;
+    margin-bottom: 40px;
   }
 
   .total-breakdown {
@@ -79,6 +85,12 @@ limitations under the License.
 
   .total-breakdown span {
     margin-top: 8px;
+  }
+
+  #numberdump {
+    width: 200px;
+    height: 150px;
+    white-space: pre;
   }
 
   [layout] {
@@ -161,16 +173,17 @@ limitations under the License.
             </div>
           </div>
           <div id="totals" layout horizontal center>
-            <div layout vertical>
+            <div layout vertical style="flex-shrink: 0;">
               <div class="total-users">Total users: <span id="totalUserCount"></span></div>
+              <div id="numberdump"></div>
               <!-- <div class="total-breakdown" layout vertical>
                 <span><a href="https://events.google.com/io2016/" target="_blank">IOWA</a> users (signed-in): <span id="totalWebUserCount"></span></span>
                 <span><a href="https://play.google.com/store/apps/details?id=com.google.samples.apps.iosched&hl=en" target="_blank">IOSched</a> users: <span id="totalNonWebUserCount"></span></span>
                 <span>Using both: <span id="numSharedUsers"></span></span>
               </div> -->
             </div>
-            <!-- <div id="chart"><img src=""></div> -->
             <div id="piechart"></div>
+            <div id="chart2"></div>
           </div>
         </div>
       </div>
@@ -188,6 +201,7 @@ limitations under the License.
   const numUsersEl = document.querySelector('#numusers');
   const secretEl = document.querySelector('#secret');
   const secretFormEl = document.querySelector('#secret-form');
+  const numberDumpEl = document.querySelector('#numberdump');
 
   let totalUsers = {};
 
@@ -202,13 +216,13 @@ limitations under the License.
 
     var data = google.visualization.arrayToDataTable([
       ['User type', '# users'],
-      ['Web (signed-in)', users.web],
-      ['Android', users.other],
-      ['Both', users.shared]
+      ['Web', users.web],
+      ['Android', users.android],
+      ['iOS', users.ios]
     ]);
 
     var options = {
-      //title: '% users on each platform',
+      title: '% users on each platform',
       pieHole: 0.4,
       chartArea:{width:'100%',height:'100%', left: 20},
       legend: {alignment: 'center', position: 'right'}
@@ -217,7 +231,30 @@ limitations under the License.
     var chart = new google.visualization.PieChart(document.getElementById('piechart'));
 
     chart.draw(data, options);
-  }
+  };
+
+  const drawSharedChart = function(users) {
+    if (!(google && google.charts)) {
+      return;
+    }
+
+    var data = google.visualization.arrayToDataTable([
+      ['User type', '# shared users'],
+      ['Web / Android', users.webAndAndroidUsers],
+      ['Web / iOS', users.webAndiOSUsers],
+      ['Android / iOS', users.androidAndIOSUsers],
+      ['Using all 3', users.usersOfAllApps]
+    ]);
+
+    var options = {
+      title: 'Shared users',
+      legend: {position: 'bottom'}
+    };
+
+    var chart = new google.visualization.BarChart(document.getElementById('chart2'));
+
+    chart.draw(data, options);
+  };
 
   const getTotalUsersPerShard = function() {
     for (let i = 1; i <= NUM_SHARDS; i++) {
@@ -233,10 +270,25 @@ limitations under the License.
     }
   };
 
-  const getNonWebUsers = function(shard) {
+  const getAndroidUsers = function(shard) {
     let params = `orderBy="gcm_key"&startAt=""&auth=${AUTH_TOKEN}`;
     let url = `https://io-2016-prod-${shard}.firebaseio.com/data.json?${params}`;
     return fetch(url).then(resp => resp.json()).then(users => Object.keys(users));
+  };
+
+  const getIOSUsers = function(shard) {
+    let params = `auth=${AUTH_TOKEN}`;
+    let url = `https://io-2016-prod-${shard}.firebaseio.com/data.json?${params}`;
+    return fetch(url).then(resp => resp.json()).then(data => {
+      // TODO: create index for gcm_tokens.
+      let iosUsers = [];
+      for (let userId in data) {
+        if (data[userId].gcm_tokens) {
+          iosUsers.push(userId);
+        }
+      }
+      return iosUsers;
+    });
   };
 
   const getWebUsers = function(shard) {
@@ -247,35 +299,60 @@ limitations under the License.
 
   const collectUsersAcrossShards = function() {
     let webShardPromises = [];
-    let nonWebShardPromises = [];
+    let androidShardPromises = [];
+    let iosShardPromises = [];
 
     for (let i = 1; i <= NUM_SHARDS; i++) {
       webShardPromises.push(getWebUsers(i));
-      nonWebShardPromises.push(getNonWebUsers(i));
+      androidShardPromises.push(getAndroidUsers(i));
+      iosShardPromises.push(getIOSUsers(i));
     }
 
     let webUsersPromise = Promise.all(webShardPromises);
-    let nonWebPromise = Promise.all(nonWebShardPromises);
+    let androidPromises = Promise.all(androidShardPromises);
+    let iosPromises = Promise.all(iosShardPromises);
 
-    return Promise.all([webUsersPromise, nonWebPromise]).then(values => {
+    return Promise.all([webUsersPromise, androidPromises, iosPromises]).then(values => {
       let shardWebUsers = values[0];
-      let shardNonWebUsers = values[1];
+      let shardAndroidUsers = values[1];
+      let shardIOSUsers = values[2];
 
       let webUsers = new Set(shardWebUsers.reduce((prev, curr) => prev.concat(curr)));
-      let allUsersWithGCMKeys = new Set(shardNonWebUsers.reduce((prev, curr) => prev.concat(curr)));
+      let allUsersWithGCMKeys = new Set(shardAndroidUsers.reduce((prev, curr) => prev.concat(curr)));
+      let allUsersWithGCMTokens = new Set(shardIOSUsers.reduce((prev, curr) => prev.concat(curr)));
 
-      let allUsers = new Set([...webUsers, ...allUsersWithGCMKeys]);
+      let uniqueUsers = new Set([
+        ...webUsers, ...allUsersWithGCMKeys, ...allUsersWithGCMTokens
+      ]);
 
-      let shared = Array.from(allUsers).filter(userId => {
+      let webAndAndroidUsers = new Set(Array.from(uniqueUsers).filter(userId => {
         return webUsers.has(userId) && allUsersWithGCMKeys.has(userId);
-      });
-      shared = new Set(shared);
+      }));
+
+      let webAndiOSUsers = new Set(Array.from(uniqueUsers).filter(userId => {
+        return webUsers.has(userId) && allUsersWithGCMTokens.has(userId);
+      }));
+
+      let androidAndIOSUsers = new Set(Array.from(uniqueUsers).filter(userId => {
+        return allUsersWithGCMKeys.has(userId) &&
+               allUsersWithGCMTokens.has(userId);
+      }));
+
+      let usersOfAllApps = new Set(Array.from(uniqueUsers).filter(userId => {
+        return allUsersWithGCMKeys.has(userId) &&
+               allUsersWithGCMTokens.has(userId) &&
+               webUsers.has(userId);
+      }));
 
       return {
-        total: allUsers.size,
+        total: uniqueUsers.size,
         web: webUsers.size,
-        other: allUsers.size - webUsers.size,
-        shared: shared.size
+        android: allUsersWithGCMKeys.size,
+        ios: allUsersWithGCMTokens.size,
+        webAndAndroidUsers: webAndAndroidUsers.size,
+        webAndiOSUsers: webAndiOSUsers.size,
+        androidAndIOSUsers: androidAndIOSUsers.size,
+        usersOfAllApps: usersOfAllApps.size
       };
     });
   };
@@ -288,6 +365,12 @@ limitations under the License.
       document.querySelector('#totalUserCount').textContent =
           formatNumber(totalUsers.total);
       drawChart(totalUsers);
+      drawSharedChart(totalUsers);
+
+      numberDumpEl.textContent = `web (signed-in): ${formatNumber(totalUsers.web)}
+android: ${formatNumber(totalUsers.android)}
+ios: ${formatNumber(totalUsers.ios)}
+      `;
     });
   }
 
