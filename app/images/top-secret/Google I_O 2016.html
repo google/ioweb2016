@@ -1,4 +1,4 @@
-{% safeHTML "<!--" %}
+<!--
 Copyright 2016 Google Inc. All rights reserved.
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -9,42 +9,42 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-{% safeHTML "-->" %}
+-->
 <!doctype html>
 <html lang="en" itemscope itemtype="http://schema.org/Event">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="description" content="{% .Desc %}">
+  <meta name="description" content="Google I/O 2016 brings together developers for an immersive, three-day experience focused on exploring the next generation of technology, mobile and beyond. Join us online or in person May 18-20, 2016. #io16">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1">
   <meta name="google-site-verification" content="AdXcVeRpEoy56o6g9c0lls3IiAATCVtB45HWJFwZmsM" />
   <meta name="google-site-verification" content="j4g2UAPd-Fnxh2o_daravb8lvXwZuatJt5kVSbdM0Fc" />
   <meta name="google-site-verification" content="ZuttP0TBQxWoi679sPXHsxrWLCIW1kaJKEnHt2t2yU0" />
-  <title>{% .Title %}</title>
+  <title>Google I/O 2016</title>
 
   <link rel="dns-prefetch" href="https://www.google-analytics.com">
   <link rel="dns-prefetch" href="https://apis.google.com">
   <link rel="dns-prefetch" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <!-- <link rel="preload" href="/io2016/elements/elements.js" as="script"> -->
+  
 
-  <!-- See http://updates.html5rocks.com/2014/11/Support-for-installable-web-apps-with-webapp-manifest-in-chrome-38-for-Android -->
+  
   <link rel="manifest" href="manifest.json">
-  <!-- See http://updates.html5rocks.com/2014/11/Support-for-theme-color-in-Chrome-39-for-Android -->
+  
   <meta name="theme-color" content="#ECEFF1">
 
-  <!-- Add to homescreen for Chrome on Android -->
-  <meta name="mobile-web-app-capable" content="yes"> <!-- fallback for manifest.json -->
-  <meta name="application-name" content="Google I/O 2016"> <!-- fallback for manifest.json -->
+  
+  <meta name="mobile-web-app-capable" content="yes"> 
+  <meta name="application-name" content="Google I/O 2016"> 
 
   <link rel="icon" sizes="32x32" href="images/favicon/favicon-32.png">
 
-  <!-- Add to homescreen for Safari on iOS -->
+  
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="Google I/O 2016">
 
-  <!-- Homescreen icons. -->
+  
   <link rel="shortcut icon" href="images/favicon/favicon-72.png">
   <link rel="apple-touch-icon" href="images/touch/homescreen48.png">
   <link rel="apple-touch-icon" sizes="72x72" href="images/touch/homescreen72.png">
@@ -52,80 +52,76 @@ limitations under the License.
   <link rel="apple-touch-icon" sizes="144x144" href="images/touch/homescreen144.png">
   <link rel="apple-touch-icon" sizes="192x192" href="images/touch/homescreen192.png">
 
-  <!-- Tile icon for Win8 (144x144 + tile color) -->
+  
   <meta name="msapplication-TileImage" content="images/touch/homescreen144.png">
   <meta name="msapplication-TileColor" content="#ECEFF1">
   <meta name="msapplication-tap-highlight" content="no">
 
-  <!-- G+ sharing meta data -->
-  <meta itemprop="name" content="{% .OgTitle %}">
-  <meta itemprop="description" content="{% .Desc %}">
-  <meta itemprop="image" content="{% url .OgImage %}">
-  <!-- May 18 10:00am PDT through May 20 5pm PDT -->
-  <meta itemprop="startDate" content="{% .StartDateStr %}">
+  
+  <meta itemprop="name" content="Google I/O 2016">
+  <meta itemprop="description" content="Google I/O 2016 brings together developers for an immersive, three-day experience focused on exploring the next generation of technology, mobile and beyond. Join us online or in person May 18-20, 2016. #io16">
+  <meta itemprop="image" content="/io2016/images/io16-social.jpg">
+  
+  <meta itemprop="startDate" content="2016-05-18T10:00:00-07:00">
   <meta itemprop="endDate" content="2016-05-20T23:00:00Z">
 
-  <!-- Facebook sharing meta data -->
-  <meta property="og:title" content="{% .OgTitle %}">
+  
+  <meta property="og:title" content="Google I/O 2016">
   <meta property="og:site_name" content="Google I/O 2016">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://events.google.com{% .Prefix %}">
-  <meta property="og:description" content="{% .Desc %}">
+  <meta property="og:url" content="https://events.google.com/io2016">
+  <meta property="og:description" content="Google I/O 2016 brings together developers for an immersive, three-day experience focused on exploring the next generation of technology, mobile and beyond. Join us online or in person May 18-20, 2016. #io16">
   <meta property="og:type" content="Event">
-  <meta property="og:image" content="{% url .OgImage %}">
+  <meta property="og:image" content="/io2016/images/io16-social.jpg">
 
-  <!-- Twitter meta data -->
+  
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:creator" content="@googledevs">
-  <meta name="twitter:title" content="{% .OgTitle %}">
-  <meta name="twitter:description" content="{% .Desc %}">
-  <meta name="twitter:image:src" content="{% url .OgImage %}">
+  <meta name="twitter:title" content="Google I/O 2016">
+  <meta name="twitter:description" content="Google I/O 2016 brings together developers for an immersive, three-day experience focused on exploring the next generation of technology, mobile and beyond. Join us online or in person May 18-20, 2016. #io16">
+  <meta name="twitter:image:src" content="/io2016/images/io16-social.jpg">
 
-  <!-- Unsupported browser checks need to come before webcomponents.js is loaded,
-       otherwise unsupported browsers will error out and not record a pageview.
-       Analytics lib is also loaded up front for error reporting. -->
+  
   <script async src="https://www.google-analytics.com/analytics.js"></script>
   <script>
   (function() {
     "use strict";
 
-    window.ENV = {% .Env %}; // Used in IOWA.Analytics
-    window.PREFIX = {% .Prefix %};
-    window.START_DATE = {% .StartDateStr %};
-    window.FIREBASE_SHARDS = {% .FirebaseShards %};
+    window.ENV = "dev"; 
+    window.PREFIX = "/io2016";
+    window.START_DATE = "2016-05-18T10:00:00-07:00";
+    window.FIREBASE_SHARDS = ["DATABASE_SHARD_URL","DATABASE_SHARD_URL","DATABASE_SHARD_URL"];
 
-    // use Polymer's lazy registration feature to speed up initial boot.
+    
     window.Polymer = window.Polymer || {lazyRegister: true};
 
-    // Initializes the analytics.js command queue.
+    
     window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
 
-    // Creates the tracker.
+    
     ga('create', {
       trackingId: window.ENV === 'prod' ? 'UA-58124138-3' : 'UA-58124138-2',
       cookieDomain: 'auto',
       cookiePath: window.ENV !== 'dev' ? window.PREFIX || '/io2016' : null,
-      siteSpeedSampleRate: 10, // 10% of users.
+      siteSpeedSampleRate: 10, 
     });
 
-    // Setup error tracking before anything else runs.
+    
     window.onerror = function(message, file, lineNumber, columnNumber, error) {
-      // We don't want to trigger any errors inside window.onerror, so wrap in a try/catch.
+      
       try {
-        // Some browsers don't support error param yet.
+        
         if (error !== undefined) {
           message = error.stack;
         }
         ga('send', 'event', 'error', file + ':' + lineNumber, message);
       } catch (e) {
-        // no-op
+        
       }
     };
 
-    /**
-     * @param {string} param URL parameter to look for.
-     * @return {string|undefined} undefined if the URL parameter does not exist.
-     */
+    
+
     function getUrlParameter(param) {
       if (!window.location.search) {
         return;
@@ -137,18 +133,18 @@ limitations under the License.
       return decodeURIComponent(m[1]);
     }
 
-    // If ?ignore_browser_check=true is in the URL, the user is coming back from
-    // "upgrade your browser" and we let them proceed.
+    
+    
     var ignoreCheck = getUrlParameter('ignore_browser_check') == 'true';
 
-    // Check if browser is supported by web components polyfill.
-    // Feature detection isn't sufficient; webcomponentsjs attempts to polyfill
-    // missing features, but some browsers are known to not work under it.
-    // https://www.polymer-project.org/resources/compatibility.html
+    
+    
+    
+    
     var supported = ignoreCheck || (function whatBrowserYouBe() {
       var uaString = navigator.userAgent;
 
-      // Sorry IE < 10.
+      
       var msie = /MSIE +([\d\.]+)/.exec(uaString);
       if (msie && msie[1]) {
         if (msie[1] === '7.0') {
@@ -162,35 +158,35 @@ limitations under the License.
           return parseInt(msie[1], 10) >= 10;
         }
       }
-      // Sorry older Android browser.
+      
       if (uaString.indexOf('Chrome') === -1 && uaString.indexOf('Android') !== -1) {
         return !/^Google/.test(navigator.vendor);
       }
-      // Sorry Opera < 15.
+      
       if (uaString.indexOf('Opera') !== -1) {
         return false;
       }
-      // Everyone else goes through.
+      
       return true;
     })();
 
     if (!supported) {
       var redirectToUpgradePage = function() {
-        window.location = {% url "upgrade" %};
+        window.location = "/io2016/upgrade";
       };
-      // Sends a pageview here because this code will run before IOWA.Analytics is initialized.
+      
       ga('send', 'pageview');
       ga('send', 'event', 'Polymer', 'unsupported-browser', navigator.userAgent, {
         hitCallback: redirectToUpgradePage
       });
-      // Adds a timeout to redirect in the event that analytics.js fails to
-      // load or is blocked by a browser extension.
+      
+      
       setTimeout(redirectToUpgradePage, 5000);
     }
 
-    // Adds User Timing marks for relevant perf events.
-    // These events correspond to the values tracked in analytics.js;
-    // changes made here must be made there as well.
+    
+    
+    
     var perfEvents = ['HTMLImportsLoaded', 'WebComponentsReady'];
     if (window.performance && window.performance.mark) {
       perfEvents.forEach(function(eventName) {
@@ -202,15 +198,15 @@ limitations under the License.
   })();
   </script>
 
-  <!-- Page styles -->
+  
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
   <link rel="stylesheet" href="styles/main.css">
 
   <link rel="import" href="elements/critical.html">
 
-  {% if .Canonical %}
-  <link rel="canonical" href="{% .Canonical %}">
-  {% end %}
+  
+  <link rel="canonical" href="http://localhost:3000/io2016/">
+  
 
   <style is="custom-style" include="shared-app-styles">
     .masthead {
@@ -233,15 +229,12 @@ limitations under the License.
     {
       "@context": "http://schema.org",
       "@type": "Event",
-      "name": {% .Title %},
-      "description": {% .Desc %},
-      {% if not .SessionStart.IsZero %}
-      "startDate": {% .SessionStart.Format "2006-01-02T15:04:05Z07:00" %},
-      "endDate": {% .SessionEnd.Format "2006-01-02T15:04:05Z07:00" %},
-      {% else %}
-      "startDate": {% .StartDateStr %},
-      {% end %}
-      {% if .Canonical %}"url": {% .Canonical %},{% end %}
+      "name": "Google I/O 2016",
+      "description": "Google I/O 2016 brings together developers for an immersive, three-day experience focused on exploring the next generation of technology, mobile and beyond. Join us online or in person May 18-20, 2016. #io16",
+      
+      "startDate": "2016-05-18T10:00:00-07:00",
+      
+      "url": "http://localhost:3000/io2016/",
       "location": {
         "@type" : "Place",
         "name" : "Shoreline Amphitheatre",
@@ -250,16 +243,16 @@ limitations under the License.
     }
   </script>
 </head>
-<body id="page-{% .Slug %}" class="loading bg-white">
+<body id="page-home" class="loading bg-white">
 
 <div id="splash" class="bg-bluegrey-600"></div>
 
 <template is="dom-bind" id="t">
 
-<google-signin client-id="{% .ClientID %}" scopes="profile email"
+<google-signin client-id="web-app client ID" scopes="profile email"
                user="{{app.currentUser}}" load></google-signin>
 
-<!-- Responsive handlers -->
+
 <iron-media-query id="mq-phone" full query="(min-width:320px) and (max-width:768px)"
                   query-matches="{{app.isPhoneSize}}"></iron-media-query>
 <iron-media-query id="mq-tablet" full query="(min-width:769px) and (max-width:959px)"
@@ -341,19 +334,16 @@ limitations under the License.
         </paper-tab>
       </paper-tabs>
       <span id="signin-nav-elements" layout horizontal center>
-        <!-- Note: Use on-click instead of on-tap so oauth popup is not
-             blocked. Needs user gesture. -->
+        
         <span class="anchor-like button-link" role="button" tabindex="0"
               data-track-link="nav-signin" on-click="signIn" on-keydown="keyboardSignIn"
               hidden="[[app.currentUser.picture]]" layout center>Sign in</span>
-        <!-- This image might be set based on cached data. -->
+        
         <img src$="{{app.currentUser.picture}}"
              class="profilepic"
              alt="User profile image"
              hidden="[[!app.currentUser.picture]]">
-        <!-- Stamp this out when app.currentUser.tokenResponse is set rather than just
-             app.currentUser, since a subset of app.currentUser might be
-             populated by cached data. -->
+        
         <template is="dom-if" if="{{app.currentUser.tokenResponse}}" restamp>
           <paper-menu-button horizontal-align="right" vertical-align="top">
             <paper-icon-button icon="io:more-vert"
@@ -382,7 +372,7 @@ limitations under the License.
 
     </app-toolbar>
 
-    <!-- Pages that have subnavs which participate in scrolling effects go here. -->
+    
     <template is="dom-if" if="[[_isPage('schedule', selectedPage)]]" restamp>
       <io-schedule-subnav selected-subpage="{{selectedSubpage}}" app="[[app]]"
                           show-filters="{{showFilters}}"
@@ -414,14 +404,12 @@ limitations under the License.
   <div id="mainScrollingRegion">
   <main class$="io-main [[_addClass('transitionIn', pageTransitioningIn)]] [[_addClass('transitionOut', pageTransitioningOut)]]">
 
-    <!-- When adding in new pages, make sure to make a corresponding update
-         to the navigateFallbackWhitelist value used in
-         https://github.com/GoogleChrome/ioweb2016/blob/master/gulp_scripts/service-worker.js -->
+    
     <lazy-pages>
       <template is="dom-if" name="home" restamp>
         <io-home-page
             app="[[app]]"
-            date="{% .StartDateStr %}"></io-home-page>
+            date="2016-05-18T10:00:00-07:00"></io-home-page>
       </template>
       <template is="dom-if" name="attend" restamp>
         <io-attend-page app="{{app}}"
@@ -434,7 +422,7 @@ limitations under the License.
         <io-extended-form-page app="[[app]]"></io-extended-form-page>
       </template>
       <template is="dom-if" name="schedule" restamp>
-        <io-schedule-page app="{{app}}" date="{% .StartDateStr %}"
+        <io-schedule-page app="{{app}}" date="2016-05-18T10:00:00-07:00"
                           selected-subpage="{{selectedSubpage}}"
                           show-filters="{{showFilters}}"
                           filters="{{_filters}}"></io-schedule-page>
@@ -446,11 +434,11 @@ limitations under the License.
         <io-widget-page app="[[app]]"></io-widget-page>
       </template>
     </lazy-pages>
-    <io-top-secret></io-top-secret>
+
   </main>
 
 
-  <!-- Remove hidden after live stream -->
+  
   <footer class="bg-bluegrey-50-40" layout horizontal center hidden$="[[_isPage('home', selectedPage)]]">
 
     <div flex>
@@ -478,7 +466,7 @@ limitations under the License.
 
 </div>
   <div id="fab" class="fixed" hidden$="[[app.isPhoneSize]]" layout end-justified>
-    <!-- _onContentScroll handler in elements.js will flip the tabindex and aria-hidden -->
+    
     <a id="fabAnchor" href="#" on-click="backToTop"
        data-track-link="link-backtotop" tabindex="-1"
        aria-hidden="true" aria-label="back to top">
@@ -488,10 +476,11 @@ limitations under the License.
 </template>
 
 <io-toast id="toast" duration="9000"></io-toast>
-<!-- Append messages from the toast to this aria-live region to have them read aloud -->
+<io-easter-egg></io-easter-egg>
+
 <div id="live-status" role="status" aria-live="polite" aria-atomic="true"></div>
 
-<!-- build:site-scripts -->
+
 <script src="bower_components/moment/min/moment.min.js"></script>
 <script src="bower_components/moment-timezone/builds/moment-timezone-with-data.min.js"></script>
 <script src="bower_components/es6-promise/dist/es6-promise.min.js"></script>
@@ -514,7 +503,7 @@ limitations under the License.
 <script src="scripts/helper/simple-db.js"></script>
 <script src="scripts/helper/schedule.js"></script>
 <script src="scripts/bootstrap.js"></script>
-<!-- endbuild -->
+
 
 </body>
 </html>
