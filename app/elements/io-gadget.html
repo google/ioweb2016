@@ -269,7 +269,7 @@ The `<io-gadget>` element renders a youtube video + social feed.
         ],
 
         ready: function() {
-          IOWA.Request.xhrPromise('GET', '/api/v1/livestream', false).then(function(resp) {
+          IOWA.Request.xhrPromise('GET', '/io2016/api/v1/livestream', false).then(function(resp) {
             this.videoIds = resp;
           }.bind(this));
         },
