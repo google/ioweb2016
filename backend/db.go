@@ -135,10 +135,10 @@ func listUsersWithPush(c context.Context, shard string) ([]string, error) {
 		return nil, err
 	}
 	defer res.Body.Close()
-	if res.StatusCode >= 400 {
+	if res.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("error (%d) fetching user push list", res.StatusCode)
 	}
-	var users map[string]userPush
+	var users map[string]struct{}
 	if err = json.NewDecoder(res.Body).Decode(&users); err != nil {
 		return nil, err
 	}
@@ -156,7 +156,7 @@ func listAllUserSessions(c context.Context, shard string) (map[string][]string, 
 		return nil, err
 	}
 	defer res.Body.Close()
-	if res.StatusCode >= 400 {
+	if res.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("error (%d) fetching user session list", res.StatusCode)
 	}
 	var data map[string]struct {

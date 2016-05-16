@@ -17,6 +17,7 @@ package backend
 import (
 	"net/http"
 	"net/textproto"
+	"time"
 
 	"google.golang.org/appengine/urlfetch"
 
@@ -83,6 +84,7 @@ func (t firebaseTransport) RoundTrip(req *http.Request) (*http.Response, error) 
 }
 
 func firebaseClient(c context.Context) *http.Client {
+	c, _ = context.WithTimeout(c, 10*time.Second)
 	t := httpTransport(c)
 	return &http.Client{Transport: &firebaseTransport{t}}
 }

@@ -111,28 +111,24 @@ func mergeChanges(dst *dataChanges, src *dataChanges) {
 // It sorts bks with sort.Strings as a side effect.
 func filterUserChanges(d *dataChanges, bks []string) *dataChanges {
 	// Operate on a copy
-	sCopy := make(map[string]*eventSession)
-	var dc dataChanges
-	dc = *d
-
+	changes := *d
+	changes.Sessions = make(map[string]*eventSession, len(d.Sessions))
 	for k, v := range d.Sessions {
-		sCopy[k] = v
+		changes.Sessions[k] = v
 	}
 
-	dc.Sessions = sCopy
-
 	sort.Strings(bks)
-	for id, s := range dc.Sessions {
+	for id, s := range changes.Sessions {
 		if s.Update == updateSurvey {
 			// surveys don't have to match bookmarks
 			continue
 		}
 		i := sort.SearchStrings(bks, id)
 		if i >= len(bks) || bks[i] != id {
-			delete(dc.Sessions, id)
+			delete(changes.Sessions, id)
 		}
 	}
-	return &dc
+	return &changes
 }
 
 // notifySubscription sends a message to a subscribed device.
@@ -192,30 +188,24 @@ func userNotifications(c context.Context, dc *dataChanges, bks []string) []*noti
 	for k, v := range fdc.Sessions {
 		logsess = append(logsess, k)
 		s = append(s, v)
-		logf(c, "update: %v", v.Update)
 		updates[v.Update] = append(updates[v.Update], v)
 	}
-	logf(c, "sending %d updated sessions to user: %s", len(logsess), strings.Join(logsess, ", "))
-	logf(c, "updates: %v", updates)
+	logf(c, "sending %d updated sessions: %s", len(logsess), strings.Join(logsess, ", "))
 
 	var n []*notification
 
 	if len(updates[updateDetails]) > 0 {
 		n = append(n, detailsNotification(updates[updateDetails]))
 	}
-
 	if len(updates[updateSoon]) > 0 {
 		n = append(n, soonNotification())
 	}
-
 	if len(updates[updateStart]) > 0 {
 		n = append(n, startNotification(updates[updateStart]))
 	}
-
 	if len(updates[updateVideo]) > 0 {
 		n = append(n, videoNotification(updates[updateVideo]))
 	}
-
 	if len(updates[updateSurvey]) > 0 {
 		n = append(n, surveyNotification())
 	}
@@ -224,11 +214,10 @@ func userNotifications(c context.Context, dc *dataChanges, bks []string) []*noti
 }
 
 func formatSessionTitles(sessions []*eventSession) string {
-	var titles []string
-	for _, s := range sessions {
-		titles = append(titles, s.Title)
+	titles := make([]string, len(sessions))
+	for i, s := range sessions {
+	  titles[i] = s.Title
 	}
-
 	return strings.Join(titles, ", ")
 }
 
@@ -257,8 +246,8 @@ func soonNotification() *notification {
 
 func surveyNotification() *notification {
 	return &notification{
-		Title: "Remember to rate the events you attended",
-		Body:  "We value your feedback!",
+		Title: "Submit session feedback",
+		Body:  "Don't forget to rate sessions in My Schedule. We value your feedback!",
 		Tag:   "survey",
 	}
 }
@@ -269,11 +258,10 @@ func videoNotification(sessions []*eventSession) *notification {
 	if len(sessions) == 1 {
 		return &notification{
 			Title: "The video for " + sessions[0].Title + " is available",
-			Body:  "",
 			Tag:   "video-available",
 			Data: struct {
 				URL string `json:"url,omitempty"`
-			}{fmt.Sprintf("schedule?sid=%[1]s#/%[1]s", sessions[0].ID)},
+			}{fmt.Sprintf("schedule?sid=%s", sessions[0].ID)},
 		}
 	}
 
@@ -285,9 +273,13 @@ func videoNotification(sessions []*eventSession) *notification {
 }
 
 func startNotification(sessions []*eventSession) *notification {
-	vrb := "is"
-	if len(sessions) != 1 {
-		vrb = "are"
+	if len(sessions) == 1 {
+		s := sessions[0]
+		return &notification{
+			Title: fmt.Sprintf("Starting: %s", s.Title),
+			Body:  fmt.Sprintf("%s", s.Room),
+			Tag:   "session-start",
+		}
 	}
 
 	// New notifications with the same tag will replace any previous notifications with the same
@@ -295,7 +287,7 @@ func startNotification(sessions []*eventSession) *notification {
 	// one notification that has the list of all the sessions starting soon.
 	return &notification{
 		Title: "Some events in My Schedule are starting",
-		Body:  fmt.Sprintf("%s %s starting soon", formatSessionTitles(sessions), vrb),
+		Body:  fmt.Sprintf("%s are starting soon", formatSessionTitles(sessions)),
 		Tag:   "session-start",
 	}
 }

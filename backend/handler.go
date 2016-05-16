@@ -473,8 +473,7 @@ func submitTaskSurvey(w http.ResponseWriter, r *http.Request) {
 // TODO: update for Firebase and webpush
 func handleNotifySubscribers(w http.ResponseWriter, r *http.Request) {
 	c := newContext(r)
-	retry, err := taskRetryCount(r)
-	if err != nil || retry > maxTaskRetry {
+	if retry, err := taskRetryCount(r); err != nil || retry > maxTaskRetry {
 		errorf(c, "retry = %d, err: %v", retry, err)
 		return
 	}
@@ -485,15 +484,13 @@ func handleNotifySubscribers(w http.ResponseWriter, r *http.Request) {
 	for _, shard := range config.Firebase.Shards {
 		if err := notifyShardAsync(c, shard, changes, all); err != nil {
 			errorf(c, "handleNotifySubscribers: %v", err)
-			// TODO: handle this error case
 		}
 	}
 }
 
 func handleNotifyShard(w http.ResponseWriter, r *http.Request) {
 	c := newContext(r)
-	retry, err := taskRetryCount(r)
-	if err != nil || retry > maxTaskRetry {
+	if retry, err := taskRetryCount(r); err != nil || retry > maxTaskRetry {
 		errorf(c, "retry = %d, err: %v", retry, err)
 		return
 	}
@@ -501,7 +498,7 @@ func handleNotifyShard(w http.ResponseWriter, r *http.Request) {
 	all := r.FormValue("all") == "true"
 	shard := r.FormValue("shard")
 	changes := &dataChanges{}
-	if err = json.Unmarshal([]byte(r.FormValue("changes")), changes); err != nil {
+	if err := json.Unmarshal([]byte(r.FormValue("changes")), changes); err != nil {
 		errorf(c, "handleNotifyShard: %v\n%v", err, r.FormValue("changes"))
 		return
 	}
@@ -517,23 +514,19 @@ func handleNotifyShard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	logf(c, "notify debug: %v", changes.Sessions)
-
 	logf(c, "found %d users with notifications enabled", len(users))
 
 	userSessions, err := listAllUserSessions(c, shard)
 	if err != nil {
 		errorf(c, "handleNotifyShard: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	for _, uid := range users {
-		un := userNotifications(c, changes, userSessions[uid])
-
-		for _, n := range un {
+		nn := userNotifications(c, changes, userSessions[uid])
+		for _, n := range nn {
 			msg := &pushMessage{Notification: n}
-			m, _ := json.Marshal(msg)
-			logf(c, "msg: \n%v\n", string(m))
 			if err := notifyUserAsync(c, uid, shard, msg); err != nil {
 				errorf(c, "handleNotifyShard: %v", err)
 				// TODO: handle this error case
@@ -573,7 +566,6 @@ func handleNotifyUser(w http.ResponseWriter, r *http.Request) {
 			if pe.remove {
 				deleteSubscription(c, uid, shard, key)
 			}
-			// TODO: Handle retry/remove errors
 		}
 	}
 }
