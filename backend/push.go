@@ -141,17 +141,19 @@ func notifySubscription(c context.Context, s string, msg *pushMessage) error {
 		auth = config.Google.GCM.Key
 	}
 
-	// TODO: If subscription does not have keys, or is an old FF sub, send a tickle instead
-
-	ns, err := json.Marshal(msg)
-	if err != nil {
-		// The notification may be badly-formed
-		// TODO: retry or not?
-		return &pushError{msg: fmt.Sprintf("notifySubscription: %v", err), retry: false}
+	n := ""
+	if len(sub.Auth) != 0 && len(sub.Key) != 0 {
+		j, err := json.Marshal(msg)
+		if err != nil {
+			// The notification may be badly-formed
+			// TODO: retry or not?
+			return &pushError{msg: fmt.Sprintf("notifySubscription: %v", err), retry: false}
+		}
+		n = string(j)
 	}
 
 	logf(c, "pinging webpush endpoint: %s", sub.Endpoint)
-	res, err := webpush.Send(httpClient(c), sub, string(ns), auth)
+	res, err := webpush.Send(httpClient(c), sub, n, auth)
 	if err != nil {
 		return &pushError{msg: fmt.Sprintf("notifySubscription: %v", err), retry: true}
 	}
