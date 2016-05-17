@@ -514,6 +514,16 @@ Fired when the user toggles bookmarking/removing a session.
         },
 
         _closeFilters: function(e) {
+          // Keyboard clicks inside of the filter are dispatching a
+          // synthetic MouseClick event which fails the check below
+          // So check the target and bail if it was a filter item
+          switch (e.target.nodeName) {
+            case 'PAPER-RADIO-BUTTON':
+            case 'PAPER-CHECKBOX':
+            case 'PAPER-RADIO-GROUP':
+              return;
+          }
+
           var filterMetrics = this.$.filters.getBoundingClientRect();
 
           var withinPanel = e.x >= filterMetrics.left &&
