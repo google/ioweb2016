@@ -71,6 +71,7 @@ func registerHandlers() {
 	// background jobs
 	handle("/sync/gcs", syncEventData)
 	handle("/task/notify-subscribers", handleNotifySubscribers)
+	handle("/task/notify-shard", handleNotifyShard)
 	handle("/task/notify-user", handleNotifyUser)
 	handle("/task/survey/", submitTaskSurvey)
 	handle("/task/social", refreshSocial)
@@ -406,82 +407,6 @@ func syncEventData(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// TODO: web push payload will be similar to what the handler's response looks like.
-//
-// serveUserUpdates responds with a dataChanges containing a diff
-// between provided timestamp and current time.
-// Timestamp is encoded in the Authorization token which the client
-// must know beforehand.
-//func serveUserUpdates(w http.ResponseWriter, r *http.Request) {
-//	ah := r.Header.Get("authorization")
-//	// first request to get SW token
-//	if strings.HasPrefix(strings.ToLower(ah), bearerHeader) {
-//		serveSWToken(w, r)
-//		return
-//	}
-//
-//	// handle a request with SW token
-//	c := newContext(r)
-//	w.Header().Set("Content-Type", "application/json;charset=utf-8")
-//	user, ts, err := decodeSWToken(ah)
-//	if err != nil {
-//		writeJSONError(c, w, http.StatusForbidden, err)
-//		return
-//	}
-//	c = context.WithValue(c, ctxKeyUser, user)
-//
-//	// fetch user data in parallel with dataChanges
-//	var (
-//		bookmarks []string
-//		pushInfo  *userPush
-//		userErr   error
-//	)
-//	done := make(chan struct{})
-//	go func() {
-//		defer close(done)
-//		if bookmarks, userErr = userSchedule(c, user); userErr != nil {
-//			return
-//		}
-//		pushInfo, userErr = getUserPushInfo(c, user)
-//	}()
-//
-//	dc, err := getChangesSince(c, ts)
-//	if err != nil {
-//		writeJSONError(c, w, errStatus(err), err)
-//		return
-//	}
-//
-//	select {
-//	case <-time.After(10 * time.Second):
-//		errorf(c, "userSchedule/getUserPushInfo timed out")
-//		writeJSONError(c, w, http.StatusInternalServerError, "timeout")
-//		return
-//	case <-done:
-//		// user data goroutine finished
-//	}
-//
-//	// userErr indicates any error in the user data retrieval
-//	if userErr != nil {
-//		errorf(c, "userErr: %v", userErr)
-//		writeJSONError(c, w, http.StatusInternalServerError, userErr)
-//		return
-//	}
-//
-//	filterUserChanges(dc, bookmarks, pushInfo.Pext)
-//	dc.Token, err = encodeSWToken(user, dc.Updated.Add(1*time.Second))
-//	if err != nil {
-//		writeJSONError(c, w, http.StatusInternalServerError, err)
-//	}
-//	logsess := make([]string, 0, len(dc.Sessions))
-//	for k := range dc.Sessions {
-//		logsess = append(logsess, k)
-//	}
-//	logf(c, "sending %d updated sessions to user %s: %s", len(logsess), user, strings.Join(logsess, ", "))
-//	if err := json.NewEncoder(w).Encode(dc); err != nil {
-//		errorf(c, "serveUserUpdates: encode resp: %v", err)
-//	}
-//}
-
 // submitUserSurvey submits survey responses for a specific session or a batch.
 func submitUserSurvey(w http.ResponseWriter, r *http.Request) {
 	ctx := newContext(r)
@@ -547,36 +472,67 @@ func submitTaskSurvey(w http.ResponseWriter, r *http.Request) {
 
 // TODO: update for Firebase and webpush
 func handleNotifySubscribers(w http.ResponseWriter, r *http.Request) {
-	// c := newContext(r)
-	// retry, err := taskRetryCount(r)
-	// if err != nil || retry > maxTaskRetry {
-	// 	errorf(c, "retry = %d, err: %v", retry, err)
-	// 	return
-	// }
+	c := newContext(r)
+	if retry, err := taskRetryCount(r); err != nil || retry > maxTaskRetry {
+		errorf(c, "retry = %d, err: %v", retry, err)
+		return
+	}
 
-	// all := r.FormValue("all") == "true"
-	// sessions := strings.Split(r.FormValue("sessions"), " ")
-	// if len(sessions) == 0 && !all {
-	// 	logf(c, "handleNotifySubscribers: empty sessions list; won't notify")
-	// 	return
-	// }
+	all := r.FormValue("all") == "true"
+	changes := r.FormValue("changes")
 
-	// users, err := listUsersWithPush(c)
-	// if err != nil {
-	// 	errorf(c, "handleNotifySubscribers: %v", err)
-	// 	w.WriteHeader(http.StatusInternalServerError)
-	// 	return
-	// }
+	for _, shard := range config.Firebase.Shards {
+		if err := notifyShardAsync(c, shard, changes, all); err != nil {
+			errorf(c, "handleNotifySubscribers: %v", err)
+		}
+	}
+}
 
-	// logf(c, "found %d users with notifications enabled", len(users))
-	// for _, id := range users {
-	// 	shard := ""
-	// 	msg := &pushMessage{}
-	// 	if err := notifyUserAsync(c, id, shard, msg); err != nil {
-	// 		errorf(c, "handleNotifySubscribers: %v", err)
-	// 		// TODO: handle this error case
-	// 	}
-	// }
+func handleNotifyShard(w http.ResponseWriter, r *http.Request) {
+	c := newContext(r)
+	if retry, err := taskRetryCount(r); err != nil || retry > maxTaskRetry {
+		errorf(c, "retry = %d, err: %v", retry, err)
+		return
+	}
+
+	all := r.FormValue("all") == "true"
+	shard := r.FormValue("shard")
+	changes := &dataChanges{}
+	if err := json.Unmarshal([]byte(r.FormValue("changes")), changes); err != nil {
+		errorf(c, "handleNotifyShard: %v\n%v", err, r.FormValue("changes"))
+		return
+	}
+	if len(changes.Sessions) == 0 && !all {
+		logf(c, "handleNotifyShard: empty sessions list; won't notify")
+		return
+	}
+
+	users, err := listUsersWithPush(c, shard)
+	if err != nil {
+		errorf(c, "handleNotifyShard: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	logf(c, "found %d users with notifications enabled", len(users))
+
+	userSessions, err := listAllUserSessions(c, shard)
+	if err != nil {
+		errorf(c, "handleNotifyShard: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	for _, uid := range users {
+		nn := userNotifications(c, changes, userSessions[uid])
+		for _, n := range nn {
+			msg := &pushMessage{Notification: n}
+			if err := notifyUserAsync(c, uid, shard, msg); err != nil {
+				errorf(c, "handleNotifyShard: %v", err)
+				// TODO: handle this error case
+			}
+		}
+	}
 }
 
 func handleNotifyUser(w http.ResponseWriter, r *http.Request) {
@@ -610,157 +566,9 @@ func handleNotifyUser(w http.ResponseWriter, r *http.Request) {
 			if pe.remove {
 				deleteSubscription(c, uid, shard, key)
 			}
-			// TODO: Handle retry/remove errors
 		}
 	}
 }
-
-// // handlePingUser schedules a GCM "ping" to user devices based on certain conditions.
-// func handlePingUser(w http.ResponseWriter, r *http.Request) {
-// 	c := newContext(r)
-// 	retry, err := taskRetryCount(r)
-// 	if err != nil || retry > maxTaskRetry {
-// 		errorf(c, "retry = %d, err: %v", retry, err)
-// 		return
-// 	}
-
-// 	user := r.FormValue("uid")
-// 	all := r.FormValue("all") == "true"
-// 	// TODO: add ioext conditions
-// 	sessions := strings.Split(r.FormValue("sessions"), " ")
-// 	sort.Strings(sessions)
-// 	if user == "" || (len(sessions) == 0 && !all) {
-// 		errorf(c, "invalid params user = %q; session = %v; all = %v", user, sessions, all)
-// 		return
-// 	}
-
-// 	var pi *userPush
-// 	// transactional because we want to upgrade registration IDs to endpoints early
-// 	terr := runInTransaction(c, func(c context.Context) error {
-// 		pi, err = getUserPushInfo(c, user)
-// 		if err != nil {
-// 			return err
-// 		}
-// 		if len(pi.Subscribers) > 0 {
-// 			pi.Endpoints = upgradeSubscribers(pi.Subscribers, pi.Endpoints)
-// 			pi.Subscribers = nil
-// 			// TODO: what do we do with updated push endpoints?
-// 			//return storeUserPushInfo(c, pi)
-// 			return nil
-// 		}
-// 		return nil
-// 	})
-// 	if terr != nil {
-// 		errorf(c, err.Error())
-// 		w.WriteHeader(http.StatusInternalServerError)
-// 		return
-// 	}
-
-// 	if !pi.Enabled {
-// 		logf(c, "notifications not enabled")
-// 		return
-// 	}
-
-// 	matched := all
-// 	if !all {
-// 		bookmarks, err := userSchedule(c, user)
-// 		if ue, ok := err.(*url.Error); ok && (ue.Err == errAuthInvalid || ue.Err == errAuthMissing) {
-// 			errorf(c, "unrecoverable: %v", err)
-// 			return
-// 		}
-// 		if err != nil {
-// 			errorf(c, "%v", err)
-// 			w.WriteHeader(http.StatusInternalServerError)
-// 			return
-// 		}
-// 		for _, id := range bookmarks {
-// 			i := sort.SearchStrings(sessions, id)
-// 			if matched = i < len(sessions) && sessions[i] == id; matched {
-// 				break
-// 			}
-// 		}
-// 	}
-
-// 	if !matched {
-// 		logf(c, "none of user sessions matched")
-// 		return
-// 	}
-
-// 	// retry scheduling of /task/ping-device n times in case of errors,
-// 	// pausing i seconds on each iteration where i ranges from 0 to n.
-// 	// currently this will total to about 15sec latency in the worst successful case.
-// 	nr := 5
-// 	endpoints := pi.Endpoints
-// 	for i := 0; i < nr+1; i++ {
-// 		endpoints, err = pingDevicesAsync(c, user, endpoints, 0)
-// 		if err == nil {
-// 			break
-// 		}
-// 		errorf(c, "couldn't schedule ping for %d of %d devices; retry = %d/%d",
-// 			len(endpoints), len(pi.Endpoints), i, nr)
-// 		time.Sleep(time.Duration(i) * time.Second)
-// 	}
-// }
-
-// // handlePingDevices handles a request to notify a single user device.
-// func handlePingDevice(w http.ResponseWriter, r *http.Request) {
-// 	c := newContext(r)
-// 	retry, err := taskRetryCount(r)
-// 	if err != nil || retry > maxTaskRetry {
-// 		errorf(c, "retry = %d, err: %v", retry, err)
-// 		return
-// 	}
-
-// 	uid := r.FormValue("uid")
-// 	endpoint := r.FormValue("endpoint")
-// 	if uid == "" || endpoint == "" {
-// 		errorf(c, "invalid params: uid = %q; endpoint = %q", uid, endpoint)
-// 		return
-// 	}
-
-// 	nurl, err := pingDevice(c, endpoint)
-// 	if err == nil {
-// 		if nurl != "" {
-// 			terr := runInTransaction(c, func(c context.Context) error {
-// 				return updatePushEndpoint(c, uid, endpoint, nurl)
-// 			})
-// 			// no worries if this errors out, we'll do it next time
-// 			if terr != nil {
-// 				errorf(c, terr.Error())
-// 			}
-// 		}
-// 		return
-// 	}
-
-// 	errorf(c, "%v", err)
-// 	pe, ok := err.(*pushError)
-// 	if !ok {
-// 		// unrecoverable error
-// 		return
-// 	}
-
-// 	if pe.remove {
-// 		terr := runInTransaction(c, func(c context.Context) error {
-// 			return deletePushEndpoint(c, uid, endpoint)
-// 		})
-// 		if terr != nil {
-// 			errorf(c, terr.Error())
-// 		}
-// 		// pe.remove also means no retry is necessary
-// 		return
-// 	}
-
-// 	if !pe.retry {
-// 		return
-// 	}
-// 	// schedule a new task according to Retry-After
-// 	_, err = pingDevicesAsync(c, uid, []string{endpoint}, pe.after)
-// 	if err != nil {
-// 		// re-scheduling didn't work: retry the whole thing
-// 		errorf(c, err.Error())
-// 		w.WriteHeader(http.StatusInternalServerError)
-// 	}
-// }
 
 // handleClock compares time.Now() to each session and notifies users about starting sessions.
 // It must be run frequently, every minute or so.
@@ -1037,8 +845,8 @@ func debugNotify(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	n := notification{}
-	if err := json.NewDecoder(r.Body).Decode(&n); err != nil {
+	n := &notification{}
+	if err := json.NewDecoder(r.Body).Decode(n); err != nil {
 		writeJSONError(c, w, http.StatusBadRequest, err)
 		return
 	}

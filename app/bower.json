@@ -80,7 +80,7 @@
     "iron-autogrow-textarea": "PolymerElements/iron-autogrow-textarea#^1.0.11",
     "google-map-markerclusterer": "^1.0.0",
     "webcomponentsjs": "0.7.20",
-    "propel-web-push": "GoogleChrome/Propel#^0.1.2"
+    "propel-web-push": "GoogleChrome/Propel#^0.1.3"
   },
   "resolutions": {
     "webcomponentsjs": "0.7.20"

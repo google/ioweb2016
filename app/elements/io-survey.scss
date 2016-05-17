@@ -1,6 +1,6 @@
 @import '_elements';
 
-:host([inline]) {
+:host([main]) {
   color: $color-text;
   position: absolute !important;
   top: 0 !important;
@@ -12,12 +12,30 @@
   z-index: 2 !important;
   box-shadow: none !important;
   background-color: $color-grey-50;
-  @apply(--layout-scroll);
+  -webkit-overflow-scrolling: touch;
+  overflow: auto;
 }
 
 .border-bottom {
   display: block;
   border-bottom: 1px solid $color-grey-300 !important;
+}
+
+.inline {
+  .card-content {
+    padding:16px !important;
+  }
+
+  #close {
+    height: 40px;
+    width: 40px;
+  }
+
+  h1 {
+    font-size: 28px;
+    font-weight: 500;
+    line-height: 32px;
+  }
 }
 
 #close {

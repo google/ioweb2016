@@ -108,26 +108,57 @@ func deleteSubscription(c context.Context, uid, shard, key string) error {
 	return nil
 }
 
-// TODO: port to firebase
-//
 // listUsersWithPush returns user IDs which have userPush.Enabled == true.
-// It might not return most recent result because of the datastore eventual consistency.
-func listUsersWithPush(c context.Context) ([]string, error) {
-	return nil, nil
-	//users := make([]string, 0)
-	//q := datastore.NewQuery(kindUserPush).Filter("on =", true).KeysOnly()
-	//c, _ = context.WithTimeout(c, time.Minute)
-	//for t := q.Run(c); ; {
-	//	k, err := t.Next(nil)
-	//	if err == datastore.Done {
-	//		break
-	//	}
-	//	if err != nil {
-	//		return nil, fmt.Errorf("listUsersWithPush: %v", err)
-	//	}
-	//	users = append(users, k.StringID())
-	//}
-	//return users, nil
+func listUsersWithPush(c context.Context, shard string) ([]string, error) {
+	u := fmt.Sprintf(`%s/users.json?orderBy="web_notifications_enabled"&equalTo=true`, shard)
+	res, err := firebaseClient(c).Get(u)
+	if err != nil {
+		return nil, err
+	}
+	defer res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("error (%d) fetching user push list", res.StatusCode)
+	}
+	var users map[string]struct{}
+	if err = json.NewDecoder(res.Body).Decode(&users); err != nil {
+		return nil, err
+	}
+	var ids []string
+	for k, _ := range users {
+		ids = append(ids, k)
+	}
+	return ids, nil
+}
+
+func listAllUserSessions(c context.Context, shard string) (map[string][]string, error) {
+	u := fmt.Sprintf(`%s/data.json`, shard)
+	res, err := firebaseClient(c).Get(u)
+	if err != nil {
+		return nil, err
+	}
+	defer res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("error (%d) fetching user session list", res.StatusCode)
+	}
+	var data map[string]struct {
+		Sessions map[string]struct {
+			Scheduled bool `json:"in_schedule"`
+		} `json:"my_sessions"`
+	}
+	if err = json.NewDecoder(res.Body).Decode(&data); err != nil {
+		return nil, err
+	}
+	userSessions := make(map[string][]string)
+	for uid, v := range data {
+		var sessions []string
+		for sid, session := range v.Sessions {
+			if session.Scheduled {
+				sessions = append(sessions, sid)
+			}
+		}
+		userSessions[uid] = sessions
+	}
+	return userSessions, nil
 }
 
 // storeEventData saves d in the datastore with auto-generated ID
