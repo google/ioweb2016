@@ -70,6 +70,12 @@ Fired when the clears filter "x" is clicked.
     padding-bottom: 24px !important;
     padding-right: 16px !important;
   }
+  .filters-banner button {
+    background: transparent;
+    border: none;
+    padding: 0;
+    color: inherit;
+  }
   .filters-banner iron-icon {
     margin-left: 8px;
   }
@@ -167,9 +173,9 @@ Fired when the clears filter "x" is clicked.
   <div class="filters-banner-wrapper" hidden$="[[!filters.length]]">
     <div class="filters-banner card-content bg-bluegrey-50-60" layout horizontal center justified>
       <span>filtering by [[_prettifyFilters(filters.length)]]</span>
-      <span layout horizontal center on-click="clearFilters">
+      <button layout horizontal center on-click="clearFilters">
         clear <iron-icon icon="io:close"></iron-icon>
-      </span>
+      </button>
     </div>
   </div>
 
