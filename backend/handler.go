@@ -546,6 +546,10 @@ func handleNotifyUser(w http.ResponseWriter, r *http.Request) {
 	uid := r.FormValue("uid")
 	shard := r.FormValue("shard")
 	pi, err := getUserPushInfo(c, uid, shard)
+	if err != nil {
+		errorf(c, "handleNotifyUser uid: %v, err: %v", uid, err)
+		return
+	}
 
 	if !pi.Enabled {
 		logf(c, "handleNotifyUser: user does not have notifications enabled")
@@ -561,10 +565,12 @@ func handleNotifyUser(w http.ResponseWriter, r *http.Request) {
 
 	for key, sub := range pi.Subscriptions {
 		if err = notifySubscription(c, sub, msg); err != nil {
-			errorf(c, "handleNotifyUser: %v", err)
 			pe := err.(*pushError)
 			if pe.remove {
+				logf(c, "handleNotifyUser: %v", err)
 				deleteSubscription(c, uid, shard, key)
+			} else {
+				errorf(c, "handleNotifyUser: %v", err)
 			}
 		}
 	}
