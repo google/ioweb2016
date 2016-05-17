@@ -101,7 +101,7 @@ limitations under the License.
         </div>
         <div class="session__info__section session__details">
           <h3 id="session__title" class="session__title">[[selectedSession.title]]</h3>
-          <h5 class="session__time">May <span>[[selectedSession.day]]</span>, <span>[[selectedSession.start]]</span><span hidden$="[[_equal('__keynote__', selectedSession.id)]]"><span> -</span> [[selectedSession.end]]</span> / <span>[[selectedSession.room]]</span></h5>
+          <h5 class="session__time">May [[selectedSession.day]], [[selectedSession.start]] - [[selectedSession.end]] / [[selectedSession.room]]</h5>
           <div id="session__desc" class="session__desc">[[selectedSession.description]]</div>
           <div class="session__categories">
             <div class="session__livestream" hidden$="[[!selectedSession.isLivestream]]">
