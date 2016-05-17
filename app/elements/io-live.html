@@ -141,7 +141,7 @@ Fired when the mode changes.
             </div>
 
             <div id="liveScrollRegion" class="card schedule-rows" layout vertical
-                 flex hidden$="[[duringKeynote]]">
+                 flex hidden$="[[_computeHideChannelList(duringKeynote, mode)]]">
 
               <paper-menu id="live-channel-menu" class="schedule__content"
                           attr-for-selected="videoid" selected="{{selectedVideoId}}">
@@ -634,14 +634,8 @@ Fired when the mode changes.
       // but normalized to PDT.
       var today = moment().tz('America/Los_Angeles');
       var day1StartDayPDT = moment(day1Start).tz('America/Los_Angeles');
-
-      var daysRelativeToStart = today.diff(day1StartDayPDT, 'days');
-
-      // If we're before the start day of I/O, set current day to the start day
-      // of I/O. Otherwise, set it to the current day the user loads the page
-      // on. Note: momentA.diff(momentB) is negative when we're before momentB.
-      return daysRelativeToStart <= 0 ? parseInt(day1StartDayPDT.format('D')) :
-                                        parseInt(today.format('D'));
+      return today <= day1Start ? parseInt(day1StartDayPDT.format('D')) :
+                                  parseInt(today.format('D'));
     },
 
     _computeDayIndex: function(currentDay, day1Start) {
@@ -931,6 +925,10 @@ Fired when the mode changes.
     _onCountdownFaded: function(e) {
       e.stopPropagation();
       this._countdownDone = true;
+    },
+
+    _computeHideChannelList: function(duringKeynote, mode) {
+      return duringKeynote|| mode === this._MODES.AFTER;
     }
   });
 </script>
