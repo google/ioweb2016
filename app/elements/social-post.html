@@ -51,10 +51,10 @@ Displays information about a social post, and linkifies certain URLs in the text
         </div>
       </header>
       <div id="postContent"></div>
-      <template is="dom-if" if="{{media}}">
-        <a target="_blank" href$="{{media.0.expanded_url}}">
-          <img src$="{{media.0.media_url_https}}" class="social-photo"
-               style$="{{_computeStyle(media)}}">
+      <template is="dom-if" if="[[media.length]]">
+        <a target="_blank" href$="[[media.0.expanded_url]]">
+          <img src$="[[media.0.media_url_https]]" class="social-photo"
+               style$="[[_computeStyle(media)]]">
         </a>
       </template>
     </template>
@@ -207,6 +207,10 @@ Displays information about a social post, and linkifies certain URLs in the text
       },
 
       _computeStyle: function(media) {
+        if (!media || !media.length) {
+          return '';
+        }
+
         return 'width:' + media[0].sizes.small.w + 'px;height:' +
                 media[0].sizes.small.h + 'px';
       },
