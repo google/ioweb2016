@@ -56,7 +56,8 @@ limitations under the License.
                app="{{app}}"
                session="[[selectedSession]]"
                hidden
-               inline>
+               inline="[[inline]]"
+               main>
     </io-survey>
 
     <paper-dialog-scrollable id="scrollable">
@@ -100,7 +101,7 @@ limitations under the License.
         </div>
         <div class="session__info__section session__details">
           <h3 id="session__title" class="session__title">[[selectedSession.title]]</h3>
-          <h5 class="session__time">May <span>[[selectedSession.day]]</span>, <span>[[selectedSession.start]]</span><span hidden$="[[_equal('__keynote__', selectedSession.id)]]"> - [[selectedSession.end]]</span> / <span>[[selectedSession.room]]</span></h5>
+          <h5 class="session__time">May [[selectedSession.day]], [[selectedSession.start]] - [[selectedSession.end]] / [[selectedSession.room]]</h5>
           <div id="session__desc" class="session__desc">[[selectedSession.description]]</div>
           <div class="session__categories">
             <div class="session__livestream" hidden$="[[!selectedSession.isLivestream]]">
@@ -172,7 +173,7 @@ limitations under the License.
           </div>
         </div>
 
-        <div class="session__info__section session__related"
+        <!-- <div class="session__info__section session__related"
              hidden$="[[!selectedSession.hasRelated]]">
           <span class="session__info__section--header">Similar Sessions</span>
           <div layout horizontal justified wrap>
@@ -192,7 +193,7 @@ limitations under the License.
               </div>
             </template>
           </div>
-        </div>
+        </div> -->
       </div>
 
     </paper-dialog-scrollable>
@@ -230,13 +231,13 @@ limitations under the License.
         computed: '_computeTagList(selectedSession.tags)'
       },
 
-      /**
-       * List of related sessions.
-       */
-      relatedSessions: {
-        type: Array,
-        computed: '_computeRelatedSessions(selectedSession.hasRelated, selectedSession.filters)'
-      },
+      // /**
+      //  * List of related sessions.
+      //  */
+      // relatedSessions: {
+      //   type: Array,
+      //   computed: '_computeRelatedSessions(selectedSession.hasRelated, selectedSession.filters)'
+      // },
 
       /**
        * When true, the session details panel opens inline to the schedule list.
@@ -442,19 +443,19 @@ limitations under the License.
       this.fire('apply-filter', {tag: tag});
     },
 
-    _computeRelatedSessions: function(hasRelated, filters) {
-      if (!hasRelated) {
-        return [];
-      }
+    // _computeRelatedSessions: function(hasRelated, filters) {
+    //   if (!hasRelated) {
+    //     return [];
+    //   }
 
-      var relatedSessions = Object.keys(filters).map(function(filter) {
-        return IOWA.Schedule.getSessionById(filter);
-      }).filter(function(session) {
-        return session;
-      });
+    //   var relatedSessions = Object.keys(filters).map(function(filter) {
+    //     return IOWA.Schedule.getSessionById(filter);
+    //   }).filter(function(session) {
+    //     return session;
+    //   });
 
-      return relatedSessions;
-    },
+    //   return relatedSessions;
+    // },
 
     openShareWindow: function(e, detail) {
       this.noop(e);

@@ -25,8 +25,8 @@ IOWA.Elements = (function() {
       document.body.removeEventListener('page-select', onPageSelect);
 
       // Load auth after initial page is setup. This helps do less upfront work
-      // until the main schedule data is returned by the worker.
-      // IOWA.Elements.GoogleSignIn.load = true;
+      // until the animations are done (esp. on mobile).
+      IOWA.Elements.GoogleSignIn.load = true;
 
       IOWA.Elements.Template.set('app.splashRemoved', true);
 

@@ -248,31 +248,31 @@ $color-section-border: #eaeaea;
   line-height: 40px;
 }
 
-.session__related {
-  border-top: 1px solid $color-section-border;
+// .session__related {
+//   border-top: 1px solid $color-section-border;
 
-  .related__card {
-    margin-top: $desktopKeyline;
-  }
+//   .related__card {
+//     margin-top: $desktopKeyline;
+//   }
 
-  .related__info {
-    margin-top: -5px;
-  }
+//   .related__info {
+//     margin-top: -5px;
+//   }
 
-  .related__time {
-    font-size: 14px;
-    color: $color-session-detail-light-grey;
-  }
+//   .related__time {
+//     font-size: 14px;
+//     color: $color-session-detail-light-grey;
+//   }
 
-  .related_sessionicon {
-    flex-shrink: 0;
-    width: 40px;
-    height: 40px;
-    background-size: 100px;
-    background-position: 50% 50%;
-    margin-right: $mobileKeyline;
-  }
-}
+//   .related_sessionicon {
+//     flex-shrink: 0;
+//     width: 40px;
+//     height: 40px;
+//     background-size: 100px;
+//     background-position: 50% 50%;
+//     margin-right: $mobileKeyline;
+//   }
+// }
 
 @media (max-width: $phone-breakpoint-max) {
   #sessionDetails {
@@ -305,11 +305,11 @@ $color-section-border: #eaeaea;
         width: calc(50% - 32px);
       }
     }
-    .session__related {
-      .related__card {
-        width: calc(50% - 32px);
-      }
-    }
+    // .session__related {
+    //   .related__card {
+    //     width: calc(50% - 32px);
+    //   }
+    // }
     .session__time {
       line-height: 21px;
   }

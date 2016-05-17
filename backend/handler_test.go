@@ -288,7 +288,7 @@ func TestServeSessionTemplate(t *testing.T) {
 			`<meta itemprop="image" content="` + test.image + `">`,
 			`<meta name="twitter:title" content="` + test.title + `">`,
 			`<meta name="twitter:description" content="` + test.desc + `">`,
-			`<meta name="twitter:image:src" content="` + test.image + `">`,
+			`<meta name="twitter:image" content="` + test.image + `">`,
 			`<meta property="og:title" content="` + test.title + `">`,
 			`<meta property="og:description" content="` + test.desc + `">`,
 			`<meta property="og:image" content="` + test.image + `">`,

@@ -1,7 +1,7 @@
 {
   "rules": {
     "users": {
-      ".indexOn": ["last_activity_timestamp", "used_web_app"],
+      ".indexOn": ["last_activity_timestamp", "used_web_app", "web_notifications_enabled"],
       "$user_id": {
         ".read": "$user_id === auth.uid",
         ".write": "$user_id === auth.uid",

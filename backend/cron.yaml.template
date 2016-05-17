@@ -11,6 +11,6 @@ cron:
 - description: user data wipeout
   url: $PREFIX$/task/wipeout
   schedule: every 24 hours
-#- description: sessions start notifications
-#  url: $PREFIX$/task/clock
-#  schedule: every 1 minutes
+- description: sessions start notifications
+  url: $PREFIX$/task/clock
+  schedule: every 1 minutes
