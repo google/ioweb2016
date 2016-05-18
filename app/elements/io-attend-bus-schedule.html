@@ -579,10 +579,27 @@ limitations under the License.
     },
 
     getDurationMinutes: function(depart, arrive) {
-      var start = new Date(depart);
-      var end = new Date(arrive);
+      var departParts = this.separateDateAndTime(depart);
+      var arriveParts = this.separateDateAndTime(arrive);
+      var departDateParts = this.dateSplit(departParts[0], '-');
+      var arriveDateParts = this.dateSplit(arriveParts[0], '-');
+      var departTimeParts = this.dateSplit(departParts[1], ':');
+      var arriveTimeParts = this.dateSplit(arriveParts[1], ':');
+
+      var start = new Date(departDateParts[0], departDateParts[1] - 1, departDateParts[2], departTimeParts[0], departTimeParts[1]);
+      var end = new Date(arriveDateParts[0], arriveDateParts[1] - 1, arriveDateParts[2], arriveTimeParts[0], arriveTimeParts[1]);
 
       return (end - start) / 60000; // milliseconds to minutes
+    },
+
+    separateDateAndTime: function(dateString) {
+      return dateString.split(' ');
+    },
+
+    dateSplit: function(dateString, separator) {
+      return dateString.split(separator).map(function(s) {
+        return parseInt(s, 10);
+      });
     },
 
     _computeSelectLabel: function(isToIO, selectLabelOptions) {
