@@ -73,7 +73,7 @@ limitations under the License.
             <span tabindex="-1" autofocus></span>
           </div>
 
-          <template is="dom-if" if="[[sessionHasVideo(_startScheduleVideo, selectedSession.isLivestream, selectedSession.youtubeUrl)]]" restamp>
+          <template is="dom-if" if="[[sessionHasVideo(_startScheduleVideo, selectedSession)]]" restamp>
             <google-youtube
                 video-id="[[_toVideoIdFilter(selectedSession.youtubeUrl)]]"
                 height="100%" width="100%" fit
@@ -302,8 +302,23 @@ limitations under the License.
       }
     },
 
-    sessionHasVideo: function(startVideo, isLivestream, youtubeUrl) {
-      return startVideo && !isLivestream && youtubeUrl;
+    sessionHasVideo: function(startVideo, selectedSession) {
+      if (!selectedSession) {
+        return false;
+      }
+
+      var hasStarted = new Date(selectedSession.startTimestamp) < Date.now();
+      var hasEnded =  Date.now() > new Date(selectedSession.endTimestamp);
+
+      var duringLiveSession = selectedSession.isLivestream &&
+                              selectedSession.youtubeUrl &&
+                              hasStarted && !hasEnded;
+
+      // Show player if it's during a livestream session or the video has
+      // been posted. When the video is posted, the youtubeUrl becomes a full
+      // youtube URL and isLivestream is false.
+      return startVideo && !selectedSession.isLivestream &&
+             selectedSession.youtubeUrl || duringLiveSession;
     },
 
     hideSessionPlayButton: function(selectedSession) {
