@@ -72,6 +72,10 @@ io-schedule-row {
     background-color: #fff;
     z-index: 2;
     color: inherit;
+
+    &.keyboard-focus {
+      box-shadow: 0 0 0px 7px rgba(255, 255, 255, 0.24);
+    }
   }
 }
 
