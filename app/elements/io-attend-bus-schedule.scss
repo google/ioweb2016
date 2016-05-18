@@ -168,6 +168,7 @@ $content-padding-mobile: 16px;
     &:after {
       background: $color-white;
       left: 4px;
+      z-index: 1;
     }
   }
 
