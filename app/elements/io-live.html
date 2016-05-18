@@ -65,7 +65,10 @@ Fired when the mode changes.
                aria-label="Live schedule" title="Live schedule"
                on-tap="onFabClick"></paper-fab>
 
-    <div class$="keynote__banner keynote__banner-360 card [[_computeKeynoteBannerClass(duringKeynote, openWidget)]]"></div>
+    <a href="https://www.youtube.com/watch?v=lFm4s50PnmY" target="_blank"
+       data-track-link="live-yt360">
+      <div class$="keynote__banner keynote__banner-360 card [[_computeKeynoteBannerClass(duringKeynote, openWidget)]]"></div>
+    </a>
 
     <div class$="keynote__banner card [[_computeKeynoteBannerClass(afterKeynote, openWidget)]]" layout horizontal on-tap="onPlayKeynote">
       <div class="card-content" layout horizontal center>
