@@ -18,7 +18,7 @@
 
 $ytVideoControlsHeight: $desktopKeyline;
 $widgetWidth: 360px;
-$widgetHeight: 500px;
+$widgetHeight: 425px;
 
 :host {
   background-color: #fff;
@@ -330,7 +330,7 @@ neon-animated-pages {
   background-color: $color-indigo-400;
   background-size: 120px;
   color: white;
-  height: 88px;
+  height: 60px;
   width: calc(100% - 32px);
   max-width: $widgetWidth;
   position: absolute;
