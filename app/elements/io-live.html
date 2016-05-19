@@ -620,7 +620,7 @@ Fired when the mode changes.
     },
 
     _calcHideKeynoteBanner: function(isPhoneSize) {
-      return isPhoneSize || window.innerHeight < 750;
+      return isPhoneSize || window.innerHeight < 617; // min height where keynote banner overlaps nav.
     },
 
     _computeAfterKeynote: function(day1Start) {
