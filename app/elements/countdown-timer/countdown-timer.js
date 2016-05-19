@@ -174,7 +174,7 @@ IOWA.CountdownTimer.Core.prototype.randomShape = function() {
 };
 
 IOWA.CountdownTimer.Core.prototype.checkTime = function() {
-  if (this.isCountdownComplete || (new Date()) >= this.targetDate) {
+  if (!this.showCurrentTime && (this.isCountdownComplete || (new Date()) >= this.targetDate)) {
     if (!this.isCountdownComplete) {
       this.isCountdownComplete = true;
       this.resetCanvas();
