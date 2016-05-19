@@ -72,10 +72,11 @@ Fired when the mode changes.
     <a href="https://www.youtube.com/watch?v=lFm4s50PnmY" target="_blank"
        id="livebanner"
        data-track-link="live-yt360">
+
       <div class$="keynote__banner keynote__banner-360 card [[_computeKeynoteBannerClass(duringKeynote, openWidget)]]"></div>
     </a>
 
-    <div class$="keynote__banner card [[_computeKeynoteBannerClass(afterKeynote, openWidget)]]" layout horizontal on-tap="onPlayKeynote">
+    <div hidden$="[[_calcHideKeynoteBanner(app.isPhoneSize)]]" class$="keynote__banner card [[_computeKeynoteBannerClass(afterKeynote, openWidget)]]" layout horizontal on-tap="onPlayKeynote">
       <div class="card-content" layout horizontal center>
         <iron-icon icon="io:play-circle-fill"></iron-icon><span>Watch the keynote</span>
       </div>
@@ -617,6 +618,10 @@ Fired when the mode changes.
       } else {
         return this._MODES.LIVE;
       }
+    },
+
+    _calcHideKeynoteBanner: function(isPhoneSize) {
+      return isPhoneSize || window.innerHeight < 750;
     },
 
     _computeAfterKeynote: function(day1Start) {
