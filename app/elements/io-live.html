@@ -75,7 +75,7 @@ Fired when the mode changes.
       <div class$="keynote__banner keynote__banner-360 card [[_computeKeynoteBannerClass(duringKeynote, openWidget)]]"></div>
     </a>
 
-    <div hidden$="[[_calcHideKeynoteBanner(app.isPhoneSize)]]" class$="keynote__banner card [[_computeKeynoteBannerClass(afterKeynote, openWidget)]]" layout horizontal on-tap="onPlayKeynote">
+    <div hidden$="[[_calcHideKeynoteBanner(app.isPhoneSize, app.isTabletSize, app.isDesktopSize)]]" class$="keynote__banner card [[_computeKeynoteBannerClass(afterKeynote, openWidget)]]" layout horizontal on-tap="onPlayKeynote">
       <div class="card-content" layout horizontal center>
         <iron-icon icon="io:play-circle-fill"></iron-icon><span>Watch the keynote</span>
       </div>
@@ -619,8 +619,9 @@ Fired when the mode changes.
       }
     },
 
-    _calcHideKeynoteBanner: function(isPhoneSize) {
-      return isPhoneSize || window.innerHeight < 617; // min height where keynote banner overlaps nav.
+    _calcHideKeynoteBanner: function(isPhone, isTablet, isPhone) {
+       // min height where keynote banner overlaps nav.
+      return window.innerHeight < 617;
     },
 
     _computeAfterKeynote: function(day1Start) {
