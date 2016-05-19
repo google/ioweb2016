@@ -230,25 +230,14 @@ limitations under the License.
     title: 'Google I/O 2016',
     name: 'home',
 
+    observers: [
+      '_scheduleDataChanged(app.scheduleData.sessions)'
+    ],
+
     attached: function() {
       Polymer.RenderStatus.afterNextRender(this, function() {
         // Reset template variables for when revisiting the page.
         this.set('app.fullscreenVideoActive', false);
-
-        if (this.app.scheduleData) {
-          var featuredSessions = this.app.scheduleData.sessions.filter(function(s) {
-            // Don't feature keynote since it is already in the hero slot.
-            // Once sizzle video takes hero slot allow keynote to be a featured session.
-            return s.isFeatured && s.id !== '__keynote__';
-          });
-          // Should only be one.
-          var keynotes = this.app.scheduleData.sessions.filter(function(s) {
-            return s.id = '__keynote__';
-          })
-          this.featuredSessions = featuredSessions.slice(0, MAX_FEATURED_SESSIONS);
-          this.keynoteImage = keynotes[0].photoUrl;
-          this.keynoteYoutubeId = keynotes[0].youtubeUrl;
-        }
 
         if (this.app.isPhoneSize) {
           this.listen(IOWA.Elements.ScrollContainer, 'scroll', '_onPageScroll');
@@ -274,6 +263,22 @@ limitations under the License.
       if (!this.app.isPhoneSize && this.photoList) {
         this._cyclePhotos();
       }
+    },
+
+    _scheduleDataChanged: function(sessions) {
+      if (!sessions || !sessions.length) {
+        return;
+      }
+
+      this.featuredSessions = sessions.filter(function(s) {
+        // Don't feature keynote since it is already in the hero slot.
+        // Once sizzle video takes hero slot allow keynote to be a featured session.
+        return s.isFeatured && s.id !== '__keynote__';
+      }).slice(0, MAX_FEATURED_SESSIONS);
+
+      var keynote = sessions[0]; // keynote is first session.
+      this.keynoteImage = keynote.photoUrl;
+      this.keynoteYoutubeId = keynote.youtubeUrl;
     },
 
     // Manage screen reader accessibility for offscreen carousel images.
