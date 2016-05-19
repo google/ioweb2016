@@ -80,8 +80,8 @@ limitations under the License.
                role="button"
                tabindex="0"
                flex
-               data-video-id$="[[keynoteYoutubeId]]"
-               style="height:100%; background-image: linear-gradient(to top, transparent 70%, #000), url([[keynoteImage]]);">
+               data-video-id$="[[app.scheduleData.sessions.0.youtubeUrl]]"
+               style="height:100%; background-image: linear-gradient(to top, transparent 70%, #000), url([[app.scheduleData.sessions.0.photoUrl]]);">
             <h5>Watch the keynote</h5>
           </div>
         </div>
@@ -209,16 +209,6 @@ limitations under the License.
       featuredSessions: Array,
 
       /**
-       * URL for keynote image pulled from schedule data.
-       */
-      keynoteImage: String,
-
-      /**
-       * ID for keynote Youtube video pulled from schedule data.
-       */
-      keynoteYoutubeId: String,
-
-      /**
        * Element containing photos to cycle through.
        */
       photoList: {
@@ -275,10 +265,6 @@ limitations under the License.
         // Once sizzle video takes hero slot allow keynote to be a featured session.
         return s.isFeatured && s.id !== '__keynote__';
       }).slice(0, MAX_FEATURED_SESSIONS);
-
-      var keynote = sessions[0]; // keynote is first session.
-      this.keynoteImage = keynote.photoUrl;
-      this.keynoteYoutubeId = keynote.youtubeUrl;
     },
 
     // Manage screen reader accessibility for offscreen carousel images.
