@@ -23,12 +23,7 @@ limitations under the License.
 <link rel="import" href="../bower_components/neon-animation/animations/scale-up-animation.html">
 <link rel="import" href="../bower_components/neon-animation/animations/fade-out-animation.html">
 
-<link rel="import" href="social-poller.html">
-<link rel="import" href="social-post.html">
-<!-- <link rel="import" href="countdown-timer/countdown-timer.html"> -->
-<link rel="import" href="card-video.html">
-
-<link rel="import" href="io-live.html">
+<link rel="import" href="countdown-timer/countdown-timer.html">
 
 <link rel="import" href="shared-app-styles.html">
 <link rel="import" href="PageBehavior.html">
@@ -42,40 +37,17 @@ limitations under the License.
     }
   </style>
 
-  <io-live id="iolive"
-           app="[[app]]"
-           mode="{{liveModuleMode}}"
-           date="[[date]]"
-           sessions="[[app.scheduleData.sessions]]"
-           speakers="[[app.scheduleData.speakers]]"
-           user-sessions="[[app.savedSessions]]"
-           social-posts="[[socialPosts]]"
-           on-countdown-intro="_onIntro"
-           current-time="{{currentTime}}"
-           fit>
-    <h2>I/O is starting soon. #io16</h2>
-  </io-live>
-
-  <!-- TODO: commented out when io-live is up. -->
-  <!-- <div layout horizontal end>
+  <div layout horizontal end>
     <div id="countdown-container" class="card__container">
       <countdown-timer id="ctimer" date="[[date]]"
           on-countdown-intro="_onIntro"
           current-time="{{currentTime}}"
+          show-current-time
           aria-hidden="true"></countdown-timer>
     </div>
-  </div> -->
+  </div>
 
   <div id="aria-countdown" role="timer">[[currentTime]]</div>
-
-  <!-- <paper-toolbar class="navbar__overlay navbar__overlay--video"
-                 aria-hidden$="{{!app.fullscreenVideoActive}}" fit>
-    <paper-icon-button icon="io:arrow-back"
-        on-tap="closeVideoCard"
-        aria-label="Close video"
-        tabindex$="[[_enableTabIndex(app.fullscreenVideoActive)]]"></paper-icon-button>
-    <span flex>Watch the I/O 2015 Recap</span>
-  </paper-toolbar> -->
 
   <!-- backdrop shouldn't be applied on ios - github.com/Polymer/paper-dialog/issues/16 -->
   <paper-dialog class="video_overlay-dialog"
@@ -86,161 +58,120 @@ limitations under the License.
                        aria-label="Close dialog"></paper-icon-button>
     <template is="dom-if" if="[[app.fullscreenVideoActive]]" restamp>
       <div class="fullvideo__container" fit>
-        <google-youtube video-id="OT8wVt1Bt_Y" fit width="100%" height="100%"
+        <google-youtube fit width="100%" height="100%"
             autohide="1" controls="2" modestbranding="1" showinfo="0"
             iv_load_policy="3" rel="0" autoplay="1"></google-youtube>
       </div>
     </template>
   </paper-dialog>
 
-  <!-- Remove hidden after live stream -->
-  <div class="active" hidden>
+  <div class="active">
 
     <div class="card__container slide-up">
 
-      <div class="card" layout horizontal wrap  vertical$="{{app.isPhoneSize}}">
+      <div class="card" layout horizontal wrap vertical$="{{app.isPhoneSize}}">
 
-        <div class="card-content box box-more-height-mobile card--top-left-clip bg-cyan-300" layout vertical>
-          <h3 class="card__title">May 18&#8211;20, 2016</h3>
-          <h3 class="card__sub-title">
-            <a href="https://goo.gl/maps/7hs1NJR3ErG2" target="_blank"
-               data-track-link="nav-shoreline-maps-link">
-               <span>Shoreline Amphitheatre<br>Mountain View, California</span>
-            </a>
-          </h3>
-          <div layout flex end>
-            <div>
-              <span class="notification__feature">
-                <a href="#" data-track-link="home-reminder-button" on-click="_onSetReminder">
-                  <paper-button class="reminder-button" noink tabindex="-1">
-                    <iron-icon icon="io:notifications"></iron-icon> Set a reminder</paper-button>
-                </a>
-              </span>
-              <h5 style="font-weight:normal">Google I/O is for developers&#8212;the creative coders who are building what&#8217;s next. Together we&#8217;ll explore the latest in tech, mobile, and beyond.</h5>
-            </div>
-          </div>
-        </div>
-        <div class="card-content box card__photo card--top-right-clip" relative>
-          <iron-pages id="photo_list" class="card--top-right-clip" on-transitionend="onTransitionEnd" selected="0" fit role="marquee" aria-label="image carousel">
-            <img src="/io2016/images/home/cardboard.jpg" class="card--top-right-clip" style="visibility: visible;" alt="A man wearing headphones looks through a Google cardboard device">
-            <img src="/io2016/images/home/keynote.jpg" class="card--top-right-clip" alt="A woman presents a keynote address on stage at Google I/O">
-            <img src="/io2016/images/home/design.jpg" class="card--top-right-clip" alt="An audience sits on bean bag chairs watching a presentation on design">
-            <img src="/io2016/images/home/hand.jpg" class="card--top-right-clip" alt="A woman is shown a demonstration of a robotic arm">
-            <img src="/io2016/images/home/dj.jpg" class="card--top-right-clip" alt="A D.J. plays turntables in a booth with a large I/O logo">
-          </iron-pages>
-        </div>
-
-        <div class="card-content box bg-bluegrey-50-30">
-          <a href="/io2016/schedule" data-ajax-link
-             data-track-link="home-schedule-learnmore" layout vertical>
-            <h3 class="card__title">I/O Schedule</h3>
-            <div>
-              <h5 style="font-weight:normal">Browse the entire agenda and create your own custom schedule for I/O. Sign in to get notifications on your device.</h5>
-            </div>
-            <div layout flex end>
-              <span class="card__footerlink" layout horiziontal justified center flex>
-                View schedule
-                <iron-icon icon="io:keyboard-arrow-right"></iron-icon>
-              </span>
-            </div>
-          </a>
-        </div>
-        <div class="card-content box bg-bluegrey-50">
-          <a href="/io2016/extended" data-ajax-link
-             data-track-link="home-extended-learnmore" layout vertical>
-            <h3 class="card__title">I/O Extended</h3>
-            <div>
-              <h5 style="font-weight:normal">Can&#8217;t make it to I/O this year? No problem, you can still make an event out of it.</h5>
-            </div>
-            <div layout flex end>
-              <div class="card__footerlink" layout horiziontal justified center flex>
-                Join from your location
-                <iron-icon icon="io:keyboard-arrow-right"></iron-icon>
-              </div>
-            </div>
-          </a>
-        </div>
-
-        <div class="card-content box bg-bluegrey-700 typo-white">
-          <a href="/io2016/attend#travel" data-ajax-link
-             data-track-link="home-attending-learnmore" layout vertical>
-            <h3 class="card__title">Getting to I/O</h3>
-            <div>
-              <h5 style="font-weight:normal">There are plenty of ways to get to Mountain View, CA. Start planning your trip now.</h5>
-            </div>
-            <div layout flex end>
-              <div class="card__footerlink" layout horiziontal justified center flex>
-                View Travel Info
-                <iron-icon icon="io:keyboard-arrow-right"></iron-icon>
-              </div>
-            </div>
-          </a>
-        </div>
-        <div class="card-content box card__video fullbleed typo-white" layout vertical>
-          <div class="card-content card__play-button card__photo photo__recap"
-               style="height:100%"
+        <!-- Always keynote until sizzle video is available. -->
+        <div class="card-content box box-full card__video fullbleed typo-white card--top-left-clip card--top-right-clip" layout vertical>
+          <div class="card-content card__play-button card__photo photo__recap card--top-left-clip card--top-right-clip"
                on-tap="openDialogVideo"
                on-keyup="checkOpenDialogVideo"
-               data-track-link="home-watch-recap-video"
+               data-track-link="home-watch-keynote-video"
                role="button"
                tabindex="0"
-               flex>
-            <h5>Watch the I/O 2015 recap</h5>
+               flex
+               data-video-id="[[keynoteYoutubeId]]"
+               style="height:100%; background-image: linear-gradient(to top, transparent 70%, #000), url([[keynoteImage]]);">
+            <h5>Watch the keynote</h5>
           </div>
         </div>
 
-        <div id="social_card"
-             class="card-content box card--bottom-left-clip card--allow-a-wrap fullbleed typo-indigo-400 bg-bluegrey-50-20"
-             on-mouseenter="stopTweetCycler"
-             on-mouseleave="startTweetCycler">
-
-          <!-- <template is="dom-if" if="[[_scrolledToBottomCards]]"> -->
-            <social-poller url="/io2016/api/v1/social" posts="{{socialPosts}}"
-                           interval="30000"></social-poller>
-
-            <iron-pages id="social_list" selected="0" layout vertical role="marquee" aria-label="tweet carousel">
-              <template is="dom-repeat" items="[[_limit(socialPosts, 5)]]" as="post">
-                <social-post view="card"
-                             kind="[[post.kind]]"
-                             author="[[post.author]]"
-                             url="[[post.url]]"
-                             text="[[post.text]]"
-                             when="[[post.when]]"
-                             layout vertical flex
-                             on-transitionend="onTransitionEnd">
-                </social-post>
-              </template>
-            </iron-pages>
-          <!-- </template> -->
-
+        <div class="card-content box box-more-height-mobile bg-cyan-200" layout vertical>
+          <p class="card__sub-title">
+            Google I/O is for developers &#8212; the creative coders who are building what&#8217;s next. To celebrate a decade of working closely with the developer community, we held the 2016 festival in our backyard at the Shoreline Amphitheatre in Mountain View, CA, a venue that has played host to some of the world’s biggest entertainers and events.
+          </p>
         </div>
-        <div class="card-content box card--bottom-right-clip fullbleed io__hash bg-bluegrey-50-40">
-          <a href="https://twitter.com/search?q=%23io16" target="_blank" aria-label="Search #io16 on Twitter">
-            <template is="dom-if" if="[[_loadVideo]]">
-              <card-video id="card-video"
-                  src="/io2016/videos/hashtag-800.mp4"
-                  href="https://twitter.com/search?q=%23io16"
-                  text="Search #io16 on Twitter"></card-video>
-            </template>
-          </a>
-        </div>
+
+        <template is="dom-repeat" items="[[featuredSessions]]">
+          <div class="card-content fullbleed featured-session box box-more-height-mobile bg-bluegrey-50-30" layout vertical>
+            <div class="card-content card__play-button card__photo photo__recap"
+                 on-tap="openDialogVideo"
+                 on-keyup="checkOpenDialogVideo"
+                 data-track-link="home-watch-featured-session-video"
+                 role="button"
+                 tabindex="0"
+                 flex
+                 aria-label="Watch video"
+                 data-video-id$="[[item.youtubeUrl]]"
+                 style="height:100%; background-image:url([[_computeBgImage(item)]])">
+              <h3>Featured Session</h3>
+              <p>[[item.title]]</p>
+              <p class="byline">[[speakerIdsToNameString(item.speakers)]]</p>
+            </div>
+          </div>
+
+          <!-- Show photo slideshow and video playlist cards after first featured session card. -->
+          <template is="dom-if" if="{{_showAfter(index, 0)}}">
+            <div class="card-content box box-full card__photo" relative>
+              <a href="https://photos.google.com/share/AF1QipOdLTJ0m-oapU_mjG2hviqDaf5qv7EjiW9Vl145pugxK5VW4Ja8WnZ43sqL0nH9wQ?key=LUhkdzhZMkZYNFdrOFdKNGozT0Vab2RleEJ0LTFR" target="_blank" layout vertical>
+                <iron-pages id="photo_list" class="card--top-right-clip" on-transitionend="onTransitionEnd" selected="0" fit role="marquee" aria-label="image carousel">
+                  <img src="/io2016/images/home/fpo-recap.jpg" class="card--top-right-clip" style="visibility: visible;" alt="Recap FPO">
+                  <img src="/io2016/images/home/cardboard.jpg" class="card--top-right-clip" alt="A man wearing headphones looks through a Google cardboard device">
+                  <img src="/io2016/images/home/design.jpg" class="card--top-right-clip" alt="An audience sits on bean bag chairs watching a presentation on design">
+                  <img src="/io2016/images/home/hand.jpg" class="card--top-right-clip" alt="A woman is shown a demonstration of a robotic arm">
+                  <img src="/io2016/images/home/dj.jpg" class="card--top-right-clip" alt="A D.J. plays turntables in a booth with a large I/O logo">
+                </iron-pages>
+                <div layout flex end>
+                  <span class="card__footerlink" layout horiziontal justified center flex>
+                    See all conference photos
+                    <iron-icon icon="io:keyboard-arrow-right"></iron-icon>
+                  </span>
+                </div>
+              </a>
+            </div>
+
+            <div class="card-content featured-session box bg-bluegrey-50" style="background-image:url(/io2016/images/home/icons/video-playlist.png)">
+              <a href="https://www.youtube.com/playlist?list=PLOU2XLYxmsILe6_eGvDN3GyiodoV3qNSC" target="_blank" layout vertical>
+                <p>Explore the entire selection of sessions from I/O 2016.</p>
+                <div layout flex end>
+                  <span class="card__footerlink" layout horiziontal justified center flex>
+                    See all videos
+                    <iron-icon icon="io:opens-in-new"></iron-icon>
+                  </span>
+                </div>
+              </a>
+            </div>
+          </template>
+
+          <!-- Show quote after second featured session card. -->
+          <template is="dom-if" if="{{_showAfter(index, 1)}}">
+            <div class="card-content box box-full box-more-height-mobile bg-indigo-300 typo-white" layout vertical>
+              <p class="card__sub-title">
+                I/O 2016 was one for the history books. Thanks for being a part of the festival and we can&#8217;t wait to see what you build next. We look forward to seeing you again at another Google I/O.
+              </p>
+<!--               <div layout flex end>
+                Sundar Pichai
+              </div> -->
+            </div>
+          </template>
+
+        </template>
+
+        <div class="io__hash io__hash-bottom" aria-label="I/O hash tag"></div>
+
       </div>
     </div>
-
   </div>
-
-  <!-- <iron-scroll-threshold id="threshold" hidden
-      lower-triggered="{{_scrolledToBottomCards}}"></iron-scroll-threshold> -->
-
 </template>
 <script>
 (function () {
   'use strict';
 
-  var _cycleSocialPostsInterval = null;
   var _cyclePhotosInterval = null;
-  var SOCIAL_CYCLE = 5000;
   var PHOTOS_CYCLE = 4000;
+  var MAX_FEATURED_SESSIONS = 6;
+  var IMAGE_PATH = '/io2016/images/home/icons/';
+  var IMAGE_SUFFIX = '.png';
 
   Polymer({
     is: 'io-home-page',
@@ -270,6 +201,29 @@ limitations under the License.
         type: Boolean,
         //computed: '_computeLoadVideo(app.isDesktopSize, app.pageTransitionDone, _scrolledToBottomCards)'
         computed: '_computeLoadVideo(app.isDesktopSize, app.pageTransitionDone, app.isIOS, app.isAndroid)'
+      },
+
+      /**
+       * Sessions from schedule data flagged to be featured.
+       */
+      featuredSessions: Array,
+
+      /**
+       * URL for keynote image pulled from schedule data.
+       */
+      keynoteImage: String,
+
+      /**
+       * ID for keynote Youtube video pulled from schedule data.
+       */
+      keynoteYoutubeId: String,
+
+      /**
+       * Element containing photos to cycle through.
+       */
+      photoList: {
+        value: null,
+        type: Object
       }
     },
 
@@ -281,70 +235,48 @@ limitations under the License.
         // Reset template variables for when revisiting the page.
         this.set('app.fullscreenVideoActive', false);
 
-        //this.$.threshold.scrollTarget = IOWA.Elements.ScrollContainer;
-
-        // Calculate top of tweet cycler / hashtag video section.
-        // this.$.threshold.lowerThreshold = IOWA.Elements.Footer.clientHeight +
-        //     parseInt(getComputedStyle(IOWA.Elements.Footer).height) +
-        //     Polymer.dom(this.root).querySelector('.card-content.box').clientHeight;
+        if (this.app.scheduleData) {
+          var featuredSessions = this.app.scheduleData.sessions.filter(function(s) {
+            // Don't feature keynote since it is already in the hero slot.
+            // Once sizzle video takes hero slot allow keynote to be a featured session.
+            return s.isFeatured && s.id !== '__keynote__';
+          });
+          // Should only be one.
+          var keynotes = this.app.scheduleData.sessions.filter(function(s) {
+            return s.id = '__keynote__';
+          })
+          this.featuredSessions = featuredSessions.slice(0, MAX_FEATURED_SESSIONS);
+          this.keynoteImage = keynotes[0].photoUrl;
+          this.keynoteYoutubeId = keynotes[0].youtubeUrl;
+        }
 
         if (this.app.isPhoneSize) {
           this.listen(IOWA.Elements.ScrollContainer, 'scroll', '_onPageScroll');
         }
-
-        // Stop tweet cycler if focused, resume when blurred
-        // Focus and blur events don't bubble so need to use capturing
-        // event handlers.
-        // Keep a reference to the bound functions around so we can clean them up
-        // in detached
-        this._stopTweetCycler = this.stopTweetCycler.bind(this);
-        this._startTweetCycler = this.startTweetCycler.bind(this);
-
-        this.$.social_card.addEventListener('focus', this._stopTweetCycler, true);
-        this.$.social_card.addEventListener('blur', this._startTweetCycler, true);
       });
     },
 
     detached: function() {
-      this.stopTweetCycler();
       window.clearInterval(_cyclePhotosInterval);
       _cyclePhotosInterval = null;
 
       this.unlisten(IOWA.Elements.ScrollContainer, 'scroll', '_onPageScroll');
-
-      this.$.social_card.removeEventListener(
-          'focus', this._stopTweetCycler, true);
-      this.$.social_card.removeEventListener(
-          'blur', this._startTweetCycler, true);
     },
 
     onPageTransitionDone: function() {
       if (this.$.ctimer) {
         this.$.ctimer.start(); // Start countdown.
       }
-      if (this.$.iolive) {
-        this.$.iolive.startCountdown(); // Start io-live's countdown.
-      }
 
-      this.startTweetCycler();
+      this.photoList = this.$$('#photo_list');
 
-      // Don't cycle photos on mobile.
-      if (!this.app.isPhoneSize) {
+      // Don't cycle photos on mobile or if photoList is null.
+      if (!this.app.isPhoneSize && this.photoList) {
         this._cyclePhotos();
       }
     },
 
-    // _onScrolledBottomCards: function() {
-    //   if (this._scrolledToBottomCards) {
-    //     // Wait a bit for the template to have stamped the social stuff.
-    //     this.async(function() {
-    //       this.startTweetCycler();
-    //     }, 10);
-    //   }
-    // },
-
-    // Manage screen reader accessibility for offscreen carousel
-    // images and social posts
+    // Manage screen reader accessibility for offscreen carousel images.
     onTransitionEnd: function(e) {
       e.stopPropagation();
       var item = Polymer.dom(e).rootTarget;
@@ -352,15 +284,6 @@ limitations under the License.
         item.style.visibility = 'hidden';
         return;
       }
-    },
-
-    startTweetCycler: function() {
-      this._cycleSocialPosts();
-    },
-
-    stopTweetCycler: function() {
-      window.clearInterval(_cycleSocialPostsInterval);
-      _cycleSocialPostsInterval = null;
     },
 
     _onPageScroll: function() {
@@ -389,36 +312,9 @@ limitations under the License.
     _cyclePhotos: function() {
       window.clearInterval(_cyclePhotosInterval);
       _cyclePhotosInterval = window.setInterval(function() {
-        this.$.photo_list.selectNext();
-        this.$.photo_list.selectedItem.style.visibility = 'visible';
+        this.photoList.selectNext();
+        this.photoList.selectedItem.style.visibility = 'visible';
       }.bind(this), PHOTOS_CYCLE);
-    },
-
-    _cycleSocialPosts: function() {
-      window.clearInterval(_cycleSocialPostsInterval);
-
-      var socialList = this.$.social_card.querySelector('#social_list');
-
-      var forceVisible = function() {
-        // Force initial item to visible
-        if (socialList.selectedItem) {
-          socialList.selectedItem.style.visibility = 'visible';
-        } else {
-          socialList.children[0].style.visibility = 'visible';
-        }
-      };
-
-      forceVisible();
-
-      _cycleSocialPostsInterval = window.setInterval(function() {
-        socialList.selectNext();
-        // There appears to be a race condition that leads to
-        // socialList.selectedItem being undefined following
-        // socialList.selectNext().
-        // See https://github.com/GoogleChrome/ioweb2016/issues/409
-        // Use the forceVisible() helper to work around that bug.
-        forceVisible();
-      }.bind(this), SOCIAL_CYCLE);
     },
 
     _onIntro: function(e, detail) {
@@ -429,7 +325,50 @@ limitations under the License.
       } else if (detail.done) {
         logo.classList.add('active');
       }
+    },
+
+    speakerIdsToNameString: function(speakers) {
+      if (!speakers) {
+        return '';
+      }
+
+      if (typeof speakers === 'string') {
+        return speakers; // speakers is already a "," separated string.
+      }
+
+      return speakers.map(function(speakerId) {
+        return this.app.scheduleData.speakers[speakerId].name;
+      }.bind(this)).sort().join(', ');
+    },
+
+    _showAfter: function(index, qualifier) {
+      return index === qualifier;
+    },
+
+    /**
+     * Use computed image until session photos are available at which point can switch
+     * to url provided in schedule data. Computed image has a more transparent icon
+     * than the icon image associated with sessions in the CMS.
+     */
+    _computeBgImage: function(session) {
+      var tracks = session.tags.filter(function(tag) {
+        return tag.indexOf('TRACK_') !== -1 || tag === 'FLAG_KEYNOTE';
+      });
+      var track;
+
+      if (!tracks.length) {
+        return;
+      }
+
+      if (tracks[0] === 'FLAG_KEYNOTE') {
+        track = 'keynote';
+      } else {
+        track = tracks[0].split('TRACK_')[1].replace('&', '-').toLowerCase();
+      }
+
+      return IMAGE_PATH + track + IMAGE_SUFFIX;
     }
+
   });
 
 }());
