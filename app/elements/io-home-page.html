@@ -173,6 +173,16 @@ limitations under the License.
   var IMAGE_PATH = '/io2016/images/home/icons/';
   var IMAGE_SUFFIX = '.png';
 
+  function _shuffleArray(array) {
+    for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+    return array;
+  }
+
   Polymer({
     is: 'io-home-page',
 
@@ -260,11 +270,15 @@ limitations under the License.
         return;
       }
 
-      this.featuredSessions = sessions.filter(function(s) {
+      var featuredSessions = sessions.filter(function(s) {
         // Don't feature keynote since it is already in the hero slot.
         // Once sizzle video takes hero slot allow keynote to be a featured session.
         return s.isFeatured && s.id !== '__keynote__';
-      }).slice(0, MAX_FEATURED_SESSIONS);
+      });
+
+      // Randomize featured sessions to the change on every page load, and take
+      // a subset to render.
+      this.featuredSessions = _shuffleArray(featuredSessions).slice(0, MAX_FEATURED_SESSIONS);
     },
 
     // Manage screen reader accessibility for offscreen carousel images.
