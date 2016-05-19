@@ -317,8 +317,9 @@ limitations under the License.
       // Show player if it's during a livestream session or the video has
       // been posted. When the video is posted, the youtubeUrl becomes a full
       // youtube URL and isLivestream is false.
-      return startVideo && !selectedSession.isLivestream &&
-             selectedSession.youtubeUrl || duringLiveSession;
+      return (startVideo && !selectedSession.isLivestream &&
+              selectedSession.youtubeUrl) ||
+              duringLiveSession && !this.inline;
     },
 
     hideSessionPlayButton: function(selectedSession) {
