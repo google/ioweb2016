@@ -69,7 +69,7 @@ limitations under the License.
 
     <div class="card__container slide-up">
 
-      <div class="card" layout horizontal wrap vertical$="{{app.isPhoneSize}}">
+      <div class="card" layout horizontal wrap vertical$="[[app.isPhoneSize]]">
 
         <!-- Always keynote until sizzle video is available. -->
         <div class="card-content box box-full card__video fullbleed typo-white card--top-left-clip card--top-right-clip" layout vertical>
@@ -80,7 +80,7 @@ limitations under the License.
                role="button"
                tabindex="0"
                flex
-               data-video-id$="[[app.scheduleData.sessions.0.youtubeUrl]]"
+               data-video-id$="[[_toVideoIdFilter(app.scheduleData.sessions.0.youtubeUrl)]]"
                style="height:100%;">
             <h5>Watch the keynote</h5>
           </div>
@@ -117,7 +117,7 @@ limitations under the License.
           </div>
 
           <!-- Show photo slideshow and video playlist cards after first featured session card. -->
-          <template is="dom-if" if="{{_showAfter(index, 0)}}">
+          <template is="dom-if" if="[[_showAfter(index, 0)]]">
             <div class="card-content box box-full card__photo" relative>
               <a href="https://photos.google.com/share/AF1QipOdLTJ0m-oapU_mjG2hviqDaf5qv7EjiW9Vl145pugxK5VW4Ja8WnZ43sqL0nH9wQ?key=LUhkdzhZMkZYNFdrOFdKNGozT0Vab2RleEJ0LTFR" target="_blank" layout vertical>
                 <iron-pages id="photo_list" class="card--top-right-clip" on-transitionend="onTransitionEnd" selected="0" fit role="marquee" aria-label="image carousel">
