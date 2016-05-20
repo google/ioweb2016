@@ -30,8 +30,7 @@ module.exports = function(rootDir, handleFetch, importScripts, callback) {
     'extended',
     'faq',
     'home',
-    'schedule',
-    'widget'
+    'schedule'
   ];
   var navigateFallbackWhitelist = routes.map(function(route) {
     return new RegExp('/' + route + '$');

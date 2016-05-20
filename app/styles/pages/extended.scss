@@ -146,19 +146,6 @@ $name: 'page-extended';
     }
   }
 
-  .embed {
-    border-bottom: none;
-
-    .details--icon {
-      background: transparent url(../images/extended/icon-embed.svg) center center no-repeat;
-      background-size: 100%;
-    }
-
-    .detail__text {
-      margin-bottom: 0;
-    }
-  }
-
   #mapContainer {
     background-color: #b3d1ff;
     padding-bottom: (1 / 2) * 100%;
