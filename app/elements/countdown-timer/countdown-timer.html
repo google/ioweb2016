@@ -154,31 +154,8 @@ Fired when the intro sequence starts or finishes.
 
             TweenMax.set(this.countdownController.canvasElement, { autoAlpha: 0 });
 
-            var node = Polymer.dom(this).node;
-
-            node.addEventListener('mouseover', function() {
-              this.countdownController.play();
-              TweenMax.to(this.countdownController.canvasElement, 0.3, { autoAlpha: 1 });
-              TweenMax.to(this.logoController.canvasElement, 0.3, {
-                autoAlpha: 0,
-                onComplete: function() {
-                  this.logoController.pause();
-                },
-                onCompleteScope: this
-              });
-            });
-
-            node.addEventListener('mouseout', function() {
-              TweenMax.to(this.countdownController.canvasElement, 0.3, {
-                autoAlpha: 0,
-                onComplete: function() {
-                  this.countdownController.pause();
-                },
-                onCompleteScope: this
-              });
-              this.logoController.play();
-              TweenMax.to(this.logoController.canvasElement, 0.3, { autoAlpha: 1 });
-            });
+            this.listen(this, 'mouseenter', 'onMouseEnter');
+            this.listen(this, 'mouseleave', 'onMouseLeave');
 
             this.logoController.setUp(false, true);
             this.logoController.attachEvents();
@@ -189,6 +166,30 @@ Fired when the intro sequence starts or finishes.
           }
         },
 
+        onMouseEnter: function() {
+          this.countdownController.play();
+          TweenMax.to(this.countdownController.canvasElement, 0.3, { autoAlpha: 1 });
+          TweenMax.to(this.logoController.canvasElement, 0.3, {
+            autoAlpha: 0,
+            onComplete: function() {
+              this.logoController.pause();
+            },
+            onCompleteScope: this
+          });
+        },
+
+        onMouseLeave: function() {
+          TweenMax.to(this.countdownController.canvasElement, 0.3, {
+            autoAlpha: 0,
+            onComplete: function() {
+              this.countdownController.pause();
+            },
+            onCompleteScope: this
+          });
+          this.logoController.play();
+          TweenMax.to(this.logoController.canvasElement, 0.3, { autoAlpha: 1 });
+        },
+
         detached: function() {
           this.countdownController.pause();
           this.countdownController.detachEvents();
@@ -196,6 +197,9 @@ Fired when the intro sequence starts or finishes.
           if (this.showCurrentTime) {
             this.logoController.pause();
             this.logoController.detachEvents();
+
+            this.unlisten(this, 'mouseenter', 'onMouseEnter');
+            this.unlisten(this, 'mouseleave', 'onMouseLeave');
           }
         },
 
