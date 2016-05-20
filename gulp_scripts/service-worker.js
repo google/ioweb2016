@@ -29,7 +29,6 @@ module.exports = function(rootDir, handleFetch, importScripts, callback) {
     'attend',
     'extended',
     'faq',
-    'form',
     'home',
     'schedule',
     'widget'
