@@ -24,6 +24,7 @@ IOWA.CountdownTimer.DESKTOP_BREAKPOINT = 1400;
 IOWA.CountdownTimer.XLARGE_BREAKPOINT = 4000;
 IOWA.CountdownTimer.MAX_WIDTH = 1800;
 IOWA.CountdownTimer.CENTER_OFFSET = 32;
+IOWA.CountdownTimer.INTRO_LENGTH = 1500;
 IOWA.CountdownTimer.ICON_SHAPES = [
   'infinity',
   'slash',
@@ -120,7 +121,7 @@ IOWA.CountdownTimer.Core.prototype.detachEvents = function() {
   this.containerDomElement.removeEventListener('mousemove', this.onMouseMove);
 };
 
-IOWA.CountdownTimer.Core.prototype.setUp = function(opt_skipIntro) {
+IOWA.CountdownTimer.Core.prototype.setUp = function(opt_skipIntro, opt_infiniteIntro) {
   if (this.isReady) {
     return;
   }
@@ -131,7 +132,7 @@ IOWA.CountdownTimer.Core.prototype.setUp = function(opt_skipIntro) {
 
   if (!opt_skipIntro) {
     this.intro = new IOWA.CountdownTimer.Intro(
-        this.canvasElement, this.quality, this);
+        this.canvasElement, this.quality, this, opt_infiniteIntro ? null : IOWA.CountdownTimer.INTRO_LENGTH);
   }
 
   // Give canvas element a size early so other elements can animate around it.
