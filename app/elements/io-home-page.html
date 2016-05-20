@@ -86,10 +86,16 @@ limitations under the License.
           </div>
         </div>
 
-        <div class="card-content box box-more-height-mobile bg-cyan-200" layout vertical>
-          <p class="card__sub-title">
-            Google I/O is for developers &#8212; the creative coders who are building what&#8217;s next. To celebrate a decade of working closely with the developer community, we held the 2016 festival in our backyard at the Shoreline Amphitheatre in Mountain View, CA, a venue that has played host to some of the world’s biggest entertainers and events.
-          </p>
+        <div class="card-content featured-session box bg-bluegrey-50" style="background-image:url(/io2016/images/home/icons/video-playlist.png)">
+          <a href="https://www.youtube.com/playlist?list=PLOU2XLYxmsILe6_eGvDN3GyiodoV3qNSC" target="_blank" layout vertical>
+            <p>Explore the entire selection of sessions from I/O 2016.</p>
+            <div layout flex end>
+              <span class="card__footerlink" layout horiziontal justified center flex>
+                See all videos
+                <iron-icon icon="io:opens-in-new"></iron-icon>
+              </span>
+            </div>
+          </a>
         </div>
 
         <template is="dom-repeat" items="[[featuredSessions]]">
@@ -129,30 +135,6 @@ limitations under the License.
                 </div>
               </a>
             </div>
-
-            <div class="card-content featured-session box bg-bluegrey-50" style="background-image:url(/io2016/images/home/icons/video-playlist.png)">
-              <a href="https://www.youtube.com/playlist?list=PLOU2XLYxmsILe6_eGvDN3GyiodoV3qNSC" target="_blank" layout vertical>
-                <p>Explore the entire selection of sessions from I/O 2016.</p>
-                <div layout flex end>
-                  <span class="card__footerlink" layout horiziontal justified center flex>
-                    See all videos
-                    <iron-icon icon="io:opens-in-new"></iron-icon>
-                  </span>
-                </div>
-              </a>
-            </div>
-          </template>
-
-          <!-- Show quote after second featured session card. -->
-          <template is="dom-if" if="{{_showAfter(index, 1)}}">
-            <div class="card-content box box-full box-more-height-mobile bg-indigo-300 typo-white" layout vertical>
-              <p class="card__sub-title">
-                I/O 2016 was one for the history books. Thanks for being a part of the festival and we can&#8217;t wait to see what you build next. We look forward to seeing you again at another Google I/O.
-              </p>
-<!--               <div layout flex end>
-                Sundar Pichai
-              </div> -->
-            </div>
           </template>
 
         </template>
@@ -169,7 +151,7 @@ limitations under the License.
 
   var _cyclePhotosInterval = null;
   var PHOTOS_CYCLE = 4000;
-  var MAX_FEATURED_SESSIONS = 6;
+  var MAX_FEATURED_SESSIONS = 7;
   var IMAGE_PATH = '/io2016/images/home/icons/';
   var IMAGE_SUFFIX = '.png';
 
