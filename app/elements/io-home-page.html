@@ -108,7 +108,7 @@ limitations under the License.
                  tabindex="0"
                  flex
                  aria-label="Watch video"
-                 data-video-id$="[[item.youtubeUrl]]"
+                 data-video-id$="[[_toVideoIdFilter(item.youtubeUrl)]]"
                  style="height:100%; background-image:url([[_computeBgImage(item)]])">
               <h3>Featured Session</h3>
               <p>[[item.title]]</p>
