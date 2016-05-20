@@ -15,9 +15,8 @@
  */
 
 IOWA.CountdownTimer.INTRO_PAUSE = 500; // # ms for intro to start.
-IOWA.CountdownTimer.INTRO_LENGTH = 1500; // # ms for intro to stay visible.
 
-IOWA.CountdownTimer.Intro = function(canvas, quality, parent) {
+IOWA.CountdownTimer.Intro = function(canvas, quality, parent, introLength) {
   this.parent = parent;
 
   this.radius = 0;
@@ -31,6 +30,8 @@ IOWA.CountdownTimer.Intro = function(canvas, quality, parent) {
 
   this.isStarted = false;
   this.isFinished = false;
+
+  this.introLength = introLength;
 
   this.canvasElement = canvas;
 
@@ -56,6 +57,7 @@ IOWA.CountdownTimer.Intro.prototype.update = function() {
   if (this.isFinished) {
     return true;
   }
+
   if (this.isStarted) {
     this.count += ((this.radius - this.parent.strokeWeight) - this.count) / this.speed;
   }
@@ -73,7 +75,10 @@ IOWA.CountdownTimer.Intro.prototype.update = function() {
       this.parent.bands[digit].isPlaying = true;
       this.parent.bands[digit].fade('in');
       this.firstRun = false;
-      setTimeout(this.outro.bind(this), IOWA.CountdownTimer.INTRO_LENGTH);
+
+      if (this.introLength) {
+        setTimeout(this.outro.bind(this), this.introLength);
+      }
     }
     this.parent.bands[digit].update();
   } else {
