@@ -255,7 +255,8 @@ limitations under the License.
       var featuredSessions = sessions.filter(function(s) {
         // Don't feature keynote since it is already in the hero slot.
         // Once sizzle video takes hero slot allow keynote to be a featured session.
-        return s.isFeatured && s.id !== '__keynote__';
+        return s.isFeatured && s.id !== '__keynote__' && s.youtubeUrl &&
+               s.youtubeUrl.indexOf('https://') === 0;
       });
 
       // Randomize featured sessions to the change on every page load, and take
