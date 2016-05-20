@@ -143,8 +143,46 @@ Fired when the intro sequence starts or finishes.
         attached: function() {
           this.countdownController = new IOWA.CountdownTimer.Core(new Date(this.date), Polymer.dom(this).node);
           this.countdownController.showCurrentTime = this.showCurrentTime;
-          this.countdownController.setUp(_skipIntro);
+          this.countdownController.setUp(this.showCurrentTime || _skipIntro);
           this.countdownController.attachEvents();
+
+          if (this.showCurrentTime) {
+            this.logoController = new IOWA.CountdownTimer.Core(new Date(this.date), Polymer.dom(this).node);
+            this.logoController.canvasElement.style.position = 'absolute';
+            this.logoController.canvasElement.style.top = '0px';
+            this.logoController.canvasElement.style.left = '0px';
+
+            TweenMax.set(this.countdownController.canvasElement, { autoAlpha: 0 });
+
+            var node = Polymer.dom(this).node;
+
+            node.addEventListener('mouseover', function() {
+              this.countdownController.play();
+              TweenMax.to(this.countdownController.canvasElement, 0.3, { autoAlpha: 1 });
+              TweenMax.to(this.logoController.canvasElement, 0.3, {
+                autoAlpha: 0,
+                onComplete: function() {
+                  this.logoController.pause();
+                },
+                onCompleteScope: this
+              });
+            });
+
+            node.addEventListener('mouseout', function() {
+              TweenMax.to(this.countdownController.canvasElement, 0.3, {
+                autoAlpha: 0,
+                onComplete: function() {
+                  this.countdownController.pause();
+                },
+                onCompleteScope: this
+              });
+              this.logoController.play();
+              TweenMax.to(this.logoController.canvasElement, 0.3, { autoAlpha: 1 });
+            });
+
+            this.logoController.setUp(false, true);
+            this.logoController.attachEvents();
+          }
 
           if (this.autoStart) {
             this.start();
@@ -154,6 +192,11 @@ Fired when the intro sequence starts or finishes.
         detached: function() {
           this.countdownController.pause();
           this.countdownController.detachEvents();
+
+          if (this.showCurrentTime) {
+            this.logoController.pause();
+            this.logoController.detachEvents();
+          }
         },
 
         /**
@@ -161,6 +204,10 @@ Fired when the intro sequence starts or finishes.
          */
         stop: function() {
           this.countdownController.pause();
+
+          if (this.showCurrentTime) {
+            this.logoController.pause();
+          }
         },
 
         /**
@@ -168,6 +215,11 @@ Fired when the intro sequence starts or finishes.
          */
         start: function() {
           this.countdownController.play(_skipIntro);
+
+          if (this.showCurrentTime) {
+            this.logoController.play(_skipIntro);
+          }
+
           _skipIntro = true;
         }
       });

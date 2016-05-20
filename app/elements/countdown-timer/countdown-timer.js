@@ -120,7 +120,7 @@ IOWA.CountdownTimer.Core.prototype.detachEvents = function() {
   this.containerDomElement.removeEventListener('mousemove', this.onMouseMove);
 };
 
-IOWA.CountdownTimer.Core.prototype.setUp = function(opt_skipIntro) {
+IOWA.CountdownTimer.Core.prototype.setUp = function(opt_skipIntro, opt_infiniteIntro) {
   if (this.isReady) {
     return;
   }
@@ -131,7 +131,7 @@ IOWA.CountdownTimer.Core.prototype.setUp = function(opt_skipIntro) {
 
   if (!opt_skipIntro) {
     this.intro = new IOWA.CountdownTimer.Intro(
-        this.canvasElement, this.quality, this);
+        this.canvasElement, this.quality, this, opt_infiniteIntro ? null : 1500);
   }
 
   // Give canvas element a size early so other elements can animate around it.
