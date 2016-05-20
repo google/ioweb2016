@@ -21,7 +21,6 @@ limitations under the License.
 <link rel="import" href="../bower_components/neon-animation/animations/scale-up-animation.html">
 <link rel="import" href="../bower_components/neon-animation/animations/fade-out-animation.html">
 
-<link rel="import" href="io-attend-bus-schedule.html">
 <link rel="import" href="shared-app-styles.html">
 <link rel="import" href="PageBehavior.html">
 
@@ -38,11 +37,6 @@ limitations under the License.
     <h1 class="focus-target" tabindex="-1">Attending</h1>
   </div>
 </div>
-
-
-<template is="dom-if" if="[[_loadSchedule]]">
-  <io-attend-bus-schedule id="busScheduleElement" app="[[app]]"></io-attend-bus-schedule>
-</template>
 
 <div class="card__container">
   <div class="card">
@@ -222,7 +216,6 @@ limitations under the License.
                   <p class="detail__text">
                     Google I/O event shuttles will service the hubs listed below for attendees making connections with public transportation services. Please check the event shuttle schedule for details.
                   </p>
-                  <paper-button raised class="cta-button shuttle-button" on-click="openBusSchedule">View shuttle schedule</paper-button>
 
                   <p class="detail__text no-bottom-margin">
                     <b>BART:</b> <a href="https://www.bart.gov/stations/mlbr" target="_blank">Millbrae BART Station</a>
@@ -359,11 +352,6 @@ limitations under the License.
         computed: '_computeLoadMap(app.pageTransitionDone, selectedSubpage, _scrolledToMapSection)'
       },
 
-      _loadSchedule: {
-        type: Boolean,
-        value: false
-      },
-
       /**
        * The selected subpage/tab.
        */
@@ -386,11 +374,9 @@ limitations under the License.
             Polymer.dom(this.root).querySelector('.io__hash').clientHeight;
 
 
-        // Deep link into shuttle schedule.
+        // Deep link into transportation options.
         var parsedUrl = IOWA.Router.parseUrl(window.location.toString());
-        if (parsedUrl.hash.match(/bus/)) {
-          this.openBusSchedule();
-        } else if (parsedUrl.hash.match(/uber/)) {
+        if (parsedUrl.hash.match(/uber/)) {
           this.async(function() {
             Polymer.AppLayout.scroll({
               top: this.$.uberPOOL.getBoundingClientRect().top - 100,
@@ -436,16 +422,6 @@ limitations under the License.
 
     _computeLoadMap: function(pageTransitionDone, selectedSubpage, scrolledEnough) {
       return pageTransitionDone && selectedSubpage == 'travel' && scrolledEnough;
-    },
-
-    openBusSchedule: function(e) {
-      e && e.preventDefault();
-
-      this._loadSchedule = true;
-
-      this.async(function() {
-        this.$$('#busScheduleElement').open();
-      });
     }
 
   });
