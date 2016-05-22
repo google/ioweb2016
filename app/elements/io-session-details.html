@@ -78,7 +78,7 @@ limitations under the License.
                 video-id="[[_toVideoIdFilter(selectedSession.youtubeUrl)]]"
                 height="100%" width="100%" fit
                 autohide="1" controls="2" modestbranding="1" showinfo="0"
-                iv_load_policy="3" rel="0" autoplay="1"
+                iv_load_policy="3" rel="0" autoplay="0"
                 on-google-youtube-ready="onScheduleVideoReady"></google-youtube>
           </template>
           <div class$="play__button__container [[_addWatchedClass(selectedSession.watched)]]"
@@ -283,6 +283,10 @@ limitations under the License.
     onScheduleVideoReady: function(e, detail) {
       this.$.sessionDetails.querySelector('iron-image').classList.add('fadeout');
       this.$.sessionDetails.querySelector('.play__button__container').classList.add('fadeout');
+      var video = Polymer.dom(e).rootTarget;
+      if (video.playsupported) {
+        video.play();
+      }
     },
 
     onVideoPlay: function(e, detail) {
