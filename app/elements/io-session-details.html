@@ -283,10 +283,10 @@ limitations under the License.
     onScheduleVideoReady: function(e, detail) {
       this.$.sessionDetails.querySelector('iron-image').classList.add('fadeout');
       this.$.sessionDetails.querySelector('.play__button__container').classList.add('fadeout');
-      var video = Polymer.dom(e).rootTarget;
-      if (video.playsupported) {
-        video.play();
-      }
+      // var video = Polymer.dom(e).rootTarget;
+      // if (video.playsupported) {
+      //   video.play();
+      // }
     },
 
     onVideoPlay: function(e, detail) {

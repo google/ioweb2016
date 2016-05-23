@@ -60,8 +60,7 @@ limitations under the License.
       <div class="fullvideo__container" fit>
         <google-youtube fit width="100%" height="100%"
             autohide="1" controls="2" modestbranding="1" showinfo="0"
-            iv_load_policy="3" rel="0" autoplay="0"
-            on-google-youtube-ready="_onVideoReady"></google-youtube>
+            iv_load_policy="3" rel="0" autoplay="0"></google-youtube>
       </div>
     </template>
   </paper-dialog>
@@ -110,7 +109,7 @@ limitations under the License.
                  flex
                  aria-label="Watch video"
                  data-video-id$="[[_toVideoIdFilter(item.youtubeUrl)]]"
-                 style="height:100%; background-image:url([[_computeBgImage(item)]])">
+                 style$="height:100%; background-image:url([[_computeBgImage(item)]])">
               <h3>Featured Session</h3>
               <p>[[item.title]]</p>
               <p class="byline">[[speakerIdsToNameString(item.speakers)]]</p>
@@ -356,13 +355,6 @@ limitations under the License.
       }
 
       return IMAGE_PATH + track + IMAGE_SUFFIX;
-    },
-
-    _onVideoReady: function(e) {
-      var video = Polymer.dom(e).rootTarget;
-      if (video.playsupported) {
-        video.play();
-      }
     }
 
   });
