@@ -70,7 +70,7 @@ h3 a {
   background-position: 0 50%;
 
   &.card__play-button {
-    background-image: linear-gradient(to top, transparent 70%, #000),
+    background-image: linear-gradient(to top, transparent 70%, rgba(0,0,0,.54)),
                       url(../images/home/sundar_key.jpg);
     background-position: 50% 50%, 50% 50%;
     background-size: cover, cover;
