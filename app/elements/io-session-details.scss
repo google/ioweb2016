@@ -58,6 +58,10 @@ $color-section-border: #eaeaea;
   font-size: 16px;
   line-height: 24px;
 
+  google-youtube {
+    z-index: 2; // higher than replay / play button messaging.
+  }
+
   paper-fab {
     background: #fff;
     color: inherit;
