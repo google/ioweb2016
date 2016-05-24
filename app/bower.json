@@ -6,10 +6,9 @@
     "Eric Bidelman <ebidel@>",
     "Alex Vaghin",
     "Jeff Posnick",
-    "Ewa Gasperowicz",
-    "Brendan Kenny",
-    "Paul Lewis",
-    "Rob Dodson"
+    "Rob Dodson",
+    "Nicolas Garnier",
+    "Peng Ying"
   ],
   "description": "Google I/O Web App",
   "main": "index.html",
