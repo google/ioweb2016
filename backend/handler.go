@@ -662,10 +662,19 @@ func serveEasterEgg(w http.ResponseWriter, r *http.Request) {
 	ctx := newContext(r)
 
 	const alpha = "abcdefghijklmnopqrstuvwxyz"
-	secret := make([]rune, 3)
+	secret := make([]string, 3)
+	letters :=make([]string, 3)
+
 	for i := range secret {
 		n := rand.Intn(len(alpha))
-		secret[i] = rune(alpha[n])
+
+		// make sure the characters are always unique
+		for stringInSlice(string(alpha[n]), letters) {
+			n = rand.Intn(len(alpha))
+		}
+
+		secret[i] = strconv.FormatInt(int64(alpha[n]), 2)
+		letters[i] = string(alpha[n])
 	}
 
 	b, err := json.Marshal(secret)
@@ -674,6 +683,15 @@ func serveEasterEgg(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Write(b)
+}
+
+func stringInSlice(a string, list []string) bool {
+    for _, b := range list {
+        if b == a {
+            return true
+        }
+    }
+    return false
 }
 
 // servePhotosProxy serves as a server proxy for Picasa's JSON feeds.
