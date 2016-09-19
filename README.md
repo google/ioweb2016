@@ -76,7 +76,7 @@ To deploy complete application on App Engine:
 1. Run `gulp serve:dist` which will build the app in `dist` directory
    and start local server.
 2. Perform any necessary manual checks.
-2. Run `GAE_SDK/goapp deploy -application <app-id> -version <v> dist/backend/`.
+2. Run `GAE_SDK/goapp deploy -application io-webapp-2016 -version <v> dist/backend/`.
 
 ## Backend
 
