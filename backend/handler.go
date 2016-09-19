@@ -657,7 +657,7 @@ func handleWipeout(w http.ResponseWriter, r *http.Request) {
 
 // serveEasterEgg responds with an array of ASCII keys represented as integers.
 func serveEasterEgg(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("content-type", "application/json")
+	w.Header().Set("Content-Type", "application/json;charset=utf-8")
 	ctx := newContext(r)
 
 	const alpha = "abcdefghijklmnopqrstuvwxyz"
@@ -754,7 +754,7 @@ func debugPush(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "application/json;charset=utf-8")
 	dc := &dataChanges{}
 	if err := json.NewDecoder(r.Body).Decode(dc); err != nil {
 		writeJSONError(c, w, http.StatusBadRequest, err)
@@ -801,7 +801,7 @@ func debugNotify(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "application/json;charset=utf-8")
 	n := &notification{}
 	if err := json.NewDecoder(r.Body).Decode(n); err != nil {
 		writeJSONError(c, w, http.StatusBadRequest, err)
@@ -872,6 +872,7 @@ func writeJSONError(c context.Context, w http.ResponseWriter, code int, err inte
 	if aerr, ok := err.(*apiError); ok {
 		code = aerr.code
 	}
+	w.Header().Set("Content-Type", "application/json;charset=utf-8")
 	w.WriteHeader(code)
 	fmt.Fprintf(w, `{"error": %q}`, err)
 }
