@@ -17,6 +17,7 @@ Setup
 1. `git clone https://github.com/GoogleChrome/ioweb2016.git`
 2. `cd ioweb2016`
 3. `npm install`
+4. `gulp setup`
 
 If you plan on modifying source code, be a good citizen and:
 
